@@ -281,10 +281,11 @@ class Region_Unifier:
         reg1['class'] = clss
         if add_word:
             if 'regions' in reg1.keys():
-                reg1['regions'].append(reg2)
+                if reg2['identifier'] not in [i['identifier'] for i in reg1]:
+                    reg1['regions'].extend(reg2)
             else:
                 reg1['regions']=[]
-                reg1['regions'].append(reg2)
+                reg1['regions'].extend(reg2)
         # except:
         #     pass
 
@@ -332,10 +333,10 @@ class Region_Unifier:
                         region_poly =get_polygon(word['boundingBox']); base_poly = get_polygon(cell['boundingBox'])
                         area=0
                         if region_poly and base_poly:
-                            area = base_poly.intersection(region_poly).area
+                            area = base_poly.intersection(region_poly)
                             flag=False
                             indx = index.Index()
-                            if area>0:
+                            if area:
                                 for idx3,tmp_cell in enumerate(tmp_cells):
                                     poly = get_polygon(tmp_cell['boundingBox'])
                                     indx.insert(idx3, poly.bounds)
@@ -362,9 +363,13 @@ class Region_Unifier:
                 sorted_page_regions = page_regions
 
 
-
-            page_words = collate_text(file,page_c_words, page_g_words)
-            page_words2 = copy.deepcopy(page_words)
+            if "craft_word" in file['config']["OCR"].keys() and file['config']["OCR"]["craft_word"]=="True":
+                log_info('craft words are processing',  None )
+                page_words = collate_text(file,page_c_words, page_g_words)
+                page_words2 = page_words
+            else:
+                page_words = copy.deepcopy(page_g_words)
+                page_words2 = page_words
             text_region,n_text_table_regions,tabel_region,image_region,head_foot_region = self.get_text_tabel_region(sorted_page_regions)
             tabel_region  = remvoe_regions(copy.deepcopy(image_region), copy.deepcopy(tabel_region))
             filtered_words = remvoe_regions(copy.deepcopy(image_region), copy.deepcopy(page_words))
