@@ -101,6 +101,7 @@ class TranslateResourceV4(Resource):
                 log_info("Making v4/translate-anuvaad API call",MODULE_CONTEXT)
                 log_info("inputs---{}".format(inputs),MODULE_CONTEXT)
                 input_src_list = inputs.get('src_list')
+                log_info("***********Input length:{}".format(len(input_src_list)),MODULE_CONTEXT)
                 src_list = [i.get('src') for i in input_src_list]
                 translation_batch = {'id':inputs.get('model_id'),'src_list': src_list}
                 output_batch = NMTTranslateService.batch_translator(translation_batch)
