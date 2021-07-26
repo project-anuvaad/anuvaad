@@ -22,13 +22,13 @@ WorkflowConfigs:
       
   - workflowCode: WF_A_JAL
     type: ASYNC
-    description: Aligns the input files. 
-    useCase: A_A
+    description: Aligns the input json files. 
+    useCase: A_JA
     sequence:
     - order: 0
       tool:
       - name: ALIGNER
-        description: Accepts 2 parallel files and alings them into parallel corp for training
+        description: Accepts 2 parallel json files and aligns them into parallel corp for training.
         kafka-input:
         - topic: KAFKA_ANUVAAD_DP_TOOLS_JSON_ALIGNER_INPUT
           partitions: KAFKA_PARTITIONS_PER_TOPIC
@@ -36,7 +36,7 @@ WorkflowConfigs:
         - topic: KAFKA_ANUVAAD_DP_TOOLS_JSON_ALIGNER_OUTPUT
           partitions: KAFKA_PARTITIONS_PER_TOPIC
       endState: true
-
+      
 
 
   - workflowCode: WF_A_FC
