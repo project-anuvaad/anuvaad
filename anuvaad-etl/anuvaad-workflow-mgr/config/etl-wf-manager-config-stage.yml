@@ -36,7 +36,7 @@ WorkflowConfigs:
         - topic: KAFKA_ANUVAAD_DP_TOOLS_JSON_ALIGNER_OUTPUT
           partitions: KAFKA_PARTITIONS_PER_TOPIC
       endState: true
-      
+
 
 
   - workflowCode: WF_A_FC
@@ -658,7 +658,7 @@ WorkflowConfigs:
       - name: TRANSLATOR
         description: Translates the sentences.
         api-details:
-        - uri: http://gateway_anuvaad-etl-translator:5001/anuvaad-etl/translator/v1/block/workflow/translate
+        - uri: http://stage_anuvaad-etl-translator:5001/anuvaad-etl/translator/v1/block/workflow/translate
       endState: true
 
 
@@ -673,14 +673,14 @@ WorkflowConfigs:
       - name: TOKENISER
         description: tokenises the text blocks.
         api-details:
-        - uri: http://gateway_anuvaad-etl-tokeniser:5001/anuvaad-etl/tokeniser/v0/blocks-tokenisation-wf
+        - uri: http://stage_anuvaad-etl-tokeniser:5001/anuvaad-etl/tokeniser/v0/blocks-tokenisation-wf
       endState: false
     - order: 1
       tool:
       - name: TRANSLATOR
         description: Translates the sentences.
         api-details:
-        - uri: http://gateway_anuvaad-etl-translator:5001/anuvaad-etl/translator/v1/block/workflow/translate
+        - uri: http://stage_anuvaad-etl-translator:5001/anuvaad-etl/translator/v1/block/workflow/translate
       endState: true
 
 
