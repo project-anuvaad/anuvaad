@@ -153,6 +153,7 @@ class AnuvaadHindiTokenizer(object):
         pattern_d = re.compile(r'(\u0965)')
         text = pattern_d.sub(' END_||_END', text)
         pattern = re.compile(r'(\u0964)')
+        pattern = re.compile(r'(\u007C)')
         text = pattern.sub(' END_|_END ', text)
         return text
 
