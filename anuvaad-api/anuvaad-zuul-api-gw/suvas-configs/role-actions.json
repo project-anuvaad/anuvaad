@@ -166,6 +166,36 @@
             "active":true
         },
         {
+            "role":"TRANSLATOR",
+            "actionID": "216313cc-0668-442f-a13e-3fd022be5eb2",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "36677274-7ac3-4319-8170-f2e007341ecf",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "1162882f-4096-4d8a-8905-ef68b34bfbbc",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "eadf42e8-eb6b-4d33-a599-15323981568d",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "074d7840-5340-4881-9143-b3ecb9775265",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "52021bff-bdb8-47a3-8e0b-b09590d4a4bd",
+            "active":true
+        },
+        {
             "role":"ADMIN",
             "actionID": "8ef47a2a-0a85-4efe-865e-8c52b567bf74",
             "active":true
@@ -633,6 +663,26 @@
         {
             "role":"ANNOTATOR",
             "actionID": "752bff69-e7ed-44bd-9218-ee65f4febb8c",
+            "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "3b9b7642-356a-4027-9c2a-ac44901dd5d4",
+            "active":true
+        },
+	    {
+            "role":"ADMIN",
+            "actionID": "a1d46e6d-bbe6-4ffc-bb8e-cc8412e0353d",
+            "active":true
+        },
+	    {
+            "role":"ADMIN",
+            "actionID": "736e5d42-e8da-4a6d-b89d-1cca1b54c787",
+            "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "1fd85b70-ee0e-4bb8-aff4-fe1c57efcf21",
             "active":true
         }
     ]

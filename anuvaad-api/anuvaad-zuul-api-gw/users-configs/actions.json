@@ -599,6 +599,39 @@
             "active":true,
             "whiteList":true,
             "description":"API for docx download"
+        },
+        {
+            "id":"1162882f-4096-4d8a-8905-ef68b34bfbbc",
+            "uri":"/anuvaad/content-handler/v0/ref-link/store",
+            "module":"CH",
+            "active":true,
+            "whiteList":false,
+            "description":"ANUVAAD-CH-S3 URL STORE"
+        },
+        {
+            "id":"eadf42e8-eb6b-4d33-a599-15323981568d",
+            "uri":"/anuvaad/content-handler/v0/ref-link/fetch",
+            "module":"CH",
+            "active":true,
+            "whiteList":false,
+            "description":"ANUVAAD-CH-S3 URL FETCH"
+        },
+        {
+            "id":"074d7840-5340-4881-9143-b3ecb9775265",
+            "uri":"/anuvaad-etl/file-translator/v0/download-wf",
+            "module":"ANUVAAD-TRANSLATED-FILE-DOWNLOADER",
+            "active":true,
+            "whiteList":false,
+            "description":"API for translated file download"
+        }
+        ,
+        {
+            "id":"52021bff-bdb8-47a3-8e0b-b09590d4a4bd",
+            "uri":"/anuvaad-etl/file-translator/v0/transform-wf",
+            "module":"ANUVAAD-TRANSFORM-FILE-TO-JSON",
+            "active":true,
+            "whiteList":false,
+            "description":"API for transform file to json format"
         }
     ]
 }

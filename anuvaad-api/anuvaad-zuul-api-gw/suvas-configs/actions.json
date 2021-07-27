@@ -226,7 +226,7 @@
         },
         {
             "id":"e5d0b999-a2bb-41af-a267-2494b15fb6a5",
-            "uri":"/nmt-inference/v1/fetch-models",
+            "uri":"/nmt-inference/v1/fetch-models/*",
             "module":"ANUVAAD-NMT",
             "active":true,
             "whiteList":false,
@@ -274,7 +274,7 @@
         },
         {
             "id":"5b5ca44a-ddd8-4576-88d5-e370a48c368e",
-            "uri":"/nmt-inference/v2/fetch-models",
+            "uri":"/nmt-inference/v2/fetch-models/*",
             "module":"ANUVAAD-NMT",
             "active":true,
             "whiteList":false,
@@ -343,6 +343,30 @@
             "active":true,
             "whiteList":false,
             "description":"API to update sentences in CH"
+        },
+        {
+            "id":"3b9b7642-356a-4027-9c2a-ac44901dd5d4",
+            "uri":"/anuvaad/content-handler/v0/update-content",
+            "module":"CONTENT-HANDLER",
+            "active":true,
+            "whiteList":false,
+            "description":"API to update blocks in CH"
+        },
+        {
+            "id":"a1d46e6d-bbe6-4ffc-bb8e-cc8412e0353d",
+            "uri":"/anuvaad/content-handler/v0/fetch-content-sentence",
+            "module":"CONTENT-HANDLER",
+            "active":true,
+            "whiteList":false,
+            "description":"API to fetch sentences in CH"
+        },
+        {
+            "id":"736e5d42-e8da-4a6d-b89d-1cca1b54c787",
+            "uri":"/anuvaad/content-handler/v0/records/user-translation-search",
+            "module":"CONTENT-HANDLER",
+            "active":true,
+            "whiteList":false,
+            "description":"API to fetch sentence memory in CH"
         },
         {
             "id":"95d0525e-d654-496d-a77e-049bffe46ab0",
@@ -551,6 +575,63 @@
             "active":true,
             "whiteList":true,
             "description":"API for AIB NMT"
+        },
+        {
+            "id":"5e2c99cf-b6e2-41e4-a183-23b011e56d6f",
+            "uri":"/aai4b-nmt-inference/v0/interactive-translation",
+            "module":"AIB-NMT",
+            "active":true,
+            "whiteList":true,
+            "description":"API for AIB NMT Interactive"
+        },
+        {
+            "id":"1fd85b70-ee0e-4bb8-aff4-fe1c57efcf21",
+            "uri":"/dashboard/getUserReport",
+            "module":"ANUVAAD-DASHBOARD",
+            "active":true,
+            "whiteList":false,
+            "description":"API for Anuvaad Dashboard"
+        },
+        {
+            "id":"e8a2d3c4-bbe8-4a63-950e-5687278cd8d2",
+            "uri":"/anuvaad-etl/anuvaad-docx-downloader/v0/download-docx",
+            "module":"ANUVAAD-DOCX-DOWNLOADER",
+            "active":true,
+            "whiteList":true,
+            "description":"API for docx download"
+        },
+        {
+            "id":"1162882f-4096-4d8a-8905-ef68b34bfbbc",
+            "uri":"/anuvaad/content-handler/v0/ref-link/store",
+            "module":"CH",
+            "active":true,
+            "whiteList":false,
+            "description":"ANUVAAD-CH-S3 URL STORE"
+        },
+        {
+            "id":"eadf42e8-eb6b-4d33-a599-15323981568d",
+            "uri":"/anuvaad/content-handler/v0/ref-link/fetch",
+            "module":"CH",
+            "active":true,
+            "whiteList":false,
+            "description":"ANUVAAD-CH-S3 URL FETCH"
+        },
+        {
+            "id":"074d7840-5340-4881-9143-b3ecb9775265",
+            "uri":"/anuvaad-etl/file-translator/v0/download-wf",
+            "module":"ANUVAAD-TRANSLATED-FILE-DOWNLOADER",
+            "active":true,
+            "whiteList":false,
+            "description":"API for translated file download"
+        }
+        ,
+        {
+            "id":"52021bff-bdb8-47a3-8e0b-b09590d4a4bd",
+            "uri":"/anuvaad-etl/file-translator/v0/transform-wf",
+            "module":"ANUVAAD-TRANSFORM-FILE-TO-JSON",
+            "active":true,
+            "whiteList":false,
+            "description":"API for transform file to json format"
         }
     ]
 }

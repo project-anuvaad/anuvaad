@@ -497,6 +497,14 @@
             "description":"API tokenise paragraphs from a text file"
         },
         {
+            "id":"724f7f09-2d6a-43c3-8155-8acc779dc833",
+            "uri":"/anuvaad-etl/tokeniser/v0/paragraphs-tokenisation-wf",
+            "module":"TOKENISER",
+            "active":true,
+            "whiteList":false,
+            "description":"API tokenise paragraph from a list of paragraphs"
+        },
+        {
             "id":"5eeecf48-65e7-4c3e-a455-0bd29b0e0838",
             "uri":"/anuvaad-etl/tokeniser/v0/tokenisation",
             "module":"TOKENISER",
@@ -631,6 +639,14 @@
             "active":true,
             "whiteList":false,
             "description":"ANUVAAD-CH-S3 URL FETCH"
+        },
+        {
+            "id":"c4cf7a7f-4749-4abd-9f15-8bbbfcc74dcf",
+            "uri":"/nmt-inference/health",
+            "module":"ANUVAAD-NMT",
+            "active":true,
+            "whiteList":true,
+            "description":"NMT GPU health API"
         }
     ]
 }
