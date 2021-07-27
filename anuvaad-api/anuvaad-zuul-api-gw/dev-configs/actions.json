@@ -237,7 +237,7 @@
             "uri":"/nmt-inference/v3/translate-anuvaad",
             "module":"ANUVAAD-NMT",
             "active":true,
-            "whiteList":false,
+            "whiteList":true,
             "description":"API for doc translation"
         },
         {
