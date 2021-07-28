@@ -66,8 +66,8 @@
 # ENV NVIDIA_REQUIRE_CUDA "cuda>=11.2 brand=tesla,driver>=418,driver<419 brand=tesla,driver>=440,driver<441 driver>=450,driver<451"
 
 #FROM anuvaadio/anuvaad-word-detector-craft:19-9aecb9ef   #gpu image
-FROM  anuvaad-word-detector-craft:47-cfec8554a             #cpuimage 
-
+#cpu image
+FROM  anuvaadio/anuvaad-word-detector-craft:47-cfec8554a  
 
 COPY / /app
 WORKDIR /app
