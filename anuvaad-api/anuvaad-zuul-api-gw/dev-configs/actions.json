@@ -139,10 +139,10 @@
         {
             "id":"6ec79e2c-fc83-4cc6-a7f3-c9034e3ca6e5",
             "uri":"/anuvaad/user-mgmt/v1/extension/users/get/token",
-            "module":"ANUVAAD-NMT",
+            "module":"USER-MANAGEMENT-SYSTEM",
             "active":true,
             "whiteList":true,
-            "description":"NMT GPU health API"
+            "description":"API for registering extension users"
         },
         {
             "id":"76952b3b-6017-4d58-86e2-246a16b1c952",
