@@ -23,11 +23,11 @@ def process_tokenization_kf():
     DOWNLOAD_FOLDER =file_ops.file_download(config.download_folder)
     # instatiation of consumer for respective topic
     try:
-        consumer_class = Consumer(config.input_topic, (str(config.bootstrap_server)))
+        consumer_class = Consumer(config.input_topic, list(str(config.bootstrap_server).split(",")))
         consumer = consumer_class.consumer_instantiate()
         log_info("process_tokenization_kf : trying to receive value from consumer ", None)
         for msg in consumer:
-            data = Consumer.get_json_data(msg.value)
+            data = msg.value
             log_info("process_tokenization_kf : received input json from input topic consumer ", data)
             task_id = str("TOK-" + str(time.time()).replace('.', '')[0:13])
             task_starttime = eval(str(time.time()).replace('.', '')[0:13])
