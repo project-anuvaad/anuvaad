@@ -41,7 +41,7 @@ def crop_region(coord,image):
                 box = get_box(coord)
                 crop_image = get_crop_with_pers_transform(image, box, height=abs(box[0,1]-box[2,1]))
             else :
-                crop_image = image[min(vertices[0]['y'],vertices[2]['y']) : max(vertices[2]['y'],vertices[0]['y']) , min(vertices[0]['x'],vertices[2]['x']) : max(vertices[2]['x'],vertices[0]['x'])]
+                crop_image = image[vertices[0]['y'] : vertices[2]['y'] ,vertices[0]['x'] : vertices[2]['x']]
 
             return crop_image
         else :

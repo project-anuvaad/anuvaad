@@ -268,7 +268,7 @@ class Region_Unifier:
         reg1['class'] = clss
         if add_word:
             if 'regions' in reg1.keys():
-                if reg2['identifier'] not in [i['identifier'] for i in reg1]:
+                if reg2['identifier'] not in [i['identifier'] for i in reg1['regions']]:
                     reg1['regions'].extend(reg2)
             else:
                 reg1['regions']=[]

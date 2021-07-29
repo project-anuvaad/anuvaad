@@ -47,7 +47,7 @@ IS_DYNAMIC =True
 EXRACTION_RESOLUTION  =  300
 BATCH_SIZE  = 1
 DYNAMIC_MARGINS= False
-PERSPECTIVE_TRANSFORM=False
+PERSPECTIVE_TRANSFORM=True
 FALL_BACK_LANGUAGE=None
 PSM=7
 POST_PROCESSING_MODE=None
@@ -59,9 +59,9 @@ LANG_MAPPING       =  {
     "kn" : ['Kannada',"kan"],
     "gu": ["guj"],
     "or": ["ori"],
-    "hi" : ["Devanagari","anuvaad_hin"],
+    "hi" : ["Devanagari","hin"],
     "bn" : ["Bengali","ben"],
-    "mr": ["Devanagari","hin"],
+    "mr": ["Devanagari","anuvaad_hin"],
     "ta": ['Tamil',"anuvaad_tam"],
     "te" : ["Telugu","tel"],
     "ml" :["Malayalam"],
