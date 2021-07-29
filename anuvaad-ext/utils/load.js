@@ -844,12 +844,12 @@ const saveObjectInLocalStorage = async function (obj) {
 };
 
 function setCryptoToken() {
+  var payload = `${uuidv4()}::extn::${Date.now()}`;
   var token = CryptoJS.AES.encrypt(
-    uuidv4() + new Date(),
+    payload,
     "This is my secret phrase"
   ).toString();
-  console.log(token);
-  //   saveObjectInLocalStorage(token);
+  saveObjectInLocalStorage({ "id-token": token });
 }
 
 function markAndExtractTextElements(element) {
@@ -926,7 +926,8 @@ async function makeSyncInitiateCall() {
     paragraphs: texts,
     workflowCode: "WF_S_STKTR",
   };
-  // var authToken = await getObjectFromSyncStorage('token');
+  var authToken = await getObjectFromSyncStorage("id-token");
+  console.log("authToken", authToken);
   var authToken =
     "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyTmFtZSI6InJvc2hhbi5zaGFoQHRhcmVudG8uY29tIiwicGFzc3dvcmQiOiJiJyQyYiQxMiQyMXhwNXhzd0VzeDB5SVBCRk9KUzZPZlpXV0d1bnpJMmlrQmh3LzNFQ1VCRUE5VVAyUC5NUyciLCJleHAiOjE2MjcwNDM0MjJ9.fWIJXnpDOEwcIWb3o_kHkTzG9X_Z4SyzgCpIgxmPvKU";
   requestBody.source_language_code = await getObjectFromLocalStorage("s0_src");
