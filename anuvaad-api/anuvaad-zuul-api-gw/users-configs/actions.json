@@ -577,6 +577,14 @@
             "description":"API for AIB NMT"
         },
         {
+            "id":"28a1b2dc-8743-4ad9-841d-435f11f904f8",
+            "uri":"/aai4b-nmt-inference/v0/translate",
+            "module":"AIB-NMT",
+            "active":true,
+            "whiteList":true,
+            "description":"API for AIB NMT"
+        },
+        {
             "id":"5e2c99cf-b6e2-41e4-a183-23b011e56d6f",
             "uri":"/aai4b-nmt-inference/v0/interactive-translation",
             "module":"AIB-NMT",
