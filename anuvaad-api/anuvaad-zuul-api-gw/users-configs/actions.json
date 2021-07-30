@@ -577,6 +577,14 @@
             "description":"API for AIB NMT"
         },
         {
+            "id":"9467457b-d12e-4a8c-8aab-471c65a0d2e2",
+            "uri":"/aai4b-nmt-inference/v0/translate",
+            "module":"AIB-NMT",
+            "active":true,
+            "whiteList":true,
+            "description":"API for AIB NMT for ULCA"
+        },
+        {
             "id":"5e2c99cf-b6e2-41e4-a183-23b011e56d6f",
             "uri":"/aai4b-nmt-inference/v0/interactive-translation",
             "module":"AIB-NMT",
