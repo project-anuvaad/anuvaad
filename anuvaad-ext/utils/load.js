@@ -3,7 +3,12 @@ const { secretbox, randomBytes } = require("tweetnacl");
 const { encodeBase64, decodeUTF8 } = require("tweetnacl-util");
 const { v4: uuidv4 } = require("uuid");
 const { default: apiEndPoints } = require("../configs/apiendpoints");
-const HOST_NAME = "https://auth.anuvaad.org"
+const {
+  saveObjectInSyncStorage,
+  getObjectFromSyncStorage,
+} = require("../utils/chromeStorage");
+
+const HOST_NAME = "https://auth.anuvaad.org";
 
 const encrypt = (message, secret_key) => {
   let secret_msg = decodeUTF8(message);
@@ -17,26 +22,14 @@ var elementIndex = 0;
 var texts = [];
 var textMappings = {};
 
-const saveObjectInLocalStorage = async function (obj) {
-  return new Promise((resolve, reject) => {
-    try {
-      chrome.storage.sync.set(obj, function () {
-        resolve();
-      });
-    } catch (ex) {
-      reject(ex);
-    }
-  });
-};
-
-function setCryptoToken() {
+const setCryptoToken = () => {
   var payload = `${uuidv4()}::extn::${Date.now()}`;
   const secret_key = "85U62e26b2aJ68dae8eQc188e0c8z8J9";
   const encryptedToken = encrypt(payload, secret_key);
-  saveObjectInLocalStorage({ "id-token": encryptedToken });
-}
+  saveObjectInSyncStorage({ "id-token": encryptedToken });
+};
 
-function markAndExtractTextElements(element) {
+const markAndExtractTextElements = (element) => {
   let childNodes = Array.from(element.childNodes);
   for (let i = 0; i < childNodes.length; i++) {
     if (
@@ -69,33 +62,9 @@ function markAndExtractTextElements(element) {
     };
     elementIndex++;
   }
-}
+};
 
-async function getObjectFromLocalStorage(key) {
-  return new Promise((resolve, reject) => {
-    try {
-      chrome.storage.local.get(key, function (value) {
-        resolve(value[key]);
-      });
-    } catch (ex) {
-      reject(ex);
-    }
-  });
-}
-
-async function getObjectFromSyncStorage(key) {
-  return new Promise((resolve, reject) => {
-    try {
-      chrome.storage.sync.get(key, function (value) {
-        resolve(value[key]);
-      });
-    } catch (ex) {
-      reject(ex);
-    }
-  });
-}
-
-function translateWebPage(data) {
+const translateWebPage = (data) => {
   let responseArray = [];
   data &&
     data.hasOwnProperty("output") &&
@@ -129,19 +98,19 @@ function translateWebPage(data) {
         element.replaceChild(textNode, originalTextNode);
       });
     });
-}
+};
 
-async function makeSyncInitiateCall() {
+const makeSyncInitiateCall = async () => {
   var requestBody = {
     paragraphs: texts,
     workflowCode: "WF_S_STKTR",
   };
   var authToken = await getObjectFromSyncStorage("id-token");
   var authToken =
-    "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyTmFtZSI6InJvc2hhbi5zaGFoQHRhcmVudG8uY29tIiwicGFzc3dvcmQiOiJiJyQyYiQxMiQyMXhwNXhzd0VzeDB5SVBCRk9KUzZPZlpXV0d1bnpJMmlrQmh3LzNFQ1VCRUE5VVAyUC5NUyciLCJleHAiOjE2MjcwNDM0MjJ9.fWIJXnpDOEwcIWb3o_kHkTzG9X_Z4SyzgCpIgxmPvKU";
-  requestBody.source_language_code = await getObjectFromLocalStorage("s0_src");
-  requestBody.target_language_code = await getObjectFromLocalStorage("s0_tgt");
-  requestBody.locale = await getObjectFromLocalStorage("s0_src");
+    "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyTmFtZSI6InJvc2hhbi5zaGFoQHRhcmVudG8uY29tIiwiV2VsY29tZUAxMjMiOiJiJyQyYiQxMiRPYWZ3QkVtQVQwdy5HNHo4MzIxdFN1VFVxTFZBNHFVd0Vhc0IzeVlWOE1QVEpMSDhLMm03dSciLCJleHAiOjE2Mjc4ODk2MDR9.2U1ZxHhdQ_j4YwWPiWP57YMh45ZolgPaARoltaAKDQA";
+  requestBody.source_language_code = await getObjectFromSyncStorage("s0_src");
+  requestBody.target_language_code = await getObjectFromSyncStorage("s0_tgt");
+  requestBody.locale = await getObjectFromSyncStorage("s0_src");
   requestBody.model_id = await fetchModelAPICall(
     requestBody.source_language_code,
     requestBody.target_language_code,
@@ -163,9 +132,9 @@ async function makeSyncInitiateCall() {
       setCryptoToken();
     }
   });
-}
+};
 
-async function fetchModelAPICall(source, target, authToken) {
+const fetchModelAPICall = async (source, target, authToken) => {
   let token = await getObjectFromSyncStorage("id-token");
   let endPoint = `${HOST_NAME}${apiEndPoints.fetch_models}`;
   let fetchCall = fetch(endPoint, {
@@ -191,15 +160,15 @@ async function fetchModelAPICall(source, target, authToken) {
   } else if (!response.ok && response.status === 401) {
     console.log(token);
   }
-}
+};
 
-function Translate() {
+const Translate = () => {
   markAndExtractTextElements(document.body);
   makeSyncInitiateCall();
   localStorage.setItem(
     "anuvaad-dev-text-mappings",
     JSON.stringify(textMappings)
   );
-}
+};
 
 Translate();

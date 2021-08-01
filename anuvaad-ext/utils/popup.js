@@ -1,4 +1,5 @@
 require('regenerator-runtime')
+const {saveObjectInSyncStorage} = require('../utils/chromeStorage');
 
 let translate = document.getElementById("translate");
 let untranslate = document.getElementById("untranslate");
@@ -24,9 +25,9 @@ untranslate.addEventListener("click", async() => {
 });
 
 source && source.addEventListener('change', async() => {
-    await chrome.storage.local.set({ s0_src: source.value })
+    await saveObjectInSyncStorage({ s0_src: source.value })
 })
 
 target && target.addEventListener('change', async() => {
-    await chrome.storage.local.set({ s0_tgt: target.value })
+    await saveObjectInSyncStorage({ s0_tgt: target.value })
 })
