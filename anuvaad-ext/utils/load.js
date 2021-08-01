@@ -2,6 +2,8 @@ require("regenerator-runtime");
 const { secretbox, randomBytes } = require("tweetnacl");
 const { encodeBase64, decodeUTF8 } = require("tweetnacl-util");
 const { v4: uuidv4 } = require("uuid");
+const { default: apiEndPoints } = require("../configs/apiendpoints");
+const HOST_NAME = "https://auth.anuvaad.org"
 
 const encrypt = (message, secret_key) => {
   let secret_msg = decodeUTF8(message);
@@ -93,14 +95,48 @@ async function getObjectFromSyncStorage(key) {
   });
 }
 
+function translateWebPage(data) {
+  let responseArray = [];
+  data &&
+    data.hasOwnProperty("output") &&
+    Array.isArray(data["output"]["translations"]) &&
+    data.output.translations.forEach((te) => {
+      if (te.s_id[te.s_id.length - 1] === "0") {
+        responseArray.push({
+          ...te,
+          s_id: te.s_id.replace("_SENTENCE-0", ""),
+        });
+      } else {
+        let length = responseArray.length - 1;
+        responseArray[length].tgt = responseArray[length].tgt + " " + te.tgt;
+        responseArray[length].src = responseArray[length].src + " " + te.src;
+        responseArray[length].tagged_tgt =
+          responseArray[length].tagged_tgt + " " + te.tagged_tgt;
+        responseArray[length].tagged_src =
+          responseArray[length].tagged_src + " " + te.tagged_src;
+        responseArray[length].s_id = responseArray[length].s_id.replace(
+          /[A-Z]+/g,
+          ""
+        );
+      }
+      responseArray.forEach((te) => {
+        let sid = te.s_id;
+        let elementId = textMappings[sid].element_id;
+        let element = document.getElementById(elementId);
+        let transText = te.tgt;
+        let textNode = document.createTextNode(transText);
+        let originalTextNode = element.childNodes[0];
+        element.replaceChild(textNode, originalTextNode);
+      });
+    });
+}
+
 async function makeSyncInitiateCall() {
-  setCryptoToken();
   var requestBody = {
     paragraphs: texts,
     workflowCode: "WF_S_STKTR",
   };
   var authToken = await getObjectFromSyncStorage("id-token");
-  console.log("authToken", authToken);
   var authToken =
     "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyTmFtZSI6InJvc2hhbi5zaGFoQHRhcmVudG8uY29tIiwicGFzc3dvcmQiOiJiJyQyYiQxMiQyMXhwNXhzd0VzeDB5SVBCRk9KUzZPZlpXV0d1bnpJMmlrQmh3LzNFQ1VCRUE5VVAyUC5NUyciLCJleHAiOjE2MjcwNDM0MjJ9.fWIJXnpDOEwcIWb3o_kHkTzG9X_Z4SyzgCpIgxmPvKU";
   requestBody.source_language_code = await getObjectFromLocalStorage("s0_src");
@@ -111,81 +147,34 @@ async function makeSyncInitiateCall() {
     requestBody.target_language_code,
     authToken
   );
-  fetch(
-    "https://auth.anuvaad.org/anuvaad-etl/wf-manager/v1/workflow/sync/initiate",
-    {
-      headers: {
-        accept: "*/*",
-        "accept-language": "en-US,en;q=0.9,hi;q=0.8",
-        "auth-token": `${authToken}`,
-        "content-type": "application/json",
-        "sec-ch-ua":
-          '" Not;A Brand";v="99", "Google Chrome";v="91", "Chromium";v="91"',
-        "sec-ch-ua-mobile": "?0",
-        "sec-fetch-dest": "empty",
-        "sec-fetch-mode": "cors",
-        "sec-fetch-site": "same-site",
-      },
-      referrer: "https://developers.anuvaad.org/",
-      referrerPolicy: "strict-origin-when-cross-origin",
-      body: `${JSON.stringify(requestBody)}`,
-      method: "POST",
-      mode: "cors",
-    }
-  ).then(async (response) => {
+  const endPoint = `${HOST_NAME}${apiEndPoints.sync_initiate}`;
+  fetch(endPoint, {
+    headers: {
+      "auth-token": `${authToken}`,
+      "content-type": "application/json",
+    },
+    body: `${JSON.stringify(requestBody)}`,
+    method: "POST",
+  }).then(async (response) => {
     let data = await response.json();
-    let responseArray = [];
-    data &&
-      data.hasOwnProperty("output") &&
-      Array.isArray(data["output"]["translations"]) &&
-      data.output.translations.forEach((te) => {
-        if (te.s_id[te.s_id.length - 1] === "0") {
-          responseArray.push({
-            ...te,
-            s_id: te.s_id.replace("_SENTENCE-0", ""),
-          });
-        } else {
-          responseArray[responseArray.length - 1].tgt =
-            responseArray[responseArray.length - 1].tgt + " " + te.tgt;
-          responseArray[responseArray.length - 1].src =
-            responseArray[responseArray.length - 1].src + " " + te.src;
-          responseArray[responseArray.length - 1].tagged_tgt =
-            responseArray[responseArray.length - 1].tagged_tgt +
-            " " +
-            te.tagged_tgt;
-          responseArray[responseArray.length - 1].tagged_src =
-            responseArray[responseArray.length - 1].tagged_src +
-            " " +
-            te.tagged_src;
-          responseArray[responseArray.length - 1].s_id = responseArray[
-            responseArray.length - 1
-          ].s_id.replace(/[A-Z]+/g, "");
-        }
-        responseArray.forEach((te) => {
-          let sid = te.s_id;
-          let elementId = textMappings[sid].element_id;
-          let element = document.getElementById(elementId);
-          let transText = te.tgt;
-          let textNode = document.createTextNode(transText);
-          let originalTextNode = element.childNodes[0];
-          element.replaceChild(textNode, originalTextNode);
-        });
-      });
+    if (response.ok) {
+      translateWebPage(data);
+    } else if (response.status === 401) {
+      setCryptoToken();
+    }
   });
 }
 
 async function fetchModelAPICall(source, target, authToken) {
-  let token = await getObjectFromSyncStorage("token");
-  let fetchCall = fetch(
-    "https://auth.anuvaad.org/nmt-inference/v2/fetch-models",
-    {
-      method: "get",
-      headers: {
-        "Content-Type": "application/json",
-        "auth-token": `${authToken}`,
-      },
-    }
-  );
+  let token = await getObjectFromSyncStorage("id-token");
+  let endPoint = `${HOST_NAME}${apiEndPoints.fetch_models}`;
+  let fetchCall = fetch(endPoint, {
+    method: "get",
+    headers: {
+      "Content-Type": "application/json",
+      "auth-token": `${authToken}`,
+    },
+  });
   let response = await fetchCall.then();
   let rsp_data = await response.json();
   if (response.ok) {
