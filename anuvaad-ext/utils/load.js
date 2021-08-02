@@ -22,11 +22,27 @@ var elementIndex = 0;
 var texts = [];
 var textMappings = {};
 
-const setCryptoToken = () => {
+const getAuthToken = async (encryptedToken) => {
+  const endPoint = `${HOST_NAME}${apiEndPoints.get_token}`;
+  fetch(endPoint, {
+    method: "POST",
+    body: JSON.stringify({ id_token: encryptedToken }),
+    headers: { "Content-Type": "application/json" },
+  }).then(async (response) => {
+    let rsp_data = await response.json();
+    if (response.ok) {
+      saveObjectInSyncStorage({ token: rsp_data.data.token });
+    }else{
+      await setCryptoToken()
+    }
+  });
+};
+
+const setCryptoToken = async () => {
   var payload = `${uuidv4()}::extn::${Date.now()}`;
   const secret_key = "85U62e26b2aJ68dae8eQc188e0c8z8J9";
-  const encryptedToken = encrypt(payload, secret_key);
-  saveObjectInSyncStorage({ "id-token": encryptedToken });
+  const encryptedIdToken = encrypt(payload, secret_key);
+  await getAuthToken(encryptedIdToken);
 };
 
 const markAndExtractTextElements = (element) => {
@@ -105,9 +121,7 @@ const makeSyncInitiateCall = async () => {
     paragraphs: texts,
     workflowCode: "WF_S_STKTR",
   };
-  var authToken = await getObjectFromSyncStorage("id-token");
-  var authToken =
-    "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyTmFtZSI6InJvc2hhbi5zaGFoQHRhcmVudG8uY29tIiwiV2VsY29tZUAxMjMiOiJiJyQyYiQxMiRPYWZ3QkVtQVQwdy5HNHo4MzIxdFN1VFVxTFZBNHFVd0Vhc0IzeVlWOE1QVEpMSDhLMm03dSciLCJleHAiOjE2Mjc4ODk2MDR9.2U1ZxHhdQ_j4YwWPiWP57YMh45ZolgPaARoltaAKDQA";
+  var authToken = await getObjectFromSyncStorage("token");
   requestBody.source_language_code = await getObjectFromSyncStorage("s0_src");
   requestBody.target_language_code = await getObjectFromSyncStorage("s0_tgt");
   requestBody.locale = await getObjectFromSyncStorage("s0_src");
