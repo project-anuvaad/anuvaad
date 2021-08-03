@@ -266,7 +266,9 @@ class Region_Unifier:
         box1_left = keys.get_left(reg1); box1_right = keys.get_right(reg1)
         box2_top = keys.get_top(reg2); box2_bottom = keys.get_bottom(reg2)
         box2_left = keys.get_left(reg2); box2_right = keys.get_right(reg2)
+
         if add_word==False:
+            
             reg1['regions'] = self.update_children(reg1, reg2)
 
 
@@ -281,11 +283,11 @@ class Region_Unifier:
         reg1['class'] = clss
         if add_word:
             if 'regions' in reg1.keys():
-                if reg2['identifier'] not in [i['identifier'] for i in reg1]:
-                    reg1['regions'].extend(reg2)
+                if reg2['identifier'] not in [i['identifier'] for i in reg1['regions']]:
+                    reg1['regions'].extend([reg2])
             else:
                 reg1['regions']=[]
-                reg1['regions'].extend(reg2)
+                reg1['regions'].extend([reg2])
         # except:
         #     pass
 
@@ -378,10 +380,11 @@ class Region_Unifier:
             t_list = []
             for idx,table in enumerate(tabel_region):
                 if 'regions' in table.keys():
+                    
+
                     filtered_words     = remvoe_regions(copy.deepcopy(table['regions']), copy.deepcopy(filtered_words))
                     filtered_lines    = remvoe_regions(copy.deepcopy(table['regions']), copy.deepcopy(filtered_lines))
                     tabel_region[idx]['regions'] =  collate_regions(regions = copy.deepcopy(table['regions']),lines = copy.deepcopy(page_words),child_class='WORD',grand_children=False,region_flag = False)
-                    
                     page_words = filtered_words
                     page_lines = filtered_lines
                     t_list.append(tabel_region[idx])
@@ -389,7 +392,7 @@ class Region_Unifier:
             
             t_list =  collate_cell_regions(copy.deepcopy(t_list),copy.deepcopy(page_words),child_class='CELL_TEXT',grand_children=True,region_flag = False)
             t_list = self.table_no_cell(t_list,page_words2,idx2)
-            
+
             page_words   = remvoe_regions(copy.deepcopy(t_list), copy.deepcopy(page_words))
             
             filtered_lines   = remvoe_regions(copy.deepcopy(t_list), copy.deepcopy(page_lines))
