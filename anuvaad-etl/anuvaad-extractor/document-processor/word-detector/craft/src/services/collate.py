@@ -60,6 +60,7 @@ class RemoveOverlap:
             reg1["boundingBox"]["vertices"][3]['x']= min(box1_left,box2_left)
             reg1["boundingBox"]["vertices"][3]['y']= max(box1_bottom,box2_bottom)
             
+            
         except:
             pass
 
@@ -83,9 +84,10 @@ class RemoveOverlap:
         base_poly = self.get_polygon(region1['boundingBox'])
         area=0
         if region_poly and base_poly:
-            area = base_poly.intersection(region_poly).area
+            #area = base_poly.intersection(region_poly).area
+            area = base_poly.intersection(region_poly)
 
-        if (area>0):
+        if area:
             return True
         else:
             return False
@@ -111,8 +113,8 @@ class RemoveOverlap:
         return region_updated, flag
     def remove_overlap(self,layouts):
         flag=True
-        while flag==True:
-            layouts, flag = self.merge_overlap(layouts)
+        #while flag==True:
+        layouts, flag = self.merge_overlap(layouts)
         return layouts
 
 removeoverlap = RemoveOverlap()

@@ -244,10 +244,10 @@ def collate_cell_regions(regions, lines, child_class=None, grand_children=False,
                                 lines[intr_index][child_key] = [grand_child]
                         line_poly = get_polygon(lines[intr_index]['boundingBox'])
                         if line_poly:
-                            area = region_poly.intersection(line_poly).area
+                            area = region_poly.intersection(line_poly)
                             reg_area = region_poly.area
                             line_area = line_poly.area
-                            if reg_area>0 and line_area>0 and area/min(line_area,reg_area) >0.5 :
+                            if reg_area>0 and line_area>0 and area :
                                 region_lines.append(lines[intr_index])
                                 lines_intersected.append(intr_index)
                 if child_key in region.keys() and type(region[child_key]) is list:
@@ -303,7 +303,7 @@ def collate_text(file,craft_words, google_words):
 
                     for region_word in region_words:
                         try:
-                            text = text + str(region_word['text'])
+                            text = text + str(region_word['text'])+" "
                             if 'conf' in region_word.keys() and region_word['conf'] is not None:
                                  avg_conf += region_word['conf']
                                  conf_counter += 1
@@ -313,10 +313,8 @@ def collate_text(file,craft_words, google_words):
                         except Exception as e:
                             print('error in collating text' + str(e))
                     if  "craft_word" in file['config']["OCR"].keys() and file['config']["OCR"]["craft_word"]=="False" and len(region_words)>0:
-                        print("craft words are processing---->>>>>>>")
                         craft_words[region_index]['boundingBox'] = merge_corrds(region_words)
                     if  "craft_word" not in file['config']["OCR"].keys() and len(region_words)>0:
-                        print("craft words are processing---->>>>>>>")
                         craft_words[region_index]['boundingBox'] = merge_corrds(region_words)
                 craft_words[region_index]['text'] = text
                 if conf_counter> 0:

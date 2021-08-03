@@ -266,7 +266,9 @@ class Region_Unifier:
         box1_left = keys.get_left(reg1); box1_right = keys.get_right(reg1)
         box2_top = keys.get_top(reg2); box2_bottom = keys.get_bottom(reg2)
         box2_left = keys.get_left(reg2); box2_right = keys.get_right(reg2)
+
         if add_word==False:
+            
             reg1['regions'] = self.update_children(reg1, reg2)
 
 
@@ -281,10 +283,11 @@ class Region_Unifier:
         reg1['class'] = clss
         if add_word:
             if 'regions' in reg1.keys():
-                reg1['regions'].append(reg2)
+                if reg2['identifier'] not in [i['identifier'] for i in reg1['regions']]:
+                    reg1['regions'].extend([reg2])
             else:
                 reg1['regions']=[]
-                reg1['regions'].append(reg2)
+                reg1['regions'].extend([reg2])
         # except:
         #     pass
 
@@ -332,10 +335,10 @@ class Region_Unifier:
                         region_poly =get_polygon(word['boundingBox']); base_poly = get_polygon(cell['boundingBox'])
                         area=0
                         if region_poly and base_poly:
-                            area = base_poly.intersection(region_poly).area
+                            area = base_poly.intersection(region_poly)
                             flag=False
                             indx = index.Index()
-                            if area>0:
+                            if area:
                                 for idx3,tmp_cell in enumerate(tmp_cells):
                                     poly = get_polygon(tmp_cell['boundingBox'])
                                     indx.insert(idx3, poly.bounds)
@@ -362,9 +365,13 @@ class Region_Unifier:
                 sorted_page_regions = page_regions
 
 
-
-            page_words = collate_text(file,page_c_words, page_g_words)
-            page_words2 = copy.deepcopy(page_words)
+            if "craft_word" in file['config']["OCR"].keys() and file['config']["OCR"]["craft_word"]=="True":
+                log_info('craft words are processing',  None )
+                page_words = collate_text(file,page_c_words, page_g_words)
+                page_words2 = page_words
+            else:
+                page_words = copy.deepcopy(page_g_words)
+                page_words2 = page_words
             text_region,n_text_table_regions,tabel_region,image_region,head_foot_region = self.get_text_tabel_region(sorted_page_regions)
             tabel_region  = remvoe_regions(copy.deepcopy(image_region), copy.deepcopy(tabel_region))
             filtered_words = remvoe_regions(copy.deepcopy(image_region), copy.deepcopy(page_words))
@@ -373,10 +380,11 @@ class Region_Unifier:
             t_list = []
             for idx,table in enumerate(tabel_region):
                 if 'regions' in table.keys():
+                    
+
                     filtered_words     = remvoe_regions(copy.deepcopy(table['regions']), copy.deepcopy(filtered_words))
                     filtered_lines    = remvoe_regions(copy.deepcopy(table['regions']), copy.deepcopy(filtered_lines))
                     tabel_region[idx]['regions'] =  collate_regions(regions = copy.deepcopy(table['regions']),lines = copy.deepcopy(page_words),child_class='WORD',grand_children=False,region_flag = False)
-                    
                     page_words = filtered_words
                     page_lines = filtered_lines
                     t_list.append(tabel_region[idx])
@@ -384,7 +392,7 @@ class Region_Unifier:
             
             t_list =  collate_cell_regions(copy.deepcopy(t_list),copy.deepcopy(page_words),child_class='CELL_TEXT',grand_children=True,region_flag = False)
             t_list = self.table_no_cell(t_list,page_words2,idx2)
-            
+
             page_words   = remvoe_regions(copy.deepcopy(t_list), copy.deepcopy(page_words))
             
             filtered_lines   = remvoe_regions(copy.deepcopy(t_list), copy.deepcopy(page_lines))
