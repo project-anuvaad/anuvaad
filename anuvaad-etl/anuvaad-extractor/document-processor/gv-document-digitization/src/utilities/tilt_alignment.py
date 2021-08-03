@@ -111,7 +111,7 @@ class Orientation:
         page_dict, lines = self.get_text(self.image_path, page_dict, font_info)
         angle = self.get_rotaion_angle(lines)
         print("Angle of tilt detected {} ".format(angle))
-        if abs(angle) >= 0.1:
+        if abs(angle) >= 2.5:
             self.image = self.rotate_bound(self.image, -angle)
             cv2.imwrite(self.image_path, self.image)
             page_dict, lines = self.get_text(

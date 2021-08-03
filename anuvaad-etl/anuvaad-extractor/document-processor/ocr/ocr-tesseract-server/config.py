@@ -8,7 +8,7 @@ BASE_DIR      = 'upload'
 #BASE_DIR      = '/home/naresh/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/ocr-tesseract-server/upload/'
 download_folder = 'upload'
 
-os.environ['OMP_THREAD_LIMIT']='1'
+#os.environ['OMP_THREAD_LIMIT']='1'
 
 ENABLE_CORS = False
 
@@ -43,27 +43,44 @@ SAVE_DEFAULT = "http://gateway_anuvaad-ocr-content-handler:5001//anuvaad/ocr-con
 SAVE_URL = os.environ.get(SAVE_VAR,SAVE_DEFAULT)
 SAVE_NO_PAGE = 1
 
-IS_DYNAMIC =True
+IS_DYNAMIC =False
 EXRACTION_RESOLUTION  =  300
 BATCH_SIZE  = 1
 DYNAMIC_MARGINS= False
-PERSPECTIVE_TRANSFORM=False
+PERSPECTIVE_TRANSFORM=True
 FALL_BACK_LANGUAGE=None
 PSM=7
 POST_PROCESSING_MODE=None
 MULTIPROCESS=False
+DOUBLE_OCR_THRESHOLD = 20
 
+######## crop config
+C_X=-7
+C_Y= 0
 
 LANG_MAPPING       =  {
-    "en" : ["Latin","eng"],
-    "kn" : ['Kannada',"kan"],
-    "gu": ["guj"],
-    "or": ["ori"],
-    "hi" : ["Devanagari","hin"],
-    "bn" : ["Bengali","ben"],
-    "mr": ["Devanagari","hin"],
+    "en" : ["Latin","Latin"],
+    "kn" : ['Kannada',"Kannada"],
+    "gu": ["Gujrati","Gujrati"],
+    "or": ["Oriya","Oriya"],
+    "hi" : ["Devanagari","anuvaad_hin"],
+    "bn" : ["Bengali","Bengali"],
+    "mr": ["Devanagari","Devanagari"],
     "ta": ['Tamil',"anuvaad_tam"],
-    "te" : ["Telugu","tel"],
-    "ml" :["Malayalam"],
-    "ma" :["Marathi"]
+    "te" : ["Telugu","Telugu"],
+    "ml" :["Malayalam","Malayalam"],
+    "ma" :["Marathi","Marathi"]
+}
+
+DETECT_LANG_MAPPING ={
+    "Latin" : ["Latin"],
+    "Kannada" : ['Kannada'],
+    "Gujrati": ["Gujrati"],
+    "Oriya": ["Oriya"],
+    "Devanagari" : ["anuvaad_hin"],
+    "Bengali" : ["Bengali"],
+    "Tamil": ['anuvaad_tam'],
+    "Telugu" : ["Telugu"],
+    "Malayalam" :["Malayalam"],
+    "Marathi" :["Marathi"]
 }

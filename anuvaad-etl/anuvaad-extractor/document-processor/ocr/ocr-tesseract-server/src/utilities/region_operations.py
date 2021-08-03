@@ -263,7 +263,7 @@ def collate_text(file,craft_words, google_words):
                     region_words.sort(key=lambda x:x['boundingBox']['vertices'][0]['x'])
                     for region_word in region_words:
                         try:
-                            text = text + str(region_word['text'])
+                            text = text + str(region_word['text'])+" "
                             if 'conf' in region_word.keys() and region_word['conf'] is not None:
                                  avg_conf += region_word['conf']
                                  conf_counter += 1
