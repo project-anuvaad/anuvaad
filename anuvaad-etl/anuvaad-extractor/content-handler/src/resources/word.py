@@ -78,8 +78,8 @@ class WordSearch(Resource):
                     if body['word_locale'] == 'en':
                         result = wordRepo.update(body['word'], 'en', translated_word, body['target_locale'])
                     else:
-                        result = wordRepo.update(translated_word, body['target_locale'], body['word'], body['word_locale'])
-
+                        result = wordRepo.update(translated_word.lower(), body['target_locale'], body['word'], body['word_locale'])
+                        result['parallel_words'].append({"locale": body['target_locale'],"name": translated_word,"pos": []})
                     if result == None:
                         res = CustomResponse(Status.SUCCESS.value, None)
                         return res.getres()
