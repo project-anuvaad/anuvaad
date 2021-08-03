@@ -944,6 +944,16 @@
             "role": "SCHOLAR",
             "actionID": "216313cc-0668-442f-a13e-3fd022be5eb2",
             "active": true
+        },
+        {
+            "role":"EXTENSION",
+            "actionID": "5b5ca44a-ddd8-4576-88d5-e370a48c368e",
+            "active":true
+        },
+        {
+            "role":"EXTENSION",
+            "actionID": "01803b45-67fb-4b24-a6b3-083dfb9b09d9",
+            "active":true
         }
     ]
 }

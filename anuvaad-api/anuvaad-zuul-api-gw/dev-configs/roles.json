@@ -24,6 +24,11 @@
             "code":"SCHOLAR",
             "active":true,
             "description":"Has access to translation or test models"
+        },
+        {
+            "code":"EXTENSION",
+            "active":true,
+            "description":"has access to translate from extension"
         }
     ]
 }
