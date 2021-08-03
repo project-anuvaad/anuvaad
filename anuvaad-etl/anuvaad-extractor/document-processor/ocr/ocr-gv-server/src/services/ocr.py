@@ -9,11 +9,13 @@ from src.services.region_unifier import Region_Unifier
 import cv2,copy
 from src.utilities.model_response import set_bg_image
 from src.utilities.request_parse import MapKeys,UpdateKeys
+from src.services.overlap_remove import RemoveOverlap
 from src.services.dynamic_adjustment import coord_adjustment
 
 
 
 region_unifier = Region_Unifier()
+removeoverlap = RemoveOverlap()
 
 client = vision.ImageAnnotatorClient()
 breaks = vision.enums.TextAnnotation.DetectedBreak.BreakType
@@ -151,6 +153,8 @@ def get_document_bounds(page_c_lines,file,response,page_dict,page_regions,page_c
     else:
         page_lines   =  page_dict["lines"]
         print("google lines are processing--->>>")
+    if len(page_lines)>0:
+        page_lines = removeoverlap.remove_overlap(page_lines)
 
     page_words   =  page_dict["words"]
 
