@@ -3,16 +3,23 @@ import numpy as np
 import config
 
 
+# def get_energy_density(image_path):
+#     image   = cv2.imread(image_path,0)
+    
+#     binary  = cv2.adaptiveThreshold(image,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY,11,2)
+    
+#     distance_transform =cv2.distanceTransform(binary.copy(), distanceType=cv2.DIST_L2, maskSize=5)
+    
+#     #energy_density = 1 /  np.log(distance_transform + np.exp(1))
+#     energy_density = 1 /  (distance_transform + 1)**2
+    
+#     return energy_density
+
 def get_energy_density(image_path):
     image   = cv2.imread(image_path,0)
-    
-    binary  = cv2.adaptiveThreshold(image,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY,11,2)
-    
+    binary  = cv2.adaptiveThreshold(image,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY,101,15)
     distance_transform =cv2.distanceTransform(binary.copy(), distanceType=cv2.DIST_L2, maskSize=5)
-    
-    #energy_density = 1 /  np.log(distance_transform + np.exp(1))
     energy_density = 1 /  (distance_transform + 1)**2
-    
     return energy_density
 
 def get_equilibrium_delta(boundry,energy_density ,axis):
