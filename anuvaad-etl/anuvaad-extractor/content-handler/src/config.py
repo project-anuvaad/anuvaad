@@ -22,12 +22,13 @@ REDIS_SERVER_PORT       = os.environ.get('REDIS_PORT', 6379)
 
 #module level variables
 DICTIONARY_FALLBACK       = os.environ.get('DICTIONARY_FALLBACK_CH', True)
-if isinstance(DICTIONARY_FALLBACK, str):
-    DICTIONARY_FALLBACK  =  eval(DICTIONARY_FALLBACK)
+# if isinstance(DICTIONARY_FALLBACK, str):
+#     DICTIONARY_FALLBACK  =  eval(DICTIONARY_FALLBACK)
 USER_TRANSLATION_ENABLED  = os.environ.get('USER_TRANSLATION_ENABLED',True)
-if isinstance(USER_TRANSLATION_ENABLED, str):
-    USER_TRANSLATION_ENABLED  =  eval(USER_TRANSLATION_ENABLED)
+# if isinstance(USER_TRANSLATION_ENABLED, str):
+#     USER_TRANSLATION_ENABLED  =  eval(USER_TRANSLATION_ENABLED)
 
 #schema for s3 link storage
 
 MONGO_s3_LINK_STORE     = os.environ.get('CH_S3_LINK_COLLECTION','link_store')
+
