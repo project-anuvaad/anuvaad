@@ -336,7 +336,7 @@ class Region_Unifier:
         try:
             page_lines = add_font(page_lines)
             page_regions  = filterd_regions(page_regions)
-            if len(page_regions) > 0 :
+            if len(page_regions) < 0 :
                 page_regions.sort(key=lambda x:x['boundingBox']['vertices'][0]['y'])
                 sorted_page_regions = sort_regions(page_regions,[])
             else:
@@ -346,8 +346,10 @@ class Region_Unifier:
             page_words2 = copy.deepcopy(page_words)
             text_region,n_text_table_regions,tabel_region,image_region,head_foot_region = self.get_text_tabel_region(sorted_page_regions)
             tabel_region  = remvoe_regions(copy.deepcopy(image_region), copy.deepcopy(tabel_region))
-            filtered_words = remvoe_regions(copy.deepcopy(image_region), copy.deepcopy(page_words))
-            filtered_lines = remvoe_regions(copy.deepcopy(image_region), copy.deepcopy(page_lines))
+            #filtered_words = remvoe_regions(copy.deepcopy(image_region), copy.deepcopy(page_words))
+            #filtered_lines = remvoe_regions(copy.deepcopy(image_region), copy.deepcopy(page_lines))
+            filtered_lines = copy.deepcopy(page_lines)
+            filtered_words = copy.deepcopy(page_words)
             
             t_list = []
             for idx,table in enumerate(tabel_region):
@@ -376,7 +378,6 @@ class Region_Unifier:
             
             v_list       = collate_regions( copy.deepcopy( text_region),copy.deepcopy( filtered_lines ),child_class='LINE' ,grand_children=True,add_font=True )
             i_list       =  collate_regions(copy.deepcopy( image_region),copy.deepcopy(page_words),grand_children=True,region_flag = False,skip_enpty_children=True)
-            
             page_config                         = Page_Config()
             avg_height, avg_ver_dist, avg_width = page_config.avg_line_info(v_list)
 

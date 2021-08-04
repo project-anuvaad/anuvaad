@@ -1,5 +1,7 @@
 import config
 from src.utilities.tesseract.utils import get_tess_text
+import pytesseract, os
+from pytesseract import Output
 
 def post_process_ocr_text(image_crop,words,mode_height):
     
@@ -24,15 +26,7 @@ def double_ocr(image_crop,ocr_text,ocr_conf,mode_height):
 
     return ocr_text,ocr_conf
 
-def process_ints(words):
-    try:
-        if len(words)<2 and type(words[0]['text']) in [int, float]:
-            if int(words[0]['text'])== words[0]['text'] :
-                words[0]['text'] = int(words[0]['text'])
-                return words
-            else:
-                return words
-        else :
-            return words
-    except Exception as e:
-        return words
+
+
+
+

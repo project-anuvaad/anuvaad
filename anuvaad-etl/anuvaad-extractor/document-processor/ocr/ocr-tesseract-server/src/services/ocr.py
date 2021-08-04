@@ -6,6 +6,7 @@ from google.cloud import vision
 from src.services.segment import horzontal_merging, break_block
 from src.utilities.region_operations import merge_text, set_font_info
 from src.services.region_unifier import Region_Unifier
+from src.services.overlap_remove import RemoveOverlap
 import cv2,copy
 from src.utilities.model_response import set_bg_image
 from src.utilities.request_parse import MapKeys,UpdateKeys
@@ -15,6 +16,7 @@ from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
 
 region_unifier = Region_Unifier()
+removeoverlap = RemoveOverlap()
 keys = MapKeys()
 update_key = UpdateKeys()
 
@@ -142,6 +144,8 @@ def get_document_bounds(lang,path,page_c_lines,file,response,page_dict,page_regi
         page_lines = page_c_lines
     else:
         page_lines =  page_dict["lines"]
+    if len(page_lines)>0:
+        page_lines = removeoverlap.remove_overlap(page_lines)
 
     page_words   =  page_dict["words"]
     page_words   = set_font_info(page_words,font_info)
@@ -245,7 +249,7 @@ def segment_regions(lang,path,file,words, lines,regions,page_c_words,file_proper
         v_list = coord_alignment(v_list,False)
         v_list = verify__table_structure(v_list)
         
-        return v_list,save_path
+    return v_list,save_path
 
 def end_point_correction(region, y_margin,x_margin, ymax,xmax):
     # check if after adding margin the endopints are still inside the image

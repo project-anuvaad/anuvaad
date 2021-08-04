@@ -46,7 +46,6 @@ class WordSearch(Resource):
         parser = reqparse.RequestParser()
         parser.add_argument('dict_fallback', type=int, location='args', help='set 1 to invoke google transalte and 0 to not', required=False,default=1)
         args    = parser.parse_args()
-        dict_fallback=args["dict_fallback"]
         
         log_info('received request for WordSearch', AppContext.getContext())
         if 'word' not in body or 'word_locale' not in body or 'target_locale' not in body:
@@ -60,7 +59,7 @@ class WordSearch(Resource):
                 result = wordRepo.search_english(body['word'], body['target_locale'])
             else:
                 result = wordRepo.search_vernacular(body['word'], body['word_locale'])
-            if result == None and DICTIONARY_FALLBACK==True:
+            if result == None and (DICTIONARY_FALLBACK=='TRUE' or DICTIONARY_FALLBACK==True):
                 from models.google_translate import GoogleTranslate
                 translate   = GoogleTranslate()
                 '''
@@ -79,8 +78,8 @@ class WordSearch(Resource):
                     if body['word_locale'] == 'en':
                         result = wordRepo.update(body['word'], 'en', translated_word, body['target_locale'])
                     else:
-                        result = wordRepo.update(translated_word, body['target_locale'], body['word'], body['word_locale'])
-
+                        result = wordRepo.update(translated_word.lower(), body['target_locale'], body['word'], body['word_locale'])
+                        result['parallel_words'].append({"locale": body['target_locale'],"name": translated_word,"pos": []})
                     if result == None:
                         res = CustomResponse(Status.SUCCESS.value, None)
                         return res.getres()

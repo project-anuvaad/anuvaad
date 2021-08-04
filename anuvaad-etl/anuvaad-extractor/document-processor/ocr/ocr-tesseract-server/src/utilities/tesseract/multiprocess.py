@@ -7,7 +7,7 @@ from src.utilities.tesseract.dynamic_adjustment import coord_adjustment
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
 import src.utilities.app_context as app_context
-
+from src.utilities.tesseract.utils import page_lang_detection
 
 tessract_queue = Queue()
 file_writer_queue = Queue()
@@ -65,27 +65,28 @@ def multi_processing_tesseract(page_regions,image_path,lang,width,height):
     try:
         img = cv2.imread(image_path)
         mode_height = get_mode_height(page_regions)
-        
+        lang_detected = page_lang_detection(image_path,lang)
         
         if len(page_regions)>0:
             total_lines=0
             for rgn_idx, region in enumerate(page_regions):
                 if region!=None and len(region)>0 and 'regions' in region.keys():
                     for line_idx,line in enumerate(region['regions']):
-                        line=[line]
-                        if config.IS_DYNAMIC:
-                            line = coord_adjustment(image_path,line)
+                        tmp_line=[line]
+                        
+                        if config.IS_DYNAMIC and 'class' in line.keys() and line['class'] !="CELL":
+                            tmp_line = coord_adjustment(image_path,tmp_line)
                         if len(line)>0:
                             total_lines+=1
                         if config.MULTIPROCESS:
-                            add_lines_to_tess_queue(line,tessract_queue,lang,img,mode_height,rgn_idx,line_idx)
-                        if config.MULTIPROCESS==False and len(line)>0:
-                            vertices = line[0]['boundingBox']['vertices']
+                            add_lines_to_tess_queue(tmp_line,tessract_queue,lang,img,mode_height,rgn_idx,line_idx)
+                        if config.MULTIPROCESS==False and len(tmp_line)>0:
+                            vertices = tmp_line[0]['boundingBox']['vertices']
                             left = vertices[0]['x'];  top = vertices[0]['y']
-                            image_crop = crop_region(line[0],img)
+                            image_crop,c_x,c_y = crop_region(tmp_line[0],img,line['class'])
                             if image_crop is not None and image_crop.shape[1] >3 and image_crop.shape[0] > 3:
-                                words  = get_tess_text(image_crop,lang,mode_height,left,top)
-                                page_regions[rgn_idx]['regions'][line_idx]['regions'] = copy.deepcopy(words)
+                                words  = get_tess_text(image_crop,lang,mode_height,left,top,line['class'],c_x,c_y,lang_detected)
+                                page_regions[rgn_idx]['regions'][line_idx]['regions'] = words
 
             if config.MULTIPROCESS:
                 while file_writer_queue.qsize()<total_lines:

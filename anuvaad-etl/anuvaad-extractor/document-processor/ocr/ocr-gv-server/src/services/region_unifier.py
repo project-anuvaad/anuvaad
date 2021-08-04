@@ -374,8 +374,10 @@ class Region_Unifier:
                 page_words2 = page_words
             text_region,n_text_table_regions,tabel_region,image_region,head_foot_region = self.get_text_tabel_region(sorted_page_regions)
             tabel_region  = remvoe_regions(copy.deepcopy(image_region), copy.deepcopy(tabel_region))
-            filtered_words = remvoe_regions(copy.deepcopy(image_region), copy.deepcopy(page_words))
-            filtered_lines = remvoe_regions(copy.deepcopy(image_region), copy.deepcopy(page_lines))
+            #filtered_words = remvoe_regions(copy.deepcopy(image_region), copy.deepcopy(page_words))
+            #filtered_lines = remvoe_regions(copy.deepcopy(image_region), copy.deepcopy(page_lines))
+            filtered_lines = copy.deepcopy(page_lines)
+            filtered_words = copy.deepcopy(page_words)
             
             t_list = []
             for idx,table in enumerate(tabel_region):
