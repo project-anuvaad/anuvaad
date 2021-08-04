@@ -251,29 +251,35 @@ class Region_Unifier:
 
 
     def update_coord(self,reg1,reg2,clss,add_word = False):
-        box1_top = keys.get_top(reg1); box1_bottom = keys.get_bottom(reg1)
-        box1_left = keys.get_left(reg1); box1_right = keys.get_right(reg1)
-        box2_top = keys.get_top(reg2); box2_bottom = keys.get_bottom(reg2)
-        box2_left = keys.get_left(reg2); box2_right = keys.get_right(reg2)
-        if add_word==False:
-            reg1['regions'] = self.update_children(reg1, reg2)
-        reg1["boundingBox"]["vertices"][0]['x']= min(box1_left,box2_left)
-        reg1["boundingBox"]["vertices"][0]['y']= min(box1_top,box2_top)
-        reg1["boundingBox"]["vertices"][1]['x']= max(box1_right,box2_right)
-        reg1["boundingBox"]["vertices"][1]['y']= min(box1_top,box2_top)
-        reg1["boundingBox"]["vertices"][2]['x']= max(box1_right,box2_right)
-        reg1["boundingBox"]["vertices"][2]['y']= max(box1_bottom,box2_bottom)
-        reg1["boundingBox"]["vertices"][3]['x']= min(box1_left,box2_left)
-        reg1["boundingBox"]["vertices"][3]['y']= max(box1_bottom,box2_bottom)
-        reg1['class'] = clss
-        if add_word:
-            if 'regions' in reg1.keys():
-                if reg2['identifier'] not in [i['identifier'] for i in reg1['regions']]:
+        try:
+            box1_top = keys.get_top(reg1); box1_bottom = keys.get_bottom(reg1)
+            box1_left = keys.get_left(reg1); box1_right = keys.get_right(reg1)
+            box2_top = keys.get_top(reg2); box2_bottom = keys.get_bottom(reg2)
+            box2_left = keys.get_left(reg2); box2_right = keys.get_right(reg2)
+            if add_word==False:
+                reg1['regions'] = self.update_children(reg1, reg2)
+            reg1["boundingBox"]["vertices"][0]['x']= min(box1_left,box2_left)
+            reg1["boundingBox"]["vertices"][0]['y']= min(box1_top,box2_top)
+            reg1["boundingBox"]["vertices"][1]['x']= max(box1_right,box2_right)
+            reg1["boundingBox"]["vertices"][1]['y']= min(box1_top,box2_top)
+            reg1["boundingBox"]["vertices"][2]['x']= max(box1_right,box2_right)
+            reg1["boundingBox"]["vertices"][2]['y']= max(box1_bottom,box2_bottom)
+            reg1["boundingBox"]["vertices"][3]['x']= min(box1_left,box2_left)
+            reg1["boundingBox"]["vertices"][3]['y']= max(box1_bottom,box2_bottom)
+            reg1['class'] = clss
+            if add_word and reg1 is not None and reg2 is not None:
+                if 'regions' in reg1.keys():
+                    if 'identifier' in reg2.keys():
+                        for i in reg1['regions']:
+                            if 'identifier' in i.keys() and reg2['identifier']!=i['identifier']:
+                                reg1['regions'].extend(reg2)
+                else:
+                    reg1['regions']=[]
                     reg1['regions'].extend(reg2)
-            else:
-                reg1['regions']=[]
-                reg1['regions'].extend(reg2)
-        return reg1
+            return reg1
+        except:
+            return reg1
+        
 
     def is_connected(self,region1, region2,avg_height, avg_ver_dist, avg_width,avg_word_sepc):
         
