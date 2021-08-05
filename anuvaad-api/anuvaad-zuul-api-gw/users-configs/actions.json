@@ -640,6 +640,14 @@
             "active":true,
             "whiteList":false,
             "description":"API for transform file to json format"
+        },
+        {
+            "id":"48e4d402-34e4-41ef-9f84-1f5e8a27b657",
+            "uri":"/nmt-inference/v0/translate",
+            "module":"ANUVAAD-NMT",
+            "active":true,
+            "whiteList":false,
+            "description":"API for ANUVAAD NMT translate"
         }
     ]
 }
