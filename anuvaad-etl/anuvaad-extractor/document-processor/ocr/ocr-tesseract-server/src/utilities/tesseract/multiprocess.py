@@ -80,7 +80,7 @@ def multi_processing_tesseract(page_regions,image_path,lang,width,height):
                             total_lines+=1
                         if config.MULTIPROCESS:
                             add_lines_to_tess_queue(tmp_line,tessract_queue,lang,img,mode_height,rgn_idx,line_idx)
-                        if config.MULTIPROCESS==False and len(tmp_line)>0:
+                        if config.MULTIPROCESS==False and line is not None and len(tmp_line)>0:
                             vertices = tmp_line[0]['boundingBox']['vertices']
                             left = vertices[0]['x'];  top = vertices[0]['y']
                             image_crop,c_x,c_y = crop_region(tmp_line[0],img,line['class'])

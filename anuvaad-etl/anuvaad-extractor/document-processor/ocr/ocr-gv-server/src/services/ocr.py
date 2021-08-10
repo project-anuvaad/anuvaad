@@ -9,7 +9,7 @@ from src.services.region_unifier import Region_Unifier
 import cv2,copy
 from src.utilities.model_response import set_bg_image
 from src.utilities.request_parse import MapKeys,UpdateKeys
-from src.services.overlap_remove import RemoveOverlap
+from src.services.overlap_remove import RemoveOverlap,merger_lines_words
 from src.services.dynamic_adjustment import coord_adjustment
 
 
@@ -146,17 +146,17 @@ def get_document_bounds(page_c_lines,file,response,page_dict,page_regions,page_c
                         if len(page.property.detected_languages)!=0:
                             word_region["language"] = page.property.detected_languages[0].language_code
 
-    
+    page_words   =  page_dict["words"]
     if "craft_line" in file['config']["OCR"].keys() and file['config']["OCR"]["craft_line"]=="True":
         page_lines = page_c_lines
-        print("craft lines are processing--->>>")
     else:
         page_lines   =  page_dict["lines"]
-        print("google lines are processing--->>>")
     if len(page_lines)>0:
         page_lines = removeoverlap.remove_overlap(page_lines)
+        page_lines = merger_lines_words(page_lines,page_words)
+        page_lines = removeoverlap.remove_overlap(page_lines)
 
-    page_words   =  page_dict["words"]
+    
 
     #add font information to words
     page_words   = set_font_info(page_words,font_info)
