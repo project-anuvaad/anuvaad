@@ -5,6 +5,7 @@
 #FROM anuvaadio/anuvaad-layout-detector-prima:4-ba5d7d74
 #anuvaadio/anuvaad-layout-detector-prima:86-9745dcf5d
 #GPU version
+#anuvaad-layout-detector-prima:80-afc13b4ae
 FROM anuvaadio/anuvaad-layout-detector-prima:84-dcf948f77
 
 #FROM ubuntu:20.04
