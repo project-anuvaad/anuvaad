@@ -135,8 +135,9 @@ aws_link_prefix = f'https://{aws_bucket_name}.s3.amazonaws.com/'
 
 ALLOWED_MIME_TYPES = ['application/vnd.openxmlformats-officedocument.wordprocessingml.document',
                       'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-                      'application/json']
-ALLOWED_FILE_EXTENSION = ['docx', 'pptx', 'json']
+                      'application/json',
+                      'text/html']
+ALLOWED_FILE_EXTENSION = ['docx', 'pptx', 'json','html']
 
 logging.basicConfig(
     filename=os.getenv("SERVICE_LOG", "server.log"),
