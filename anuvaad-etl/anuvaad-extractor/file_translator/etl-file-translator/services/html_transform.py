@@ -107,10 +107,10 @@ class HTMLTransform(object):
                             continue
                         run_struct = copy.deepcopy(self.run_struct)
                         run_struct['text'] = c
-                        run_struct['block_id'] = 'file_id-'+tag.name+'-'+str(idt)+'-'+str(i)
+                        run_struct['block_id'] = self.file_id+'-'+tag.name+'-'+str(idt)+'-'+str(i)
                         para_struct['children'].append(run_struct)
                 if para_struct != self.para_struct:
                     self.page_list[0]['text_blocks'].append(para_struct)
         log_info(f'Generated JSON FILE for file: {self.file_name_without_ext}', self.json_data)
-        return 
+        return self.base_json
 
