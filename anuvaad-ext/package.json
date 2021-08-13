@@ -22,7 +22,6 @@
     "dependencies": {
         "@babel/plugin-transform-runtime": "^7.14.5",
         "html-loader": "^2.1.2",
-        "process": "^0.11.10",
         "regenerator-runtime": "^0.13.7",
         "tweetnacl": "^1.0.3",
         "tweetnacl-util": "^0.15.1",
