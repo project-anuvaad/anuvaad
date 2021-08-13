@@ -53,7 +53,7 @@ def process_layout_detector_kf():
         log_info("process_layout_detector_kf : trying to receive value from consumer ", LOG_WITHOUT_CONTEXT)
 
         while True:
-            #wait_for_control = controlQueue.get(block=True)
+            wait_for_control = controlQueue.get(block=True)
 
             for msg in consumer:
 
@@ -61,7 +61,6 @@ def process_layout_detector_kf():
                     log_info('process_layout_detector_kf - received invalid data {}'.format(msg.value), None)
                     continue
                 data            = Consumer.get_json_data(msg.value)
-                print(data)
 
 
                 consumer.commit_async()   # <--- This is what we need

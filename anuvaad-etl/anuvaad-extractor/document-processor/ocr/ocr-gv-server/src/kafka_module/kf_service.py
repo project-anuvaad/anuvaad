@@ -54,7 +54,7 @@ def process_vision_ocr_kf():
         log_info("process_ocr_gv_15_kf : trying to receive value from consumer ", LOG_WITHOUT_CONTEXT)
 
         while True:
-            #wait_for_control = controlQueue.get(block=True)
+            wait_for_control = controlQueue.get(block=True)
 
             for msg in consumer:
 
