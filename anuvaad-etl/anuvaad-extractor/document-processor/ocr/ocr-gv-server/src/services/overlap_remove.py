@@ -75,17 +75,27 @@ class RemoveOverlap:
         else:
             return False
     def polygon_overlap(self,reg1,reg2,org_reg1,org_reg2):
-        area1 = reg1.area
-        area2 = reg2.area
-        if area1>area2:
-            if keys.get_left(org_reg1)<keys.get_left(org_reg2) and keys.get_right(org_reg1)>keys.get_right(org_reg2) \
-                and keys.get_top(org_reg1)<keys.get_top(org_reg2) and keys.get_bottom(org_reg1)>keys.get_bottom(org_reg2) :
-               return True
-        if area1<area2:
-            if keys.get_left(org_reg2)<keys.get_left(org_reg1) and keys.get_right(org_reg2)>keys.get_right(org_reg1) \
-                and keys.get_top(org_reg2)<keys.get_top(org_reg1) and keys.get_bottom(org_reg2)>keys.get_bottom(org_reg1) :
-               return True
-        return False
+		area1 = reg1.area
+		area2 = reg2.area
+		if area1>area2:
+			if keys.get_left(org_reg1)<keys.get_left(org_reg2) and keys.get_right(org_reg1)>keys.get_right(org_reg2) \
+				and keys.get_top(org_reg1)<keys.get_top(org_reg2) and keys.get_bottom(org_reg1)>keys.get_bottom(org_reg2) :
+				return True
+			if (reg2.intersection(reg1).area/area2)*100>50:
+				return True
+		if area1<area2:
+			if keys.get_left(org_reg2)<keys.get_left(org_reg1) and keys.get_right(org_reg2)>keys.get_right(org_reg1) \
+				and keys.get_top(org_reg2)<keys.get_top(org_reg1) and keys.get_bottom(org_reg2)>keys.get_bottom(org_reg1) :
+				return True
+			if (reg1.intersection(reg2).area/area1)*100>50:
+				return True
+		if reg1.contains(reg2) or reg2.contains(reg1):
+				return True
+		if (keys.get_top(org_reg2)<keys.get_top(org_reg1) and keys.get_bottom(org_reg2)>keys.get_bottom(org_reg1)) \
+				and  (keys.get_top(org_reg2)>keys.get_top(org_reg1) and keys.get_bottom(org_reg2)<keys.get_bottom(org_reg1)):
+				return True 
+		
+		return False
     def is_connected(self,region1, region2):
             
         region_poly = self.get_polygon(region2['boundingBox'])
