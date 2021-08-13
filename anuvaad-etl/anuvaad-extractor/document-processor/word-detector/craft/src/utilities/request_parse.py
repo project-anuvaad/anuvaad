@@ -56,7 +56,12 @@ class File:
             return None
         else:
             return self.file['config']['craft']
-
+    @log_error
+    def get_line_layout_config(self):
+        if 'line_layout' not in self.file['config'].keys():
+            return None
+        else:
+            return self.file['config']['line_layout']
 
     @log_error
     def get_file(self):
