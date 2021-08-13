@@ -30,6 +30,14 @@ class HTMLTransform(object):
         self.base_json = copy.deepcopy(self.outer_struct)
         self.page_list = self.base_json['result']
     
+    def get_id(self,tag_name,tag_index,child_tag_index=None,child_tag_name=None):
+        block_id = self.file_id+'-'+tag_name+'-'+str(tag_index)
+        if child_tag_index is not None:
+            block_id = block_id+'-'+str(child_tag_index)
+        if child_tag_name is not None:
+            block_id = block_id+'-'+child_tag_name
+        return block_id
+
     # reading content of html file and creating a BeautifulSoup obj
     def read_html_file(self, input_filename):
         log_info("read_html_file :: started the reading html file: %s" % input_filename, self.json_data)
@@ -84,7 +92,7 @@ class HTMLTransform(object):
                 if content_type in ['MIX']:
                     children_tag_count += self.get_children_tag_count(tag.contents)
                     para_struct['text'] = tag.text
-                    para_struct['block_id'] = self.file_id+'-'+str(tag.name)+'-'+str(idt)
+                    para_struct['block_id'] = self.get_id(tag.name,idt)
                     for i,c in enumerate(tag.contents):
                         run_struct = copy.deepcopy(self.run_struct)
                         if isinstance(c,Tag):
@@ -92,22 +100,22 @@ class HTMLTransform(object):
                                 continue
                             run_struct['text'] = c.text
                             run_struct['attrib'] = c.attrs
-                            run_struct['block_id'] = self.file_id+'-'+tag.name+'-'+str(idt)+'-'+str(i)+'-'+c.name
+                            run_struct['block_id'] = self.get_id(tag.name,idt,i,c.name)
                         else:
                             if c.strip() == "":
                                 continue
                             run_struct['text'] = c
-                            run_struct['block_id'] = self.file_id+'-'+tag.name+'-'+str(idt)+'-'+str(i)
+                            run_struct['block_id'] = self.get_id(tag.name,idt,i)
                         para_struct['children'].append(run_struct)
                 elif content_type in ['STRING']:
                     para_struct['text'] = tag.text
-                    para_struct['block_id'] = self.file_id+'-'+str(tag.name)+'-'+str(idt)
+                    para_struct['block_id'] = self.get_id(tag.name,idt)
                     for i,c in enumerate(tag.contents):
                         if c.strip() == "":
                             continue
                         run_struct = copy.deepcopy(self.run_struct)
                         run_struct['text'] = c
-                        run_struct['block_id'] = self.file_id+'-'+tag.name+'-'+str(idt)+'-'+str(i)
+                        run_struct['block_id'] = self.get_id(tag.name,idt,i)
                         para_struct['children'].append(run_struct)
                 if para_struct != self.para_struct:
                     self.page_list[0]['text_blocks'].append(para_struct)
