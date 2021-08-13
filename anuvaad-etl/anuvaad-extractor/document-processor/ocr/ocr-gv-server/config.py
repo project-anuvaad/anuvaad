@@ -18,12 +18,12 @@ ENABLE_CORS = False
 
 # # kafka
 
-input_topic_default = 'anuvaad-dp-tools-ocr-google-vision-input-v155'
-input_topic_identifier = 'KAFKA_ANUVAAD_DP_TOOLS_OCR_GOOGLE_VISION_INPUT_V155'
+input_topic_default = 'anuvaad-dp-tools-ocr-google-vision-input-v15'
+input_topic_identifier = 'KAFKA_ANUVAAD_DP_TOOLS_OCR_GOOGLE_VISION_INPUT_V15'
 input_topic = os.environ.get(input_topic_identifier, input_topic_default)
 
-output_topic_default = 'anuvaad-dp-tools-ocr-google-vision-output-v155'
-output_topic_identifier = 'KAFKA_ANUVAAD_DP_TOOLS_OCR_GOOGLE_VISION_OUTPUT_V155'
+output_topic_default = 'anuvaad-dp-tools-ocr-google-vision-output-v15'
+output_topic_identifier = 'KAFKA_ANUVAAD_DP_TOOLS_OCR_GOOGLE_VISION_OUTPUT_V15'
 output_topic = os.environ.get(output_topic_identifier, output_topic_default)
 
 kf_local_server     = 'localhost:9092'
@@ -32,8 +32,8 @@ bootstrap_server    = os.environ.get(kafka_ip_host, kf_local_server)
 
 TASK_STAT           = 'GOOGLE-VISION-OCR-15'
 
-CONSUMER_GROUP_default       = 'anuvaad-etl-gvocr-15-consumer-group5'
-CONSUMER_GROUP_identifier    = 'ANUVAAD_ETL_GVOCR_CONSUMER_GROUP_V155'
+CONSUMER_GROUP_default       = 'anuvaad-etl-gvocr-15-consumer-group'
+CONSUMER_GROUP_identifier    = 'ANUVAAD_ETL_GVOCR_CONSUMER_GROUP_V15'
 CONSUMER_GROUP               = os.environ.get(CONSUMER_GROUP_identifier,CONSUMER_GROUP_default)
 download_folder = 'upload'
 #
