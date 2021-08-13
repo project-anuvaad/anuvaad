@@ -73,7 +73,7 @@ COPY / /app
 WORKDIR /app
 # RUN apt-get update
 # RUN apt-get install -y libspatialindex-dev
-# RUN pip install -r requirements.txt
+RUN pip install -r requirements.txt
 
 
 COPY start.sh /usr/bin/start.sh
