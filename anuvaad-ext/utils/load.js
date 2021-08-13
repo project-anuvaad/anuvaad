@@ -3,12 +3,14 @@ const { secretbox, randomBytes } = require("tweetnacl");
 const { encodeBase64, decodeUTF8 } = require("tweetnacl-util");
 const { v4: uuidv4 } = require("uuid");
 const { default: apiEndPoints } = require("../configs/apiendpoints");
+const {HOST_NAME} = require('../configs/apigw');
+
 const {
   saveObjectInSyncStorage,
   getObjectFromSyncStorage,
 } = require("../utils/chromeStorage");
 
-const HOST_NAME = "https://auth.anuvaad.org";
+// const HOST_NAME = "https://auth.anuvaad.org";
 
 const encrypt = (message, secret_key) => {
   let secret_msg = decodeUTF8(message);
@@ -33,7 +35,7 @@ const getAuthToken = async (encryptedToken) => {
     if (response.ok) {
       saveObjectInSyncStorage({ token: rsp_data.data.token });
     }else{
-      await setCryptoToken()
+      // await setCryptoToken()
     }
   });
 };
@@ -143,7 +145,8 @@ const makeSyncInitiateCall = async () => {
     if (response.ok) {
       translateWebPage(data);
     } else if (response.status === 401) {
-      setCryptoToken();
+      await setCryptoToken();
+      makeSyncInitiateCall();
     }
   });
 };
@@ -172,7 +175,7 @@ const fetchModelAPICall = async (source, target, authToken) => {
       return modelInfo[0].model_id;
     }
   } else if (!response.ok && response.status === 401) {
-    console.log(token);
+    await setCryptoToken();
   }
 };
 
