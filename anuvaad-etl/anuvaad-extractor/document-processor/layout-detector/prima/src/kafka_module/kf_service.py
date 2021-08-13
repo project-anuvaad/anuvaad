@@ -62,6 +62,8 @@ def process_layout_detector_kf():
                     continue
                 data            = Consumer.get_json_data(msg.value)
 
+                print(data, 'mes received from consumer')
+
                 topic_partition = TopicPartition(config.input_topic, msg.partition)
                 consumer.seek(topic_partition,  OffsetAndMetadata(msg.offset+1, ''))
                 consumer.commit()
