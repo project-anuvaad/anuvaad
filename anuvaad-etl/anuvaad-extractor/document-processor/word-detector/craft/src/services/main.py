@@ -2,7 +2,8 @@ from src.services.extract_images import extract_images
 #from src.utilities.craft_pytorch.detect import detect_text
 from src.utilities.model_response import FileOutput, Page
 from src.utilities.request_parse import get_files, get_languages,File
-from src.utilities.primalinenet.infer import predict_primanet
+from src.utilities.primalinenet.infer import  PRIMA
+predict_primanet = PRIMA()
 import config
 import copy
 from anuvaad_auditor.loghandler import log_info
@@ -26,7 +27,7 @@ def get_text(app_context,base_dir) :
     line_layout = file_properties.get_line_layout_config()
     craft_line = file_properties.get_craft_config()
     if line_layout is not None and line_layout=='True':
-        lines = [predict_primanet(images)]
+        lines = [predict_primanet.predict_primanet(images)]
     if craft_line is not None and craft_line=='True':
         languages = get_languages(app_context)
         words,lines = detect_text(images,languages)

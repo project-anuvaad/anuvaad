@@ -73,9 +73,10 @@ COPY / /app
 WORKDIR /app
 # RUN apt-get update
 # RUN apt-get install -y libspatialindex-dev
+RUN apt install -y curl
 RUN apt-get install -y make git
 RUN pip install -r requirements.txt
-RUN apt install -y curl
+
 RUN pip install 'git+https://github.com/facebookresearch/detectron2.git#egg=detectron2'
 
 
