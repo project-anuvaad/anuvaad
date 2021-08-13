@@ -80,7 +80,7 @@ RUN pip install 'git+https://github.com/facebookresearch/detectron2.git#egg=dete
 
 COPY start.sh /usr/bin/start.sh
 RUN chmod +x /usr/bin/start.sh
-CMD ["python", "app.py"]
+#CMD ["python", "app.py"]
 
 #ENTRYPOINT ["/bin/bash","/usr/bin/start.sh"]
 
