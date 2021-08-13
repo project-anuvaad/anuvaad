@@ -73,12 +73,14 @@ COPY / /app
 WORKDIR /app
 # RUN apt-get update
 # RUN apt-get install -y libspatialindex-dev
-# RUN pip install -r requirements.txt
+RUN apt-get install -y make git
+RUN pip install -r requirements.txt
+RUN pip install 'git+https://github.com/facebookresearch/detectron2.git#egg=detectron2'
 
 
 COPY start.sh /usr/bin/start.sh
 RUN chmod +x /usr/bin/start.sh
-CMD ["python", "app.py"]
+#CMD ["python", "app.py"]
 
-#ENTRYPOINT ["/bin/bash","/usr/bin/start.sh"]
+ENTRYPOINT ["/bin/bash","/usr/bin/start.sh"]
 
