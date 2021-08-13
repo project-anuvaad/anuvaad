@@ -227,7 +227,7 @@ WorkflowConfigs:
         description: block segmentation process
         kafka-input:
         - topic: KAFKA_ANUVAAD_DP_TOOLS_BLOCK_SEGMENTER_INPUT
-          partitions: KAFKA_PARTITIONS_PER_TOPIC2
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
         kafka-output:
         - topic: KAFKA_ANUVAAD_DP_TOOLS_BLOCK_SEGMENTER_OUTPUT
           partitions: KAFKA_PARTITIONS_PER_TOPIC
@@ -645,7 +645,7 @@ WorkflowConfigs:
         description: block segmentation process
         kafka-input:
         - topic: KAFKA_ANUVAAD_DP_TOOLS_BLOCK_SEGMENTER_INPUT
-          partitions: KAFKA_PARTITIONS_PER_TOPIC2
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
         kafka-output:
         - topic: KAFKA_ANUVAAD_DP_TOOLS_BLOCK_SEGMENTER_OUTPUT
           partitions: KAFKA_PARTITIONS_PER_TOPIC
@@ -708,7 +708,7 @@ WorkflowConfigs:
         description: block segmentation process
         kafka-input:
         - topic: KAFKA_ANUVAAD_DP_TOOLS_BLOCK_SEGMENTER_INPUT
-          partitions: KAFKA_PARTITIONS_PER_TOPIC2
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
         kafka-output:
         - topic: KAFKA_ANUVAAD_DP_TOOLS_BLOCK_SEGMENTER_OUTPUT
           partitions: KAFKA_PARTITIONS_PER_TOPIC
@@ -772,7 +772,7 @@ WorkflowConfigs:
         description: block segmentation process
         kafka-input:
         - topic: KAFKA_ANUVAAD_DP_TOOLS_BLOCK_SEGMENTER_INPUT
-          partitions: KAFKA_PARTITIONS_PER_TOPIC2
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
         kafka-output:
         - topic: KAFKA_ANUVAAD_DP_TOOLS_BLOCK_SEGMENTER_OUTPUT
           partitions: KAFKA_PARTITIONS_PER_TOPIC
@@ -844,10 +844,10 @@ WorkflowConfigs:
       - name: BLOCK-SEGMENTER
         description: block segmentation process
         kafka-input:
-        - topic: KAFKA_ANUVAAD_DP_TOOLS_BLOCK_SEGMENTER_INPUT_STAGE
-          partitions: KAFKA_PARTITIONS_PER_TOPIC2
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_BLOCK_SEGMENTER_INPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
         kafka-output:
-        - topic: KAFKA_ANUVAAD_DP_TOOLS_BLOCK_SEGMENTER_OUTPUT_STAGE
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_BLOCK_SEGMENTER_OUTPUT
           partitions: KAFKA_PARTITIONS_PER_TOPIC
       endState: false
     - order: 4
@@ -855,13 +855,14 @@ WorkflowConfigs:
       - name: OCR-DD15-GOOGLE-VISION
         description: ocr using google vision for doc digitisation.
         kafka-input:
-        - topic: KAFKA_ANUVAAD_DP_TOOLS_OCR_GOOGLE_VISION_INPUT_V15_STAGE
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_OCR_GOOGLE_VISION_INPUT_V15
           partitions: KAFKA_PARTITIONS_PER_TOPIC
         kafka-output:
-        - topic: KAFKA_ANUVAAD_DP_TOOLS_OCR_GOOGLE_VISION_OUTPUT_V15_STAGE
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_OCR_GOOGLE_VISION_OUTPUT_V15
           partitions: KAFKA_PARTITIONS_PER_TOPIC
       endState: false
     - order: 5
+
       tool:
       - name: OCR-TOKENISER
         description: OCR Tokeniser process
