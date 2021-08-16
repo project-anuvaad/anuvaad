@@ -47,7 +47,7 @@ target &&
 if (translate.textContent !== "Translate") {
   setInterval(async () => {
     translate.textContent = await getObjectFromSyncStorage("translate");
-  }, 2000);
+  }, 1000);
 } else {
   clearInterval();
 }
