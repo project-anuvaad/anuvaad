@@ -40,9 +40,8 @@ class BlockTranslationService:
                 url, body = self.get_nmt_url_body(block_translate_input, nmt_in_txt)
                 nmt_disabled_orgs = list(str(orgs_nmt_disable).split(","))
                 if block_translate_input["metadata"]["orgID"] not in nmt_disabled_orgs:
-                    log_info(f'API call to NMT -- {url}', block_translate_input)
+                    log_info("API call to NMT...", block_translate_input)
                     nmt_response = utils.call_api(url, "POST", body, None, block_translate_input["metadata"]["userID"])
-                    log_info(f'Response received from NMT --- {nmt_response}', block_translate_input)
                 else:
                     log_info("Job belongs to NONMT type!", block_translate_input)
                     nmt_response = {"data": nmt_in_txt}
@@ -57,7 +56,6 @@ class BlockTranslationService:
                         ch_input["modifiedSentences"] = modified_sentences
                         ch_response = utils.call_api(update_content_url, "POST", ch_input, None,
                                                      block_translate_input["metadata"]["userID"])
-                        log_info("Response received from CH!", block_translate_input)
                         if ch_response:
                             if ch_response["http"]["status"] == 200:
                                 op_blocks = ch_response["data"]["blocks"]
@@ -124,11 +122,12 @@ class BlockTranslationService:
             modified_sentences = block_translate_input["input"]["modifiedSentences"]
         if 'retranslate' in block_translate_input["input"].keys():
             retranslate = block_translate_input["input"]["retranslate"]
+            if retranslate:
+                log_info("Retranslation job!", block_translate_input)
         for block in block_translate_input["input"]["textBlocks"]:
             if 'tokenized_sentences' in block.keys():
                 for sentence in block["tokenized_sentences"]:
                     if retranslate:
-                        log_info("Retranslation job!", block_translate_input)
                         add_to_nmt = retranslate
                     else:
                         if 'save' not in sentence.keys():
@@ -201,8 +200,7 @@ class BlockTranslationService:
                                                                                                                       translation["tgt"], block_translate_input)
                         log_info(translation["tmx_replacement"], block_translate_input)
                     b_index, s_index = None, None
-                    block_id, sentence_id = str(translation["n_id"]).split("|")[2], str(translation["n_id"]).split("|")[
-                        3]
+                    block_id, sentence_id = str(translation["n_id"]).split("|")[2], str(translation["n_id"]).split("|")[3]
                     blocks = block_translate_input["input"]["textBlocks"]
                     for j, block in enumerate(blocks):
                         if str(block["block_identifier"]) == str(block_id):
