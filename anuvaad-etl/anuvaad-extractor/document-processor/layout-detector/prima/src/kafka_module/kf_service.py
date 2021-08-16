@@ -11,7 +11,7 @@ from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
 import time
 import os
-
+#from kafka import TopicPartition, OffsetAndMetadata
 import threading, queue
 import config
 from src.utilities.app_context import LOG_WITHOUT_CONTEXT
@@ -53,7 +53,7 @@ def process_layout_detector_kf():
         log_info("process_layout_detector_kf : trying to receive value from consumer ", LOG_WITHOUT_CONTEXT)
 
         while True:
-            wait_for_control = controlQueue.get(block=True)
+            #wait_for_control = controlQueue.get(block=True)
 
             for msg in consumer:
 
@@ -62,6 +62,11 @@ def process_layout_detector_kf():
                     continue
                 data            = Consumer.get_json_data(msg.value)
 
+                print(data, 'mes received from consumer')
+
+                # topic_partition = TopicPartition(config.input_topic, msg.partition)
+                # consumer.seek(topic_partition,  OffsetAndMetadata(msg.offset+1, ''))
+                # consumer.commit()
 
                 consumer.commit_async()   # <--- This is what we need
                 # Optionally, To check if everything went good
@@ -69,7 +74,7 @@ def process_layout_detector_kf():
 
 
                 jobid           = data['jobID']
-                log_info('process_layout_detector_kf - received message from kafka, dumping into internal queue', data)
+                log_info('process_layout_detector_kf - received message from kafka, dumping into internal queue ' , data)
                 input_files, workflow_id, jobid, tool_name, step_order = file_ops.json_input_format(data)
 
                 Queue.put(data)

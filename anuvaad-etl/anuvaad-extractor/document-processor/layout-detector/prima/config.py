@@ -40,6 +40,29 @@ ENABLE_CORS = False
 
 
 
+#Kafka topics stage
+
+# input_topic_default = 'anuvaad-dp-tools-layout-detector-prima-input-stage'
+# input_topic_identifier = 'KAFKA_ANUVAAD_DP_TOOLS_LAYOUT_DETECTOR_PRIMA_INPUT_STAGE'
+# input_topic = os.environ.get(input_topic_identifier, input_topic_default)
+
+# output_topic_default = 'anuvaad-dp-tools-layout-detector-prima-output-stage'
+# output_topic_identifier = 'KAFKA_ANUVAAD_DP_TOOLS_LAYOUT_DETECTOR_PRIMA_OUTPUT_STAGE'
+# output_topic = os.environ.get(output_topic_identifier, output_topic_default)
+
+# kf_local_server     = 'localhost:9092'
+
+# kafka_ip_host       = 'KAFKA_BOOTSTRAP_SERVER_HOST'
+# bootstrap_server    = os.environ.get(kafka_ip_host, kf_local_server)
+
+# TASK_STAT           = 'PRIMA-LAYOUT-DETECTOR'
+
+# CONSUMER_GROUP_default       = 'anuvaad-etl-ld-consumer-group-stage'
+# CONSUMER_GROUP_identifier    = 'KAFKA_ANUVAAD_ETL_LD_CONSUMER_GRP_STAGE'
+# CONSUMER_GROUP               = os.environ.get(CONSUMER_GROUP_identifier,CONSUMER_GROUP_default)
+
+
+
 
 #Kafka topics GPU
 

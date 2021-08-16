@@ -1,5 +1,5 @@
 from src.services.extract_images import extract_images
-#from src.utilities.craft_pytorch.detect import detect_text
+from src.utilities.craft_pytorch.detect import detect_text
 from src.utilities.model_response import FileOutput, Page
 from src.utilities.request_parse import get_files, get_languages,File
 from src.utilities.primalinenet.infer import  PRIMA

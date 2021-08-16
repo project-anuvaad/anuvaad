@@ -3,7 +3,7 @@ const { secretbox, randomBytes } = require("tweetnacl");
 const { encodeBase64, decodeUTF8 } = require("tweetnacl-util");
 const { v4: uuidv4 } = require("uuid");
 const { default: apiEndPoints } = require("../configs/apiendpoints");
-const {HOST_NAME} = require('../configs/apigw');
+const { HOST_NAME } = require("../configs/apigw");
 
 const {
   saveObjectInSyncStorage,
@@ -34,7 +34,7 @@ const getAuthToken = async (encryptedToken) => {
     let rsp_data = await response.json();
     if (response.ok) {
       saveObjectInSyncStorage({ token: rsp_data.data.token });
-    }else{
+    } else {
       // await setCryptoToken()
     }
   });
@@ -144,6 +144,7 @@ const makeSyncInitiateCall = async () => {
     let data = await response.json();
     if (response.ok) {
       translateWebPage(data);
+      await saveObjectInSyncStorage({ translate: "Translate" });
     } else if (response.status === 401) {
       await setCryptoToken();
       makeSyncInitiateCall();
@@ -152,7 +153,6 @@ const makeSyncInitiateCall = async () => {
 };
 
 const fetchModelAPICall = async (source, target, authToken) => {
-  let token = await getObjectFromSyncStorage("id-token");
   let endPoint = `${HOST_NAME}${apiEndPoints.fetch_models}`;
   let fetchCall = fetch(endPoint, {
     method: "get",
@@ -176,6 +176,7 @@ const fetchModelAPICall = async (source, target, authToken) => {
     }
   } else if (!response.ok && response.status === 401) {
     await setCryptoToken();
+    await makeSyncInitiateCall();
   }
 };
 
