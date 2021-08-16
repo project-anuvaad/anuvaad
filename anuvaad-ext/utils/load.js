@@ -152,7 +152,6 @@ const makeSyncInitiateCall = async () => {
 };
 
 const fetchModelAPICall = async (source, target, authToken) => {
-  let token = await getObjectFromSyncStorage("id-token");
   let endPoint = `${HOST_NAME}${apiEndPoints.fetch_models}`;
   let fetchCall = fetch(endPoint, {
     method: "get",
@@ -176,6 +175,7 @@ const fetchModelAPICall = async (source, target, authToken) => {
     }
   } else if (!response.ok && response.status === 401) {
     await setCryptoToken();
+    await makeSyncInitiateCall();
   }
 };
 
