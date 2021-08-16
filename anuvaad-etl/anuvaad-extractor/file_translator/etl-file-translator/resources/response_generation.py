@@ -13,8 +13,8 @@ from errors.errors_exception import WorkflowkeyError
 from services.docx_transform import DocxTransform
 from services.html_transform import HTMLTransform
 from services.fetch_content import FetchContent
-from services.pptx_transform import PptxTransform
 from services.html_converter import HtmlConvert
+from services.pptx_transform import PptxTransform
 from utilities.model_response import CustomResponse
 from utilities.model_response import Status
 from utilities.utils import FileOperation
@@ -31,7 +31,7 @@ class Response(object):
     def workflow_response(self, task_id, task_starttime, transform_flow=False, download_flow=False):
         input_key, workflow_id, jobid, tool_name, step_order, user_id = file_ops.json_input_format(self.json_data)
         log_info("workflow_response : started the response generation for %s" % jobid, self.json_data)
-        error_validator = ValidationResponse(self.DOWNLOAD_FOLDER)
+        error_validator = ValidationResponse(DOWNLOAD_FOLDER=self.DOWNLOAD_FOLDER, json_data=self.json_data)
         try:
             error_validator.wf_keyerror(jobid, workflow_id, tool_name, step_order)  # Validating Workflow key-values
             error_validator.inputfile_list_empty(input_key)  # Validating Input key for files input and only text input
@@ -41,24 +41,25 @@ class Response(object):
                 for i, item in enumerate(input_key['files']):
                     input_filename, in_file_type, in_locale = file_ops.accessing_files(item)
                     if in_file_type == "docx" and transform_flow:
-                        docx_transform_obj = DocxTransform(input_filename)
+                        docx_transform_obj = DocxTransform(input_filename=input_filename, json_data=self.json_data)
                         docx_obj = docx_transform_obj.read_docx_file(input_filename)
+                        if in_locale != config.LOCALE_ENGLISH and config.DOCX_FONT_VALIDATION_ENABLED:
+                            docx_transform_obj.check_if_valid_fonts_used(in_locale=in_locale)
                         transformed_obj = docx_transform_obj.generate_json_structure(docx_obj)
                         out_json_filepath = docx_transform_obj.write_json_file(transformed_obj)
                         output_filename = out_json_filepath
                         out_file_type = 'json'
 
-
-                        html_convert_obj = HtmlConvert(input_filename=input_filename, file_type=config.TYPE_DOCX)
+                        html_convert_obj = HtmlConvert(input_filename=input_filename, file_type=config.TYPE_DOCX, json_data=self.json_data)
                         out_files_url = html_convert_obj.generate_html(input_filename=input_filename)
-                        log_info(f"URL TO HTML FILE FOR JOBID {jobid}: {str(out_files_url)}", None)
+                        log_info(f"URL TO HTML FILE FOR JOBID {jobid}: {str(out_files_url)}", self.json_data)
 
-                        fc_obj = FetchContent(input_filename)
+                        fc_obj = FetchContent(record_id=input_filename, json_data=self.json_data)
                         fc_obj.store_reference_link(job_id=jobid, location=out_files_url)
 
 
                     elif in_file_type == "pptx" and transform_flow:
-                        pptx_transform_obj = PptxTransform(input_filename)
+                        pptx_transform_obj = PptxTransform(input_filename=input_filename, json_data=self.json_data)
                         pptx_obj = pptx_transform_obj.read_pptx_file(input_filename)
                         transformed_obj = pptx_transform_obj.generate_json_structure(pptx_obj)
 
@@ -66,9 +67,9 @@ class Response(object):
                         output_filename = out_json_filepath
                         out_file_type = 'json'
 
-                        html_convert_obj = HtmlConvert(input_filename=input_filename, file_type=config.TYPE_PPTX)
+                        html_convert_obj = HtmlConvert(input_filename=input_filename, file_type=config.TYPE_PPTX, json_data=self.json_data)
                         out_files_url = html_convert_obj.generate_html(input_filename=input_filename)
-                        fc_obj = FetchContent(input_filename)
+                        fc_obj = FetchContent(record_id=input_filename, json_data=self.json_data)
                         fc_obj.store_reference_link(job_id=jobid, location=out_files_url)
                     
                     elif in_file_type == "html" and transform_flow:
@@ -85,10 +86,10 @@ class Response(object):
                             json_file_name = input_filename.split(config.DOCX_FILE_PREFIX)[-1]
                             DOCX_file_name = json_file_name.replace('.json', '.docx')
 
-                            docx_transform_obj = DocxTransform(DOCX_file_name)
+                            docx_transform_obj = DocxTransform(input_filename=DOCX_file_name, json_data=self.json_data)
                             docx_obj = docx_transform_obj.read_docx_file(DOCX_file_name)
 
-                            fc_obj = FetchContent(input_filename)
+                            fc_obj = FetchContent(record_id=input_filename, json_data=self.json_data)
                             fc_obj.generate_map_from_fetch_content_response()
 
                             translated_docx = docx_transform_obj.translate_docx_file(docx_obj, fc_obj.block_trans_map)
@@ -101,10 +102,10 @@ class Response(object):
                             json_file_name = input_filename.split(config.PPTX_FILE_PREFIX)[-1]
                             PPTX_file_name = json_file_name.replace('.json', '.pptx')
 
-                            pptx_transform_obj = PptxTransform(PPTX_file_name)
+                            pptx_transform_obj = PptxTransform(input_filename=PPTX_file_name, json_data=self.json_data)
                             pptx_obj = pptx_transform_obj.read_pptx_file(PPTX_file_name)
 
-                            fc_obj = FetchContent(input_filename)
+                            fc_obj = FetchContent(record_id=input_filename, json_data=self.json_data)
                             fc_obj.generate_map_from_fetch_content_response()
 
                             translated_pptx = pptx_transform_obj.translate_pptx_file(pptx_obj, fc_obj.block_trans_map)

@@ -68,7 +68,7 @@ class Common(object):
     def is_only_line_breaks_n_tabs(self, text):
         return re.sub(r"((\n){0,}(\t){0,})", '', text) == ''
 
-    def generate_id(self, file_id='', table='', cell='', row='', slide='', shape='', sdt='', sdtc='', para='', run=''):
+    def generate_id(self, file_id='', table='', cell='', row='', slide='', shape='', sdt='', sdtc='', para='', run='', txbxContent=''):
         idx = ''
         if file_id != '':
             idx += str(file_id)
@@ -86,6 +86,8 @@ class Common(object):
             idx += '_SDT-' + str(sdt)
         if sdtc != '':
             idx += '_SDTC-' + str(sdtc)
+        if txbxContent != '':
+            idx += '_TXBXCONTENT-' + str(txbxContent)
         if para != '':
             idx += '_PARA-' + str(para)
         if run != '':
@@ -202,6 +204,8 @@ class Common(object):
                 elif config.WORD_WISE_PAGE_LIMIT:
                     if config.MAX_WORD_IN_A_PAGE <= word_count:
                         return True
+
+                return False
         if PPTX:
             if config.PPTX_PAGE_LIMIT_ENABLE:
                 if config.PARA_WISE_PAGE_LIMIT:
@@ -215,6 +219,8 @@ class Common(object):
                 elif config.WORD_WISE_PAGE_LIMIT:
                     if config.MAX_WORD_IN_A_PAGE <= word_count:
                         return True
+
+                return False
 
     def reset_page_limit(self, para_count=0, run_count=0, word_count=0):
         if config.PARA_WISE_PAGE_LIMIT:

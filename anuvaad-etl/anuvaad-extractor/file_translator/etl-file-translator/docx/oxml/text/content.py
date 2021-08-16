@@ -2,6 +2,7 @@
 from ..ns import qn
 from ..xmlchemy import BaseOxmlElement, OxmlElement, ZeroOrMore, ZeroOrOne
 
+# TODO Added new file to add tags which are not supported by docx library.
 
 class CT_SDT(BaseOxmlElement):
     """
@@ -16,4 +17,8 @@ class CT_SDTC(BaseOxmlElement):
 class CT_HYPERLINK(BaseOxmlElement):
     r = ZeroOrMore('w:r')
 
+class CT_TXBXCONTENT(BaseOxmlElement):
+    p = ZeroOrMore('w:p')
 
+class CT_PICTURE(BaseOxmlElement):
+    pic = ZeroOrMore('w:pict')

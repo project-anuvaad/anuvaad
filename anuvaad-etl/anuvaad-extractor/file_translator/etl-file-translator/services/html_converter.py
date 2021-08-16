@@ -34,7 +34,8 @@ from utilities.s3_utils import S3BucketUtils
 
 
 class HtmlConvert(object):
-    def __init__(self, input_filename, file_type):
+    def __init__(self, input_filename, file_type, json_data):
+        self.json_data = json_data
         self.file_name_without_ext = os.path.splitext(input_filename)[0]
         self.file_type = file_type
         self.generated_html_file_path = None
@@ -130,21 +131,21 @@ class HtmlConvert(object):
 
     def convert_to_pdf_libre(self, input_filename, input_filepath):
         pdf_output_dir = self.pdf_file_dir
-        libre_converter = LibreConverter(input_filename=input_filename)
+        libre_converter = LibreConverter(input_filename=input_filename, json_data=self.json_data)
         generated_pdf_file_path = libre_converter.convert_to_pdf(pdf_output_path=pdf_output_dir,
                                                                  input_file_path=input_filepath)
         return generated_pdf_file_path
 
     def convert_pdf_to_html_pdftohtml(self, input_filename, generated_pdf_file_path):
         html_output_dir = self.html_file_dir
-        pdf_to_html = PdfToHtmlConverter(input_filename=input_filename)
+        pdf_to_html = PdfToHtmlConverter(input_filename=input_filename, json_data=self.json_data)
         generated_html_file_path = pdf_to_html.convert_pdf_to_html(html_output_dir=html_output_dir,
                                                                    input_pdf_file_path=generated_pdf_file_path)
         return generated_html_file_path
 
     def convert_docx_to_html_libre(self, input_filename, input_docx_filepath):
         html_output_dir = self.html_file_dir
-        libre_converter = LibreConverter(input_filename=input_filename)
+        libre_converter = LibreConverter(input_filename=input_filename, json_data=self.json_data)
         generated_html_file_path = libre_converter.convert_to_html(html_output_dir=html_output_dir, input_file_path=input_docx_filepath)
         return generated_html_file_path
 
@@ -186,7 +187,7 @@ class HtmlConvert(object):
 
         if self.file_type in [config.TYPE_DOCX]:
             if config.FLOW_DOCX_LIBRE_PDF_PDFTOHTML_HTML_S3_ENABLED:  # TODO make change in the return
-                log_info("generate_html :: DOC to HTML FLOW: FLOW_DOCX_LIBRE_PDF_PDFTOHTML_HTML_S3_ENABLED Started. ", None)
+                log_info("generate_html :: DOC to HTML FLOW: FLOW_DOCX_LIBRE_PDF_PDFTOHTML_HTML_S3_ENABLED Started. ", self.json_data)
 
                 # CONVERT DOCX TO PDF: LIBRE
                 generated_pdf_file_path = self.convert_to_pdf(input_filename=input_filename, tool=config.TOOL_LIBRE)
@@ -196,29 +197,29 @@ class HtmlConvert(object):
                 # PUSH TO S3
                 urls = self.push_to_s3(generated_file_dir=self.generated_html_file_path)
 
-                log_info("generate_html :: DOC to HTML FLOW: FLOW_DOCX_LIBRE_PDF_PDFTOHTML_HTML_S3_ENABLED ENDED. ", None)
+                log_info("generate_html :: DOC to HTML FLOW: FLOW_DOCX_LIBRE_PDF_PDFTOHTML_HTML_S3_ENABLED ENDED. ", self.json_data)
                 return urls
 
             elif config.FLOW_DOCX_LIBREHTML_S3_ENABLED:  # TODO make change in the return
-                log_info("generate_html :: DOC to HTML FLOW: FLOW_DOCX_LIBREHTML_S3_ENABLED Started. ", None)
+                log_info("generate_html :: DOC to HTML FLOW: FLOW_DOCX_LIBREHTML_S3_ENABLED Started. ", self.json_data)
 
                 # CONVERT DOCX TO HTML: LIBRE
                 self.generated_html_file_path = self.convert_directly_to_html(input_filename=input_filename, tool=config.TOOL_LIBRE)
 
                 urls = self.push_to_s3(generated_file_dir=self.generated_html_file_path)
 
-                log_info("generate_html :: DOC to HTML FLOW: FLOW_DOCX_LIBREHTML_S3_ENABLED Ended. ", None)
+                log_info("generate_html :: DOC to HTML FLOW: FLOW_DOCX_LIBREHTML_S3_ENABLED Ended. ", self.json_data)
                 return urls
 
             elif config.FLOW_DOCX_PYDOCXHTML_S3_ENABLED:  # TODO make change in the return
-                log_info("generate_html :: DOC to HTML FLOW: FLOW_DOCX_PYDOCXHTML_S3_ENABLED Started. ", None)
+                log_info("generate_html :: DOC to HTML FLOW: FLOW_DOCX_PYDOCXHTML_S3_ENABLED Started. ", self.json_data)
 
                 # CONVERT DOCX TO HTML: PYDOCX
                 self.generated_html_file_path = self.convert_directly_to_html(input_filename=input_filename, tool=config.TOOL_PYDOCX)
 
                 urls = self.push_to_s3(generated_file_dir=self.generated_html_file_path)
 
-                log_info("generate_html :: DOC to HTML FLOW: FLOW_DOCX_PYDOCXHTML_S3_ENABLED Ended. ", None)
+                log_info("generate_html :: DOC to HTML FLOW: FLOW_DOCX_PYDOCXHTML_S3_ENABLED Ended. ", self.json_data)
 
                 return urls
 
@@ -227,10 +228,10 @@ class HtmlConvert(object):
                     1. DOCX to HTML using LIBRE.
                     2. DOCX TO PDF(LIBRE) THEN PDF to  HTML(PDFTOHTML).'''
 
-                log_info("generate_html :: DOC to HTML FLOW: FLOW_DOCX_LIBREHTML_LIBREPDF_PDFTOHTML_HTML_S3_ENABLED Started.", None)
+                log_info("generate_html :: DOC to HTML FLOW: FLOW_DOCX_LIBREHTML_LIBREPDF_PDFTOHTML_HTML_S3_ENABLED Started.", self.json_data)
 
                 # Step 1: DOCX TO HTML using LIBRE.
-                log_info("generate_html :: DOCX to HTML FLOW1 START : FLOW_DOCX_LIBREHTML_LIBREPDF_PDFTOHTML_HTML_S3_ENABLED Started. ", None)
+                log_info("generate_html :: DOCX to HTML FLOW1 START : FLOW_DOCX_LIBREHTML_LIBREPDF_PDFTOHTML_HTML_S3_ENABLED Started. ", self.json_data)
                 html_out_flow1 = os.path.join(self.file_name_without_ext, config.TOOL_LIBRE)
                 self.html_file_dir = self.create_html_out_dir(html_out_flow1)
                 self.generated_html_file_path = self.convert_directly_to_html(input_filename=input_filename, tool=config.TOOL_LIBRE)
@@ -240,11 +241,11 @@ class HtmlConvert(object):
                                                                                      tool=config.TOOL_LIBRE)
                 self.output_files[config.TYPE_HTML][config.TOOL_LIBRE] = generated_html_file_url_FLOW1
 
-                log_info("generate_html :: DOCX to HTML FLOW1 END : FLOW_DOCX_LIBREHTML_LIBREPDF_PDFTOHTML_HTML_S3_ENABLED Ened. ", None)
+                log_info("generate_html :: DOCX to HTML FLOW1 END : FLOW_DOCX_LIBREHTML_LIBREPDF_PDFTOHTML_HTML_S3_ENABLED Ened. ", self.json_data)
 
                 # Step 2: DOCX TO PDF using LIBRE then PDF to HTML using HTMLTOPDF.
                 # CONVERT DOCX TO PDF: LIBRE
-                log_info("generate_html :: DOCX to HTML FLOW2 START : FLOW_DOCX_LIBREHTML_LIBREPDF_PDFTOHTML_HTML_S3_ENABLED Started. ", None)
+                log_info("generate_html :: DOCX to HTML FLOW2 START : FLOW_DOCX_LIBREHTML_LIBREPDF_PDFTOHTML_HTML_S3_ENABLED Started. ", self.json_data)
 
                 html_out_flow2 = os.path.join(self.file_name_without_ext, config.TOOL_PDF_TO_HTML)
                 self.pdf_file_dir = self.create_pdf_out_dir(html_out_flow2)
@@ -266,7 +267,7 @@ class HtmlConvert(object):
                                                                                     tool=config.TOOL_LIBRE)
                 self.output_files[config.TYPE_PDF][config.TOOL_LIBRE] = generated_pdf_file_url_FLOW2
 
-                log_info("generate_html :: DOCX to HTML FLOW2 END : FLOW_DOCX_LIBREHTML_LIBREPDF_PDFTOHTML_HTML_S3_ENABLED Ened. ", None)
+                log_info("generate_html :: DOCX to HTML FLOW2 END : FLOW_DOCX_LIBREHTML_LIBREPDF_PDFTOHTML_HTML_S3_ENABLED Ened. ", self.json_data)
 
                 return self.output_files
 
@@ -305,7 +306,7 @@ class HtmlConvert(object):
                 self.output_files[config.TYPE_HTML][config.TOOL_PDF_TO_HTML] = generated_html_file_url
 
 
-                log_info("generate_html :: PPTX to HTML FLOW  END: FLOW_PPTX_LIBRE_PDF_PDFTOHTML_HTML_S3_ENABLED Ended.", None)
+                log_info("generate_html :: PPTX to HTML FLOW  END: FLOW_PPTX_LIBRE_PDF_PDFTOHTML_HTML_S3_ENABLED Ended.", self.json_data)
                 return self.output_files
 
             elif config.FLOW_PPTX_LIBRE_PDF_S3_ENABLED:
@@ -313,7 +314,7 @@ class HtmlConvert(object):
                 self.input_file_dir = config.download_folder
                 self.pdf_file_dir = self.create_pdf_out_dir(self.file_name_without_ext)
 
-                log_info("generate_html :: PPTX to PDF START : FLOW_PPTX_LIBRE_PDF_S3_ENABLED Started.", None)
+                log_info("generate_html :: PPTX to PDF START : FLOW_PPTX_LIBRE_PDF_S3_ENABLED Started.", self.json_data)
 
                 # CONVERT PPTX TO PDF: LIBRE
                 generated_pdf_file_path = self.convert_to_pdf(input_filename=input_filename, tool=config.TOOL_LIBRE)
@@ -325,5 +326,5 @@ class HtmlConvert(object):
                                                                               tool=config.TOOL_LIBRE)
                 self.output_files[config.TYPE_PDF][config.TOOL_LIBRE] = generated_pdf_file_url
 
-                log_info("generate_html :: PPTX to PDF END : FLOW_PPTX_LIBRE_PDF_S3_ENABLED Ended.", None)
+                log_info("generate_html :: PPTX to PDF END : FLOW_PPTX_LIBRE_PDF_S3_ENABLED Ended.", self.json_data)
                 return self.output_files

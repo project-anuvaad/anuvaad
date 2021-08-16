@@ -28,7 +28,11 @@ class CT_R(BaseOxmlElement):
     br = ZeroOrMore('w:br')
     cr = ZeroOrMore('w:cr')
     tab = ZeroOrMore('w:tab')
+
+    # TODO Added new tags
     drawing = ZeroOrMore('w:drawing')
+    pict = ZeroOrMore('w:pict')
+    # TODO Added new tags
 
     def _insert_rPr(self, rPr):
         self.insert(0, rPr)

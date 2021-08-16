@@ -12,7 +12,8 @@ file_ops = FileOperation()
 
 class ValidationResponse(object):
 
-    def __init__(self, DOWNLOAD_FOLDER):
+    def __init__(self, DOWNLOAD_FOLDER, json_data=None):
+        self.json_data = json_data
         self.DOWNLOAD_FOLDER = DOWNLOAD_FOLDER
 
     # workflow related key value errors
@@ -46,7 +47,7 @@ class ValidationResponse(object):
                     elif file_ops.check_file_extension(in_file_type) is False:
                         raise FileErrors("FILE_TYPE_ERROR", "This file type is not allowed.")
 
-                    elif file_ops.check_file_mime_type(file_path=input_filepath, in_file_type=in_file_type) is False:
+                    elif file_ops.check_file_mime_type(file_path=input_filepath, in_file_type=in_file_type, json_data=self.json_data) is False:
                         raise FileErrors("FILE_MIME_TYPE_ERROR", "This file MIME type is not allowed.")
 
                     elif in_file_type not in ['json'] and file_ops.check_path_exists(input_filepath) is False:

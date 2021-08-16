@@ -7,7 +7,7 @@ from utilities.model_response import Status
 from errors.errors_exception import KafkaProducerError
 from utilities.model_response import CustomResponse
 import config
-import json
+
 
 # kafka producer class
 class Producer(object):
@@ -16,7 +16,7 @@ class Producer(object):
 
     # publishing massage with kafka producer
     def producer_fn(self):
-        producer = KafkaProducer(bootstrap_servers = list(str(config.bootstrap_server).split(",")), value_serializer = lambda x: dumps(x).encode('utf-8'))
+        producer = KafkaProducer(bootstrap_servers = list(str(config.bootstrap_server).split(",")), value_serializer = lambda x:dumps(x).encode('utf-8'))
         return producer
 
     def push_data_to_queue(self, topic_name, push_data, json_data, task_id):

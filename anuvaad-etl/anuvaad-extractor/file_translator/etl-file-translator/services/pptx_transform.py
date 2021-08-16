@@ -13,7 +13,8 @@ from services.service import common_obj
 
 
 class PptxTransform(object):
-    def __init__(self, input_filename):
+    def __init__(self, input_filename, json_data):
+        self.json_data = json_data
         self.file_name_without_ext = os.path.splitext(input_filename)[0]
 
         self.outer_struct = common_obj.outer_struct
