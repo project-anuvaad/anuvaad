@@ -5,7 +5,6 @@ import random
 from kafka import KafkaProducer
 from configs.wfmconfig import kafka_bootstrap_server_host
 from configs.wfmconfig import module_wfm_name
-from configs.wfmconfig import total_no_of_partitions
 from anuvaad_auditor.errorhandler import post_error
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
@@ -27,13 +26,13 @@ class Producer:
         return producer
 
     # Method to push records to a topic in the kafka queue
-    def push_to_queue(self, object_in, topic):
+    def push_to_queue(self, object_in, topic, partitions):
         global topic_partition_map
         producer = self.instantiate()
-        partition = random.choice(list(range(0, total_no_of_partitions)))
+        partition = random.choice(list(range(0, partitions)))
         if topic in topic_partition_map.keys():
             while partition == topic_partition_map[topic]:
-                partition = random.choice(list(range(0, total_no_of_partitions)))
+                partition = random.choice(list(range(0, partitions)))
         topic_partition_map[topic] = partition
         try:
             if object_in:

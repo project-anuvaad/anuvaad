@@ -1,12 +1,13 @@
 import logging
-import threading
+import os
 import time
 
 from utilities.wfmutils import WFMUtils
 from kafkawrapper.wfmproducer import Producer
 from repository.wfmrepository import WFMRepository
 from validator.wfmvalidator import WFMValidator
-from configs.wfmconfig import anu_etl_wfm_core_topic, log_msg_start, log_msg_end, module_wfm_name, page_default_limit, anu_etl_notifier_input_topic
+from configs.wfmconfig import anu_etl_wfm_core_topic, log_msg_start, log_msg_end, module_wfm_name, page_default_limit, \
+    anu_etl_notifier_input_topic, total_no_of_partitions
 from anuvaad_auditor.errorhandler import post_error_wf, post_error, log_exception
 from anuvaad_auditor.loghandler import log_info, log_error
 
@@ -39,7 +40,7 @@ class WFMService:
         log_info("Initiating ASYNC job..", wf_async_input)
         client_output = self.get_wf_details_async(wf_async_input, None, False, None)
         self.update_job_details(client_output, True)
-        prod_res = producer.push_to_queue(client_output, anu_etl_wfm_core_topic)
+        prod_res = producer.push_to_queue(client_output, anu_etl_wfm_core_topic, total_no_of_partitions)
         if prod_res:
             client_output = self.get_wf_details_async(wf_async_input, None, False, prod_res)
             self.update_job_details(client_output, False)
@@ -128,6 +129,8 @@ class WFMService:
             client_output = self.get_wf_details_sync(None, tool_output, True, None)
             self.update_job_details(client_output, False)
             log_info("Job COMPLETED, jobID: " + str(wf_input["jobID"]), ctx)
+            client_output.pop("input")
+            client_output.pop("metadata")
             return client_output
         except Exception as e:
             log_exception("Exception while processing SYNC workflow: " + str(e), wf_input, e)
@@ -142,6 +145,7 @@ class WFMService:
         if not tool_response:
             log_error("Error from the tool: " + str(tool_details["name"]), wf_input, None)
             error = post_error("ERROR_FROM_TOOL", "Error from the tool: " + str(tool_details["name"]), None)
+            error["jobID"] = wf_input["jobID"]
             client_output = self.get_wf_details_sync(wf_input, None, True, error)
             self.update_job_details(client_output, False)
             log_info("Job FAILED, jobID: " + str(wf_input["jobID"]), wf_input)
@@ -151,7 +155,7 @@ class WFMService:
             if 'error' in tool_response.keys():
                 if tool_response["error"]:
                     fail_msg = "Error from the tool: " + str(tool_details["name"]) + " | Cause: " + str(
-                        tool_response["error"])
+                        tool_response["error"]["message"])
             elif 'http' in tool_response.keys():
                 if 'status' in tool_response["http"]:
                     if tool_response["http"]["status"] != 200:
@@ -159,10 +163,11 @@ class WFMService:
                             tool_response["why"])
             if fail_msg:
                 log_error(fail_msg, wf_input, None)
-                error = post_error("ERROR_FROM_TOOL", fail_msg, None)
+                error = post_error("ERROR_FROM_TOOL", fail_msg, tool_response["error"])
+                error["jobID"] = wf_input["jobID"]
                 client_output = self.get_wf_details_sync(wf_input, None, True, error)
                 self.update_job_details(client_output, False)
-                log_info("Job FAILED, jobID: " + str(wf_input["jobID"]), wf_input)
+                log_info("Job FAILED, jobID: {}".format(wf_input["jobID"]), wf_input)
                 return client_output
 
     # Method fetch wf details in a certain format using wf_input or task_output
@@ -173,13 +178,8 @@ class WFMService:
         else:
             wf_details = wfmutils.get_job_details(task_output["jobID"])
         if wf_details is None or len(wf_details) == 0:
-            client_input = {"workflowCode": wf_input["workflowCode"], "textBlocks": wf_input["textBlocks"],
-                            "recordID": wf_input["recordID"], "locale": wf_input["locale"], "model": wf_input["model"]}
-            if "modifiedSentences" in wf_input.keys():
-                client_input["modifiedSentences"] = wf_input["modifiedSentences"]
-            if "context" in wf_input.keys():
-                client_input["context"] = wf_input["context"]
-            client_output = {"input": client_input, "jobID": wf_input["jobID"],
+            config = wfmutils.get_configs()[wf_input["workflowCode"]]
+            client_output = {"input": wf_input, "jobID": wf_input["jobID"], "translation": config["translation"],
                              "workflowCode": wf_input["workflowCode"], "active": True,
                              "status": "STARTED", "state": "INITIATED", "metadata": wf_input["metadata"],
                              "startTime": eval(str(time.time()).replace('.', '')[0:13]), "taskDetails": []}
@@ -209,15 +209,16 @@ class WFMService:
             order_of_execution = wfmutils.get_order_of_exc(wf_input["workflowCode"])
             first_step_details = order_of_execution[0]
             first_tool = first_step_details["tool"][0]
-            input_topic = first_tool["kafka-input"][0]["topic"]
+            input_topic = os.environ.get(first_tool["kafka-input"][0]["topic"], "NA")
             first_tool_input = wfmutils.get_tool_input_async(first_tool["name"], None, None, wf_input)
-            if first_tool_input is None:
-                error = validator.get_error("INCOMPATIBLE_TOOL_SEQUENCE", "The workflow contains incompatible steps.")
+            if first_tool_input is None or input_topic == "NA":
+                error = post_error("INCOMPATIBLE_TOOL_SEQUENCE", "The workflow contains incompatible steps.", None)
                 client_output = self.get_wf_details_async(wf_input, None, True, error)
                 self.update_job_details(client_output, False)
                 log_error("The workflow contains incompatible steps.", wf_input, None)
                 return None
-            producer.push_to_queue(first_tool_input, input_topic)
+            partitions = os.environ.get(first_tool["kafka-input"][0]["partitions"], str(total_no_of_partitions))
+            producer.push_to_queue(first_tool_input, input_topic, eval(partitions))
             client_output = self.get_wf_details_async(wf_input, None, False, None)
             self.update_job_details(client_output, False)
             wf_input["metadata"]["module"] = module_wfm_name  # FOR LOGGING ONLY.
@@ -250,23 +251,23 @@ class WFMService:
                         return None
                     client_output = self.get_wf_details_async(None, task_output, False, None)
                     self.update_job_details(client_output, False)
-                    next_step_input = next_step_details[0]
-                    if next_step_input is None:
+                    next_step_input, next_tool = next_step_details[0], next_step_details[1]
+                    topic = os.environ.get(next_tool["kafka-input"][0]["topic"], "NA")
+                    partitions = os.environ.get(next_tool["kafka-input"][0]["partitions"], str(total_no_of_partitions))
+                    if next_step_input is None or topic == "NA":
                         log_error("The workflow contains incompatible steps in sequence. Please check the wf config.",
                                   task_output, None)
                         post_error_wf("INCOMPATIBLE_TOOL_SEQUENCE",
                                       "The wf contains incompatible steps in sequence. Please check the wf config.",
                                       task_output, None)
                         return None
-                    next_tool = next_step_details[1]
-                    step_completed = task_output["stepOrder"]
-                    next_step_input["stepOrder"] = step_completed + 1
-                    producer.push_to_queue(next_step_input, next_tool["kafka-input"][0]["topic"])
+                    next_step_input["stepOrder"] = task_output["stepOrder"] + 1
+                    producer.push_to_queue(next_step_input, topic, eval(partitions))
                     log_info(next_tool["name"] + log_msg_start + " jobID: " + task_output["jobID"], task_output)
                 else:
+                    log_info("Job COMPLETED: " + task_output["jobID"], task_output)
                     client_output = self.get_wf_details_async(None, task_output, True, None)
                     self.update_job_details(client_output, False)
-                    log_info("Job COMPLETED: " + task_output["jobID"], task_output)
             else:  # Safety else block, in case module fails to push data to error topic
                 log_error("Job FAILED: " + task_output["jobID"], task_output, None)
                 client_output = self.get_wf_details_async(None, task_output, False, task_output["error"])
@@ -279,7 +280,7 @@ class WFMService:
     # Method to push details to noifier module.
     def push_to_notifier(self, task_output):
         job_details = self.get_job_details_bulk({"jobIDs": [task_output["jobID"]]}, True)
-        producer.push_to_queue(anu_etl_notifier_input_topic, job_details)
+        producer.push_to_queue(anu_etl_notifier_input_topic, job_details, total_no_of_partitions)
         log_info("Job details pushed to notifier. | Topic -- {}".format(anu_etl_notifier_input_topic), task_output)
 
     # This method computes the input to the next step based on the step just completed.
@@ -319,12 +320,7 @@ class WFMService:
             task_details = []
             if task_output:
                 task_details = [task_output]
-            client_input = {"workflowCode": wf_input["workflowCode"], "files": wf_input["files"]}
-            if 'jobName' in wf_input.keys():
-                client_input["jobName"] = wf_input["jobName"]
-            if 'jobDescription' in wf_input.keys():
-                client_input["jobDescription"] = wf_input["jobDescription"]
-            client_output = {"input": client_input, "jobID": wf_input["jobID"],
+            client_output = {"input": wf_input, "jobID": wf_input["jobID"],
                              "workflowCode": wf_input["workflowCode"], "active": True,
                              "status": "STARTED", "state": "INITIATED", "metadata": wf_input["metadata"],
                              "startTime": eval(str(time.time()).replace('.', '')[0:13]), "taskDetails": task_details}

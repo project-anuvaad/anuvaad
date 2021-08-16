@@ -109,7 +109,7 @@ class TranslatorService:
             total_sentences, total_tmx, total_batches, tmx_file_cache = 0, 0, 0, {}
             tmx_file_cache = {}
             tmx_present, nonmt_user = \
-                self.get_rbac_tmx_utm(translate_wf_input["metadata"]["roles"], translate_wf_input, True)[0], False
+                utils.get_rbac_tmx_utm(translate_wf_input["metadata"]["roles"], translate_wf_input, True)[0], False
             if tmx_present:
                 tmx_present = self.is_tmx_present(file, translate_wf_input)
             if translate_wf_input["metadata"]["orgID"] in list(str(orgs_nmt_disable).split(",")):
@@ -211,7 +211,8 @@ class TranslatorService:
                         log_info("B_ID: " + batch_id + " | SENTENCES: " + str(len(batch)) +
                                  " | COMPUTED: " + str(bw_data[batch_id]["computed"]) + " | TMX: " + str(
                             bw_data[batch_id]["tmx_count"]), translate_wf_input)
-                        processed = self.process_api_translations(response, tmx_phrase_dict, nonmt_user, translate_wf_input)
+                        processed = self.process_api_translations(response, tmx_phrase_dict, nonmt_user,
+                                                                  translate_wf_input)
                         if not processed:
                             return None
                     else:
@@ -238,22 +239,6 @@ class TranslatorService:
             log_exception("Exception while fetching topic from conn details: {}".format(str(e)), translate_wf_input, e)
         log_info("Falling back to default Anuvaad NMT topic......", translate_wf_input)
         return anu_nmt_input_topic
-
-    # Method to check if tmx and utm are enabled based on role
-    def get_rbac_tmx_utm(self, roles, translate_wf_input, log):
-        tmx_enabled, utm_enabled = True, True
-        tmx_dis_roles, utm_dis_roles = list(tmx_disable_roles.split(",")), list(utm_disable_roles.split(","))
-        roles = list(roles.split(","))
-        for role in roles:
-            if role in tmx_dis_roles:
-                tmx_enabled = False
-                if log:
-                    log_info("TMX Disabled for this user!", translate_wf_input)
-            if role in utm_dis_roles:
-                utm_enabled = False
-                if log:
-                    log_info("UTM Disabled for this user!", translate_wf_input)
-        return tmx_enabled, utm_enabled
 
     # Method to fetch batches for sentences from the file for a page.
     def fetch_batches_of_sentences(self, file, record_id, page, tmx_present, tmx_file_cache, third_party,
@@ -350,8 +335,6 @@ class TranslatorService:
     # Consumer record handler
     def process_nmt_output(self, nmt_output):
         nmt_output = nmt_output["out"]
-        '''nmt_trans_process = Process(target=self.process_translation, args=(nmt_output,))
-        nmt_trans_process.start()'''
         self.process_translation(nmt_output)
         return
 
@@ -380,7 +363,7 @@ class TranslatorService:
                               nmt_output["status"])
             if 'data' in nmt_output.keys():
                 if not nmt_output["data"]:
-                    log_error("NMT returned empty data[]!", translate_wf_input, None)
+                    log_error("NMT returned empty data!", translate_wf_input, None)
                     skip_count += batch_size
                 sentences_of_the_batch = []
                 for response in nmt_output["data"]:
@@ -416,26 +399,28 @@ class TranslatorService:
         try:
             for translation in api_response["data"]:
                 if type(translation) == "str":
-                    translation = json.loads(translation)
-                if "s_id" not in translation.keys():
-                    log_error("S_ID missing for SRC: {}".format(translation["src"]), translate_wf_input, None)
+                    translation_formatted = json.loads(translation)
+                else:
+                    translation_formatted = translation
+                if "s_id" not in translation_formatted.keys():
+                    log_error("S_ID missing for SRC: {}".format(translation_formatted["src"]), translate_wf_input, None)
                     continue
-                translation_obj = {"src": translation["src"],
-                                   "n_id": translation["s_id"].split("xxx")[0],
-                                   "batch_id": translation["s_id"].split("xxx")[1],
-                                   "s_id": translation["s_id"].split("xxx")[2]}
+                translation_obj = {"src": translation_formatted["src"],
+                                   "n_id": translation_formatted["s_id"].split("xxx")[0],
+                                   "batch_id": translation_formatted["s_id"].split("xxx")[1],
+                                   "s_id": translation_formatted["s_id"].split("xxx")[2]}
                 if not no_nmt:
-                    if 'tgt' not in translation.keys():
-                        log_error("TGT missing for SRC: {}".format(translation["src"]), translate_wf_input, None)
+                    if 'tgt' not in translation_formatted.keys():
+                        log_error("TGT missing for SRC: {}".format(translation_formatted["src"]), translate_wf_input, None)
                     else:
-                        translation_obj["tgt"] = translation["tgt"]
-                if 'tmx_phrases' not in translation.keys():
+                        translation_obj["tgt"] = translation_formatted["tgt"]
+                if 'tmx_phrases' not in translation_formatted.keys():
                     translation_obj["tmx_phrases"] = []
                     if tmx_phrase_dict:
-                        tmx = tmx_phrase_dict[translation["s_id"]]
+                        tmx = tmx_phrase_dict[translation_formatted["s_id"]]
                         translation_obj["tmx_phrases"] = tmx if tmx else []
                 else:
-                    translation_obj["tmx_phrases"] = translation["tmx_phrases"]
+                    translation_obj["tmx_phrases"] = translation_formatted["tmx_phrases"]
                 record_id = translation_obj["n_id"].split("|")[0] + "|" + translation_obj["n_id"].split("|")[1]
                 batch_id = translation_obj["batch_id"]
                 api_res_translations.append(translation_obj)
@@ -459,7 +444,9 @@ class TranslatorService:
             return True
         except Exception as e:
             log_exception("Exception while processing the API output -- {}".format(e), translate_wf_input, e)
-            post_error_wf("TRANSLATION_ERROR", "Exception while processing the API output -- {}".format(e), translate_wf_input, e)
+            log_exception("API Response -- {}".format(api_response), translate_wf_input, e)
+            post_error_wf("TRANSLATION_ERROR", "Exception while processing the API output -- {}".format(e),
+                          translate_wf_input, e)
             return False
 
     # Method to search data from db
@@ -489,8 +476,10 @@ class TranslatorService:
         page_no = str(nmt_res_batch[0]["n_id"]).split("|")[2]
         page = repo.fetch_pages({"record_id": record_id, "page_no": eval(page_no)})[0]
         page_enriched = page
-        utm_enabled = self.get_rbac_tmx_utm(translate_wf_input["metadata"]["roles"], translate_wf_input, False)[1]
+        utm_enabled = utils.get_rbac_tmx_utm(translate_wf_input["metadata"]["roles"], translate_wf_input, False)[1]
         for nmt_res_sentence in nmt_res_batch:
+            if 'tgt' not in nmt_res_sentence.keys():
+                nmt_res_sentence["tgt"] = None
             node = str(nmt_res_sentence["n_id"]).split("|")
             if user_translation_enabled and utm_enabled:
                 user_id = translate_wf_input["metadata"]["userID"]
@@ -512,13 +501,13 @@ class TranslatorService:
                                 nmt_res_sentence["tgt"] = tgt["tgt"]
                                 nmt_res_sentence["tmx_phrases"] = []
             if nmt_res_sentence["tmx_phrases"]:
-                log_info("PAGE NO: " + str(page_no) + " BATCH ID: " + nmt_res_sentence["batch_id"] + " | SRC: " +
-                         nmt_res_sentence["src"] +
-                         " | TGT: " + nmt_res_sentence["tgt"] + " | TMX Count: " + str(
-                    len(nmt_res_sentence["tmx_phrases"])), translate_wf_input)
-                nmt_res_sentence["tgt"] = tmxservice.replace_nmt_tgt_with_user_tgt(nmt_res_sentence["tmx_phrases"],
-                                                                                   nmt_res_sentence["tgt"],
-                                                                                   translate_wf_input)
+                log_info("PAGE NO: {} | BATCH ID: {} "
+                         "| SRC: {} | TGT: {} | TMX Count: {}".format(page_no, nmt_res_sentence["batch_id"],
+                          nmt_res_sentence["src"], nmt_res_sentence["tgt"], str(len(nmt_res_sentence["tmx_phrases"]))),
+                         translate_wf_input)
+                nmt_res_sentence["tgt"], nmt_res_sentence["tmx_replacement"] = tmxservice.replace_nmt_tgt_with_user_tgt(
+                    nmt_res_sentence["tmx_phrases"], nmt_res_sentence["tgt"], translate_wf_input)
+                log_info(nmt_res_sentence["tmx_replacement"], translate_wf_input)
             block_id = node[3]
             b_index, s_index = None, None
             sentence_id = nmt_res_sentence["s_id"]

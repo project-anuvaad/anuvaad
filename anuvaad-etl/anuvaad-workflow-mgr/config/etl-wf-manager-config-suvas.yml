@@ -1,6 +1,219 @@
 WorkflowConfigs:
 
 
+  - workflowCode: WF_A_AL
+    type: ASYNC
+    description: Aligns the input files. 
+    useCase: A_A
+    sequence:
+    - order: 0
+      tool:
+      - name: ALIGNER
+        description: Accepts 2 parallel files and alings them into parallel corp for training
+        kafka-input:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_ALIGNER_INPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+        kafka-output:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_ALIGNER_OUTPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+      endState: true
+
+
+
+  - workflowCode: WF_A_FC
+    type: ASYNC
+    description: converts a file into pdf and other formats
+    useCase: A_F
+    sequence:
+    - order: 0
+      tool:
+      - name: FILE-CONVERTER
+        description: converts a file into pdf and other formats.
+        kafka-input:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_FC_INPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+        kafka-output:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_FC_OUTPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+      endState: true
+
+
+
+  - workflowCode: WF_A_BM
+    type: ASYNC
+    description: extracts different blocks from a pdf file.
+    useCase: A_B
+    sequence:
+    - order: 0
+      tool:
+      - name: BLOCK-MERGER
+        description: extracts different blocks from a pdf file.
+        kafka-input:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_BLOCK_MERGER_INPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+        kafka-output:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_BLOCK_MERGER_OUTPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+      endState: true
+
+
+  - workflowCode: WF_A_TOK
+    type: ASYNC
+    description: tokenises a given txt file
+    useCase: A_TK
+    sequence:
+    - order: 0
+      tool:
+      - name: TOKENISER
+        description: Tokenises a given file with paragraphs
+        kafka-input:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_TOKENISER_INPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+        kafka-output:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_TOKENISER_OUTPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+      endState: true
+
+
+
+  - workflowCode: WF_A_WD
+    type: ASYNC
+    description: word detection wf.
+    useCase: A_W
+    sequence:
+    - order: 0
+      tool:
+      - name: WORD-DETECTOR
+        description: detects word blocks from a given file
+        kafka-input:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_WORD_DETECTOR_CRAFT_INPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+        kafka-output:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_WORD_DETECTOR_CRAFT_OUTPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+      endState: true
+
+
+
+  - workflowCode: WF_A_LD
+    type: ASYNC
+    description: layout detection wf.
+    useCase: A_L
+    sequence:
+    - order: 0
+      tool:
+      - name: LAYOUT-DETECTOR
+        description: detects layouts from a given file
+        kafka-input:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_LAYOUT_DETECTOR_PRIMA_INPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+        kafka-output:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_LAYOUT_DETECTOR_PRIMA_OUTPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+      endState: true
+
+
+
+  - workflowCode: WF_A_OD10GV
+    type: ASYNC
+    description: gv-ocr wf for doc digitisation. ocr wf 1.0
+    useCase: A_OD10GV
+    sequence:
+    - order: 0
+      tool:
+      - name: OCR-DD10-GOOGLE-VISION
+        description: ocr using google vision for doc digitisation.
+        kafka-input:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_GV_DOCUMENT_DIGITIZATION_INPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+        kafka-output:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_GV_DOCUMENT_DIGITIZATION_OUTPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+      endState: true
+
+
+
+
+  - workflowCode: WF_A_OD15GV
+    type: ASYNC
+    description: gv-ocr wf for doc digitisation. ocr wf 1.5
+    useCase: A_OD15GV
+    sequence:
+    - order: 0
+      tool:
+      - name: OCR-DD15-GOOGLE-VISION
+        description: ocr using google vision for doc digitisation.
+        kafka-input:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_OCR_GOOGLE_VISION_INPUT_V15
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+        kafka-output:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_OCR_GOOGLE_VISION_OUTPUT_V15
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+      endState: true
+      
+
+
+
+  - workflowCode: WF_A_OTES
+    type: ASYNC
+    description: tess-ocr wf.
+    useCase: A_OTES
+    sequence:
+    - order: 0
+      tool:
+      - name: OCR-TESSERACT
+        description: ocr using tesseract
+        kafka-input:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_OCR_TESSERACT_INPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+        kafka-output:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_OCR_TESSERACT_OUTPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+      endState: true
+
+
+
+
+  - workflowCode: WF_A_BS
+    type: ASYNC
+    description: block segmentation process
+    useCase: A_BS
+    sequence:
+    - order: 0
+      tool:
+      - name: BLOCK-SEGMENTER
+        description: block segmentation process
+        kafka-input:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_BLOCK_SEGMENTER_INPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC2
+        kafka-output:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_BLOCK_SEGMENTER_OUTPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+      endState: true
+
+
+
+
+  - workflowCode: WF_A_OTK
+    type: ASYNC
+    description: OCR Tokeniser process
+    useCase: A_OT
+    sequence:
+    - order: 0
+      tool:
+      - name: OCR-TOKENISER
+        description: OCR Tokeniser process
+        kafka-input:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_TOKENISER_OCR_INPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+        kafka-output:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_TOKENISER_OCR_OUTPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+      endState: true
+
+
+
+
   - workflowCode: WF_A_AN
     type: ASYNC
     description: WF for annotation
@@ -11,56 +224,11 @@ WorkflowConfigs:
       - name: ANNOTATOR
         description: WF for annotation
         kafka-input:
-        - topic: anuvaad-dp-tools-sentence-annotation-input-v1
-          partitions: 2
-          keys: anuvaad-dp-tools-sentence-annotation-input-key-one, anuvaad-dp-tools-sentence-annotation-input-key-two
-          assignment: round-robin
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_SENTENCE_ANNOTATION_INPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
         kafka-output:
-        - topic: anuvaad-dp-tools-sentence-annotation-output-v1
-          partitions: 2
-          keys: anuvaad-dp-tools-sentence-annotation-output-key-one, anuvaad-dp-tools-sentence-annotation-output-key-two
-          assignment: round-robin
-      interruptenable: true
-      endState: true
-
-
-
-  - workflowCode: WF_A_FCBM
-    type: ASYNC
-    description: converts file into pdf and then extracts multiple blocks.
-    useCase: A_FB
-    sequence:
-    - order: 0
-      tool:
-      - name: FILE-CONVERTER
-        description: converts a file into pdf and other formats.
-        kafka-input:
-        - topic: anuvaad-dp-tools-fc-input-v1
-          partitions: 2
-          keys: anuvaad-dp-tools-fc-input-key-one, anuvaad-dp-tools-fc-input-key-two
-          assignment: round-robin
-        kafka-output:
-        - topic: anuvaad-dp-tools-fc-output-v1
-          partitions: 2
-          keys: anuvaad-dp-tools-fc-output-key-one, anuvaad-dp-tools-fc-output-key-two
-          assignment: round-robin
-      interruptenable: true
-      endState: false
-    - order: 1
-      tool:
-      - name: BLOCK-MERGER
-        description: extracts different blocks from a pdf file.
-        kafka-input:
-        - topic: anuvaad-dp-tools-block-merger-input-v2
-          partitions: 2
-          keys: anuvaad-dp-tools-block-merger-input-key-one, anuvaad-dp-tools-block-merger-input-key-two
-          assignment: round-robin
-        kafka-output:
-        - topic: anuvaad-dp-tools-block-merger-output-v2
-          partitions: 2
-          keys: anuvaad-dp-tools-block-merger-output-key-one, anuvaad-dp-tools-block-merger-output-key-two
-          assignment: round-robin
-      interruptenable: true
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_SENTENCE_ANNOTATION_OUTPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
       endState: true
 
 
@@ -75,90 +243,135 @@ WorkflowConfigs:
       - name: FILE-CONVERTER
         description: converts a file into pdf and other formats.
         kafka-input:
-        - topic: anuvaad-dp-tools-fc-input-v1
-          partitions: 2
-          keys: anuvaad-dp-tools-fc-input-key-one, anuvaad-dp-tools-fc-input-key-two
-          assignment: round-robin
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_FC_INPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
         kafka-output:
-        - topic: anuvaad-dp-tools-fc-output-v1
-          partitions: 2
-          keys: anuvaad-dp-tools-fc-output-key-one, anuvaad-dp-tools-fc-output-key-two
-          assignment: round-robin
-      interruptenable: true
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_FC_OUTPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
       endState: false
     - order: 1
       tool:
       - name: OCR-DD10-GOOGLE-VISION
         description: ocr using google vision for doc digitisation.
         kafka-input:
-        - topic: anuvaad-dp-tools-gv-document-digitization-input-v10
-          partitions: 2
-          keys: anuvaad-dp-tools-gv-document-digitization-input-key-one, anuvaad-dp-tools-gv-document-digitization-input-key-two
-          assignment: round-robin
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_GV_DOCUMENT_DIGITIZATION_INPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
         kafka-output:
-        - topic: anuvaad-dp-tools-gv-document-digitization-output-v10
-          partitions: 2
-          keys: anuvaad-dp-tools-gv-document-digitization-output-key-one, anuvaad-dp-tools-gv-document-digitization-output-key-two
-          assignment: round-robin
-      interruptenable: true
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_GV_DOCUMENT_DIGITIZATION_OUTPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
       endState: true
-      
 
 
-  - workflowCode: WF_A_FCBMTK
+
+  - workflowCode: WF_A_FCWDLD
     type: ASYNC
-    description: converts file into pdf and then extracts multiple blocks. Text content of each block is tokenised.
-    useCase: A_FBT
+    description: converts file into pdf and then detects words and layouts using CV.
+    useCase: A_FWL
     sequence:
     - order: 0
       tool:
       - name: FILE-CONVERTER
         description: converts a file into pdf and other formats.
         kafka-input:
-        - topic: anuvaad-dp-tools-fc-input-v1
-          partitions: 2
-          keys: anuvaad-dp-tools-fc-input-key-one, anuvaad-dp-tools-fc-input-key-two
-          assignment: round-robin
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_FC_INPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
         kafka-output:
-        - topic: anuvaad-dp-tools-fc-output-v1
-          partitions: 2
-          keys: anuvaad-dp-tools-fc-output-key-one, anuvaad-dp-tools-fc-output-key-two
-          assignment: round-robin
-      interruptenable: true
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_FC_OUTPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
       endState: false
     - order: 1
       tool:
-      - name: BLOCK-MERGER
-        description: extracts different blocks from a pdf file.
+      - name: WORD-DETECTOR
+        description: detects word blocks from a given file
         kafka-input:
-        - topic: anuvaad-dp-tools-block-merger-input-v2
-          partitions: 2
-          keys: anuvaad-dp-tools-block-merger-input-key-one, anuvaad-dp-tools-block-merger-input-key-two
-          assignment: round-robin
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_WORD_DETECTOR_CRAFT_INPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
         kafka-output:
-        - topic: anuvaad-dp-tools-block-merger-output-v2
-          partitions: 2
-          keys: anuvaad-dp-tools-block-merger-output-key-one, anuvaad-dp-tools-block-merger-output-key-two
-          assignment: round-robin
-      interruptenable: true
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_WORD_DETECTOR_CRAFT_OUTPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
       endState: false
     - order: 2
       tool:
-      - name: TOKENISER
-        description: Tokenises a given file with paragraphs
+      - name: LAYOUT-DETECTOR
+        description: detects layouts from a given file
         kafka-input:
-        - topic: anuvaad-dp-tools-tokeniser-input-v1
-          partitions: 2
-          keys: tokeniser-input-key-one, tokeniser-input-key-two
-          assignment: round-robin
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_LAYOUT_DETECTOR_PRIMA_INPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
         kafka-output:
-        - topic: anuvaad-dp-tools-tokeniser-output-v1
-          partitions: 2
-          keys: tokeniser-output-key-one, tokeniser-output-key-two
-          assignment: round-robin
-      interruptenable: true
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_LAYOUT_DETECTOR_PRIMA_OUTPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
       endState: true
 
+
+
+  - workflowCode: WF_A_OD10GVOTK
+    type: ASYNC
+    description: gv-ocr wf for doc digitisation and tokenisation. ocr wf 1.0
+    useCase: A_OD10GVOT
+    sequence:
+    - order: 0
+      tool:
+      - name: OCR-DD10-GOOGLE-VISION
+        description: ocr using google vision for doc digitisation.
+        kafka-input:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_GV_DOCUMENT_DIGITIZATION_INPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+        kafka-output:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_GV_DOCUMENT_DIGITIZATION_OUTPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+      endState: false
+    - order: 1
+      tool:
+      - name: OCR-TOKENISER
+        description: OCR Tokeniser process
+        kafka-input:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_TOKENISER_OCR_INPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+        kafka-output:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_TOKENISER_OCR_OUTPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+      endState: true
+
+
+
+  - workflowCode: WF_A_FCOD10GVOTK
+    type: ASYNC
+    description: gv-ocr wf for doc digitisation and tokenisation. ocr wf 1.0
+    useCase: A_FOD10GVOT
+    sequence:
+    - order: 0
+      tool:
+      - name: FILE-CONVERTER
+        description: converts a file into pdf and other formats.
+        kafka-input:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_FC_INPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+        kafka-output:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_FC_OUTPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+      endState: false
+    - order: 1
+      tool:
+      - name: OCR-DD10-GOOGLE-VISION
+        description: ocr using google vision for doc digitisation.
+        kafka-input:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_GV_DOCUMENT_DIGITIZATION_INPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+        kafka-output:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_GV_DOCUMENT_DIGITIZATION_OUTPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+      endState: false
+    - order: 2
+      tool:
+      - name: OCR-TOKENISER
+        description: OCR Tokeniser process
+        kafka-input:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_TOKENISER_OCR_INPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+        kafka-output:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_TOKENISER_OCR_OUTPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+      endState: true
 
 
 
@@ -172,120 +385,148 @@ WorkflowConfigs:
       - name: FILE-CONVERTER
         description: converts a file into pdf and other formats.
         kafka-input:
-        - topic: anuvaad-dp-tools-fc-input-v1
-          partitions: 2
-          keys: anuvaad-dp-tools-fc-input-key-one, anuvaad-dp-tools-fc-input-key-two
-          assignment: round-robin
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_FC_INPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
         kafka-output:
-        - topic: anuvaad-dp-tools-fc-output-v1
-          partitions: 2
-          keys: anuvaad-dp-tools-fc-output-key-one, anuvaad-dp-tools-fc-output-key-two
-          assignment: round-robin
-      interruptenable: true
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_FC_OUTPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
       endState: false
     - order: 1
       tool:
       - name: BLOCK-MERGER
         description: extracts different blocks from a pdf file.
         kafka-input:
-        - topic: anuvaad-dp-tools-block-merger-input-v2
-          partitions: 2
-          keys: anuvaad-dp-tools-block-merger-input-key-one, anuvaad-dp-tools-block-merger-input-key-two
-          assignment: round-robin
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_BLOCK_MERGER_INPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
         kafka-output:
-        - topic: anuvaad-dp-tools-block-merger-output-v2
-          partitions: 2
-          keys: anuvaad-dp-tools-block-merger-output-key-one, anuvaad-dp-tools-block-merger-output-key-two
-          assignment: round-robin
-      interruptenable: true
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_BLOCK_MERGER_OUTPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
       endState: false
     - order: 2
       tool:
       - name: TOKENISER
         description: Tokenises a given file with paragraphs
         kafka-input:
-        - topic: anuvaad-dp-tools-tokeniser-input-v1
-          partitions: 2
-          keys: tokeniser-input-key-one, tokeniser-input-key-two
-          assignment: round-robin
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_TOKENISER_INPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
         kafka-output:
-        - topic: anuvaad-dp-tools-tokeniser-output-v1
-          partitions: 2
-          keys: tokeniser-output-key-one, tokeniser-output-key-two
-          assignment: round-robin
-      interruptenable: true
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_TOKENISER_OUTPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
       endState: false
     - order: 3
       tool:
       - name: TRANSLATOR
         description: Translates sentences from a bm-tok processed json file.
         kafka-input:
-        - topic: anuvaad-dp-tools-translator-input-v3
-          partitions: 2
-          keys: anuvaad-dp-tools-translator-input-key-one, anuvaad-dp-tools-translator-input-key-two
-          assignment: round-robin
+        - topic: KAFKA_ANUVAAD_DP_TRANSLATOR_INPUT_TOPIC
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
         kafka-output:
-        - topic: anuvaad-dp-tools-translator-output-v3
-          partitions: 2
-          keys: anuvaad-dp-tools-translator-output-key-one, anuvaad-dp-tools-translator-output-key-two
-          assignment: round-robin
-      interruptenable: true
+        - topic: KAFKA_ANUVAAD_DP_TRANSLATOR_OUTPUT_TOPIC
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
       endState: true
 
 
 
-  - workflowCode: WF_A_BMTKTR
+  - workflowCode: WF_A_FTTKTR
     type: ASYNC
-    description: extracts multiple blocks from pdf. Text content of each block is tokenised and translated
-    useCase: A_BTTR
+    description: WF for translating docx/pptx
+    useCase: A_FTTTR
     sequence:
     - order: 0
       tool:
-      - name: BLOCK-MERGER
-        description: extracts different blocks from a pdf file.
+      - name: FILE-TRANSLATOR
+        description: WF for docx translation
         kafka-input:
-        - topic: anuvaad-dp-tools-block-merger-input-v2
-          partitions: 2
-          keys: anuvaad-dp-tools-block-merger-input-key-one, anuvaad-dp-tools-block-merger-input-key-two
-          assignment: round-robin
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_FT_INPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
         kafka-output:
-        - topic: anuvaad-dp-tools-block-merger-output-v2
-          partitions: 2
-          keys: anuvaad-dp-tools-block-merger-output-key-one, anuvaad-dp-tools-block-merger-output-key-two
-          assignment: round-robin
-      interruptenable: true
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_FT_OUTPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
       endState: false
     - order: 1
       tool:
       - name: TOKENISER
         description: Tokenises a given file with paragraphs
         kafka-input:
-        - topic: anuvaad-dp-tools-tokeniser-input-v1
-          partitions: 2
-          keys: tokeniser-input-key-one, tokeniser-input-key-two
-          assignment: round-robin
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_TOKENISER_INPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
         kafka-output:
-        - topic: anuvaad-dp-tools-tokeniser-output-v1
-          partitions: 2
-          keys: tokeniser-output-key-one, tokeniser-output-key-two
-          assignment: round-robin
-      interruptenable: true
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_TOKENISER_OUTPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
       endState: false
     - order: 2
       tool:
       - name: TRANSLATOR
         description: Translates sentences from a bm-tok processed json file.
         kafka-input:
-        - topic: anuvaad-dp-tools-translator-input-v3
-          partitions: 2
-          keys: anuvaad-dp-tools-translator-input-key-one, anuvaad-dp-tools-translator-input-key-two
-          assignment: round-robin
+        - topic: KAFKA_ANUVAAD_DP_TRANSLATOR_INPUT_TOPIC
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
         kafka-output:
-        - topic: anuvaad-dp-tools-translator-output-v3
-          partitions: 2
-          keys: anuvaad-dp-tools-translator-output-key-one, anuvaad-dp-tools-translator-output-key-two
-          assignment: round-robin
-      interruptenable: true
+        - topic: KAFKA_ANUVAAD_DP_TRANSLATOR_OUTPUT_TOPIC
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+      endState: true
+
+
+
+  - workflowCode: WF_A_FCWDLDBSOTES
+    type: ASYNC
+    description: Document digitizarion wf.
+    useCase: A_FWLBOT
+    sequence:
+    - order: 0
+      tool:
+      - name: FILE-CONVERTER
+        description: converts a file into pdf and other formats.
+        kafka-input:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_FC_INPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+        kafka-output:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_FC_OUTPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+      endState: false
+    - order: 1
+      tool:
+      - name: WORD-DETECTOR
+        description: detects word blocks from a given file
+        kafka-input:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_WORD_DETECTOR_CRAFT_INPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+        kafka-output:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_WORD_DETECTOR_CRAFT_OUTPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+      endState: false
+    - order: 2
+      tool:
+      - name: LAYOUT-DETECTOR
+        description: detects layouts from a given file
+        kafka-input:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_LAYOUT_DETECTOR_PRIMA_INPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+        kafka-output:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_LAYOUT_DETECTOR_PRIMA_OUTPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+      endState: false
+    - order: 3
+      tool:
+      - name: BLOCK-SEGMENTER
+        description: block segmentation process
+        kafka-input:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_BLOCK_SEGMENTER_INPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC2
+        kafka-output:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_BLOCK_SEGMENTER_OUTPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+      endState: false
+    - order: 4
+      tool:
+      - name: OCR-TESSERACT
+        description: ocr using tesseract
+        kafka-input:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_OCR_TESSERACT_INPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+        kafka-output:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_OCR_TESSERACT_OUTPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
       endState: true
 
 
@@ -300,80 +541,55 @@ WorkflowConfigs:
       - name: FILE-CONVERTER
         description: converts a file into pdf and other formats.
         kafka-input:
-        - topic: anuvaad-dp-tools-fc-input-v1
-          partitions: 2
-          keys: anuvaad-dp-tools-fc-input-key-one, anuvaad-dp-tools-fc-input-key-two
-          assignment: round-robin
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_FC_INPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
         kafka-output:
-        - topic: anuvaad-dp-tools-fc-output-v1
-          partitions: 2
-          keys: anuvaad-dp-tools-fc-output-key-one, anuvaad-dp-tools-fc-output-key-two
-          assignment: round-robin
-      interruptenable: true
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_FC_OUTPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
       endState: false
     - order: 1
       tool:
       - name: WORD-DETECTOR
         description: detects word blocks from a given file
         kafka-input:
-        - topic: anuvaad-dp-tools-word-detector-craft-input-v1
-          partitions: 2
-          keys: anuvaad-dp-tools-word-detector-craft-input-key-one, anuvaad-dp-tools-word-detector-craft-input-key-two
-          assignment: round-robin
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_WORD_DETECTOR_CRAFT_INPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
         kafka-output:
-        - topic: anuvaad-dp-tools-word-detector-craft-output-v1
-          partitions: 2
-          keys: anuvaad-dp-tools-word-detector-craft-output-key-one, anuvaad-dp-tools-word-detector-craft-output-key-two
-          assignment: round-robin
-      interruptenable: true
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_WORD_DETECTOR_CRAFT_OUTPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
       endState: false
     - order: 2
       tool:
       - name: LAYOUT-DETECTOR
         description: detects layouts from a given file
         kafka-input:
-        - topic: anuvaad-dp-tools-layout-detector-prima-input-v1
-          partitions: 2
-          keys: anuvaad-dp-tools-layout-detector-prima-input-key-one, anuvaad-dp-tools-layout-detector-prima-input-key-two
-          assignment: round-robin
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_LAYOUT_DETECTOR_PRIMA_INPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
         kafka-output:
-        - topic: anuvaad-dp-tools-layout-detector-prima-output-v1
-          partitions: 2
-          keys: anuvaad-dp-tools-layout-detector-prima-output-key-one, anuvaad-dp-tools-layout-detector-prima-output-key-two
-          assignment: round-robin
-      interruptenable: true
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_LAYOUT_DETECTOR_PRIMA_OUTPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
       endState: false
     - order: 3
       tool:
       - name: BLOCK-SEGMENTER
         description: block segmentation process
         kafka-input:
-        - topic: anuvaad-dp-tools-block-segmenter-input-v1
-          partitions: 2
-          keys: anuvaad-dp-tools-block-segmenter-input-key-one, anuvaad-dp-tools-block-segmenter-input-key-two
-          assignment: round-robin
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_BLOCK_SEGMENTER_INPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC2
         kafka-output:
-        - topic: anuvaad-dp-tools-block-segmenter-output-v1
-          partitions: 2
-          keys: anuvaad-dp-tools-block-segmenter-output-key-one, anuvaad-dp-tools-block-segmenter-output-key-two
-          assignment: round-robin
-      interruptenable: true
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_BLOCK_SEGMENTER_OUTPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
       endState: false
     - order: 4
       tool:
       - name: OCR-DD15-GOOGLE-VISION
-        description: ocr using google vision for doc digitisation wf 1.5
+        description: ocr using google vision for doc digitisation.
         kafka-input:
-        - topic: anuvaad-dp-tools-ocr-google-vision-input-v15
-          partitions: 2
-          keys: anuvaad-dp-tools-ocr-google-vision-input-key-one, anuvaad-dp-tools-ocr-google-vision-input-key-two
-          assignment: round-robin
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_OCR_GOOGLE_VISION_INPUT_V15
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
         kafka-output:
-        - topic: anuvaad-dp-tools-ocr-google-vision-output-v15
-          partitions: 2
-          keys: anuvaad-dp-tools-ocr-google-vision-output-key-one, anuvaad-dp-tools-ocr-google-vision-output-key-two
-          assignment: round-robin
-      interruptenable: true
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_OCR_GOOGLE_VISION_OUTPUT_V15
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
       endState: true
 
 
@@ -389,102 +605,73 @@ WorkflowConfigs:
       - name: FILE-CONVERTER
         description: converts a file into pdf and other formats.
         kafka-input:
-        - topic: anuvaad-dp-tools-fc-input-v1
-          partitions: 2
-          keys: anuvaad-dp-tools-fc-input-key-one, anuvaad-dp-tools-fc-input-key-two
-          assignment: round-robin
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_FC_INPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
         kafka-output:
-        - topic: anuvaad-dp-tools-fc-output-v1
-          partitions: 2
-          keys: anuvaad-dp-tools-fc-output-key-one, anuvaad-dp-tools-fc-output-key-two
-          assignment: round-robin
-      interruptenable: true
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_FC_OUTPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
       endState: false
     - order: 1
       tool:
       - name: WORD-DETECTOR
         description: detects word blocks from a given file
         kafka-input:
-        - topic: anuvaad-dp-tools-word-detector-craft-input-v1
-          partitions: 2
-          keys: anuvaad-dp-tools-word-detector-craft-input-key-one, anuvaad-dp-tools-word-detector-craft-input-key-two
-          assignment: round-robin
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_WORD_DETECTOR_CRAFT_INPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
         kafka-output:
-        - topic: anuvaad-dp-tools-word-detector-craft-output-v1
-          partitions: 2
-          keys: anuvaad-dp-tools-word-detector-craft-output-key-one, anuvaad-dp-tools-word-detector-craft-output-key-two
-          assignment: round-robin
-      interruptenable: true
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_WORD_DETECTOR_CRAFT_OUTPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
       endState: false
     - order: 2
       tool:
       - name: LAYOUT-DETECTOR
         description: detects layouts from a given file
         kafka-input:
-        - topic: anuvaad-dp-tools-layout-detector-prima-input-v1
-          partitions: 2
-          keys: anuvaad-dp-tools-layout-detector-prima-input-key-one, anuvaad-dp-tools-layout-detector-prima-input-key-two
-          assignment: round-robin
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_LAYOUT_DETECTOR_PRIMA_INPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
         kafka-output:
-        - topic: anuvaad-dp-tools-layout-detector-prima-output-v1
-          partitions: 2
-          keys: anuvaad-dp-tools-layout-detector-prima-output-key-one, anuvaad-dp-tools-layout-detector-prima-output-key-two
-          assignment: round-robin
-      interruptenable: true
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_LAYOUT_DETECTOR_PRIMA_OUTPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
       endState: false
     - order: 3
       tool:
       - name: BLOCK-SEGMENTER
         description: block segmentation process
         kafka-input:
-        - topic: anuvaad-dp-tools-block-segmenter-input-v1
-          partitions: 2
-          keys: anuvaad-dp-tools-block-segmenter-input-key-one, anuvaad-dp-tools-block-segmenter-input-key-two
-          assignment: round-robin
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_BLOCK_SEGMENTER_INPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC2
         kafka-output:
-        - topic: anuvaad-dp-tools-block-segmenter-output-v1
-          partitions: 2
-          keys: anuvaad-dp-tools-block-segmenter-output-key-one, anuvaad-dp-tools-block-segmenter-output-key-two
-          assignment: round-robin
-      interruptenable: true
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_BLOCK_SEGMENTER_OUTPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
       endState: false
     - order: 4
       tool:
       - name: OCR-DD15-GOOGLE-VISION
-        description: ocr using google vision for doc digitisation wf 1.5
+        description: ocr using google vision for doc digitisation.
         kafka-input:
-        - topic: anuvaad-dp-tools-ocr-google-vision-input-v15
-          partitions: 2
-          keys: anuvaad-dp-tools-ocr-google-vision-input-key-one, anuvaad-dp-tools-ocr-google-vision-input-key-two
-          assignment: round-robin
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_OCR_GOOGLE_VISION_INPUT_V15
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
         kafka-output:
-        - topic: anuvaad-dp-tools-ocr-google-vision-output-v15
-          partitions: 2
-          keys: anuvaad-dp-tools-ocr-google-vision-output-key-one, anuvaad-dp-tools-ocr-google-vision-output-key-two
-          assignment: round-robin
-      interruptenable: true
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_OCR_GOOGLE_VISION_OUTPUT_V15
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
       endState: false
     - order: 5
       tool:
       - name: OCR-TOKENISER
         description: OCR Tokeniser process
         kafka-input:
-        - topic: anuvaad-dp-tools-tokeniser-ocr-input-v1
-          partitions: 2
-          keys: anuvaad-dp-tools-tokeniser-ocr-input-key-one, anuvaad-dp-tools-tokeniser-ocr-input-key-two
-          assignment: round-robin
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_TOKENISER_OCR_INPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
         kafka-output:
-        - topic: anuvaad-dp-tools-tokeniser-ocr-output-v1
-          partitions: 2
-          keys: anuvaad-dp-tools-tokeniser-ocr-output-key-one, anuvaad-dp-tools-tokeniser-ocr-output-key-two
-          assignment: round-robin
-      interruptenable: true
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_TOKENISER_OCR_OUTPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
       endState: true
 
 
 
   - workflowCode: WF_S_TR
     type: SYNC
+    translation: BLOCK
     description: Translates the sentences.
     useCase: S_TR
     sequence:
@@ -497,9 +684,41 @@ WorkflowConfigs:
       endState: true
 
 
+  - workflowCode: WF_S_STR
+    type: SYNC
+    translation: SENTENCE
+    description: Translates the sentences.
+    useCase: S_STR
+    sequence:
+    - order: 0
+      tool:
+      - name: TRANSLATOR
+        description: Translates the sentences.
+        api-details:
+        - uri: http://anuvaad-etl-translator:5001/anuvaad-etl/translator/v1/sentences/workflow/translate
+      endState: true
+
+
+
+  - workflowCode: WF_S_FT
+    type: SYNC
+    translation: DOWNLOAD
+    description: Search WF for docx download
+    useCase: S_FT
+    sequence:
+    - order: 0
+      tool:
+      - name: FILE-TRANSLATOR
+        description: Search WF for docx download
+        api-details:
+        - uri: http://anuvaad-etl-file-translator:5001/anuvaad-etl/file-translator/v0/download-wf
+      endState: true
+
+
 
   - workflowCode: WF_S_TKTR
     type: SYNC
+    translation: BLOCK
     description: Tokenises the text blocks to sentences and Translates them.
     useCase: S_TTR
     sequence:

@@ -34,6 +34,25 @@ validator = AlignmentValidator()
 jsonwflowservice = JsonAlignWflowService()
 service = AlignmentService()
 
+
+# We base the scoring on k nearest neighbors for each element
+knn_neighbors = 2
+
+# Min score for text pairs. Note, score can be larger than 1
+min_threshold = 0.5
+
+#Do we want to use exact search of approximate nearest neighbor search (ANN)
+#Exact search: Slower, but we don't miss any parallel sentences
+#ANN: Faster, but the recall will be lower
+use_ann_search = False
+
+#Number of clusters for ANN. Each cluster should have at least 10k entries
+ann_num_clusters = 32768
+
+#How many cluster to explorer for search. Higher number = better recall, slower
+ann_num_cluster_probe = 3
+
+
 class JsonAlignmentService:
     def __init__(self):
         pass
@@ -93,12 +112,6 @@ class JsonAlignmentService:
         if self.check_if_duplicate(object_in["jobID"], object_in):
             return None
         log_info("Alignment process starts for job: " + str(object_in["jobID"]), object_in)
-        source_reformatted = []
-        target_refromatted = []
-        source_target_ref_score = []
-        manual_src = []
-        manual_trgt = []
-        manual_src_tgt_score = []
         path = object_in["input"]["target"]["filepath"]
         path_indic = object_in["input"]["source"]["filepath"]
         full_path = directory_path + file_path_delimiter + path
@@ -107,36 +120,54 @@ class JsonAlignmentService:
         object_in["startTime"] = eval(str(time.time()).replace('.', '')[0:13])
         self.update_job_details(object_in, False)
         source, target_corp = self.parse_in(full_path, full_path_indic, object_in, iswf)
-        if source is None:
-            return {}
+
         embeddings = self.build_embeddings(source, target_corp, object_in, iswf)
         if embeddings is not None:
-            source_embeddings = embeddings[0]
-            target_embeddings = embeddings[1]
-        else:
-            return {}
-        alignments = self.get_alignments(source_embeddings, target_embeddings, source, object_in, iswf)
+            x = embeddings[0]
+            y = embeddings[1] 
 
-        if alignments is not None:
-            match_dict = alignments[0]
-            manual_dict = alignments[1]
-            lines_with_no_match = alignments[2]
-            for key in match_dict:
-                source_reformatted.append(source[key])
-                target_refromatted.append(target_corp[match_dict[key][0]])
-                source_target_ref_score.append(match_dict[key][1])
-                # print("\nKEY=",key,match_dict[key],match_dict[key][1],source[key],target_corp[match_dict[key][0]])
-            if len(manual_dict.keys()) > 0:
-                for key in manual_dict:
-                    manual_src.append(source[key])
-                    manual_trgt.append(target_corp[manual_dict[key][0]])
-                    manual_src_tgt_score.append(manual_dict[key][1])
+            x = x / np.linalg.norm(x, axis=1, keepdims=True)
+            # y = target_embeddings
+            y = y / np.linalg.norm(y, axis=1, keepdims=True)
+            # Perform kNN in both directions
+            x2y_sim, x2y_ind = util.kNN(object_in, x, y, knn_neighbors, use_ann_search, ann_num_clusters, ann_num_cluster_probe)
+            x2y_mean = x2y_sim.mean(axis=1)
+
+            y2x_sim, y2x_ind = util.kNN(object_in, y, x, knn_neighbors, use_ann_search, ann_num_clusters, ann_num_cluster_probe)
+            y2x_mean = y2x_sim.mean(axis=1)
+
+            # Compute forward and backward scores
+            margin = lambda a, b: a / b
+            fwd_scores = util.score_candidates(x, y, x2y_ind, x2y_mean, y2x_mean, margin)
+            bwd_scores = util.score_candidates(y, x, y2x_ind, y2x_mean, x2y_mean, margin)
+            fwd_best = x2y_ind[np.arange(x.shape[0]), fwd_scores.argmax(axis=1)]
+            bwd_best = y2x_ind[np.arange(y.shape[0]), bwd_scores.argmax(axis=1)]
+
+            indices = np.stack([np.concatenate([np.arange(x.shape[0]), bwd_best]), np.concatenate([fwd_best, np.arange(y.shape[0])])], axis=1)
+            scores = np.concatenate([fwd_scores.max(axis=1), bwd_scores.max(axis=1)])
+            seen_src, seen_trg = set(), set()
+            src_out = []
+            tgt_out = []
+            score_out = []
+            sentences_written = 0
+            for i in np.argsort(-scores):
+                src_ind, trg_ind = indices[i]
+                src_ind = int(src_ind)
+                trg_ind = int(trg_ind)
+
+                if scores[i] < min_threshold:
+                    break
+
+                if src_ind not in seen_src and trg_ind not in seen_trg:
+                    seen_src.add(src_ind)
+                    seen_trg.add(trg_ind)
+                    src_out.append(source[src_ind].replace("\t", " "))
+                    tgt_out.append(target_corp[trg_ind].replace("\t", " "))
+                    score_out.append(scores[i])
+                    sentences_written += 1
             try:
-
-                df = pd.DataFrame(list(zip(source_reformatted, target_refromatted, source_target_ref_score)),columns = ['src', 'tgt','cs'])
-
-                output_dict = self.generate_output(source_reformatted, target_refromatted, manual_src, manual_trgt,
-                                           lines_with_no_match, path, path_indic, object_in, df)
+                df = pd.DataFrame(list(zip(src_out, tgt_out, score_out)),columns = ['sourceText', 'targetText','alignmentScore'])
+                output_dict = self.generate_output(object_in, df)
                 if output_dict is not None:
 
                     result = self.build_final_response(path, path_indic, output_dict, object_in)
@@ -160,6 +191,8 @@ class JsonAlignmentService:
             log_info("Sentences aligned Successfully! JOB ID: " + str(object_in["jobID"]), object_in)
         else:
             return {}
+
+
 
     def check_if_duplicate(self, job_id, object_in):
         return(service.check_if_duplicate(job_id, object_in))
@@ -189,13 +222,13 @@ class JsonAlignmentService:
         return service.get_alignments(source_embeddings, target_embeddings, source, object_in, iswf)
        
     # Service layer to generate output
-    def generate_output(self, source_reformatted, target_refromatted, manual_src, manual_trgt,
-                        nomatch_src, path, path_indic, object_in,df):
+    def generate_output(self, object_in, df):
         try:
             log_info("Generating the Json output.....", object_in)
-            output_json = directory_path + file_path_delimiter +  object_in["jobID"]+ "-aligner-op.json"
+            json_filename = object_in["jobID"]+ "-aligner-op.json"
+            output_json = directory_path + file_path_delimiter +  json_filename
             alignmentutils.write_json_output(df, output_json)
-            return {"json_out" : output_json }
+            return {"json_out" : json_filename }
         except Exception as e:
             log_exception("Exception while writing output to files: " + str(e), object_in, e)
             return None

@@ -24,11 +24,14 @@ tool_layoutdetector = "LAYOUT-DETECTOR"
 tool_ocrgooglevision = "OCR-GOOGLE-VISION"
 tool_ocrdd10googlevision = "OCR-DD10-GOOGLE-VISION"
 tool_ocrdd15googlevision = "OCR-DD15-GOOGLE-VISION"
+tool_ocrdd20tesseract = "OCR-DD20-TESSERACT"
 tool_ocrtokeniser = "OCR-TOKENISER"
 tool_ocrtesseract = "OCR-TESSERACT"
 tool_blocksegmenter = "BLOCK-SEGMENTER"
 tool_annotator = "ANNOTATOR"
 module_wfm_name = "WORKFLOW-MANAGER"
+tool_filetranslator = "FILE-TRANSLATOR"
+tool_imageocr = "IMAGE-OCR"
 is_sync_flow_enabled = True
 is_async_flow_enabled = True
 page_default_limit = os.environ.get('WFM_PAGE_DEFAULT_LIMIT', 20)
@@ -40,7 +43,7 @@ anu_etl_wfm_core_topic = os.environ.get('KAFKA_ANUVAAD_ETL_WFM_CORE_TOPIC', 'anu
 anu_etl_wfm_consumer_grp = os.environ.get('KAFKA_ANUVAAD_ETL_WF_CONSUMER_GRP', 'anuvaad-etl-wfm-consumer-group')
 anu_etl_wf_error_topic = os.environ.get('KAFKA_ANUVAAD_ETL_WF_ERROR_TOPIC', 'anuvaad-etl-wf-errors-v1')
 anu_etl_notifier_input_topic = os.environ.get('KAFKA_ANUVAAD_NOTIFIER_INPUT_TOPIC', 'anuvaad-notifier-input-v1')
-total_no_of_partitions = os.environ.get('KAFKA_PARTITIONS_PER_TOPIC', 6)
+total_no_of_partitions = 6 # default value
 
 
 #datastore-configs
@@ -50,7 +53,7 @@ mongo_wfm_jobs_col = os.environ.get('MONGO_WFMJOBS_COL', 'anuvaad-etl-wfm-jobs-c
 #module-configs
 context_path = os.environ.get('ANUVAAD_ETL_WFM_CONTEXT_PATH', '/anuvaad-etl/wf-manager')
 config_file_url = os.environ.get('ANUVAAD_ETL_WFM_CONFIG_FILE_URL',
-            'https://raw.githubusercontent.com/project-anuvaad/anuvaad/wfmanager_feature/anuvaad-etl/anuvaad-workflow-mgr/config/etl-wf-manager-config-dev.yml')
+            'https://raw.githubusercontent.com/project-anuvaad/anuvaad/wfmanager_feature/anuvaad-etl/anuvaad-workflow-mgr/config/wfconfigs.yml')
 
 #general-log-messages
 log_msg_start = " process started."

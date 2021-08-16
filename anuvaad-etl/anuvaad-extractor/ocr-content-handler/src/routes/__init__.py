@@ -1,1 +1,0 @@
-from .ocr_document import OCR_DOCUMENT_BLUEPRINT

@@ -17,19 +17,6 @@ alignapp = Flask(__name__)
 @alignapp.route(context_path + '/v1/sentences/align', methods=["POST"])
 def createalignmentjob():
     service = AlignmentService()
-    validator = AlignmentValidator()
-    data = request.get_json()
-    error = validator.validate_input(data)
-    if error is not None:
-        return error
-    return service.register_job(data)
-
-
-
-# REST endpoint to align files through wflow
-@alignapp.route(context_path + '/v1/sentences/wflow/align', methods=["POST"])
-def createalignmentwflowjob():
-    service = AlignmentService()
     jsonservice = JsonAlignmentService()
     validator = AlignmentValidator()
     data = request.get_json()
@@ -42,8 +29,37 @@ def createalignmentwflowjob():
     if error is not None:
         return error
 
-    if(srctype == "json"):
-         return jsonservice.wf_process(data)
+    try:
+        if(srctype == "json"):
+            return jsonservice.register_job(data)
+    except:
+        pass
+
+    return service.register_job(data)
+
+
+
+# REST endpoint to align files through wflow
+@alignapp.route(context_path + '/v1/sentences/wflow/align', methods=["POST"])
+def createalignmentwflowjob():
+    service = AlignmentService()
+    jsonservice = JsonAlignmentService()
+    validator = AlignmentValidator()
+    data = request.get_json()
+    try:
+        srctype = str(data['files'][0]['type'])   
+        tgttype = str(data['files'][1]['type'])
+    except:
+        pass
+    error = validator.validate_input(data)
+    if error is not None:
+        return error
+    
+    try:
+        if(srctype == "json"):
+            return jsonservice.wf_process(data)
+    except:
+        pass
 
     return service.wf_process(data)
 

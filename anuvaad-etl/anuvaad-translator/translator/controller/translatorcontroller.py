@@ -45,7 +45,7 @@ def block_translate():
 
 # REST endpoint to initiate the workflow.
 @translatorapp.route(context_path + '/v1/text/translate', methods=["POST"])
-def text_translate():
+def interactive_translate():
     service = TextTranslationService()
     validator = TranslatorValidator()
     try:
@@ -55,8 +55,28 @@ def text_translate():
             data["status"], data["error"] = "FAILED", error
             return jsonify(data), 400
         data = add_headers(data, request)
-        response = service.text_translate(data)
+        response = service.interactive_translate(data)
         return jsonify(response), 200
+    except Exception as e:
+        log_exception("Something went wrong: " + str(e), None, e)
+        return {"status": "FAILED", "message": "Something went wrong"}, 400
+
+# REST endpoint to initiate the workflow.
+@translatorapp.route(context_path + '/v1/sentences/workflow/translate', methods=["POST"])
+def sentence_translate():
+    service = TextTranslationService()
+    validator = TranslatorValidator()
+    try:
+        data = request.get_json()
+        error = validator.validate_sentences_translate(data)
+        if error is not None:
+            data["status"], data["error"] = "FAILED", error
+            return jsonify(data), 400
+        response = service.translate_sentences(data)
+        if response["status"] == "FAILED":
+            return jsonify(response), 400
+        else:
+            return jsonify(response), 200
     except Exception as e:
         log_exception("Something went wrong: " + str(e), None, e)
         return {"status": "FAILED", "message": "Something went wrong"}, 400
@@ -87,17 +107,27 @@ def tmx_create():
 def tmx_delete():
     service = TMXService()
     data = request.get_json()
-    response = service.delete_from_tmx_store(data)
-    if response["status"] == "FAILED":
+    try:
+        data = add_headers(data, request)
+        response = service.delete_from_tmx_store(data)
+        if response["status"] == "FAILED":
+            return jsonify(response), 400
+        else:
+            return jsonify(response), 200
+    except Exception as e:
+        response = {"message": "Something went wrong.", "status": "FAILED"}
         return jsonify(response), 400
-    else:
-        return jsonify(response), 200
 
 @translatorapp.route(context_path + '/v1/tmx/get-all-keys', methods=["POST"])
 def tmx_get_all_keys():
     service = TMXService()
     data = request.get_json()
-    return jsonify(service.get_tmx_data(data)), 200
+    try:
+        data = add_headers(data, request)
+        return jsonify(service.get_tmx_data(data)), 200
+    except Exception as e:
+        response = {"message": "Something went wrong.", "status": "FAILED"}
+        return jsonify(response), 400
 
 @translatorapp.route(context_path + '/v1/glossary/create', methods=["POST"])
 def glossary_create():
