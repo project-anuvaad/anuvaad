@@ -51,10 +51,11 @@ class NMTTranslateService:
             for i,sent in enumerate(src_list):
                 input_sentence = sent.strip()
                 
-                num_words = len(sent.split())
-                if num_words > config.trunc_limit:
-                    sent = sent[:config.trunc_limit]
-                    log_info("Sentence truncated as it exceeds maximum length limit",MODULE_CONTEXT)
+                # num_words = len(input_sentence.split())
+                # if num_words > config.trunc_limit:
+                #     updated_sent = input_sentence.split()[:config.trunc_limit]
+                #     input_sentence = str(" ".join(updated_sent))  
+                    # log_info("Sentence truncated as it exceeds maximum length limit",MODULE_CONTEXT)
 
                 if src_language == 'en' and input_sentence.isupper():
                     input_sentence = input_sentence.title()
@@ -76,34 +77,15 @@ class NMTTranslateService:
                 special_case_handler.handle_sentences_wo_stop(src_language,input_sentence_array_prepd)
 
             log_info("translating using NMT-model:{}".format(model_id),MODULE_CONTEXT)    
-            if model_id == 6:
-                "hi-en_exp-2 05-05-20"
-                input_sentence_array_prepd = [sentence_processor.indic_tokenizer(sentence) for sentence in input_sentence_array_prepd]
-                translation_array, input_subwords_list, output_subwords_list, score_list = \
-                encode_translate_decode(input_sentence_array_prepd,sp_encoder,translator,sp_decoder,input_subwords_list,output_subwords_list,score_list)     
-                translation_array = [sentence_processor.moses_detokenizer(translation) for translation in translation_array]
-            elif model_id == 7:  
-                "english-tamil"
-                translation_array, input_subwords_list, output_subwords_list, score_list = \
-                encode_translate_decode(input_sentence_array_prepd,sp_encoder,translator,sp_decoder,input_subwords_list,output_subwords_list,score_list)     
-            elif model_id == 10:  
+            
+            if model_id == 10:  
                 "english-gujrati"
                 translation_array, input_subwords_list, output_subwords_list, score_list = \
                 encode_translate_decode(input_sentence_array_prepd,sp_encoder,translator,sp_decoder,input_subwords_list,output_subwords_list,score_list)     
             elif model_id == 18:  
                 "english-punjabi"
                 translation_array, input_subwords_list, output_subwords_list, score_list = \
-                encode_translate_decode(input_sentence_array_prepd,sp_encoder,translator,sp_decoder,input_subwords_list,output_subwords_list,score_list)     
-            elif model_id == 42:  
-                "english-marathi exp-2"
-                translation_array, input_subwords_list, output_subwords_list, score_list = \
-                encode_translate_decode(input_sentence_array_prepd,sp_encoder,translator,sp_decoder,input_subwords_list,output_subwords_list,score_list)         
-            elif model_id == 56:
-                "09/12/19-Exp-5.6:" 
-                input_sentence_array_prepd = [sentence_processor.moses_tokenizer(sentence) for sentence in input_sentence_array_prepd]
-                translation_array, input_subwords_list, output_subwords_list, score_list = \
-                encode_translate_decode(input_sentence_array_prepd,sp_encoder,translator,sp_decoder,input_subwords_list,output_subwords_list,score_list)                           
-                translation_array = [sentence_processor.indic_detokenizer(translation)  for translation  in translation_array]
+                encode_translate_decode(input_sentence_array_prepd,sp_encoder,translator,sp_decoder,input_subwords_list,output_subwords_list,score_list)          
             elif model_id == 52:
                 "guj-en 1st"
                 input_sentence_array_prepd = [sentence_processor.indic_tokenizer(sentence) for sentence in input_sentence_array_prepd]
@@ -216,6 +198,7 @@ def encode_translate_decode_v2(input_sentence_array_prepd,sp_encoder,translator,
         log_info("Inside encode_translate_decode function",MODULE_CONTEXT)
         input_subwords_list = [(sp.encode_line_v2(sp_encoder,sent)) for sent in input_sentence_array_prepd]
         log_info("Encoding finished: sp model {}".format(sp_encoder),MODULE_CONTEXT)
+        input_subwords_list = truncate_long_sentences(input_subwords_list)
         m_out = translator.translate_batch(input_subwords_list,beam_size = 5,num_hypotheses=1,replace_unknowns=True)
         translation_array = [None] * len(output_subwords_list)
         for i, _ in enumerate(output_subwords_list):
@@ -272,3 +255,13 @@ def multiple_hypothesis_decoding_v2(hypotheses,sp_decoder):
     except Exception as e:
         log_exception("Error in interactive translation-multiple_hypothesis_decoding_v2:{}".format(e),MODULE_CONTEXT,e)
         raise          
+    
+def truncate_long_sentences(sents):
+    new_sents = []
+    for sent in sents:
+        if len(sent) > config.trunc_limit:
+            log_info("******************WARNING: Extra Long Sentence *********************",MODULE_CONTEXT)
+            log_info("Sentence truncated as it exceeds maximum length limit of- {} tokens".format(config.trunc_limit),MODULE_CONTEXT)
+            sent = sent[:config.trunc_limit]
+        new_sents.append(sent)  
+    return new_sents    
