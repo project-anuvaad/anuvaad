@@ -29,7 +29,8 @@ def get_text(app_context,base_dir) :
     craft_line = file_properties.get_craft_config()
     if line_layout is not None and line_layout=='True':
         log_info('Line detection started by prima linenet model', app_context.application_context)
-        lines = [predict_primanet.predict_primanet(images)]
+        lines = predict_primanet.predict_primanet(images)
+        lines=[lines]
     if craft_line is not None and craft_line=='True':
         log_info('Line detection started by craft model', app_context.application_context)
         languages = get_languages(app_context)
