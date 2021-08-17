@@ -81,7 +81,9 @@ class HTMLTransform(object):
     
     def generate_json_structure(self, html_doc):
         children_tag_count = 0
-        self.page_list.append(copy.deepcopy(self.page_struct))
+        page_struct = copy.deepcopy(self.page_struct)
+        page_struct["page_no"] = 1
+        self.page_list.append(page_struct)
         for idt,tag in enumerate(html_doc.find_all(True)):
             if not tag.can_be_empty_element:
                 para_struct = copy.deepcopy(self.para_struct)
