@@ -201,7 +201,6 @@ def detect_text_per_file(image_paths,network,text_threshold,low_text_threshold,l
 
     t = time.time()
     for image_path in image_paths :
-        print("craft_image_path",image_path)
         if type(image_path) == str:
             image = cv2.imread(image_path)
         else:

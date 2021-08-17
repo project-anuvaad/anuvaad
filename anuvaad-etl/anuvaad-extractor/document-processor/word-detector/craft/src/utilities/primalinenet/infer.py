@@ -14,7 +14,7 @@ import copy
 from shapely.geometry import Polygon
 
 #device = torch.device("cuda")
-os.environ["CUDA_VISIBLE_DEVICES"] = ""
+#os.environ["CUDA_VISIBLE_DEVICES"] = ""
 
 # seed = 1234
 # random.seed(seed)
@@ -265,15 +265,14 @@ class PRIMA(object):
 			#image   = cv2.imread("/home/naresh/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/layout-detector/prima/"+image)
 			for index,image_set in enumerate(images):
 				for index,image_path in enumerate(image_set):
-					print("image_path",image_path)
 					if type(image_path) == str:
 						image = cv2.imread(image_path)
 					else:
 						image = image_path
-					print(image)
 					height, width, channels = image.shape
+					print("model",model_primalinenet)
 					layout   = model_primalinenet.detect(image)
-					print(layout)
+					print("layouts",layout)
 					bbox,tag,score = self.prima_region(layout)
 					############### craft refinement logic 
 					#bbox, tag,score = self.prima_craft_refinement(bbox,craft_coords,tag,score)

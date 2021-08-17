@@ -25,7 +25,6 @@ def get_text(app_context,base_dir) :
     files = get_files(app_context.application_context)
     file_properties = File(files[0])
     line_layout = file_properties.get_line_layout_config()
-    print("line_layout",line_layout)
     craft_line = file_properties.get_craft_config()
     if line_layout is not None and line_layout=='True':
         log_info('Line detection started by prima linenet model', app_context.application_context)
