@@ -134,6 +134,7 @@ PPTX_PAGE_LIMIT_ENABLE = False
 
 DOCX_FILE_PREFIX = 'DOCX-'
 PPTX_FILE_PREFIX = 'PPTX-'
+HTML_FILE_PREFIX = 'HTML-'
 GENERATED_HTML_FILE_PATTERN = '.html'
 GENERATED_PDF_FILE_PATTERN = '.pdf'
 GENERATED_HTML_DEFAULT_NAME = 'document.html'
@@ -149,8 +150,9 @@ ALLOWED_MIME_TYPES = ['application/vnd.openxmlformats-officedocument.wordprocess
                       'application/vnd.openxmlformats-officedocument.presentationml.presentation',
                       'application/json',
                       'application/octet-stream',
-                      'application/zip']
-ALLOWED_FILE_EXTENSION = ['docx', 'pptx', 'json']
+                      'application/zip',
+                      'text/html']
+ALLOWED_FILE_EXTENSION = ['docx', 'pptx', 'json','html']
 
 # FONT
 ALLOWED_FONTS = {
