@@ -266,9 +266,9 @@ class PRIMA(object):
 			for index,image_path in enumerate(images):
 				print("image_path",image_path)
 				if type(image_path) == str:
-            		image = cv2.imread(image_path)
-        		else:
-            		image = image_path
+					image = cv2.imread(image_path)
+				else:
+					image = image_path
 				print(image)
 				height, width, channels = image.shape
 				layout   = model_primalinenet.detect(image)
