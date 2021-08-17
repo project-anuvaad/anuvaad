@@ -1,7 +1,7 @@
 {
     "name": "Anuvaad",
-    "description": "Anuvaad",
-    "version": "1.0",
+    "description": "Anuvaad Chrome Extension is used for translating web page.",
+    "version": "0.0.0.1",
     "manifest_version": 3,
     "action": {
         "default_popup": "./src/anuvaad.html",
