@@ -13,18 +13,18 @@ import numpy as np
 import copy
 from shapely.geometry import Polygon
 
-device = torch.device("cuda")
-#os.environ["CUDA_VISIBLE_DEVICES"] = ""
+#device = torch.device("cuda")
+os.environ["CUDA_VISIBLE_DEVICES"] = ""
 
-seed = 1234
-random.seed(seed)
-torch.manual_seed(seed)
-if torch.cuda.is_available():
-	torch.cuda.device(0)
-	print("*******cuda available")
-torch.cuda.manual_seed_all(seed)
-torch.backends.cudnn.deterministic = True
-torch.backends.cudnn.benchmark = False
+# seed = 1234
+# random.seed(seed)
+# torch.manual_seed(seed)
+# if torch.cuda.is_available():
+# 	torch.cuda.device(0)
+# 	print("*******cuda available")
+# torch.cuda.manual_seed_all(seed)
+# torch.backends.cudnn.deterministic = True
+# torch.backends.cudnn.benchmark = False
 
 model_primalinenet = lp.Detectron2LayoutModel(LINE_LAYOUT_CONFIG_PATH,model_path = LINE_LAYOUT_MODEL_PATH,label_map = {0:"LineRegion"},extra_config=["MODEL.ROI_HEADS.SCORE_THRESH_TEST", LINE_PRIMA_SCORE_THRESH_TEST])
 
