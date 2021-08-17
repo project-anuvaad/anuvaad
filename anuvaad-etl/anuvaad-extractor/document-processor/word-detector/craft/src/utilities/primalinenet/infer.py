@@ -265,7 +265,10 @@ class PRIMA(object):
 			#image   = cv2.imread("/home/naresh/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/layout-detector/prima/"+image)
 			for index,image_path in enumerate(images):
 				print("image_path",image_path)
-				image   = cv2.imread(image_path)
+				if type(image_path) == str:
+            		image = cv2.imread(image_path)
+        		else:
+            		image = image_path
 				print(image)
 				height, width, channels = image.shape
 				layout   = model_primalinenet.detect(image)
