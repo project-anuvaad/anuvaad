@@ -149,12 +149,14 @@ def get_document_bounds(page_c_lines,file,response,page_dict,page_regions,page_c
     page_words   =  page_dict["words"]
     if "craft_line" in file['config']["OCR"].keys() and file['config']["OCR"]["craft_line"]=="True":
         page_lines = page_c_lines
+    elif "line_layout" in file['config']["OCR"].keys() and file['config']["OCR"]["line_layout"]=="True":
+        page_lines = page_c_lines
     else:
         page_lines   =  page_dict["lines"]
     if len(page_lines)>0:
         page_lines = removeoverlap.remove_overlap(page_lines)
-        page_lines = merger_lines_words(page_lines,page_words)
-        page_lines = removeoverlap.remove_overlap(page_lines)
+        # page_lines = merger_lines_words(page_lines,page_words)
+        # page_lines = removeoverlap.remove_overlap(page_lines)
 
     
 
