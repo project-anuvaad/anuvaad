@@ -263,24 +263,25 @@ class PRIMA(object):
 		try:
 			lines = []
 			#image   = cv2.imread("/home/naresh/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/layout-detector/prima/"+image)
-			for index,image_path in enumerate(images):
-				print("image_path",image_path)
-				if type(image_path) == str:
-					image = cv2.imread(image_path)
-				else:
-					image = image_path
-				print(image)
-				height, width, channels = image.shape
-				layout   = model_primalinenet.detect(image)
-				print(layout)
-				bbox,tag,score = self.prima_region(layout)
-				############### craft refinement logic 
-				#bbox, tag,score = self.prima_craft_refinement(bbox,craft_coords,tag,score)
-				layouts  = self.update_box_format(bbox,tag,score)
-				flag=True
-				while flag==True:
-					layouts, flag = self.merge_remove_overlap(layouts,height,width)
-				lines.append(layouts)
+			for index,image_set in enumerate(images):
+				for index,image_path in enumerate(image_set):
+					print("image_path",image_path)
+					if type(image_path) == str:
+						image = cv2.imread(image_path)
+					else:
+						image = image_path
+					print(image)
+					height, width, channels = image.shape
+					layout   = model_primalinenet.detect(image)
+					print(layout)
+					bbox,tag,score = self.prima_region(layout)
+					############### craft refinement logic 
+					#bbox, tag,score = self.prima_craft_refinement(bbox,craft_coords,tag,score)
+					layouts  = self.update_box_format(bbox,tag,score)
+					flag=True
+					while flag==True:
+						layouts, flag = self.merge_remove_overlap(layouts,height,width)
+					lines.append(layouts)
 			return lines
 		except Exception as e:
 			log_exception("Error occured during prima line detection ",  app_context.application_context, e)
