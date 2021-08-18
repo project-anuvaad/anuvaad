@@ -74,8 +74,7 @@ WORKDIR /app
 # RUN apt-get update
 # RUN apt-get install -y libspatialindex-dev
 RUN apt install -y curl
-
-
+RUN  apt install -y libspatialindex-dev python3-rtree
 #RUN apt-get install -y make git
 RUN pip install -r requirements.txt
 
