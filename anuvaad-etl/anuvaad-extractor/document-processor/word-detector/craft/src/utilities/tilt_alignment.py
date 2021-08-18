@@ -101,7 +101,7 @@ class Orientation:
     def re_orient(self):
         lang = 'hi'
         
-        craft_config = self.file_properties.get_craft_config()
+        craft_config = self.file_properties.get_craft_model_config()
 
         if craft_config == None :
             text_threshold = config.LANGUAGE_LINE_THRESOLDS[lang]['text_threshold']
