@@ -8,4 +8,4 @@ curl -o $linemodelpath $url_line
 #echo downloading weight file
 #fi
 
-python app.py
+python3 app.py
