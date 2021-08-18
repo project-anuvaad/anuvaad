@@ -68,19 +68,23 @@
 #FROM anuvaadio/anuvaad-word-detector-craft:19-9aecb9ef   #gpu image
 #cpu image
 #FROM  anuvaadio/anuvaad-word-detector-craft:47-cfec8554a  
-FROM anuvaadio/anuvaad-layout-detector-prima:86-9745dcf5d
+#FROM anuvaadio/anuvaad-layout-detector-prima:86-9745dcf5d
+
+FROM ubuntu:20.04
+
 COPY / /app
 WORKDIR /app
-# RUN apt-get update
-# RUN apt-get install -y libspatialindex-dev
-RUN apt install -y curl
+
+RUN apt-get update && apt-get install -y software-properties-common build-essential
+RUN apt install -y libssl-dev libffi-dev libxml2-dev libxslt1-dev zlib1g-dev python3-dev
+RUN pip install --upgrade pip setuptools wheel && pip install scikit-build && pip install cmake
+RUN apt install -y libopencv-dev python3-opencv
 RUN apt-get install poppler-utils
-RUN  apt install -y libspatialindex-dev python3-rtree
-#RUN apt-get install -y make git
+RUN apt install -y libspatialindex-dev python3-rtree
 RUN pip install -r requirements.txt
-
-#RUN pip install 'git+https://github.com/facebookresearch/detectron2.git#egg=detectron2'
-
+RUN apt-get install -y make git
+RUN pip install 'git+https://github.com/facebookresearch/detectron2.git#egg=detectron2'
+RUN apt install -y curl
 
 COPY start.sh /usr/bin/start.sh
 RUN chmod +x /usr/bin/start.sh

@@ -120,8 +120,7 @@ LINE_PRIMA_SCORE_THRESH_TEST =0.5
 
 
 LINE_LAYOUT_MODEL_PATH =  "./src/utilities/primalinenet/anuvaad_line_v1.pth"
-LINE_LAYOUT_CONFIG_PATH = "./src/utilities/primalinenet/mask_rcnn_R_50_FPN_3x_v1.yaml"
-
+LINE_LAYOUT_CONFIG_PATH = "./src/utilities/primalinenet/config.yaml"
 ##########################################################################
 #Alignment
 ALIGN = True

@@ -120,10 +120,14 @@ class Page:
     @log_error
     def set_lines(self):
         if len(self.lines) > 0 :
-            for index, line_corrd in self.lines.iterrows():
-                line = Box(line_corrd)
-                line.set_size(line_corrd['y4'] - line_corrd['y1'])
-                self.page['lines'].append(line.get_box())
+            if type(self.lines) is not list :
+                for index, line_corrd in self.lines.iterrows():
+                    line = Box(line_corrd)
+                    line.set_size(line_corrd['y4'] - line_corrd['y1'])
+                    self.page['lines'].append(line.get_box())
+            else :
+                self.page['lines'] = self.lines
+
 
     def get_page(self):
         return self.page

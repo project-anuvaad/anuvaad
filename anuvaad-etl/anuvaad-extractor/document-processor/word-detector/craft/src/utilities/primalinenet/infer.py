@@ -243,11 +243,13 @@ class PRIMA(object):
 	def merge_remove_overlap(self,text_regions,height,width):
 		region_updated = []
 		flag =False
+		clss='LINE'
+		
 		while len(text_regions)>0:
 			check = False
 			region_temp= text_regions[1:]
 			for idx2,region2 in enumerate(region_temp):
-				clss, cond = self.is_connected(text_regions[0], region2)
+				cond = self.is_connected(text_regions[0], region2)
 				if cond:
 					region1 = self.update_coord(text_regions[0],region2,clss)
 					text_regions[0] = copy.deepcopy(region1)
@@ -270,13 +272,14 @@ class PRIMA(object):
 					else:
 						image = image_path
 					height, width, channels = image.shape
-					print("model",model_primalinenet)
+					#print("model",model_primalinenet)
 					layout   = model_primalinenet.detect(image)
-					print("layouts",layout)
+					#print("layouts",layout)
 					bbox,tag,score = self.prima_region(layout)
 					############### craft refinement logic 
 					#bbox, tag,score = self.prima_craft_refinement(bbox,craft_coords,tag,score)
 					layouts  = self.update_box_format(bbox,tag,score)
+					#flag=False
 					flag=True
 					while flag==True:
 						layouts, flag = self.merge_remove_overlap(layouts,height,width)
