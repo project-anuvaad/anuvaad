@@ -54,6 +54,7 @@ class AnuvaadEngTokenizer(object):
         text = self.serialize_with_abbrevations(text)
         text = self.serialize_pattern(text)
         text = self.serialize_dots(text)
+        text = self.serialize_consecutive_dots(text)
         text = self.serialize_brackets(text)
         text = self.serialize_dot_with_number(text)
         text = self.serialize_dot_with_number_beginning(text)
@@ -68,6 +69,7 @@ class AnuvaadEngTokenizer(object):
             se = self.deserialize_dates(se)
             se = self.deserialize_pattern(se)
             se = self.deserialize_dots(se)
+            se = self.deserialize_consecutive_dots(se)
             se = self.deserialize_brackets(se)
             se = self.deserialize_dot_with_number(se)
             se = self.deserialize_dot_with_number_beginning(se)
@@ -247,6 +249,16 @@ class AnuvaadEngTokenizer(object):
     def deserialize_dots(self, text):
         pattern = re.compile(re.escape('XX__XX'), re.IGNORECASE)
         text = pattern.sub('......', text)
+        return text
+
+    def serialize_consecutive_dots(self, text):
+        pattern = re.compile(r'([.\s]{3,})')
+        text = pattern.sub('YY__YY', text)
+        return text
+
+    def deserialize_consecutive_dots(self, text):
+        pattern = re.compile(re.escape('YY__YY'), re.IGNORECASE)
+        text = pattern.sub('........', text)
         return text
 
     def serialize_pattern(self, text):
