@@ -79,12 +79,26 @@ class HTMLTransform(object):
                 count = self.get_children_tag_count(content.contents, count=count)
         return count
     
+    def generate_json_for_page(self, page_number):
+        new_page_template = copy.deepcopy(self.page_struct)
+        new_page_template['page_no'] = page_number
+        return new_page_template
+    
     def generate_json_structure(self, html_doc):
         children_tag_count = 0
-        page_struct = copy.deepcopy(self.page_struct)
-        page_struct["page_no"] = 1
-        self.page_list.append(page_struct)
+        para_count = 0
+        run_count = 0
+        word_count = 0
+        page_number = 1
+        self.page_list.append(self.generate_json_for_page(page_number))
         for idt,tag in enumerate(html_doc.find_all(True)):
+            if common_obj.is_page_size_exceeded(HTML=True,para_count=para_count,run_count=run_count,word_count=word_count):
+                para_count, run_count, word_count = common_obj.reset_page_limit(para_count=para_count,run_count=run_count,word_count=word_count)
+                page_number += 1
+                log_info(
+                    "generate_json_structure :: Page limit exceeded generating new page obj, new page index: %s" % page_number,
+                    None)
+                self.page_list.append(self.generate_json_for_page(page_number))
             if not tag.can_be_empty_element:
                 para_struct = copy.deepcopy(self.para_struct)
                 if children_tag_count > 0:
@@ -94,6 +108,7 @@ class HTMLTransform(object):
                 if content_type in ['MIX']:
                     children_tag_count += self.get_children_tag_count(tag.contents)
                     para_struct['text'] = tag.text
+                    word_count += common_obj.word_count(tag.text)
                     para_struct['block_id'] = self.get_id(tag.name,idt)
                     for i,c in enumerate(tag.contents):
                         run_struct = copy.deepcopy(self.run_struct)
@@ -111,6 +126,7 @@ class HTMLTransform(object):
                         para_struct['children'].append(run_struct)
                 elif content_type in ['STRING']:
                     para_struct['text'] = tag.text
+                    word_count += common_obj.word_count(tag.text)
                     para_struct['block_id'] = self.get_id(tag.name,idt)
                     for i,c in enumerate(tag.contents):
                         if c.strip() == "":
@@ -119,8 +135,8 @@ class HTMLTransform(object):
                         run_struct['text'] = c
                         run_struct['block_id'] = self.get_id(tag.name,idt,i)
                         para_struct['children'].append(run_struct)
-                if para_struct != self.para_struct:
-                    self.page_list[0]['text_blocks'].append(para_struct)
+                if len(para_struct['children']) > 0:
+                    self.page_list[page_number - 1]['text_blocks'].append(para_struct)
         log_info(f'Generated JSON FILE for file: {self.file_name_without_ext}', self.json_data)
         return self.base_json
 

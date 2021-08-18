@@ -190,7 +190,7 @@ class Common(object):
             return len(text.split(' '))
         return 0
 
-    def is_page_size_exceeded(self, DOCX=False, PPTX=False, para_count=0, run_count=0, word_count=0):
+    def is_page_size_exceeded(self, DOCX=False, PPTX=False, HTML=False, para_count=0, run_count=0, word_count=0):
         if DOCX:
             if config.DOCX_PAGE_LIMIT_ENABLE:
                 if config.PARA_WISE_PAGE_LIMIT:
@@ -221,6 +221,10 @@ class Common(object):
                         return True
 
                 return False
+        if HTML:
+            if config.WORD_WISE_PAGE_LIMIT:
+                if config.MAX_WORD_IN_A_PAGE <= word_count:
+                    return True
 
     def reset_page_limit(self, para_count=0, run_count=0, word_count=0):
         if config.PARA_WISE_PAGE_LIMIT:
