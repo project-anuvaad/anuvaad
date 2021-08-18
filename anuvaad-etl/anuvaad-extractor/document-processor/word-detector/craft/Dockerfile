@@ -78,7 +78,7 @@ WORKDIR /app
 ENV DEBIAN_FRONTEND="noninteractive"
 
 RUN apt-get update && apt-get install -y software-properties-common build-essential
-RUN apt install -y libssl-dev libffi-dev libxml2-dev libxslt1-dev zlib1g-dev python3-dev
+RUN apt install -y libssl-dev libffi-dev libxml2-dev libxslt1-dev zlib1g-dev python3-dev python3-pip
 RUN pip install --upgrade pip setuptools wheel && pip install scikit-build && pip install cmake
 RUN apt install -y libopencv-dev python3-opencv
 RUN apt-get install poppler-utils
