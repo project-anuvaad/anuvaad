@@ -11,6 +11,7 @@ from errors.errors_exception import FileErrors
 from errors.errors_exception import ServiceError
 from errors.errors_exception import WorkflowkeyError
 from services.docx_transform import DocxTransform
+from services.html_transform import HTMLTransform
 from services.fetch_content import FetchContent
 from services.html_converter import HtmlConvert
 from services.pptx_transform import PptxTransform
@@ -70,6 +71,15 @@ class Response(object):
                         out_files_url = html_convert_obj.generate_html(input_filename=input_filename)
                         fc_obj = FetchContent(record_id=input_filename, json_data=self.json_data)
                         fc_obj.store_reference_link(job_id=jobid, location=out_files_url)
+                    
+                    elif in_file_type == "html" and transform_flow:
+                        html_transform_obj = HTMLTransform(input_filename=input_filename, json_data=self.json_data)
+                        html_obj = html_transform_obj.read_html_file(input_filename)
+                        html_transformed_obj = html_transform_obj.generate_json_structure(html_obj)
+
+                        out_json_filepath = html_transform_obj.write_json_file(html_transformed_obj)
+                        output_filename = out_json_filepath
+                        out_file_type = 'json'
 
                     elif in_file_type == "json" and download_flow:
                         if config.DOCX_FILE_PREFIX in input_filename:
