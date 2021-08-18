@@ -16,7 +16,8 @@ class CT_P(BaseOxmlElement):
     r = ZeroOrMore('w:r')
     hyperlink = ZeroOrMore('w:hyperlink')
     sdt = ZeroOrMore('w:sdt')
-
+    m = ZeroOrMore('m:oMath')
+    smtag = ZeroOrMore('w:smartTag')
 
     def _insert_pPr(self, pPr):
         self.insert(0, pPr)

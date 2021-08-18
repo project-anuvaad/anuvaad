@@ -22,3 +22,12 @@ class CT_TXBXCONTENT(BaseOxmlElement):
 
 class CT_PICTURE(BaseOxmlElement):
     pic = ZeroOrMore('w:pict')
+
+class CT_MATH(BaseOxmlElement):
+    m = ZeroOrMore('m:r')
+
+class CT_DRAWING(BaseOxmlElement):
+    d = ZeroOrMore('w:drawing')
+
+class CT_SMARTTAG(BaseOxmlElement):
+    r = ZeroOrMore('w:r')

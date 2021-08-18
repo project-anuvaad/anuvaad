@@ -223,12 +223,15 @@ from .text.paragraph import CT_P  # noqa
 register_element_cls('w:p', CT_P)
 
 # TODO Added new tags which are not supported by docx library.
-from .text.content import CT_SDT,CT_SDTC,CT_HYPERLINK,CT_PICTURE,CT_TXBXCONTENT
+from .text.content import CT_SDT,CT_SDTC,CT_HYPERLINK,CT_PICTURE,CT_TXBXCONTENT,CT_MATH,CT_DRAWING,CT_SMARTTAG
 register_element_cls('w:sdt', CT_SDT)
 register_element_cls('w:sdtContent', CT_SDTC)
 register_element_cls('w:hyperlink', CT_HYPERLINK)
 register_element_cls('w:pict', CT_PICTURE)
 register_element_cls('w:txbxContent', CT_TXBXCONTENT)
+register_element_cls('m:oMath', CT_MATH)
+register_element_cls('w:drawing', CT_DRAWING)
+register_element_cls('w:smartTag', CT_SMARTTAG)
 # TODO
 
 from .text.parfmt import (  # noqa
