@@ -57,6 +57,9 @@ class File:
         else:
             return self.file['config']['OCR']['craft_line']
     @log_error
+    def get_craft_model_config(self):
+        return self.file['config']['OCR']
+    @log_error
     def get_line_layout_config(self):
         if 'line_layout' not in self.file['config']['OCR'].keys():
             return None
