@@ -107,7 +107,7 @@ class Orientation:
             text_threshold = config.LANGUAGE_LINE_THRESOLDS[lang]['text_threshold']
             low_text_threshold = config.LANGUAGE_LINE_THRESOLDS[lang]['low_text']
             link_threshold = config.LANGUAGE_LINE_THRESOLDS[lang]['link_threshold']
-        else:
+        elif 'text_threshold' and 'low_text' and 'link_threshold' in craft_config.keys():
             text_threshold = craft_config['text_threshold']
             low_text_threshold = craft_config['low_text']
             link_threshold = craft_config['link_threshold']
