@@ -34,7 +34,7 @@ def get_text(app_context,base_dir) :
         log_info('Line detection started by craft model', app_context.application_context)
         languages = get_languages(app_context)
         words,lines = detect_text(images,languages)
-        words,lines  = get_coords(images,app_context)
+        #words,lines  = get_coords(images,app_context)
     return  words,lines,images
 
 

@@ -67,17 +67,19 @@
 
 #FROM anuvaadio/anuvaad-word-detector-craft:19-9aecb9ef   #gpu image
 #cpu image
-FROM  anuvaadio/anuvaad-word-detector-craft:47-cfec8554a  
-
+#FROM  anuvaadio/anuvaad-word-detector-craft:47-cfec8554a  
+FROM anuvaadio/anuvaad-layout-detector-prima:86-9745dcf5d
 COPY / /app
 WORKDIR /app
 # RUN apt-get update
 # RUN apt-get install -y libspatialindex-dev
 RUN apt install -y curl
-RUN apt-get install -y make git
-RUN pip install -r requirements.txt
 
-RUN pip install 'git+https://github.com/facebookresearch/detectron2.git#egg=detectron2'
+
+#RUN apt-get install -y make git
+#RUN pip install -r requirements.txt
+
+#RUN pip install 'git+https://github.com/facebookresearch/detectron2.git#egg=detectron2'
 
 
 COPY start.sh /usr/bin/start.sh
