@@ -255,7 +255,10 @@ def segment_regions(file,words, lines,regions,page_c_words,path,file_properties,
     #regions = segment_regions(page_words,page_lines,page_regions)
     width, height = file_properties.get_pageinfo(0)
     v_list, n_text_regions = region_unifier.region_unifier(idx,file,words,lines,regions,page_c_words,path)
-    save_path = mask_image_craft(path, v_list, idx, file_properties, width, height)
+    if "mask_image" in file['config']["OCR"].keys() and file['config']["OCR"]["mask_image"]=="False":
+        save_path = "None"
+    else:
+        save_path = mask_image_craft(path, v_list, idx, file_properties, width, height)
     if "top_correction" in file['config']["OCR"].keys() and file['config']["OCR"]["top_correction"]=="True":
         v_list = coord_alignment(v_list,False)
         v_list = verify__table_structure(v_list)
