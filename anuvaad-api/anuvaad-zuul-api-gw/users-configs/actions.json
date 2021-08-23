@@ -646,7 +646,7 @@
             "uri":"/nmt-inference/v0/translate",
             "module":"ANUVAAD-NMT",
             "active":true,
-            "whiteList":false,
+            "whiteList":true,
             "description":"API for ANUVAAD NMT translate"
         }
     ]
