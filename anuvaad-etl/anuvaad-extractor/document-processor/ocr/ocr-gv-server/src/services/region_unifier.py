@@ -284,9 +284,12 @@ class Region_Unifier:
             if add_word and reg1 is not None and reg2 is not None:
                     if 'regions' in reg1.keys():
                         if 'identifier' in reg2.keys():
-                            for i in reg1['regions']:
-                                if 'identifier' in i.keys() and reg2['identifier']!=i['identifier']:
+                            for idx,i in enumerate(reg1['regions']):
+                                if i is not None and isinstance(i, dict) and 'identifier' in i.keys() and reg2['identifier']!=i['identifier']:
+                                    
                                     reg1['regions'].extend(reg2)
+                                elif not isinstance(i, dict):
+                                    del reg1['regions'][idx]
                     else:
                         reg1['regions']=[]
                         reg1['regions'].extend(reg2)
@@ -349,7 +352,9 @@ class Region_Unifier:
                                     flag=True
                                 if flag==False:
                                     cell = self.update_coord(cell,word,cell['class'],True)
-                                    tables[idx]['regions'][idx2] = cell
+                                    
+                                    if cell is not None and isinstance(cell, dict):
+                                        tables[idx]['regions'][idx2] = cell
         return tables
                 
 
@@ -384,15 +389,13 @@ class Region_Unifier:
             t_list = []
             for idx,table in enumerate(tabel_region):
                 if 'regions' in table.keys():
-                    
-
                     filtered_words     = remvoe_regions(copy.deepcopy(table['regions']), copy.deepcopy(filtered_words))
                     filtered_lines    = remvoe_regions(copy.deepcopy(table['regions']), copy.deepcopy(filtered_lines))
                     tabel_region[idx]['regions'] =  collate_regions(regions = copy.deepcopy(table['regions']),lines = copy.deepcopy(page_words),child_class='WORD',grand_children=False,region_flag = False)
                     page_words = filtered_words
                     page_lines = filtered_lines
                     t_list.append(tabel_region[idx])
-                    
+            
             
             t_list =  collate_cell_regions(copy.deepcopy(t_list),copy.deepcopy(page_words),child_class='CELL_TEXT',grand_children=True,region_flag = False)
             t_list = self.table_no_cell(t_list,page_words2,idx2)

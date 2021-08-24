@@ -23,11 +23,6 @@ breaks = vision.enums.TextAnnotation.DetectedBreak.BreakType
 def get_text(page_c_lines,file,path,page_dict,page_regions,page_c_words,font_info,file_properties,idx):
     
     #path = config.BASE_DIR+path
-    #img = cv2.imread(path)
-    
-    #img[175 < img ] = 255
-    #masked_path = path.split('.jpg')[0]+"_watermarks.jpg"
-    #cv2.imwrite(masked_path,img)
     with io.open(path, 'rb') as image_file:
         content = image_file.read()
     image = vision.types.Image(content=content)
@@ -133,7 +128,7 @@ def get_document_bounds(page_c_lines,file,response,page_dict,page_regions,page_c
                     word_vertices.append({"x": word.bounding_box.vertices[2].x, "y": word.bounding_box.vertices[2].y})
                     word_vertices.append({"x": word.bounding_box.vertices[3].x, "y": word.bounding_box.vertices[3].y})
                     word_region["boundingBox"]["vertices"] = word_vertices
-                    page_dict["words"].append(word_region)
+                    
                     word_text = ''.join([
                         symbol.text for symbol in word.symbols
                     ])
@@ -145,6 +140,7 @@ def get_document_bounds(page_c_lines,file,response,page_dict,page_regions,page_c
                     else:
                         if len(page.property.detected_languages)!=0:
                             word_region["language"] = page.property.detected_languages[0].language_code
+                    page_dict["words"].append(word_region)
 
     page_words   =  page_dict["words"]
     if "craft_line" in file['config']["OCR"].keys() and file['config']["OCR"]["craft_line"]=="True":
@@ -196,6 +192,7 @@ def verify__table_structure(regions):
                 line_del_index = []
                 for line_idx,line in enumerate(region['regions']):
                     if 'regions' in line.keys():
+                        for word_idx,word in enumerate(line['regions']):
                         pass
                     else:
                         line_del_index.append(line_idx)
