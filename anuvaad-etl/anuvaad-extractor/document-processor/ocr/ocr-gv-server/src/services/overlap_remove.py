@@ -107,10 +107,10 @@ class RemoveOverlap:
             area2 = base_poly.area
             area = base_poly.intersection(region_poly)
             superimpose = self.polygon_overlap(region_poly,base_poly,region1,region2)
-        if (superimpose) or (area and abs(keys.get_top(region1)-keys.get_top(region2))<keys.get_height(region2)*0.2) or (area and total_intsc_area>max(area1,area2)*0.3):
-            return True
-        else:
-            return False
+            if (superimpose) or (area and abs(keys.get_top(region1)-keys.get_top(region2))<keys.get_height(region2)*0.2) or (area and total_intsc_area>max(area1,area2)*0.3):
+                return True
+       
+        return False
 
     def merge_overlap(self,text_regions):
         region_updated = []

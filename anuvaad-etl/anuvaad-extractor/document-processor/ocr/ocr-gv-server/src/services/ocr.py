@@ -192,6 +192,7 @@ def verify__table_structure(regions):
                 line_del_index = []
                 for line_idx,line in enumerate(region['regions']):
                     if 'regions' in line.keys():
+                        #for word_idx,word in enumerate(line['regions']):
                         pass
                     else:
                         line_del_index.append(line_idx)
