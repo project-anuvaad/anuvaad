@@ -1,0 +1,21 @@
+{
+    "models_root": "./src/available_nmt_models",
+    "models": [
+        {
+            "id": 69,
+            "path":"nmt/69",
+            "sp_encoder":"nmt/69/hi_hi-to-en-anuvaad-3-v1-2021-02-24-24000.model",
+            "sp_decoder":"nmt/69/en_hi-to-en-anuvaad-3-v1-2021-02-24-24000.model",
+            "source_language_code": "hi",
+            "target_language_code": "en"
+        },
+        {
+            "id": 70,
+            "path":"nmt/70",
+            "sp_encoder":"nmt/70/en_en-to-hi-anuvaad-15-v1-2021-02-24-24000.model",
+            "sp_decoder":"nmt/70/hi_en-to-hi-anuvaad-15-v1-2021-02-24-24000.model",
+            "source_language_code": "en",
+            "target_language_code": "hi"
+        }
+    ]
+}
