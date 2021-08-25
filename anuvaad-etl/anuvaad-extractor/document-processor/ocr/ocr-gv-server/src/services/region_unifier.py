@@ -267,9 +267,6 @@ class Region_Unifier:
             box2_top = keys.get_top(reg2); box2_bottom = keys.get_bottom(reg2)
             box2_left = keys.get_left(reg2); box2_right = keys.get_right(reg2)
 
-            if add_word==False:
-                
-                reg1['regions'] = self.update_children(reg1, reg2)
 
 
             reg1["boundingBox"]["vertices"][0]['x']= min(box1_left,box2_left)
@@ -281,6 +278,8 @@ class Region_Unifier:
             reg1["boundingBox"]["vertices"][3]['x']= min(box1_left,box2_left)
             reg1["boundingBox"]["vertices"][3]['y']= max(box1_bottom,box2_bottom)
             reg1['class'] = clss
+            del_idx =[]
+            reg_updated =[]
             if add_word and reg1 is not None and reg2 is not None:
                     if 'regions' in reg1.keys():
                         if 'identifier' in reg2.keys():
@@ -289,10 +288,18 @@ class Region_Unifier:
                                     
                                     reg1['regions'].extend(reg2)
                                 elif not isinstance(i, dict):
-                                    del reg1['regions'][idx]
+                                    del_idx.append(idx)                               
+                                    
                     else:
-                        reg1['regions']=[]
-                        reg1['regions'].extend(reg2)
+                        if reg2 is not None and isinstance(i, dict):
+                            reg1['regions']=[]
+                            reg1['regions'].extend(reg2)
+            if len(reg1['regions'])>0:
+                for idx,val in enumerate(reg1['regions']):
+                    if idx not in del_idx:
+                        reg_updated.append(val)
+
+            reg1['regions']  = reg_updated
             return reg1
         except:
             return reg1
@@ -350,11 +357,11 @@ class Region_Unifier:
                                 intersected_regions = list(indx.intersection(region_poly.bounds))
                                 if len(intersected_regions) > 0:
                                     flag=True
-                                if flag==False:
-                                    cell = self.update_coord(cell,word,cell['class'],True)
+                                if flag==False and cell is not None and isinstance(cell, dict):
+                                    cell2 = self.update_coord(cell,word,cell['class'],True)
                                     
-                                    if cell is not None and isinstance(cell, dict):
-                                        tables[idx]['regions'][idx2] = cell
+                                    if cell2 is not None and isinstance(cell2, dict):
+                                        tables[idx]['regions'][idx2] = cell2
         return tables
                 
 
