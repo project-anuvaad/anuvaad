@@ -470,13 +470,17 @@ class Region_Unifier:
             avg_word_sepc     = page_config.avg_word_sep(line_list)
 
             v_list.extend(t_list)
-
+            if len(v_list) > 0 :
+                v_list.sort(key=lambda x:x['boundingBox']['vertices'][0]['y'])
+                v_list = sort_regions(v_list,[])
             if self.check_double_column(v_list,avg_height):
                 print("this document is double columnssssssss")
                 return v_list, n_text_table_regions
             flag = False
             while flag==True:
                 v_list, flag = self.merge_remove_overlap(v_list,avg_height, avg_ver_dist, avg_width,avg_word_sepc)
+            
+                
 
         except Exception as e:
             log_exception("Error occured during block unifier",  app_context.application_context, e)
