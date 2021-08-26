@@ -2,7 +2,7 @@
 import os
 import time
 DEBUG = False
-API_URL_PREFIX = "/anuvaad-etl/document-processor/gv-document-digitization"
+API_URL_PREFIX = "/anuvaad"
 HOST = '0.0.0.0'
 PORT = 5001
 
