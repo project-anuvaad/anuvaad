@@ -1,14 +1,11 @@
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
 from anuvaad_auditor.loghandler import log_debug
-import src.utilities.app_context as app_context
-import config
 from src.utilities.request_parse import File
-import copy
 from src.services.ocr import TextExtraction
 
 
-def process_input(app_context, base_dir):
+def process_input(app_context):
     try:
         sentences = []
         file_properties = File(app_context.application_context)
@@ -23,33 +20,35 @@ def process_input(app_context, base_dir):
                 sentences.append("**** Image index {} not processed because  {} ****".format(im_index,image_sentences) )
 
         log_info("successfully completed ocr", None)
-        return sentences
+        return sentences,file_properties.get_config()
 
     except Exception as e:
         log_exception("Error occured during google vision ocr",
                       app_context.application_context, e)
-        return None
+        return None,None
 
 
-def OCR(app_context, base_dir=config.BASE_DIR):
+def OCR(app_context):
 
     log_debug('google vision ocr process starting {}'.format(
         app_context.application_context), app_context.application_context)
     try:
-        sentences = process_input(app_context, base_dir)
-        if response != None:
+        sentences, config = process_input(app_context)
+        if sentences != None:
             return {
                 'code': 200,
-                'message': 'request completed',
+                'message': 'ocr request completed',
                 'sentences': sentences,
-                'config': langs
+                'config': config
 
             }
         else:
             return {
                 'code': 400,
                 'message': 'Error occured during  ocr',
-                'rsp': None
+                'sentences': sentences,
+                'config': config
+
             }
     except Exception as e:
         log_exception("Error occured during  ocr  ",
@@ -57,5 +56,7 @@ def OCR(app_context, base_dir=config.BASE_DIR):
         return {
             'code': 400,
             'message': 'Error occured during ocr ',
-            'rsp': None
+            'sentences': None,
+            'config': None
+
         }

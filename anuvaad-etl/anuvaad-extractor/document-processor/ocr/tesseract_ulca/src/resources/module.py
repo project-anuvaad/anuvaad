@@ -14,7 +14,7 @@ import src.utilities.app_context as app_context
 
 # sentence block merging
 file_ops = FileOperation()
-DOWNLOAD_FOLDER =file_ops.create_file_download_dir(config.download_folder)
+#DOWNLOAD_FOLDER =file_ops.create_file_download_dir(config.download_folder)
 
 # rest request for block merging workflow service
 
@@ -29,12 +29,12 @@ class OCR(Resource):
         log_info("Resource Vision_OCR service started", app_context.application_context)
 
         try:
-            error_validator = ValidationResponse(DOWNLOAD_FOLDER)
-            if error_validator.format_error(json_data) is True:
-                response_gen = Response(json_data, DOWNLOAD_FOLDER)
-                response = response_gen.nonwf_response()
-                log_info("Resource Vision_OCR api response completed", app_context.application_context)
-                return jsonify(response)
+            #error_validator = ValidationResponse(DOWNLOAD_FOLDER)
+            #if error_validator.format_error(json_data) is True:
+            response_gen = Response(json_data)
+            response = response_gen.nonwf_response()
+            log_info("Resource Vision_OCR api response completed", app_context.application_context)
+            return jsonify(response)
         except FormatError as e:
             log_error("Resource Vision_OCR Input json format is not correct or dict_key is missing" + str(e), app_context.application_context, e)
             return Status.ERR_request_input_format.value

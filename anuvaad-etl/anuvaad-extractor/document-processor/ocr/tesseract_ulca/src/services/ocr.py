@@ -1,6 +1,7 @@
 
 import os
 import pytesseract
+import config
 
 
 class TextExtraction:
@@ -34,9 +35,10 @@ class TextExtraction:
         OCR at page_level with single tesseract weight
         '''
         try:
-            text = pytesseract.image_to_string(self.image, lang=self.lang)
+            lang = config.LANG_MAPPING[self.lang][0]
+            text = pytesseract.image_to_string(self.image, lang=lang)
 
-            return text.split('/n')
+            return text.split('\n')
         except Exception as e:
             return 'Error in tesseract ocr due to ' + str(e)
 
@@ -56,10 +58,16 @@ class TextExtraction:
             return language_script
         except:
             return None
-    
+
     def check_weights(self):
-        weight_path = '/usr/share/tesseract-ocr/4.00/tessdata/' + self.lang + '.traineddata'
-        if not os.path.exists(weight_path):
-            download = 'curl -L -o /usr/share/tesseract-ocr/4.00/tessdata/' + self.lang \
-                    + '.traineddata https://github.com/tesseract-ocr/tessdata_best/raw/master/script/' + self.lang + '.traineddata'
-            os.system(download)
+        langs = config.LANG_MAPPING[self.lang]
+        for lang in langs:
+            try:
+                weight_path = '/usr/share/tesseract-ocr/4.00/tessdata/' + lang + '.traineddata'
+                if not os.path.exists(weight_path):
+                    download = 'curl -L -o ' + weight_path + \
+                        ' https://github.com/tesseract-ocr/tessdata_best/raw/master/script/' + \
+                        lang + '.traineddata'
+                    os.system(download)
+            except Exception as e:
+                print("Error in downloading weights due to {}".format(e))
