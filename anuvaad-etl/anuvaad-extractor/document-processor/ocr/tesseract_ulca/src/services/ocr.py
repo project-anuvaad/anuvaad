@@ -10,6 +10,9 @@ class TextExtraction:
         self.image = image
         self.coords = coords
         self.lang = config['language']
+        self.detect = False
+        if self.lang == 'detect':
+            self.detect = True
 
     def get_sentences(self):
 
@@ -17,7 +20,7 @@ class TextExtraction:
             return "Unable to access input image"
 
         # get/detect language
-        if self.lang == 'detect':
+        if self.detect:
             self.lang = self.detect_language()
         if self.lang is None:
             return 'Unable to detect language'
@@ -35,7 +38,10 @@ class TextExtraction:
         OCR at page_level with single tesseract weight
         '''
         try:
-            lang = config.LANG_MAPPING[self.lang][0]
+            if not self.detect:
+                lang = config.LANG_MAPPING[self.lang][0]
+            else:
+                lang = self.lang
             text = pytesseract.image_to_string(self.image, lang=lang)
 
             return text.split('\n')
@@ -60,7 +66,11 @@ class TextExtraction:
             return None
 
     def check_weights(self):
-        langs = config.LANG_MAPPING[self.lang]
+        if not self.detect:
+                langs = config.LANG_MAPPING[self.lang]
+        else:
+                langs = [self.lang]
+
         for lang in langs:
             try:
                 weight_path = '/usr/share/tesseract-ocr/4.00/tessdata/' + lang + '.traineddata'

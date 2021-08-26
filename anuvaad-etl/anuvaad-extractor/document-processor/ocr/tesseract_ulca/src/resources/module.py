@@ -26,7 +26,7 @@ class OCR(Resource):
         json_data = request.get_json(force=True)
         app_context.init()
         app_context.application_context = json_data
-        log_info("Resource Vision_OCR service started", app_context.application_context)
+        log_info("Resource OCR service started", app_context.application_context)
 
         try:
             #error_validator = ValidationResponse(DOWNLOAD_FOLDER)

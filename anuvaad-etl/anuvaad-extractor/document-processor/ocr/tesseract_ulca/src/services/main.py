@@ -30,7 +30,7 @@ def process_input(app_context):
 
 def OCR(app_context):
 
-    log_debug('google vision ocr process starting {}'.format(
+    log_debug('process starting  for request {}'.format(
         app_context.application_context), app_context.application_context)
     try:
         sentences, config = process_input(app_context)

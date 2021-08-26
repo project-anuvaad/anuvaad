@@ -25,7 +25,7 @@ FROM anuvaadio/anuvaad-ocr-tesseract:35-3ea41fd8
 COPY / /app
 WORKDIR /app
 #RUN apt install -y libspatialindex-dev python-rtree
-#RUN pip install -r requirements.txt
+RUN pip install -r requirements.txt
 
 COPY start.sh /usr/bin/start.sh
 RUN chmod +x /usr/bin/start.sh
