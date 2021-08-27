@@ -4,7 +4,7 @@ import time
 DEBUG = False
 API_URL_PREFIX = "/anuvaad/ocr"
 HOST = '0.0.0.0'
-PORT = 5001
+PORT = 5000
 
 
 
