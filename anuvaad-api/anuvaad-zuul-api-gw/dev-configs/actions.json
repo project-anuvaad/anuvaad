@@ -671,6 +671,14 @@
             "active":true,
             "whiteList":true,
             "description":"API for ANUVAAD NMT translate"
+        },
+        {
+            "id":"51ccb837-e34d-4fd4-843d-96291107c178",
+            "uri":"/anuvaad/ocr/v0/ulca-ocr",
+            "module":"ANUVAAD-ULCA-OCR",
+            "active":true,
+            "whiteList":true,
+            "description":"API for ANUVAAD OCR to be used by ULCA"
         }
     ]
 }
