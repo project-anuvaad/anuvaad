@@ -121,6 +121,12 @@ class UpdateModelsResource(Resource):
                     out = CustomResponse(Status.INCOMPLETE_API_REQUEST.value, None)
                     return out.get_res_json(),401 
                 elif check.count()>0:
+                    if body['is_primary'] and body['is_primary'] == True:
+                    ## changing the primary model      
+                        log_info("Changing the primary model for {0}-to-{1} pair".format(body['source_language_code'],body['target_language_code']),MODULE_CONTEXT)
+                        for i in CreateModel.objects():
+                            if i.source_language_code == body['source_language_code'] and i.target_language_code == body['target_language_code'] and i.is_primary == True:
+                                i.update(set__is_primary = False)
                     update_model = CreateModel.objects(uuid=id).update(**body)
                     i = CreateModel.objects(uuid=id).to_json()
                     json_data = json.loads(i)
