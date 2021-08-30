@@ -1,0 +1,439 @@
+openapi: 3.0.0
+info:
+  title: ULCA - model schema
+  description: "The documentation defines the model."
+  contact:
+    name: ekstep foundation
+    email: contact@ekstep.org
+  version: 0.1.0
+servers:
+- url: /umca
+paths: {}
+components:
+  schemas:
+    Model:
+      required:
+      - name
+      - description
+      - task
+      - languages
+      - license
+      - domain
+      - submitter
+      - inferenceEndPoint
+      - trainingDataset
+      type: object
+      properties:
+        name:
+          maxLength: 100
+          minLength: 5
+          type: string
+          description: model name that you want your users to see
+          example: vakyansh asr model
+        description:
+          maxLength: 1000
+          minLength: 25
+          type: string
+          description: "brief description about model, its goal, basically something\
+            \ sweet about it"
+          example: Speech recognition model for classroom lecture
+        refUrl:
+          maxLength: 200
+          minLength: 5
+          type: string
+          description: github link or url giving further info about the model
+          example: https://github.com/Open-Speech-EkStep/vakyansh-models
+        task:
+          $ref: '#/components/schemas/ModelTask'
+        languages:
+          $ref: 'https://raw.githubusercontent.com/project-anuvaad/ULCA/develop/specs/common-schemas.yml#/components/schemas/LanguagePairs'
+        license:
+          $ref: 'https://raw.githubusercontent.com/project-anuvaad/ULCA/develop/specs/common-schemas.yml#/components/schemas/License'
+        domain:
+          $ref: 'https://raw.githubusercontent.com/project-anuvaad/ULCA/develop/specs/common-schemas.yml#/components/schemas/Domain'
+        submitter:
+          $ref: 'https://raw.githubusercontent.com/project-anuvaad/ULCA/develop/specs/common-schemas.yml#/components/schemas/Submitter'
+        inferenceEndPoint:
+          $ref: '#/components/schemas/InferenceAPIEndPoint'
+        trainingDataset:
+          $ref: '#/components/schemas/TrainingDataset'
+
+    InferenceAPIEndPoint:
+      required:
+      - callbackUrl
+      - schema
+      type: object
+      properties:
+        callbackUrl:
+          type: string
+          format: url
+        schema:
+          type: object
+          oneOf:
+          - $ref: '#/components/schemas/TranslationInference'
+          - $ref: '#/components/schemas/ASRInference'
+          - $ref: '#/components/schemas/TTSInference'
+          - $ref: '#/components/schemas/OCRInference'
+          discriminator:
+            propertyName: taskType
+            mapping: {
+              translation: TranslationInference,
+              asr: ASRInference,
+              tts: TTSInference,
+              ocr: OCRInference
+            }
+      description: hosted location defines the end point of the model inference. specify a taskType along with Inference type
+
+    FileUploadAPIEndPoint:
+      required:
+      - callbackUrl
+      - schema
+      type: object
+      properties:
+        callbackUrl:
+          type: string
+          format: url
+        schema:
+          type: object
+          oneOf:
+          - $ref: '#/components/schemas/FileUploadRequest'
+      description: hosted location of the file which would be sent for the validation
+        of the Inference API endpoint.
+
+    ModelTask:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - translation
+          - tts
+          - asr
+          - document-layout
+          - ocr
+      description: the category of model under which it has been released or trained
+
+    TrainingDataset:
+      required:
+      - description
+      type: object
+      properties:
+        datasetId:
+          type: string
+          description: "dataset identifier that has been exported from ULCA system,\
+            \ passing this information makes your model enriched with further information\
+            \ for the community"
+        description:
+          type: string
+          description: explain your dataset that you have used for training your model
+      description: training dataset metadata used to train the model
+
+    TranslationInference:
+      required:
+      - request
+      type: object
+      properties:
+        request:
+          $ref: '#/components/schemas/TranslationRequest'
+        response:
+          $ref: '#/components/schemas/TranslationResponse'
+    
+    TranslationRequest:
+      required:
+      - input
+      - config
+      type: object
+      properties:
+        input:
+          $ref: '#/components/schemas/Sentences'
+        config:
+          $ref: '#/components/schemas/TranslationConfig'
+
+
+    TranslationResponse:
+      description: the response for translation.  Standard http status codes to be used.
+      required:
+      - output
+      type: object
+      properties:
+        output:
+          $ref: '#/components/schemas/Sentences'
+        config:
+          $ref: '#/components/schemas/TranslationConfig'  
+
+    ASRInference:
+      required:
+      - request
+      type: object
+      properties:
+        request:
+          $ref: '#/components/schemas/ASRRequest'
+        response:
+          $ref: '#/components/schemas/ASRResponse'
+
+    ASRRequest:
+      required:
+      - audio
+      - config
+      type: object
+      properties:
+        audio:
+          $ref: '#/components/schemas/ASRFile'
+        config:
+          $ref: '#/components/schemas/ASRConfig'
+
+    ASRResponse:
+      description: the response for translation.  Standard http status codes to be used.
+      required:
+      - output
+      type: object
+      properties:
+        output:
+          $ref: '#/components/schemas/Sentences'
+        config:
+          $ref: '#/components/schemas/TranslationConfig' 
+
+    TTSInference:
+      required:
+      - request
+      type: object
+      properties:
+        request:
+          $ref: '#/components/schemas/TTSRequest'
+        response:
+          $ref: '#/components/schemas/TTSResponse'
+    
+    TTSRequest:
+      required:
+      - input
+      - config
+      type: object
+      properties:
+        input:
+          $ref: '#/components/schemas/Sentences'
+        config:
+          $ref: '#/components/schemas/TTSConfig'
+
+
+    TTSResponse:
+      description: the response for translation.  Standard http status codes to be used.
+      required:
+      - audioUri
+      type: object
+      properties:
+        audioUri:
+          type: string
+          description: path on gcp/s3 bucket or https url
+          example: gs://bucket/audio.wav
+        config:
+          $ref: '#/components/schemas/ASRConfig'
+
+    OCRInference:
+      required:
+      - request
+      type: object
+      properties:
+        request:
+          $ref: '#/components/schemas/OCRRequest'
+        response:
+          $ref: '#/components/schemas/OCRResponse'
+
+    OCRRequest:
+      required:
+      - imageUri
+      - config
+      type: object
+      properties:
+        imageUri:
+          type: array
+          description: list of paths on gcp/s3 bucket or https url
+          example: gs://bucket/testimg.jpeg
+          items:
+            maxItems: 10
+            minItems: 1
+            type: string
+        config:
+          $ref: '#/components/schemas/OCRConfig'
+
+    OCRResponse:
+      description: the response for translation.  Standard http status codes to be used.
+      required:
+      - output
+      type: object
+      properties:
+        output:
+          $ref: '#/components/schemas/Sentences'
+        config:
+          $ref: '#/components/schemas/TranslationConfig' 
+          
+    FileUploadRequest:
+      type: object
+      properties:
+        fileName:
+          type: string
+          format: binary
+
+    Sentences:
+      type: array
+      description: list of
+      items:
+        $ref: '#/components/schemas/Sentence'
+
+    Sentence:
+      required:
+      - source
+      type: object
+      properties:
+        source:
+          minLength: 1
+          type: string
+          description: input sentence for the model
+        target:
+          minLength: 1
+          type: string
+          description: to be used along with translation model. expected translated sentence, for reference
+
+    TranslationConfig:
+      required:
+      - language
+      type: object
+      properties:
+        modelId:
+          type: integer
+          description: Unique identifier of model
+          example: 103
+        language:
+          $ref: 'https://raw.githubusercontent.com/project-anuvaad/ULCA/develop/specs/common-schemas.yml#/components/schemas/LanguagePair'
+
+    OCRConfig:
+      required:
+      - language
+      type: object
+      properties:
+        modelId:
+          type: string
+          description: Unique identifier of model
+          example: 103
+        language:
+          $ref: 'https://raw.githubusercontent.com/project-anuvaad/ULCA/develop/specs/common-schemas.yml#/components/schemas/LanguagePair'
+
+    TTSConfig:
+      required:
+      - language
+      type: object
+      properties:
+        modelId:
+          type: string
+          description: Unique identifier of model
+          example: 103
+        language:
+          $ref: 'https://raw.githubusercontent.com/project-anuvaad/ULCA/develop/specs/common-schemas.yml#/components/schemas/LanguagePair'
+
+    ASRConfig:
+      required:
+      - language
+      type: object
+      properties:
+        modelId:
+          type: string
+          description: Unique identifier of model
+          example: 103
+        language:
+          $ref: 'https://raw.githubusercontent.com/project-anuvaad/ULCA/develop/specs/common-schemas.yml#/components/schemas/LanguagePair'
+        audioFormat:
+          $ref: 'https://raw.githubusercontent.com/project-anuvaad/ULCA/develop/specs/common-schemas.yml#/components/schemas/AudioFormat'
+        channel:
+          $ref: 'https://raw.githubusercontent.com/project-anuvaad/ULCA/develop/specs/common-schemas.yml#/components/schemas/AudioChannel'
+        samplingRate:
+          $ref: 'https://raw.githubusercontent.com/project-anuvaad/ULCA/develop/specs/common-schemas.yml#/components/schemas/AudioSampleRate'
+        bitsPerSample:
+          $ref: 'https://raw.githubusercontent.com/project-anuvaad/ULCA/develop/specs/common-schemas.yml#/components/schemas/AudioBitsPerSample'
+        transcriptionFormat:
+          $ref: '#/components/schemas/TranscriptionFormat'
+        profanityFilter:
+          type: boolean
+          example: true
+        domain:
+          $ref: 'https://raw.githubusercontent.com/project-anuvaad/ULCA/develop/specs/common-schemas.yml#/components/schemas/Domain'
+        detailed:
+          type: boolean
+          description: "to specify whether details are required in output like SNR,\
+            \ sampling rate"
+        punctuation:
+          type: boolean
+          example: true
+        model:
+          type: string
+          enum:
+          - command_and_search
+          - phone_call
+          - video
+          - default
+
+    TranscriptionFormat:
+      type: object
+      properties:
+        value:
+          type: string
+          description: format of ASR output
+          enum:
+          - srt
+          - transcript
+          - alternatives
+  
+    ASRFile:
+      required:
+      - audioContent | audioUri
+      type: object
+      properties:
+        audioContent:
+          type: string
+          description: audio content with audio duration <= 1min
+          format: byte
+        audioUri:
+          type: string
+          description: path on gcp/s3 bucket or https url
+          example: gs://bucket/audio.wav
+
+
+    ASRRecognitionStatus:
+      type: object
+      properties:
+        value:
+          type: string
+          description: status of ASR response
+          enum:
+          - success
+          - no-match
+          - initial-silence-timeout
+          - babble-timeout
+          - error
+
+    ASRRecognitionDetails:
+      type: object
+      properties:
+        channelTag:
+          type: integer
+          description: "For multi-channel audio, this is the channel number corresponding\
+            \ to the recognized result for the audio from that channel. For audioChannelCount\
+            \ = N, its output values can range from '1' to 'N'"
+        languageCode:
+          type: string
+          description: This language code was detected to have the most likelihood
+            of being spoken in the audio
+        snr:
+          type: integer
+          description: sound to noise ratio of audio
+        samplingRate:
+          type: integer
+          description: sampling rate of audio
+        bitsPerSample:
+          type: integer
+          description: bitsPerSample rate of audio
+
+  securitySchemes:
+    authToken:
+      type: apiKey
+      description: token issued by authenticating the user
+      name: auth-token
+      in: header
