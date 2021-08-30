@@ -23,6 +23,7 @@ if ! [ -f $tam_modelpath ]; then
   echo downloading tamil weight file
 fi
 
+
 if ! [ -f $hin_modelpath ]; then
   curl -o $hin_modelpath $url_hin
   echo downloading hindi weight file
