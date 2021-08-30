@@ -13,6 +13,8 @@ class TextExtraction:
         self.detect = False
         if self.lang == 'detect':
             self.detect = True
+        if self.lang not in config.LANG_MAPPING:
+            self.detect = True
 
     def get_sentences(self):
 
@@ -67,9 +69,9 @@ class TextExtraction:
 
     def check_weights(self):
         if not self.detect:
-                langs = config.LANG_MAPPING[self.lang]
+            langs = config.LANG_MAPPING[self.lang]
         else:
-                langs = [self.lang]
+            langs = [self.lang]
 
         for lang in langs:
             try:
