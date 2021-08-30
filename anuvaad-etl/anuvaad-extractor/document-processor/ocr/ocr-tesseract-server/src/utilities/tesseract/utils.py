@@ -87,17 +87,18 @@ def language_filter(org_lang,detected_lang,double_ocr=False):
         lang = map_detect_lang+"+" +map_org_lang
     return lang
 
-def crop_region(coord,image,cls):
+def crop_region(coord,image,cls,reg_left,reg_right):
     try:
         c_x = config.C_X; c_y=config.C_Y
         if cls=="CELL":
-            c_x = 10; c_y=5
+            box = get_box(coord)
+            c_x = 10; c_y=5;reg_left = box[0][0]; reg_right=box[1][0]
         if validate_region(coord):
             vertices = coord['boundingBox']['vertices']
             if config.PERSPECTIVE_TRANSFORM:
                 box = get_box(coord)
-                box[0][0]=box[0][0]+c_x; box[0][1]=box[0][1]+c_y; box[1][0]=abs(box[1][0]-c_x); box[1][1]=box[1][1]+c_y
-                box[2][0]=abs(box[2][0]-c_x); box[2][1]=abs(box[2][1]-c_y); box[3][0]=abs(box[3][0]+c_x); box[3][1]=abs(box[3][1]-c_y)
+                box[0][0]=min(box[0][0],reg_left)+c_x; box[0][1]=box[0][1]+c_y; box[1][0]=abs(max(box[1][0],reg_right)-c_x); box[1][1]=box[1][1]+c_y
+                box[2][0]=abs(max(box[2][0],reg_right)-c_x); box[2][1]=abs(box[2][1]-c_y); box[3][0]=abs(min(box[3][0],reg_left)+c_x); box[3][1]=abs(box[3][1]-c_y)
                 crop_image = get_crop_with_pers_transform(image, box, height=abs(box[0,1]-box[2,1]))
             else :
                 crop_image = image[vertices[0]['y']+c_y : abs(vertices[2]['y']-c_y) ,vertices[0]['x']+c_x : abs(vertices[2]['x']-c_x)]
@@ -164,6 +165,7 @@ def process_dfs(temp_df,left,top,lang,c_x,c_y):
         temp_dict1["conf"]= row['conf']
         temp_dict1["language"]= lang
         temp_dict1['boundingBox']={}
+        temp_dict1['font']={'family': 'Arial Unicode MS', 'size': int(row["height"]), 'style': 'REGULAR'}
         temp_dict1['boundingBox']["vertices"] = vert
         words.append(temp_dict1)
     return words

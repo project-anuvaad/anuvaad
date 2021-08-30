@@ -5,7 +5,7 @@ API_URL_PREFIX = "/anuvaad-etl/document-processor/tesseract-document-digitizatio
 HOST = '0.0.0.0'
 PORT = 5001
 BASE_DIR      = 'upload'
-#BASE_DIR      = '/home/naresh/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/ocr-tesseract-server/upload/'
+#BASE_DIR      = '/home/naresh/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/ocr-tesseract-server/'
 download_folder = 'upload'
 
 #os.environ['OMP_THREAD_LIMIT']='1'
@@ -57,6 +57,7 @@ DOUBLE_OCR_THRESHOLD = 20
 ######## crop config
 C_X=-7
 C_Y= 0
+
 
 LANG_MAPPING       =  {
     "en" : ["Latin","Latin"],
