@@ -26,7 +26,7 @@ COPY / /app
 WORKDIR /app
 #RUN apt install -y libspatialindex-dev python-rtree
 RUN pip install -r requirements.txt
-RUN apt-get update
+#RUN apt-get update
 RUN apt-get install -y tesseract-ocr \
    && apt-get install -y curl
 
