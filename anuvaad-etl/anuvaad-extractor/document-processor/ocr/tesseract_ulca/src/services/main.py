@@ -11,21 +11,22 @@ def process_input(app_context):
         file_properties = File(app_context.application_context)
 
         for im_index in range(file_properties.get_images_len()):
-            
+
             image_sentences = TextExtraction(file_properties.get_image(
                 im_index), file_properties.get_coords(im_index), file_properties.get_config()).get_sentences()
             if type(image_sentences) is not str:
-                sentences.extend(image_sentences )
-            else :
-                sentences.append("**** Image index {} not processed because  {} ****".format(im_index,image_sentences) )
+                sentences.extend(image_sentences)
+            else:
+                sentences.append(
+                    "**** Image index {} not processed because  {} ****".format(im_index, image_sentences))
 
         log_info("successfully completed ocr", None)
-        return sentences,file_properties.get_config()
+        return sentences, file_properties.get_config()
 
     except Exception as e:
         log_exception("Error occured during google vision ocr",
                       app_context.application_context, e)
-        return None,None
+        return None, None
 
 
 def OCR(app_context):
