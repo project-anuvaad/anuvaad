@@ -9,7 +9,7 @@ class TextExtraction:
     def __init__(self, image, coords, cfg):
         self.image = image
         self.coords = coords
-        self.lang = cfg['language']
+        self.lang = cfg['language']['sourceLanguage']
         self.detect = False
         if self.lang == 'detect':
             self.detect = True

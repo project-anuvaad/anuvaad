@@ -17,10 +17,6 @@ After successful installation of prerequisites, you will have to run app.py
 python app.py
 ```
 
-Some clarity on io, would be gcp link will downloadable with curl ?
-Change in structure of contract 
-
-
 Changes in contract defination :
 https://raw.githubusercontent.com/ULCA-IN/ulca/master/specs/model-schema.yml
 https://github.com/project-anuvaad/ULCA/blob/main/specs/document-ocr-schema.yml
@@ -33,17 +29,8 @@ A tesseract service with rest interface:
 input : image 
 ouput : [sentences]
 
-hindi and Tamil use custom weights : {mapping with language codes }
+Hindi and Tamil use custom weights
 
-detect and download
+detection of language and downloading tess-best weights if not already avilable  
 
 tesseract --- two option over entire image, over co-ordinates 
-
-Line level grouping 
-generate response 
-
-
-gunicorn -w 3 -b :5001 -t 100 wsgi:app
-
-
-
