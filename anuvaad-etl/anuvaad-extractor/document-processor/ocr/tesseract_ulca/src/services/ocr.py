@@ -6,10 +6,10 @@ import config
 
 class TextExtraction:
 
-    def __init__(self, image, coords, config):
+    def __init__(self, image, coords, cfg):
         self.image = image
         self.coords = coords
-        self.lang = config['language']
+        self.lang = cfg['language']
         self.detect = False
         if self.lang == 'detect':
             self.detect = True
