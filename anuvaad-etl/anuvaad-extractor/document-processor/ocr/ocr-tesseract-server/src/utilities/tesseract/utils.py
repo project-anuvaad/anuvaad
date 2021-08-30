@@ -70,9 +70,11 @@ def page_lang_detection(page_path,lang):
     print('language detected is {}'.format(lang_detected))
     weight_path = '/usr/share/tesseract-ocr/4.00/tessdata/' + lang_detected + '.traineddata'
     if not os.path.exists(weight_path):
+        print('Downloading detected language ...')
         download = 'curl -L -o /usr/share/tesseract-ocr/4.00/tessdata/' + lang_detected \
                    + '.traineddata https://github.com/tesseract-ocr/tessdata_best/raw/master/script/' + lang_detected + '.traineddata'
         os.system(download)
+        print('Successfully downloaded detected language ...')
     return lang_detected
 
 def language_filter(org_lang,detected_lang,double_ocr=False):

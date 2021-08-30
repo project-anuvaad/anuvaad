@@ -62,7 +62,7 @@ def get_mode_height(page_regions):
     return mode_height
 
 
-def table_ocr(page_regions,region,total_lines,lang,img,mode_height,rgn_idx):
+def table_ocr(page_regions,region,total_lines,lang,img,mode_height,rgn_idx,lang_detected):
     for cell_idx, cell in enumerate(region['regions']):
         cell_words=[]
         for line_idx,line in enumerate(cell['LINES']):
@@ -93,7 +93,7 @@ def multi_processing_tesseract(page_regions,image_path,lang,width,height):
             for rgn_idx, region in enumerate(page_regions):
                 if region!=None and 'regions' in region.keys():
                     if region['class']=="TABLE":
-                        total_lines,page_regions = table_ocr(page_regions,region,total_lines,lang,img,mode_height,rgn_idx)
+                        total_lines,page_regions = table_ocr(page_regions,region,total_lines,lang,img,mode_height,rgn_idx,lang_detected)
                     else:
                         for line_idx,line in enumerate(region['regions']):
                             tmp_line=[line]
