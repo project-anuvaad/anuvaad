@@ -46,7 +46,7 @@ class TextExtraction:
                 lang = self.lang
             text = pytesseract.image_to_string(self.image, lang=lang)
 
-            return text.split('\n')
+            return [ { 'source' : line} for line in  text.split('\n')]
         except Exception as e:
             return 'Error in tesseract ocr due to ' + str(e)
 
