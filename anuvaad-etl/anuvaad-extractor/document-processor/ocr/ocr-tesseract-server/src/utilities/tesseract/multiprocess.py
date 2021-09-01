@@ -2,12 +2,11 @@ import config
 import multiprocessing,cv2,copy
 from multiprocessing import Queue
 from src.utilities.tesseract.helper import tess_eval,add_lines_to_tess_queue
-from src.utilities.tesseract.utils import  frequent_height,scale_coords,crop_region,get_tess_text
+from src.utilities.tesseract.utils import  frequent_height,scale_coords,crop_region,get_tess_text,page_lang_detection
 from src.utilities.tesseract.dynamic_adjustment import coord_adjustment
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
 import src.utilities.app_context as app_context
-from src.utilities.tesseract.utils import page_lang_detection
 
 tessract_queue = Queue()
 file_writer_queue = Queue()
@@ -67,7 +66,7 @@ def table_ocr(page_regions,region,total_lines,lang,img,mode_height,rgn_idx,lang_
         cell_words=[]
         if "LINES" in cell.keys() or cell['class'] is "CELL_TEXT":
             if cell['class'] is "CELL_TEXT":
-                cell['LINES'] = [cell]
+                tmp_cell = cell;  cell['LINES'] = [tmp_cell]
             for line_idx,line in enumerate(cell['LINES']):
                 tmp_line=[line]
                 if len(tmp_line)>0:
