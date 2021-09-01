@@ -65,21 +65,27 @@ def get_mode_height(page_regions):
 def table_ocr(page_regions,region,total_lines,lang,img,mode_height,rgn_idx,lang_detected):
     for cell_idx, cell in enumerate(region['regions']):
         cell_words=[]
-        for line_idx,line in enumerate(cell['LINES']):
-            tmp_line=[line]
-            if len(tmp_line)>0:
-                total_lines+=1
-            if config.MULTIPROCESS:
-                add_lines_to_tess_queue(line,tessract_queue,lang,img,mode_height,rgn_idx,cell_idx)
-            if config.MULTIPROCESS==False and line is not None and len(tmp_line)>0:
-                vertices = tmp_line[0]['boundingBox']['vertices']
-                left = vertices[0]['x'];  top = vertices[0]['y']
-                image_crop,c_x,c_y = crop_region(tmp_line[0],img,"CELL",int(left),int(tmp_line[0]['boundingBox']['vertices'][1]['x']))
-                if image_crop is not None and image_crop.shape[1] >3 and image_crop.shape[0] > 3:
-                    words  = get_tess_text(image_crop,lang,mode_height,left,top,"LINE",c_x,c_y,lang_detected)
-                    cell_words.extend(words)
-        page_regions[rgn_idx]['regions'][cell_idx]['regions'] = cell_words
+        if "LINES" in cell.keys() or cell['class'] is "CELL_TEXT":
+            if cell['class'] is "CELL_TEXT":
+                cell['LINES'] = [cell]
+            for line_idx,line in enumerate(cell['LINES']):
+                tmp_line=[line]
+                if len(tmp_line)>0:
+                    total_lines+=1
+                if config.MULTIPROCESS:
+                    add_lines_to_tess_queue(line,tessract_queue,lang,img,mode_height,rgn_idx,cell_idx)
+                if config.MULTIPROCESS==False and line is not None and len(tmp_line)>0:
+                    vertices = tmp_line[0]['boundingBox']['vertices']
+                    left = vertices[0]['x'];  top = vertices[0]['y']
+                    image_crop,c_x,c_y = crop_region(tmp_line[0],img,"CELL",int(left),int(tmp_line[0]['boundingBox']['vertices'][1]['x']))
+                    if image_crop is not None and image_crop.shape[1] >3 and image_crop.shape[0] > 3:
+                        words  = get_tess_text(image_crop,lang,mode_height,left,top,"LINE",c_x,c_y,lang_detected)
+                        cell_words.extend(words)
+            page_regions[rgn_idx]['regions'][cell_idx]['regions'] = cell_words
+        else:
+            page_regions[rgn_idx]['regions'][cell_idx]['regions'] = cell
     return total_lines,page_regions
+
 
 
 def multi_processing_tesseract(page_regions,image_path,lang,width,height):
