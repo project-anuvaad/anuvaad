@@ -266,9 +266,6 @@ class Region_Unifier:
             box1_left = keys.get_left(reg1); box1_right = keys.get_right(reg1)
             box2_top = keys.get_top(reg2); box2_bottom = keys.get_bottom(reg2)
             box2_left = keys.get_left(reg2); box2_right = keys.get_right(reg2)
-
-
-
             reg1["boundingBox"]["vertices"][0]['x']= min(box1_left,box2_left)
             reg1["boundingBox"]["vertices"][0]['y']= min(box1_top,box2_top)
             reg1["boundingBox"]["vertices"][1]['x']= max(box1_right,box2_right)
