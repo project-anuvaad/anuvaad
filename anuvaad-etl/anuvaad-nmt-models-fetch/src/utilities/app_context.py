@@ -1,4 +1,4 @@
-MODULE_CONTEXT = {'metadata':{'module':'ANUVAAD-NMT-INFERENCE'}}
+MODULE_CONTEXT = {'metadata':{'module':'ANUVAAD-NMT-MODELS'}}
 
 def init():
     global app_context
