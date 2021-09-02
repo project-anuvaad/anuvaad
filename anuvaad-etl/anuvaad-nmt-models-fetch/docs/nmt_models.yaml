@@ -12,7 +12,7 @@ schemes:
 produces:
   - application/json  
 
-basePath: /nmt-inference-models
+basePath: /anuvaad-nmt-models
 
 paths: 
   /v1/create-models:

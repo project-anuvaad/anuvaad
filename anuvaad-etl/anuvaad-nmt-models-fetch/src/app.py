@@ -6,19 +6,10 @@ from anuvaad_auditor.loghandler import log_info
 import routes
 import config
 from utilities import MODULE_CONTEXT
-# import threading
-# from kafka_wrapper import KafkaTranslate
 from db.database import connectmongo
 
 server  = Flask(__name__)
 
-# def kafka_function():
-#     log_info('starting kafka from nmt-server on thread-1',MODULE_CONTEXT)
-#     KafkaTranslate.batch_translator([config.kafka_topic[0]['consumer'],config.kafka_topic[1]['consumer']])     
-
-# if config.bootstrap_server_boolean:
-#     t1 = threading.Thread(target=kafka_function)
-#     t1.start()
 
 if config.ENABLE_CORS:
     cors    = CORS(server, resources={r"/api/*": {"origins": "*"}})
