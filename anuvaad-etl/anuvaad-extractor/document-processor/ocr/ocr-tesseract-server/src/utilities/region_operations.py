@@ -195,6 +195,30 @@ def collate_cell_regions(regions, lines, child_class=None, grand_children=False,
                 
     return regions
 
+# def remvoe_regions(regions, lines):
+#     idx = index.Index();  lines_intersected = [];  not_intersecting  = []
+#     if regions !=None and len(regions) > 0:
+#         lines_intersected =[]
+#         for line_idx, line in enumerate(lines):
+#             poly = get_polygon(line['boundingBox'])
+#             if poly:
+#                 idx.insert(line_idx, poly.bounds)
+#         for region_index, region in enumerate(regions):
+#             region_poly = get_polygon(region['boundingBox'])
+#             if region_poly:
+#                 children_lines = list(idx.intersection(region_poly.bounds))
+#             if len(children_lines) > 0:
+#                 region_lines = []
+#                 for intr_index in children_lines:
+#                     region_lines.append(lines[intr_index])
+#                     lines_intersected.append(intr_index)
+
+#     for line_index, line in enumerate(lines):
+#         if line_index not in lines_intersected:
+#             not_intersecting.append(line)
+
+#     return not_intersecting
+
 def remvoe_regions(regions, lines):
     idx = index.Index();  lines_intersected = [];  not_intersecting  = []
     if regions !=None and len(regions) > 0:
@@ -210,8 +234,14 @@ def remvoe_regions(regions, lines):
             if len(children_lines) > 0:
                 region_lines = []
                 for intr_index in children_lines:
-                    region_lines.append(lines[intr_index])
-                    lines_intersected.append(intr_index)
+                    if intr_index not in lines_intersected:
+                        line_poly = get_polygon(lines[intr_index]['boundingBox'])
+                        if line_poly:
+                            area = region_poly.intersection(line_poly).area
+                            reg_area = region_poly.area;  line_area = line_poly.area
+                            if reg_area>0 and line_area>0 and area/min(line_area,reg_area) >0.1 :
+                                region_lines.append(lines[intr_index])
+                                lines_intersected.append(intr_index)
 
     for line_index, line in enumerate(lines):
         if line_index not in lines_intersected:

@@ -94,6 +94,7 @@ def segment_regions(lang,path,file,words, lines,regions,file_properties,idx):
     v_list = multi_processing_tesseract(v_list,path,lang,width, height)
     log_info("tesseract ocr completed", None)
     save_path = mask_image_craft(path, v_list, idx, file_properties, width, height)
+   # save_path =None
     if "top_correction" in file['config']["OCR"].keys() and file['config']["OCR"]["top_correction"]=="True":
         v_list = verify__table_structure(v_list)
         return v_list,save_path

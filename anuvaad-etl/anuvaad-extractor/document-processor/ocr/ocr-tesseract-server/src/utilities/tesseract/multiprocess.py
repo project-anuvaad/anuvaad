@@ -2,7 +2,7 @@ import config
 import multiprocessing,cv2,copy
 from multiprocessing import Queue
 from src.utilities.tesseract.helper import tess_eval,add_lines_to_tess_queue
-from src.utilities.tesseract.utils import  frequent_height,scale_coords,crop_region,get_tess_text,page_lang_detection
+from src.utilities.tesseract.utils import  frequent_height,scale_coords,crop_region,get_tess_text,page_lang_detection,adjust_crop_coord
 from src.utilities.tesseract.dynamic_adjustment import coord_adjustment
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
@@ -76,7 +76,8 @@ def table_ocr(page_regions,region,total_lines,lang,img,mode_height,rgn_idx,lang_
                 if config.MULTIPROCESS==False and line is not None and len(tmp_line)>0:
                     vertices = tmp_line[0]['boundingBox']['vertices']
                     left = vertices[0]['x'];  top = vertices[0]['y']
-                    image_crop,c_x,c_y = crop_region(tmp_line[0],img,"CELL",int(left),int(tmp_line[0]['boundingBox']['vertices'][1]['x']))
+                    adjusted_box,c_x,c_y = adjust_crop_coord(tmp_line[0],"CELL",int(left),int(tmp_line[0]['boundingBox']['vertices'][1]['x']))
+                    image_crop = crop_region(adjusted_box,img)
                     if image_crop is not None and image_crop.shape[1] >3 and image_crop.shape[0] > 3:
                         words  = get_tess_text(image_crop,lang,mode_height,left,top,"LINE",c_x,c_y,lang_detected)
                         cell_words.extend(words)
@@ -112,7 +113,8 @@ def multi_processing_tesseract(page_regions,image_path,lang,width,height):
                             if config.MULTIPROCESS==False and line is not None and len(tmp_line)>0:
                                 vertices = tmp_line[0]['boundingBox']['vertices']
                                 left = vertices[0]['x'];  top = vertices[0]['y']
-                                image_crop,c_x,c_y = crop_region(tmp_line[0],img,line['class'],int(region['boundingBox']['vertices'][0]['x']),int(region['boundingBox']['vertices'][1]['x']))
+                                adjusted_box,c_x,c_y = adjust_crop_coord(tmp_line[0],line['class'],int(region['boundingBox']['vertices'][0]['x']),int(region['boundingBox']['vertices'][1]['x']))
+                                image_crop = crop_region(adjusted_box,img)
                                 if image_crop is not None and image_crop.shape[1] >3 and image_crop.shape[0] > 3:
                                     words  = get_tess_text(image_crop,lang,mode_height,left,top,line['class'],c_x,c_y,lang_detected)
                                     page_regions[rgn_idx]['regions'][line_idx]['regions'] = words

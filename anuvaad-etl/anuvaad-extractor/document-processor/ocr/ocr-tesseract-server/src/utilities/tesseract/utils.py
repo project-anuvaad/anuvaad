@@ -89,26 +89,31 @@ def language_filter(org_lang,detected_lang,double_ocr=False):
         lang = map_detect_lang+"+" +map_org_lang
     return lang
 
-def crop_region(coord,image,cls,reg_left,reg_right):
-    try:
-        c_x = config.C_X; c_y=config.C_Y
+def adjust_crop_coord(coord,cls,reg_left,reg_right):
+    if validate_region(coord):
+        c_x = config.C_X; c_y=config.C_Y; box = get_box(coord)
+        #if abs(reg_left-reg_right)>abs(box[0][0]-box[1][0])*1.2:
+        reg_left = box[0][0];  reg_right = box[1][0]
         if cls=="CELL":
-            box = get_box(coord)
             c_x = 10; c_y=5;reg_left = box[0][0]; reg_right=box[1][0]
-        if validate_region(coord):
-            vertices = coord['boundingBox']['vertices']
-            if config.PERSPECTIVE_TRANSFORM:
-                box = get_box(coord)
-                box[0][0]=min(box[0][0],reg_left)+c_x; box[0][1]=box[0][1]+c_y; box[1][0]=abs(max(box[1][0],reg_right)-c_x); box[1][1]=box[1][1]+c_y
-                box[2][0]=abs(max(box[2][0],reg_right)-c_x); box[2][1]=abs(box[2][1]-c_y); box[3][0]=abs(min(box[3][0],reg_left)+c_x); box[3][1]=abs(box[3][1]-c_y)
-                crop_image = get_crop_with_pers_transform(image, box, height=abs(box[0,1]-box[2,1]))
-            else :
-                crop_image = image[vertices[0]['y']+c_y : abs(vertices[2]['y']-c_y) ,vertices[0]['x']+c_x : abs(vertices[2]['x']-c_x)]
+        box[0][0]=min(box[0][0],reg_left)+c_x; box[0][1]=box[0][1]+c_y; box[1][0]=abs(max(box[1][0],reg_right)-c_x); box[1][1]=box[1][1]+c_y
+        box[2][0]=abs(max(box[2][0],reg_right)-c_x); box[2][1]=abs(box[2][1]-c_y); box[3][0]=abs(min(box[3][0],reg_left)+c_x); box[3][1]=abs(box[3][1]-c_y)
+        return box,c_x,c_y
+    else:
+        log_exception("Error in region   due to invalid coordinates",  app_context.application_context, coord)
+        return None ,None, None
 
-            return crop_image,c_x,c_y
-        else :
-            log_exception("Error in region   due to invalid coordinates",  app_context.application_context, coord)
+def crop_region(box,image):
+    try:
+        if box is None:
+            log_exception("Error in region   due to invalid coordinates",  app_context.application_context, e)
             return None
+        if config.PERSPECTIVE_TRANSFORM:
+            crop_image = get_crop_with_pers_transform(image, box, height=abs(box[0,1]-box[2,1]))
+        else :
+            crop_image = image[box[0][1] : box[2][1] ,box[0][0] : box[1][0]]
+
+        return crop_image
     except Exception as e:
         log_exception("Error in region   due to invalid coordinates",  app_context.application_context, e)
         return None
