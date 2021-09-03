@@ -117,17 +117,18 @@ def get_tess_text(image_crop,org_lang, median_height,left,top,cls,c_x,c_y,lang_d
     lang = language_filter(org_lang,lang_detected)    
     crop_height = image_crop.shape[0]
     height_check = median_height * 1.5
-    if cls in ['CELL']:
-        height_check = median_height*1.2
-    if crop_height > height_check :
-        dfs = pytesseract.image_to_data(image_crop,config='--psm 6', lang=lang  ,output_type=Output.DATAFRAME)
-        dfs = check_text_df(dfs,image_crop,org_lang, median_height,6,lang_detected)
-        words  = process_dfs(dfs,left,top,lang,c_x,c_y)
-        return words      
-    else:
-        dfs = pytesseract.image_to_data(image_crop,config='--psm '+str(config.PSM), lang=lang,output_type=Output.DATAFRAME)
-        dfs = check_text_df(dfs,image_crop,org_lang, median_height,config.PSM,lang_detected)
-        words  = process_dfs(dfs,left,top,lang,c_x,c_y)
+    words =[]
+    # if cls in ['CELL']:
+    #     height_check = median_height*1.2
+    # if crop_height > height_check :
+    #     dfs = pytesseract.image_to_data(image_crop,config='--psm 6', lang=lang  ,output_type=Output.DATAFRAME)
+    #     dfs = check_text_df(dfs,image_crop,org_lang, median_height,6,lang_detected)
+    #     words  = process_dfs(dfs,left,top,lang,c_x,c_y)
+    #     return words      
+    # else:
+    #     dfs = pytesseract.image_to_data(image_crop,config='--psm '+str(config.PSM), lang=lang,output_type=Output.DATAFRAME)
+    #     dfs = check_text_df(dfs,image_crop,org_lang, median_height,config.PSM,lang_detected)
+    #     words  = process_dfs(dfs,left,top,lang,c_x,c_y)
 
     return words
 

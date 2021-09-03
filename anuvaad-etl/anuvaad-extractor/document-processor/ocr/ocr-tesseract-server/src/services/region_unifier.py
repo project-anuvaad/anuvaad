@@ -133,6 +133,7 @@ class Region_Unifier:
             if add_word and reg1 is not None and reg2 is not None:
                     if 'regions' in reg1.keys() and 'identifier' in reg2.keys():
                         for idx,i in enumerate(reg1['regions']):
+                            # This can cause repetations 
                             if i is not None and isinstance(i, dict) and 'identifier' in i.keys() and reg2['identifier']!=i['identifier']:
                                 reg1['regions'].extend(reg2)
                             elif not isinstance(i, dict):
@@ -206,44 +207,50 @@ class Region_Unifier:
         try:
             page_lines = add_font(page_lines)
             page_regions  = filterd_regions(page_regions)
-            if len(page_regions) > 0 :
-                page_regions.sort(key=lambda x:x['boundingBox']['vertices'][0]['y'])
-                sorted_page_regions = sort_regions(page_regions,[])
-            else:
-                sorted_page_regions = page_regions
-            text_region,n_text_table_regions,tabel_region,image_region,head_foot_region = self.get_text_tabel_region(sorted_page_regions)
-            tabel_region  = remvoe_regions(copy.deepcopy(image_region), copy.deepcopy(tabel_region))
+            
+            #if len(page_regions) > 0 :
+            #    page_regions.sort(key=lambda x:x['boundingBox']['vertices'][0]['y'])
+            #    sorted_page_regions = sort_regions(page_regions,[])
+            #else:
+            sorted_page_regions = page_regions
+            
+            text_regions,n_text_table_regions,tabel_regions,image_region,head_foot_region = self.get_text_tabel_region(sorted_page_regions)
+            #Remove any table which would overlap with an image
+            tabel_regions  = remvoe_regions(copy.deepcopy(image_region), copy.deepcopy(tabel_regions))
             #filtered_lines = remvoe_regions(copy.deepcopy(image_region), copy.deepcopy(page_lines))
             filtered_lines = copy.deepcopy(page_lines)
-            page_lines2 = filtered_lines
-            t_list = []
-            for idx,table in enumerate(tabel_region):
+            page_lines2 = copy.deepcopy(page_lines)
+
+            for idx,table in enumerate(tabel_regions):
                 if 'regions' in table.keys():
                     filtered_lines    = remvoe_regions(copy.deepcopy(table['regions']), copy.deepcopy(filtered_lines))
-                    tabel_region[idx]['regions'] =  collate_regions(regions = copy.deepcopy(table['regions']),lines = copy.deepcopy(page_lines),child_class='LINE',grand_children=False,region_flag = False,child_key=True)
-                    
+                    # Adding lines to table cells 
+                    tabel_regions[idx]['regions'] =  collate_regions(regions = copy.deepcopy(table['regions']),lines = copy.deepcopy(page_lines),child_class='LINE',grand_children=False,region_flag = False,child_key=True)
                     page_lines = filtered_lines
-                    t_list.append(tabel_region[idx])
-        
-            t_list =  collate_cell_regions(copy.deepcopy(t_list),copy.deepcopy(page_lines),child_class='CELL_TEXT',grand_children=False,region_flag = False)
-            t_list = self.table_no_cell(t_list,page_lines2,idx2)            
-            filtered_lines   = remvoe_regions(copy.deepcopy(t_list), copy.deepcopy(page_lines))
-            text_region  = remvoe_regions(copy.deepcopy(t_list) ,copy.deepcopy(text_region))
+
+            # Taking care of lines which intersect with a table but not with any cell (error in cell detection)
+            tabel_regions =  collate_cell_regions(copy.deepcopy(tabel_regions),copy.deepcopy(page_lines),child_class='CELL_TEXT',grand_children=False,region_flag = False)
+            
+            # Taking union of cell and lines coordinates which intersect (Why is this done?) 
+            tabel_regions = self.table_no_cell(tabel_regions,page_lines2,idx2)
+            
+            filtered_lines   = remvoe_regions(copy.deepcopy(tabel_regions), copy.deepcopy(page_lines))
+            text_regions  = remvoe_regions(copy.deepcopy(tabel_regions) ,copy.deepcopy(text_regions))
             head_foot_list =  collate_regions(copy.deepcopy(head_foot_region),copy.deepcopy(filtered_lines),child_class='LINE',grand_children=False,region_flag = False)
             filtered_lines  = remvoe_regions(copy.deepcopy(head_foot_list), copy.deepcopy(filtered_lines))
             
-            v_list       = collate_regions( copy.deepcopy( text_region),copy.deepcopy( filtered_lines ),child_class='LINE' ,grand_children=False,add_font=False )
-            i_list       =  collate_regions(copy.deepcopy( image_region),copy.deepcopy(page_lines2),grand_children=False,region_flag = False,skip_enpty_children=True)
+            text_regions       = collate_regions( copy.deepcopy( text_regions),copy.deepcopy( filtered_lines ),child_class='LINE' ,grand_children=False,add_font=False )
+            #i_list       =  collate_regions(copy.deepcopy( image_region),copy.deepcopy(page_lines2),grand_children=False,region_flag = False,skip_enpty_children=True)
             
-            v_list.extend(head_foot_list)
+            text_regions.extend(head_foot_list)
 
-            v_list = self.add_region_attribute(v_list,t_list)
-            if len(v_list) > 0 :
-                v_list.sort(key=lambda x:x['boundingBox']['vertices'][0]['y'])
-                v_list = sort_regions(v_list,[])
+            text_regions = self.add_region_attribute(text_regions,tabel_regions)
+            if len(text_regions) > 0 :
+                text_regions.sort(key=lambda x:x['boundingBox']['vertices'][0]['y'])
+                text_regions = sort_regions(text_regions,[])
             
         except Exception as e:
             log_exception("Error occured during block unifier",  app_context.application_context, e)
             return None  ,None
         
-        return v_list, n_text_table_regions
+        return text_regions, n_text_table_regions

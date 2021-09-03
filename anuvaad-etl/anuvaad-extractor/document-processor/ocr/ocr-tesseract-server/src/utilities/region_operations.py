@@ -153,8 +153,8 @@ def collate_regions(regions, lines, child_class=None, grand_children=False,regio
             if line_index not in lines_intersected:
                 if child_class is not None:
                     if child_class is 'LINE':
-                        line['class'] = 'PARA'; tmp_line = line
-                        line['regions'] = [tmp_line]
+                        line['class'] = 'PARA'
+                        line['regions'] = [copy.deepcopy(line)]
                 regions.append(line)
 
     return regions
