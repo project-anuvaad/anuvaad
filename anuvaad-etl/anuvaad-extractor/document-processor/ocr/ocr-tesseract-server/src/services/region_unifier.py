@@ -289,7 +289,7 @@ class Region_Unifier:
 
             # Taking care of lines which intersect with a table but not with any cell (error in cell detection)
             tabel_regions = collate_cell_regions(copy.deepcopy(tabel_regions), copy.deepcopy(
-                page_lines), child_class='CELL_TEXT', grand_chil-dren=False, region_flag=False)
+                page_lines), child_class='CELL_TEXT', grand_children=False, region_flag=False)
 
             # Taking union of cell and lines coordinates which intersect (Why is this done?)
             #tabel_regions = self.table_no_cell(tabel_regions,page_lines2,idx2)
