@@ -54,7 +54,7 @@ def process_word_detector_kf():
         log_info("process_word_detector_kf : trying to receive value from consumer ", LOG_WITHOUT_CONTEXT)
 
         while True:
-            wait_for_control = controlQueue.get(block=True)
+            #wait_for_control = controlQueue.get(block=True)
 
             for msg in consumer:
 
