@@ -86,7 +86,7 @@ ENV DEBIAN_FRONTEND = "noninteractive"
 # RUN apt-get install -y make git
 # RUN pip install 'git+https://github.com/facebookresearch/detectron2.git#egg=detectron2'
 RUN apt-get update
-RUN apt install -y curl
+RUN apt-get install -y curl
 
 COPY start.sh /usr/bin/start.sh
 RUN chmod +x /usr/bin/start.sh
