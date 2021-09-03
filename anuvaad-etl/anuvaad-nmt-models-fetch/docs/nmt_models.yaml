@@ -1,0 +1,332 @@
+swagger: "2.0"
+info:
+  version: 2.0.0
+  title: Anuvaad NMT Models API Contract
+  description: API to CRUD Operations of all available nmt models for inference generation along with their respective details
+  contact:
+    name: Kumar Deepak
+    email: kumar.deepak@tarento.com
+
+schemes:
+  - https
+produces:
+  - application/json  
+
+basePath: /anuvaad-nmt-models
+
+paths: 
+  /v1/create-models:
+    post:
+      summary: REST API of Createing nmt models information.
+      description: POST api to store information into database model id, source and target language information which store in databse etc
+      parameters:
+         - in: body
+           name: Create Model
+           required: true
+           description: Create Operation of the Model.
+           
+           schema:
+            $ref: '#/definitions/nmt_input'
+            
+      tags:
+      - nmt-create-models
+
+      responses:
+        200:
+          description: On successful completion of the task.
+          schema:
+            $ref: '#/definitions/nmt_response'
+        401:
+          description: incorrect input data
+          schema:
+            $ref: '#/definitions/error_status'
+        404:
+          description: missing input data
+          schema:
+            $ref: '#/definitions/error_status'
+        500:
+          description: interal server/model error
+          schema:
+            $ref: '#/definitions/error_status'
+            
+  /v1/update-models/uuid:
+    post:
+      summary: REST API of updating existing nmt models information.
+      description: POST api to store information into database model id, source and target language information which store in databse etc
+      parameters:
+         - in: body
+           name: Update Model
+           required: false
+           description: Update Operation of the Model.
+           
+           schema:
+            $ref: '#/definitions/nmt_input'
+            
+      tags:
+      - nmt-update-models
+
+      responses:
+        200:
+          description: On successful completion of the task.
+          schema:
+            $ref: '#/definitions/nmt_response'
+        401:
+          description: incorrect input data
+          schema:
+            $ref: '#/definitions/error_status'
+        404:
+          description: missing input data
+          schema:
+            $ref: '#/definitions/error_status'
+        500:
+          description: interal server/model error
+          schema:
+            $ref: '#/definitions/error_status'  
+            
+  /v1/delete-models/uuid:
+    post:
+      summary: REST API to delete single model of nmt models information.
+      description: POST api to delete single model
+            
+      tags:
+      - nmt-delete-single-models
+
+      responses:
+        200:
+          description: On successful completion of the task.
+          schema:
+            $ref: '#/definitions/nmt_response_delete'
+        401:
+          description: incorrect input data
+          schema:
+            $ref: '#/definitions/error_status'
+        404:
+          description: missing input data
+          schema:
+            $ref: '#/definitions/error_status'
+        500:
+          description: interal server/model error
+          schema:
+            $ref: '#/definitions/error_status' 
+            
+  /v2/fetch-models:
+    get:
+      summary: REST API of Fetch nmt models information.
+      description: GET api to outputs the nmt model information like their model id, source and target language information etc
+            
+      tags:
+      - nmt-fetch-models
+
+      responses:
+        200:
+          description: On successful completion of the task.
+          schema:
+            $ref: '#/definitions/nmt_response'
+        401:
+          description: incorrect input data
+          schema:
+            $ref: '#/definitions/error_status'
+        404:
+          description: missing input data
+          schema:
+            $ref: '#/definitions/error_status'
+        500:
+          description: interal server/model error
+          schema:
+            $ref: '#/definitions/error_status'    
+  
+
+definitions:
+
+  nmt_input:
+    type: object
+    description: Create Operation of the Model.
+    properties:
+      description:
+        type: string
+        description: model description  
+      is_primary:
+        type: boolean
+        description: whether the model is primary/main model for given language pair(decides for document translation). Default is false.  
+      model_id:
+        type: integer
+        description: model id of the model 
+      model_name:
+        type: string
+        description: name of the model
+      source_language_code:
+        type: string
+        description: ISO 639-1 language code of the source language
+      source_language_name:
+        type: string
+        description: name of the source language  
+      target_language_code:
+        type: string
+        description: ISO 639-1 language code of the target language
+      target_language_name:
+        type: string
+        description: name of the target language 
+      status:
+        type: string
+        description: whether the model is ACTIVE or INACTIVE  
+        enum:
+          - "ACTIVE"
+          - "INACTIVE"
+      interactive_translation:
+        type: boolean
+        description: If interactive translation available with given model (true or false). Default is false
+      connection_details:
+        type: object
+        description: Connection over url is mandatory hence host and api_endpoint are required. kafka is optional
+        properties:
+          kafka:
+            type: object
+            description: Environment varibale key for kafka input and output topics of NMT
+            properties:
+              input_topic:
+                type: string
+              output_topic:
+                type: string
+          translation:
+            type: object
+            description: Environment varibale key for NMT translate api
+            properties:
+              api_endpoint:
+                type: string
+              host:
+                type: string
+          interactive:
+            type: object
+            description: Environment varibale key for NMT interactive translate api if applicable
+            properties:
+              api_endpoint:
+                type: string
+              host:
+                type: string  
+            
+ 
+  nmt_response:
+    type: object
+    properties: 
+      status:
+        $ref: '#/definitions/success_status'
+      data:
+        type: array
+        description: A list of models and their details
+        items:
+          properties:
+            _id: 
+              description: Object Id
+              items:
+                properties:
+                  oid: 
+                    type: string
+            created_on:
+              type: string
+              description: model creation date
+            uuid:
+              type: string
+              description: model unique id
+            description:
+              type: string
+              description: model description  
+            is_primary:
+              type: boolean
+              description: whether the model is primary/main model for given language pair(decides for document translation)  
+            model_id:
+              type: integer
+              description: model id of the model 
+            model_name:
+              type: string
+              description: name of the model
+            source_language_code:
+              type: string
+              description: ISO 639-1 language code of the source language
+            source_language_name:
+              type: string
+              description: name of the source language  
+            target_language_code:
+              type: string
+              description: ISO 639-1 language code of the target language
+            target_language_name:
+              type: string
+              description: name of the target language 
+            status:
+              type: string
+              description: whether the model is ACTIVE or INACTIVE  
+              enum:
+                - "ACTIVE"
+                - "INACTIVE"
+            interactive_translation:
+              type: boolean
+              description: If interactive translation available with given model (true or false). Default is false    
+            connection_details:
+              type: object
+              description: Connection over url is mandatory hence host and api_endpoint are required. kafka is optional
+              properties:
+                kafka:
+                  type: object
+                  description: Environment varibale key for kafka input and output topics of NMT
+                  properties:
+                    input_topic:
+                      type: string
+                    output_topic:
+                      type: string
+                translation:
+                  type: object
+                  description: Environment varibale key for NMT translate api
+                  properties:
+                    api_endpoint:
+                      type: string
+                    host:
+                      type: string
+                interactive:
+                  type: object
+                  description: Environment varibale key for NMT interactive translate api if applicable
+                  properties:
+                    api_endpoint:
+                      type: string
+                    host:
+                      type: string               
+            
+              
+              
+  nmt_response_delete:
+    type: object
+    properties:        
+      data:
+        type: string
+        description: Deleted model shown as 1 if not found 0
+
+      status:
+        $ref: '#/definitions/success_status'
+        
+  success_status:
+    type: object
+    description: Status object with every request
+    properties:
+      statusCode: 
+        type: integer
+        description: http status code
+      message:
+        type: string
+        description: Success message
+  
+
+  error_status:
+    description: response for status code is not 200
+    type: object
+    properties:
+      status:
+        $ref: '#/definitions/status_error'
+  
+  status_error:
+    type: object
+    description: Status object for error request
+    properties:
+      statusCode: 
+        type: integer
+        description: http status code
+      message:
+        type: string
+        description: Reason of failure in case of error  

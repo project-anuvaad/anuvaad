@@ -122,6 +122,7 @@ def get_tess_text(image_crop,org_lang, median_height,left,top,cls,c_x,c_y,lang_d
     lang = language_filter(org_lang,lang_detected)    
     crop_height = image_crop.shape[0]
     height_check = median_height * 1.5
+    #words =[]
     if cls in ['CELL']:
         height_check = median_height*1.2
     if crop_height > height_check :
