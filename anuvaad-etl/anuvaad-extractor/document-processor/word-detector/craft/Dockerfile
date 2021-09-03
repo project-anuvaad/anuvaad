@@ -74,7 +74,7 @@ FROM anuvaadio/anuvaad-word-detector-craft:95-5180ace07
 COPY / /app
 WORKDIR /app
 
-#ENV DEBIAN_FRONTEND = "noninteractive"
+ENV DEBIAN_FRONTEND = "noninteractive"
 
 # RUN apt-get update && apt-get install -y software-properties-common build-essential
 # RUN apt install -y libssl-dev libffi-dev libxml2-dev libxslt1-dev zlib1g-dev python3-dev python3-pip
@@ -85,6 +85,7 @@ WORKDIR /app
 # RUN pip install -r requirements.txt
 # RUN apt-get install -y make git
 # RUN pip install 'git+https://github.com/facebookresearch/detectron2.git#egg=detectron2'
+RUN apt-get update
 RUN apt install -y curl
 
 COPY start.sh /usr/bin/start.sh
