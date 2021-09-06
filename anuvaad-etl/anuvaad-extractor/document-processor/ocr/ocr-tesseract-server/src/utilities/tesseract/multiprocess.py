@@ -79,11 +79,11 @@ def table_ocr(page_regions, region, total_lines, lang, img, mode_height, rgn_idx
             if cell['class'] is "CELL_TEXT":
                 tmp_cell = cell
                 cell['LINES'] = [tmp_cell]
+            cell_words = []
             for line_idx, line in enumerate(cell['LINES']):
                 tmp_line = [line]
                 if len(tmp_line) > 0:
-                    pass
-                    # total_lines+=1
+                    total_lines+=1
                 # if config.MULTIPROCESS:
                 #    pass
                     #add_lines_to_tess_queue(tmp_line,tessract_queue,lang,img,mode_height,rgn_idx,cell_idx,line['class'],int(region['boundingBox']['vertices'][0]['x']),int(region['boundingBox']['vertices'][1]['x']), lang_detected)
@@ -110,7 +110,7 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
         mode_height = get_mode_height(page_regions)
         #lang_detected = page_lang_detection(image_path,lang)
         lang_detected = config.LANG_MAPPING[lang][0]
-        
+
         if len(page_regions) > 0:
             total_lines = 0
             for rgn_idx, region in enumerate(page_regions):
