@@ -71,7 +71,7 @@ def get_mode_height(page_regions):
     return mode_height
 
 
-def table_ocr(page_regions, region, total_lines, lang, img, mode_height, rgn_idx, lang_detected):
+def table_ocr(page_regions, region, lang, img, mode_height, rgn_idx, lang_detected):
 
     for cell_idx, cell in enumerate(copy.deepcopy(region['regions'])):
         page_regions[rgn_idx]['regions'][cell_idx]['regions'] = []
@@ -82,8 +82,8 @@ def table_ocr(page_regions, region, total_lines, lang, img, mode_height, rgn_idx
             cell_words = []
             for line_idx, line in enumerate(cell['LINES']):
                 tmp_line = [line]
-                if len(tmp_line) > 0:
-                    total_lines+=1
+                # if len(tmp_line) > 0:
+                #     total_lines+=1
                 # if config.MULTIPROCESS:
                 #    pass
                     #add_lines_to_tess_queue(tmp_line,tessract_queue,lang,img,mode_height,rgn_idx,cell_idx,line['class'],int(region['boundingBox']['vertices'][0]['x']),int(region['boundingBox']['vertices'][1]['x']), lang_detected)
@@ -101,7 +101,7 @@ def table_ocr(page_regions, region, total_lines, lang, img, mode_height, rgn_idx
         else:
             # pass
             page_regions[rgn_idx]['regions'][cell_idx]['regions'] = cell
-    return total_lines, page_regions
+    return page_regions
 
 
 def multi_processing_tesseract(page_regions, image_path, lang, width, height):
@@ -116,8 +116,8 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
             for rgn_idx, region in enumerate(page_regions):
                 if region != None and 'regions' in region.keys():
                     if region['class'] == "TABLE":
-                        total_lines, page_regions = table_ocr(
-                            page_regions, region, total_lines, lang, img, mode_height, rgn_idx, lang_detected)
+                        page_regions = table_ocr(
+                            page_regions, region, lang, img, mode_height, rgn_idx, lang_detected)
                         
                     else:
                         for line_idx, line in enumerate(region['regions']):
@@ -142,6 +142,7 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
             if config.MULTIPROCESS:
                 while file_writer_queue.qsize() < total_lines:
                     time.sleep(0.5)
+                    
                     pass
 
                 page_words = get_queue_words()
