@@ -142,9 +142,9 @@ class Common(object):
 
             parent_run_list = [x for x in runs if x]
             return parent_run_list
-        elif run_obj:
+        if run_obj:
             return [iterable_obj]
-        elif run_lst:
+        if run_lst:
             return iterable_obj
 
     def distribute_over_runs(self, iterable_obj, trans_para):
