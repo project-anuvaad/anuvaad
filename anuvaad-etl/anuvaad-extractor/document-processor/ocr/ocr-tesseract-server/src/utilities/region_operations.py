@@ -137,7 +137,7 @@ def collate_regions(regions, lines, child_class=None, grand_children=False,regio
                         if line_poly:
                             area = region_poly.intersection(line_poly).area
                             reg_area = region_poly.area;  line_area = line_poly.area
-                            if reg_area>0 and line_area>0 and area/min(line_area,reg_area) >0.5 :
+                            if (reg_area>0 and line_area>0 and area/min(line_area,reg_area) >0.5):
                                 region_lines.append(lines[intr_index]);  lines_intersected.append(intr_index)
                 region_lines.sort(key=lambda x:x['boundingBox']['vertices'][0]['y'])
                 if len(region_lines) > 0:

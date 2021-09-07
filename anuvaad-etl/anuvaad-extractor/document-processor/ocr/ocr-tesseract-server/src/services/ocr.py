@@ -91,7 +91,7 @@ def segment_regions(lang,path,file,words, lines,regions,file_properties,idx):
     width, height = file_properties.get_pageinfo(0)
     v_list, n_text_regions = region_unifier.region_unifier(idx,file,lines,regions,path)
     log_info("tesseract ocr started", None)
-    #if idx==2:
+    #if idx==0:
     v_list = multi_processing_tesseract(v_list,path,lang,width, height)
     log_info("tesseract ocr completed", None)
     save_path = mask_image_craft(path, v_list, idx, file_properties, width, height)

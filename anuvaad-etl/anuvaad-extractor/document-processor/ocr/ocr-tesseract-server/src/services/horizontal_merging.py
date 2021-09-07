@@ -61,7 +61,6 @@ def get_ngram(indices, window_size = 2):
 def update_coord(reg1,reg2):
     box1 = MapKeys()
     box2 = MapKeys()
-    #reg1['children'] = update_children(reg1, reg2)
     reg1["boundingBox"]["vertices"][0]['x']= min(box1.get_left(reg1),box2.get_left(reg2))
     reg1["boundingBox"]["vertices"][0]['y']= min(box1.get_top(reg1),box2.get_top(reg2))
     reg1["boundingBox"]["vertices"][1]['x']= max(box1.get_right(reg1),box2.get_right(reg2))
@@ -70,6 +69,10 @@ def update_coord(reg1,reg2):
     reg1["boundingBox"]["vertices"][2]['y']= max(box1.get_bottom(reg1),box2.get_bottom(reg2))
     reg1["boundingBox"]["vertices"][3]['x']= min(box1.get_left(reg1),box2.get_left(reg2))
     reg1["boundingBox"]["vertices"][3]['y']= max(box1.get_bottom(reg1),box2.get_bottom(reg2))
+    reg1['class']='LINE'
+    if 'text' in reg1.keys():
+        del reg1['text']
+
 
     return reg1
 
@@ -85,6 +88,7 @@ def are_hlines(region1,region2):
     #return ((space <= diff_threshold ) or(sepration <= 3 *avg_height)) and  (sepration < 6 * avg_height) and (space <= diff_threshold *2.5 )
     return  sepration  < 5 * max_height  and space <= diff_threshold
 
+
 def horzontal_merging(region_words):
     if len(region_words)>0:
         children = sort_regions(region_words, sorted_lines=[])
@@ -94,14 +98,21 @@ def horzontal_merging(region_words):
             for pair in bi_gram:
                 connected = are_hlines(pair[0], pair[1])
                 if connected:
-                    #reg1 = pair[0]
                     reg1 = copy.deepcopy(lines[-1])
                     reg2 = copy.deepcopy(pair[1])
                     lines[-1]= update_coord(reg1,reg2)
                 else:
-                    lines.append(pair[1])
+                    tmp_line = pair[1]
+                    tmp_line['class']="LINE"
+                    if 'text' in tmp_line.keys():
+                        del tmp_line['text']
+                    lines.append(tmp_line)
             return lines
         else:
-            return children
+            tmp_region = copy.deepcopy(region_words)
+            tmp_region[0]['class']="LINE"
+            if 'text' in tmp_region[0].keys():
+                del tmp_region[0]['text']
+            return tmp_region
     else:
         return region_words
