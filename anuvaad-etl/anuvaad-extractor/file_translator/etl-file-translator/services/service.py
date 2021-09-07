@@ -107,11 +107,13 @@ class Common(object):
                 para_text += ru.text
         return para_text
 
-    def get_runs(self, iterable_obj, para_obj=False, run_obj=False, run_lst=False):
+    def get_runs(self, iterable_obj, para_obj=False, run_obj=False, run_lst=False, file_type=config.TYPE_DOCX):
         if len([i for i in [para_obj, run_obj, run_lst] if i]) > 1:
             raise Exception('::Get Runs:: more than one can not be True')
         if len([i for i in [para_obj, run_obj, run_lst] if not i]) == 0:
             raise Exception('::Get Runs:: All can not be False')
+        if para_obj and file_type == config.TYPE_PPTX:
+            return iterable_obj.runs
         if para_obj:
             runs = [[] for i in range(20)]
             run_list_counter = 0
