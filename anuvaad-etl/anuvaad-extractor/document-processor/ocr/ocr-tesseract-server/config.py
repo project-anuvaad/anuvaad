@@ -59,6 +59,7 @@ DOUBLE_OCR_THRESHOLD = 20
 C_X = -7
 C_Y = 0
 
+HORIZONTAL_MERGING=True
 
 LANG_MAPPING = {
     "en": ["Latin", "Latin"],
@@ -84,5 +85,8 @@ DETECT_LANG_MAPPING = {
     "Tamil": ['anuvaad_tam'],
     "Telugu": ["Telugu"],
     "Malayalam": ["Malayalam"],
-    "Marathi": ["Marathi"]
+    "Marathi": ["Marathi"],
+    "Punjabi": ["Punjabi"],
+    "Santali":["Santali"]
+
 }

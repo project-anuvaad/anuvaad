@@ -146,7 +146,8 @@ def collate_regions(regions, lines, child_class=None, grand_children=False,regio
                 else:
                     regions[region_index][child_key] = []
             else:
-                regions[region_index][child_key] = []
+                regions[region_index][child_key] = [copy.deepcopy(region)]
+                regions[region_index][child_key][0]['class'] = "LINE"
 
     if region_flag:
         for line_index, line in enumerate(lines):
@@ -178,12 +179,12 @@ def collate_cell_regions(regions, lines, child_class=None, grand_children=False,
                         if line_poly:
                             area = region_poly.intersection(line_poly).area
                             reg_area = region_poly.area;  line_area = line_poly.area
-                            if reg_area>0 and line_area>0 and area/min(line_area,reg_area) >0.5 :
+                            if (reg_area>0 and line_area>0 and region_poly.intersection(line_poly)):
                                 region_lines.append(lines[intr_index])
                                 lines_intersected.append(intr_index)
-                if child_key in region.keys() and type(region[child_key]) is list:
-                    pass
-                else:
+                # if child_key in region.keys() and type(region[child_key]) is list:
+                #     pass
+                if child_key not in region.keys():
                     region[child_key] = []
 
                 region_lines.sort(key=lambda x:x['boundingBox']['vertices'][0]['y'])
@@ -240,7 +241,7 @@ def remvoe_regions(regions, lines):
                         if line_poly:
                             area = region_poly.intersection(line_poly).area
                             reg_area = region_poly.area;  line_area = line_poly.area
-                            if reg_area>0 and line_area>0 and area/min(line_area,reg_area) >0.1 :
+                            if reg_area>0 and line_area>0 and area/min(line_area,reg_area) >0.5 :
                                 region_lines.append(lines[intr_index])
                                 lines_intersected.append(intr_index)
 

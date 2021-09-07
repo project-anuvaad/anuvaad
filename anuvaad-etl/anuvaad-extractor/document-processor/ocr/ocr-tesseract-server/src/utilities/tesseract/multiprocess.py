@@ -8,8 +8,10 @@ from multiprocessing import Queue
 from src.utilities.tesseract.helper import tess_eval,add_lines_to_tess_queue
 from src.utilities.tesseract.utils import  frequent_height,scale_coords,crop_region,get_tess_text,page_lang_detection,adjust_crop_coord
 from src.utilities.tesseract.dynamic_adjustment import coord_adjustment
+from src.services.horizontal_merging import horzontal_merging
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
+from src.utilities.region_operations import collate_regions
 import src.utilities.app_context as app_context
 
 tessract_queue = Queue()
@@ -104,12 +106,22 @@ def table_ocr(page_regions, region, lang, img, mode_height, rgn_idx, lang_detect
     return page_regions
 
 
+def check_horizontal_merging(words,cls_name,mode_height,vertices,line):
+    line_height = abs(vertices[0]['y']-vertices[3]['y'])
+    if config.HORIZONTAL_MERGING and line_height>mode_height and cls_name not in ['CELL','CELL_TEXT']:
+        h_lines =  horzontal_merging(words)
+        line_list    = collate_regions(copy.deepcopy(h_lines), copy.deepcopy(words),child_class='WORD',add_font=False)
+        return line_list
+    else:
+        line['regions'] = copy.deepcopy(words)
+        return [line]
+
 def multi_processing_tesseract(page_regions, image_path, lang, width, height):
     try:
         img = cv2.imread(image_path)
         mode_height = get_mode_height(page_regions)
-        #lang_detected = page_lang_detection(image_path,lang)
-        lang_detected = config.LANG_MAPPING[lang][0]
+        lang_detected = page_lang_detection(image_path,lang)
+        #lang_detected = config.LANG_MAPPING[lang][0]
 
         if len(page_regions) > 0:
             total_lines = 0
@@ -120,6 +132,7 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
                             page_regions, region, lang, img, mode_height, rgn_idx, lang_detected)
                         
                     else:
+                        updated_lines = []
                         for line_idx, line in enumerate(region['regions']):
                             tmp_line = [line]
                             if config.IS_DYNAMIC and 'class' in line.keys():
@@ -137,7 +150,10 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
                                 image_crop = crop_region(adjusted_box,img)
                                 if image_crop is not None and image_crop.shape[1] >3 and image_crop.shape[0] > 3:
                                     words  = get_tess_text(image_crop,lang,mode_height,left,top,line['class'],c_x,c_y,lang_detected)
-                                    page_regions[rgn_idx]['regions'][line_idx]['regions'] = words
+                                    h_lines = check_horizontal_merging(words,line['class'],mode_height,vertices,line)
+                                    updated_lines.extend(h_lines)
+                        page_regions[rgn_idx]['regions'] = copy.deepcopy(updated_lines)
+                                #page_regions[rgn_idx]['regions'][line_idx]['regions'] = words
 
             if config.MULTIPROCESS:
                 while file_writer_queue.qsize() < total_lines:
