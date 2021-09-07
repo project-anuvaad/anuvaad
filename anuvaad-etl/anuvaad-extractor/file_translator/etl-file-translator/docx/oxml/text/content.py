@@ -31,3 +31,4 @@ class CT_DRAWING(BaseOxmlElement):
 
 class CT_SMARTTAG(BaseOxmlElement):
     r = ZeroOrMore('w:r')
+    smt = ZeroOrMore('w:smartTag')

@@ -6,3 +6,6 @@ class DocxTag(enum.Enum):
     TABLE = 'tbl'
     SDTCONTENT = 'sdtContent'
     TXBXCONTENT = 'txbxContent'
+    MATH = 'oMath'
+    DRAWING = 'drawing'
+    SMARTTAG = 'smartTag'

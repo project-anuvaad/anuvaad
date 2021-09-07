@@ -3,7 +3,7 @@ import os
 import re
 
 import config
-from docx.oxml import CT_R, CT_HYPERLINK
+from docx.oxml import CT_R, CT_HYPERLINK, CT_MATH, CT_DRAWING, CT_SMARTTAG
 from docx.text.run import Run
 from utilities.utils import FileOperation
 
@@ -68,7 +68,7 @@ class Common(object):
     def is_only_line_breaks_n_tabs(self, text):
         return re.sub(r"((\n){0,}(\t){0,})", '', text) == ''
 
-    def generate_id(self, file_id='', table='', cell='', row='', slide='', shape='', sdt='', sdtc='', para='', run='', txbxContent=''):
+    def generate_id(self, file_id='', table='', cell='', row='', slide='', shape='', sdt='', sdtc='', para='', sub_para='', run='', txbxContent=''):
         idx = ''
         if file_id != '':
             idx += str(file_id)
@@ -90,6 +90,8 @@ class Common(object):
             idx += '_TXBXCONTENT-' + str(txbxContent)
         if para != '':
             idx += '_PARA-' + str(para)
+        if sub_para != '':
+            idx += '_SUBPARA-' + str(sub_para)
         if run != '':
             idx += '_RUN-' + str(run)
 
@@ -105,29 +107,42 @@ class Common(object):
                 para_text += ru.text
         return para_text
 
-    def get_runs(self, iterable_obj, para_obj=False, run_obj=False, run_lst=False, file_type=config.TYPE_DOCX):
+    def get_runs(self, iterable_obj, para_obj=False, run_obj=False, run_lst=False):
         if len([i for i in [para_obj, run_obj, run_lst] if i]) > 1:
             raise Exception('::Get Runs:: more than one can not be True')
         if len([i for i in [para_obj, run_obj, run_lst] if not i]) == 0:
             raise Exception('::Get Runs:: All can not be False')
-        if para_obj and file_type == config.TYPE_PPTX:
-            return iterable_obj.runs
         if para_obj:
-            runs = []
+            runs = [[] for i in range(20)]
+            run_list_counter = 0
             for rid, child in enumerate(iterable_obj._element):
                 if isinstance(child, CT_R):
                     run_obj = Run(child, iterable_obj)
-                    runs.append(run_obj)
+                    runs[run_list_counter].append(run_obj)
+                elif isinstance(child, CT_MATH):
+                    run_list_counter += 1
+                elif isinstance(child, CT_DRAWING):
+                    run_list_counter += 1
                 elif isinstance(child, CT_HYPERLINK):
-                    for hlrid, hl_run in enumerate(child.r_lst):
-                        if isinstance(hl_run, CT_R):
-                            run_obj = Run(hl_run, iterable_obj)
-                            runs.append(run_obj)
+                    run_list_counter += 1
+                    inner_runs = child.xpath('.//w:r')
+                    if inner_runs:
+                        for irun in inner_runs:
+                            runs[run_list_counter].append(irun)
+                    run_list_counter += 1
+                elif isinstance(child, CT_SMARTTAG):
+                    run_list_counter += 1
+                    inner_runs = child.xpath('.//w:r')
+                    if inner_runs:
+                        for irun in inner_runs:
+                            runs[run_list_counter].append(irun)
+                    run_list_counter += 1
 
-            return runs
-        if run_obj:
+            parent_run_list = [x for x in runs if x]
+            return parent_run_list
+        elif run_obj:
             return [iterable_obj]
-        if run_lst:
+        elif run_lst:
             return iterable_obj
 
     def distribute_over_runs(self, iterable_obj, trans_para):

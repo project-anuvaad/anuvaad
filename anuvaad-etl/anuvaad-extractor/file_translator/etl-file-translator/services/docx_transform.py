@@ -66,21 +66,24 @@ class DocxTransform(object):
         common_obj.distribute_over_runs(iterable_obj=iterable_obj, trans_para=trans_para)
 
     def generate_json_for_run(self, run, file_id='', table='', cell='', row='', sdt='', sdtc='', para_idx='',
-                              run_idx='', txbxContent=''):
+                              run_idx='', txbxContent='', sub_para_idx=''):
         new_run_template = copy.deepcopy(self.run_struct)
         new_run_template['text'] = run.text
         new_run_template['block_id'] = common_obj.generate_id(file_id=file_id, table=table, cell=cell, row=row, sdt=sdt,
-                                                              sdtc=sdtc, para=para_idx, run=run_idx, txbxContent=txbxContent)
+                                                              sdtc=sdtc, para=para_idx, run=run_idx, sub_para=sub_para_idx,
+                                                              txbxContent=txbxContent)
         return new_run_template
 
     '''generate_json_for_para accept para object and using that it tries to create a json structure'''
 
-    def generate_json_for_para(self, para, file_id='', table='', cell='', row='', para_idx='', sdt='', sdtc='', txbxContent=''):
+    def generate_json_for_para(self, para, file_id='', table='', cell='', row='', para_idx='', sub_para_idx='', sdt='',
+                               sdtc='', txbxContent=''):
         new_para_template = copy.deepcopy(self.para_struct)
-        runs = common_obj.get_runs(para, para_obj=True)
-        new_para_template['text'] = common_obj.get_para_text(runs)
+        # runs = common_obj.get_runs(para, para_obj=True)
+        new_para_template['text'] = common_obj.get_para_text(para)
         new_para_template['block_id'] = common_obj.generate_id(file_id=file_id, table=table, cell=cell, row=row,
-                                                               sdt=sdt, sdtc=sdtc, para=para_idx, txbxContent=txbxContent)
+                                                               sdt=sdt, sdtc=sdtc, para=para_idx, sub_para=sub_para_idx,
+                                                               txbxContent=txbxContent)
         return new_para_template
 
     def generate_para_struct_json_for_run(self, run, file_id='', table='', cell='', row='', sdt='', sdtc='',
@@ -224,19 +227,25 @@ class DocxTransform(object):
 
     def add_new_paragraph_to_json(self, para):
         try:
-            self.para_count += 1
+            sub_para_counter = -1
+            for idx, subpara in enumerate(common_obj.get_runs(para, para_obj=True)):
+                sub_para_counter += 1
+                self.para_count += 1
+                json_para = self.generate_json_for_para(para=subpara, file_id=self.file_id,
+                                                        para_idx=str(self.sequence_para_index),
+                                                        sub_para_idx=str(sub_para_counter))
 
-            json_para = self.generate_json_for_para(para=para, file_id=self.file_id, para_idx=str(self.sequence_para_index))
+                words_no = common_obj.word_count(json_para.get('text'))
+                self.word_count += words_no
 
-            words_no = common_obj.word_count(json_para.get('text'))
-            self.word_count += words_no
+                for idr, run in enumerate(subpara):
+                    self.run_count += 1
+                    json_run = self.generate_json_for_run(run=run, file_id=self.file_id,
+                                                          para_idx=str(self.sequence_para_index),
+                                                          run_idx=str(idr), sub_para_idx=str(sub_para_counter))
+                    json_para['children'].append(json_run)
 
-            for idr, run in enumerate(common_obj.get_runs(para, para_obj=True)):
-                self.run_count += 1
-                json_run = self.generate_json_for_run(run=run, file_id=self.file_id, para_idx=str(self.sequence_para_index), run_idx=str(idr))
-                json_para['children'].append(json_run)
-
-            self.page_list[self.page_number - 1]['text_blocks'].append(json_para)
+                self.page_list[self.page_number - 1]['text_blocks'].append(json_para)
 
         except Exception as e:
             log_info(f"add_new_paragraph :: JSON CREATION FAILED FOR PARAGRAPH:{self.sequence_para_index}"
@@ -246,15 +255,16 @@ class DocxTransform(object):
         try:
             self.para_count += 1
 
-            for idr, run in enumerate(common_obj.get_runs(para, para_obj=True)):
-                self.run_count += 1
-                json_run = self.generate_para_struct_json_for_run(run=run, file_id=self.file_id,
-                                                                  para_idx=str(self.sequence_para_index),
-                                                                  run_idx=str(idr))
-                words_no = common_obj.word_count(json_run.get('text'))
-                self.word_count += words_no
-                json_run['children'].append(copy.deepcopy(json_run))
-                self.page_list[self.page_number - 1]['text_blocks'].append(json_run)
+            for runs in common_obj.get_runs(para, para_obj=True):
+                for idr, run in runs:
+                    self.run_count += 1
+                    json_run = self.generate_para_struct_json_for_run(run=run, file_id=self.file_id,
+                                                                      para_idx=str(self.sequence_para_index),
+                                                                      run_idx=str(idr))
+                    words_no = common_obj.word_count(json_run.get('text'))
+                    self.word_count += words_no
+                    json_run['children'].append(copy.deepcopy(json_run))
+                    self.page_list[self.page_number - 1]['text_blocks'].append(json_run)
 
         except Exception as e:
             log_info(f"add_new_toc_to_json :: ADD NEW PARA JSON FAILED:{self.sequence_para_index}"
@@ -263,7 +273,6 @@ class DocxTransform(object):
     def generate_json_structure(self, document):
         self.document = document
         self.page_list.append(self.generate_json_for_page(self.page_number))
-
         # START# NEW LOGIC TO GET ALL THE PARA AT ONCE
         for parent_tag, para in self.iterate_paras(document=self.document):
             self.sequence_para_index += 1
@@ -283,27 +292,33 @@ class DocxTransform(object):
 
     def translate_paragraphs(self, para):
         try:
-            runs = common_obj.get_runs(para, para_obj=True)
-            para_id = common_obj.generate_id(file_id=self.file_id, para=str(self.sequence_para_index))
-            if para_id in self.trans_map:
-                self.distribute_over_runs(runs, trans_para=self.trans_map[para_id])
-            else:
-                raise FileErrors("translate_docx_file:", "PARA ID :{} not found in fetch content".format(para_id))
+            sub_para_counter = -1
+            for idx, runs in enumerate(common_obj.get_runs(para, para_obj=True)):
+                sub_para_counter += 1
+                para_id = common_obj.generate_id(file_id=self.file_id, para=str(self.sequence_para_index),
+                                                 sub_para=str(sub_para_counter))
+                if para_id in self.trans_map:
+                    self.distribute_over_runs(runs, trans_para=self.trans_map[para_id])
+                else:
+                    #raise FileErrors("translate_docx_file:", "PARA ID :{} not found in fetch content".format(para_id))
+                    log_info("PARA ID :{} not found in fetch content".format(para_id), self.json_data)
         except Exception as e:
             log_info(f"translate_docx_file :: DISTRIBUTE OVER RUN FAILED FOR PARAGRAPH SEQ:{self.sequence_para_index}"
                      f"ERROR: {str(e)}", self.json_data)
 
     def translate_run_stored_as_para_json(self, para):
         try:
-            for idr, run in enumerate(common_obj.get_runs(para, para_obj=True)):
-                run_id = common_obj.generate_id(file_id=self.file_id,
-                                                para=str(self.sequence_para_index),
-                                                run=str(idr))
-                run = common_obj.get_runs(run, run_obj=True)
-                if run_id in self.trans_map:
-                    self.distribute_over_runs(run, trans_para=self.trans_map[run_id])
-                else:
-                    log_info(f"translate_run_stored_as_para_json: RUN ID :{idr} not found in fetch content for SDT", self.json_data)
+            for runs in common_obj.get_runs(para, para_obj=True):
+                for idr, run in runs:
+                    run_id = common_obj.generate_id(file_id=self.file_id,
+                                                    para=str(self.sequence_para_index),
+                                                    run=str(idr))
+                    run = common_obj.get_runs(run, run_obj=True)
+                    if run_id in self.trans_map:
+                        self.distribute_over_runs(run, trans_para=self.trans_map[run_id])
+                    else:
+                        log_info(f"translate_run_stored_as_para_json: RUN ID :{idr} not found in fetch content for SDT",
+                                 self.json_data)
         except Exception as e:
             log_info(f"translate_run_stored_as_para_json :: DISTRIBUTE OVER RUN FAILED FOR :{self.sequence_para_index}"
                      f"ERROR: {str(e)}", self.json_data)
