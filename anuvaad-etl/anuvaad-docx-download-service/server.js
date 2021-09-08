@@ -31,22 +31,27 @@ app.post('/anuvaad-etl/anuvaad-docx-downloader/v0/download-docx', (request, resp
 
     var req = https.request(options, (res) => {
         if (res.statusCode === 200) {
+            console.log('inside Status code 200',res.statusCode);
             res.on('data', (d) => {
                 data = data + d.toString()
             });
 
             res.on('end', e => {
+                console.log('finished reading data');
                 data = JSON.stringify(refactorSourceJSON(JSON.parse(data).data))
                 fs.writeFile('./upload/source.json', data, async (err) => {
                     if (!err) {
                         try {
+                            console.log('inside try');
                             generateDocx(fname, data.page_height, data.page_width)
                             fs.readFile(`./upload/${fname}`, { encoding: 'utf-8' }, (err, data) => {
                                 setTimeout(() => {
+                                    console.log('inside setTimeout');
                                     response.sendFile(path.join(__dirname, `./upload/${fname}`))
                                 }, 2000)
                             })
                         } catch (e) {
+                            console.log('inside catch');
                             response.status(400).send({
                                 http: {
                                     status: 400
@@ -62,6 +67,7 @@ app.post('/anuvaad-etl/anuvaad-docx-downloader/v0/download-docx', (request, resp
             })
             data = ""
         } else {
+            console.log('inside else, Failed fetching data')
             response.status(res.statusCode).send({
                 http: {
                     status: res.statusCode
