@@ -72,7 +72,8 @@ LANG_MAPPING = {
     "ta": ['Tamil', "anuvaad_tam"],
     "te": ["Telugu", "Telugu"],
     "ml": ["Malayalam", "Malayalam"],
-    "ma": ["Marathi", "Marathi"]
+    "ma": ["Marathi", "Marathi"],
+    "pa": ["Punjabi", "Punjabi"],
 }
 
 DETECT_LANG_MAPPING = {

@@ -53,6 +53,10 @@ def check_text_df(temp_df,image_crop,lang, median_height,psm,detected_lang):
                 temp_df["text"] = temp_df.text.astype(str)
                 text = pytesseract.image_to_string(image_crop,config='--psm 8', lang=lang)
                 temp_df['text'][0] = text
+    if temp_df is None or len(temp_df)==0:
+        temp_df = pytesseract.image_to_data(image_crop,config='--psm 8', lang=lang  ,output_type=Output.DATAFRAME)
+        temp_df = temp_df[temp_df.text.notnull()]
+        temp_df = temp_df.reset_index()
 
     return temp_df
 
@@ -127,6 +131,9 @@ def crop_region(box,image):
 def get_tess_text(image_crop,org_lang, median_height,left,top,cls,c_x,c_y,lang_detected):
     lang = language_filter(org_lang,lang_detected)    
     crop_height = image_crop.shape[0]
+    # lang= "anuvaad_hin"
+    # org_lang = 'hi'
+    # lang_detected="Devanagari"
     height_check = median_height * 1.5
     if cls in ['CELL']:
         height_check = median_height*1.2

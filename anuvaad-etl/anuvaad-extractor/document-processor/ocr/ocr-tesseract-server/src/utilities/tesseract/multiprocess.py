@@ -108,13 +108,18 @@ def table_ocr(page_regions, region, lang, img, mode_height, rgn_idx, lang_detect
 
 def check_horizontal_merging(words,cls_name,mode_height,vertices,line):
     line_height = abs(vertices[0]['y']-vertices[3]['y'])
-    if config.HORIZONTAL_MERGING and line_height>mode_height and cls_name not in ['CELL','CELL_TEXT']:
-        h_lines =  horzontal_merging(words)
+    tmp_words = copy.deepcopy(words)
+    if config.HORIZONTAL_MERGING and line_height>mode_height*1.2 and cls_name not in ['CELL','CELL_TEXT'] and len(words)>0:
+        h_lines =  horzontal_merging(tmp_words)
         if len(h_lines)>0:
             line_list    = collate_regions(copy.deepcopy(h_lines), copy.deepcopy(words),child_class='WORD',add_font=False)
         else:
             line_list = copy.deepcopy(words)
         return line_list
+    elif len(words)==0:
+        line['regions'] = copy.deepcopy([line])
+        line['regions'][0]['class'] = "WORD"
+        return [line]
     else:
         line['regions'] = copy.deepcopy(words)
         return [line]
