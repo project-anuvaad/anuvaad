@@ -75,7 +75,8 @@ function get_document_details(input) {
             timeline['status'] = task['status'];
 
             if (task['stepOrder'] === 0 && task['status'] !== 'FAILED') {
-                document['converted_filename'] = job['input']['files'][0]['path'];
+                document["converted_filename"] = task["output"][0]["outputFile"];
+
             }
 
             if (task['stepOrder'] === 2) {
