@@ -53,6 +53,10 @@ def check_text_df(temp_df,image_crop,lang, median_height,psm,detected_lang):
                 temp_df["text"] = temp_df.text.astype(str)
                 text = pytesseract.image_to_string(image_crop,config='--psm 8', lang=lang)
                 temp_df['text'][0] = text
+    if temp_df is None or len(temp_df)==0:
+        temp_df = pytesseract.image_to_data(image_crop,config='--psm 8', lang=lang  ,output_type=Output.DATAFRAME)
+        temp_df = temp_df[temp_df.text.notnull()]
+        temp_df = temp_df.reset_index()
 
     return temp_df
 
@@ -65,47 +69,61 @@ def pdf_language_detect(page_file,lang):
         return config.LANG_MAPPING[lang][0]
 
 def page_lang_detection(page_path,lang):
-    print('Detecting language ...')
-    lang_detected = pdf_language_detect(page_path,lang)
-    print('language detected is {}'.format(lang_detected))
-    weight_path = '/usr/share/tesseract-ocr/4.00/tessdata/' + lang_detected + '.traineddata'
-    if not os.path.exists(weight_path):
-        download = 'curl -L -o /usr/share/tesseract-ocr/4.00/tessdata/' + lang_detected \
-                   + '.traineddata https://github.com/tesseract-ocr/tessdata_best/raw/master/script/' + lang_detected + '.traineddata'
-        os.system(download)
-    return lang_detected
+    try:
+        print('Detecting language ...')
+        lang_detected = pdf_language_detect(page_path,lang)
+        print('language detected is {}'.format(lang_detected))
+        weight_path = '/usr/share/tesseract-ocr/4.00/tessdata/' + lang_detected + '.traineddata'
+        if not os.path.exists(weight_path):
+            print('Downloading detected language ...')
+            download = 'curl -L -o /usr/share/tesseract-ocr/4.00/tessdata/' + lang_detected \
+                    + '.traineddata https://github.com/tesseract-ocr/tessdata_best/raw/master/script/' + lang_detected + '.traineddata'
+            os.system(download)
+            print('Successfully downloaded detected language ...')
+        return lang_detected
+    except:
+        return lang
 
 def language_filter(org_lang,detected_lang,double_ocr=False):
     if double_ocr:
         map_org_lang = config.LANG_MAPPING[org_lang][0]
     else:
         map_org_lang = config.LANG_MAPPING[org_lang][1]
-    map_detect_lang = config.DETECT_LANG_MAPPING[detected_lang][0]
+    if detected_lang in config.DETECT_LANG_MAPPING.keys():
+        map_detect_lang = config.DETECT_LANG_MAPPING[detected_lang][0]
+    else:
+        map_detect_lang= map_org_lang
     if map_org_lang == map_detect_lang:
         lang = map_org_lang
     else:
         lang = map_detect_lang+"+" +map_org_lang
     return lang
 
-def crop_region(coord,image,cls):
-    try:
-        c_x = config.C_X; c_y=config.C_Y
+def adjust_crop_coord(coord,cls,reg_left,reg_right):
+    if validate_region(coord):
+        c_x = config.C_X; c_y=config.C_Y; box = get_box(coord)
+        #if abs(reg_left-reg_right)>abs(box[0][0]-box[1][0])*1.2:
+        reg_left = box[0][0];  reg_right = box[1][0]
         if cls=="CELL":
-            c_x = 10; c_y=5
-        if validate_region(coord):
-            vertices = coord['boundingBox']['vertices']
-            if config.PERSPECTIVE_TRANSFORM:
-                box = get_box(coord)
-                box[0][0]=box[0][0]+c_x; box[0][1]=box[0][1]+c_y; box[1][0]=abs(box[1][0]-c_x); box[1][1]=box[1][1]+c_y
-                box[2][0]=abs(box[2][0]-c_x); box[2][1]=abs(box[2][1]-c_y); box[3][0]=abs(box[3][0]+c_x); box[3][1]=abs(box[3][1]-c_y)
-                crop_image = get_crop_with_pers_transform(image, box, height=abs(box[0,1]-box[2,1]))
-            else :
-                crop_image = image[vertices[0]['y']+c_y : abs(vertices[2]['y']-c_y) ,vertices[0]['x']+c_x : abs(vertices[2]['x']-c_x)]
+            c_x = 0; c_y=0;reg_left = box[0][0]; reg_right=box[1][0]
+        box[0][0]=min(box[0][0],reg_left)+c_x; box[0][1]=box[0][1]+c_y; box[1][0]=abs(max(box[1][0],reg_right)-c_x); box[1][1]=box[1][1]+c_y
+        box[2][0]=abs(max(box[2][0],reg_right)-c_x); box[2][1]=abs(box[2][1]-c_y); box[3][0]=abs(min(box[3][0],reg_left)+c_x); box[3][1]=abs(box[3][1]-c_y)
+        return box,c_x,c_y
+    else:
+        log_exception("Error in region   due to invalid coordinates",  app_context.application_context, coord)
+        return None ,None, None
 
-            return crop_image,c_x,c_y
-        else :
-            log_exception("Error in region   due to invalid coordinates",  app_context.application_context, coord)
+def crop_region(box,image):
+    try:
+        if box is None:
+            log_exception("Error in region   due to invalid coordinates",  app_context.application_context, e)
             return None
+        if config.PERSPECTIVE_TRANSFORM:
+            crop_image = get_crop_with_pers_transform(image, box, height=abs(box[0,1]-box[2,1]))
+        else :
+            crop_image = image[box[0][1] : box[2][1] ,box[0][0] : box[1][0]]
+
+        return crop_image
     except Exception as e:
         log_exception("Error in region   due to invalid coordinates",  app_context.application_context, e)
         return None
@@ -113,6 +131,9 @@ def crop_region(coord,image,cls):
 def get_tess_text(image_crop,org_lang, median_height,left,top,cls,c_x,c_y,lang_detected):
     lang = language_filter(org_lang,lang_detected)    
     crop_height = image_crop.shape[0]
+    # lang= "anuvaad_hin"
+    # org_lang = 'hi'
+    # lang_detected="Devanagari"
     height_check = median_height * 1.5
     if cls in ['CELL']:
         height_check = median_height*1.2
@@ -163,7 +184,9 @@ def process_dfs(temp_df,left,top,lang,c_x,c_y):
         temp_dict1["text"]= row['text']
         temp_dict1["conf"]= row['conf']
         temp_dict1["language"]= lang
+        temp_dict1["class"]= "WORD"
         temp_dict1['boundingBox']={}
+        temp_dict1['font']={'family': 'Arial Unicode MS', 'size': int(row["height"]), 'style': 'REGULAR'}
         temp_dict1['boundingBox']["vertices"] = vert
         words.append(temp_dict1)
     return words

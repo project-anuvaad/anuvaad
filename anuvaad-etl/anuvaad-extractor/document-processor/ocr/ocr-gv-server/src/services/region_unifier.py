@@ -261,37 +261,46 @@ class Region_Unifier:
 
 
     def update_coord(self,reg1,reg2,clss,add_word = False):
-        #try:
-        box1_top = keys.get_top(reg1); box1_bottom = keys.get_bottom(reg1)
-        box1_left = keys.get_left(reg1); box1_right = keys.get_right(reg1)
-        box2_top = keys.get_top(reg2); box2_bottom = keys.get_bottom(reg2)
-        box2_left = keys.get_left(reg2); box2_right = keys.get_right(reg2)
+        try:
+            box1_top = keys.get_top(reg1); box1_bottom = keys.get_bottom(reg1)
+            box1_left = keys.get_left(reg1); box1_right = keys.get_right(reg1)
+            box2_top = keys.get_top(reg2); box2_bottom = keys.get_bottom(reg2)
+            box2_left = keys.get_left(reg2); box2_right = keys.get_right(reg2)
+            reg1["boundingBox"]["vertices"][0]['x']= min(box1_left,box2_left)
+            reg1["boundingBox"]["vertices"][0]['y']= min(box1_top,box2_top)
+            reg1["boundingBox"]["vertices"][1]['x']= max(box1_right,box2_right)
+            reg1["boundingBox"]["vertices"][1]['y']= min(box1_top,box2_top)
+            reg1["boundingBox"]["vertices"][2]['x']= max(box1_right,box2_right)
+            reg1["boundingBox"]["vertices"][2]['y']= max(box1_bottom,box2_bottom)
+            reg1["boundingBox"]["vertices"][3]['x']= min(box1_left,box2_left)
+            reg1["boundingBox"]["vertices"][3]['y']= max(box1_bottom,box2_bottom)
+            reg1['class'] = clss
+            del_idx =[]
+            reg_updated =[]
+            if add_word and reg1 is not None and reg2 is not None:
+                    if 'regions' in reg1.keys():
+                        if 'identifier' in reg2.keys():
+                            for idx,i in enumerate(reg1['regions']):
+                                if i is not None and isinstance(i, dict) and 'identifier' in i.keys() and reg2['identifier']!=i['identifier']:
+                                    
+                                    reg1['regions'].extend(reg2)
+                                elif not isinstance(i, dict):
+                                    del_idx.append(idx)                               
+                                    
+                    else:
+                        if reg2 is not None and isinstance(i, dict):
+                            reg1['regions']=[]
+                            reg1['regions'].extend(reg2)
+            if len(reg1['regions'])>0:
+                for idx,val in enumerate(reg1['regions']):
+                    if idx not in del_idx:
+                        reg_updated.append(val)
 
-        if add_word==False:
-            
-            reg1['regions'] = self.update_children(reg1, reg2)
-
-
-        reg1["boundingBox"]["vertices"][0]['x']= min(box1_left,box2_left)
-        reg1["boundingBox"]["vertices"][0]['y']= min(box1_top,box2_top)
-        reg1["boundingBox"]["vertices"][1]['x']= max(box1_right,box2_right)
-        reg1["boundingBox"]["vertices"][1]['y']= min(box1_top,box2_top)
-        reg1["boundingBox"]["vertices"][2]['x']= max(box1_right,box2_right)
-        reg1["boundingBox"]["vertices"][2]['y']= max(box1_bottom,box2_bottom)
-        reg1["boundingBox"]["vertices"][3]['x']= min(box1_left,box2_left)
-        reg1["boundingBox"]["vertices"][3]['y']= max(box1_bottom,box2_bottom)
-        reg1['class'] = clss
-        if add_word:
-            if 'regions' in reg1.keys():
-                if reg2['identifier'] not in [i['identifier'] for i in reg1['regions']]:
-                    reg1['regions'].extend([reg2])
-            else:
-                reg1['regions']=[]
-                reg1['regions'].extend([reg2])
-        # except:
-        #     pass
-
-        return reg1
+            reg1['regions']  = reg_updated
+            return reg1
+        except:
+            return reg1
+        
 
 
     def is_connected(self,region1, region2,avg_height, avg_ver_dist, avg_width,avg_word_sepc):
@@ -345,9 +354,11 @@ class Region_Unifier:
                                 intersected_regions = list(indx.intersection(region_poly.bounds))
                                 if len(intersected_regions) > 0:
                                     flag=True
-                                if flag==False:
-                                    cell = self.update_coord(cell,word,cell['class'],True)
-                                    tables[idx]['regions'][idx2] = cell
+                                if flag==False and cell is not None and isinstance(cell, dict):
+                                    cell2 = self.update_coord(cell,word,cell['class'],True)
+                                    
+                                    if cell2 is not None and isinstance(cell2, dict):
+                                        tables[idx]['regions'][idx2] = cell2
         return tables
                 
 
@@ -382,15 +393,13 @@ class Region_Unifier:
             t_list = []
             for idx,table in enumerate(tabel_region):
                 if 'regions' in table.keys():
-                    
-
                     filtered_words     = remvoe_regions(copy.deepcopy(table['regions']), copy.deepcopy(filtered_words))
                     filtered_lines    = remvoe_regions(copy.deepcopy(table['regions']), copy.deepcopy(filtered_lines))
                     tabel_region[idx]['regions'] =  collate_regions(regions = copy.deepcopy(table['regions']),lines = copy.deepcopy(page_words),child_class='WORD',grand_children=False,region_flag = False)
                     page_words = filtered_words
                     page_lines = filtered_lines
                     t_list.append(tabel_region[idx])
-                    
+            
             
             t_list =  collate_cell_regions(copy.deepcopy(t_list),copy.deepcopy(page_words),child_class='CELL_TEXT',grand_children=True,region_flag = False)
             t_list = self.table_no_cell(t_list,page_words2,idx2)
@@ -458,13 +467,17 @@ class Region_Unifier:
             avg_word_sepc     = page_config.avg_word_sep(line_list)
 
             v_list.extend(t_list)
-
+            if len(v_list) > 0 :
+                v_list.sort(key=lambda x:x['boundingBox']['vertices'][0]['y'])
+                v_list = sort_regions(v_list,[])
             if self.check_double_column(v_list,avg_height):
                 print("this document is double columnssssssss")
                 return v_list, n_text_table_regions
             flag = False
             while flag==True:
                 v_list, flag = self.merge_remove_overlap(v_list,avg_height, avg_ver_dist, avg_width,avg_word_sepc)
+            
+                
 
         except Exception as e:
             log_exception("Error occured during block unifier",  app_context.application_context, e)

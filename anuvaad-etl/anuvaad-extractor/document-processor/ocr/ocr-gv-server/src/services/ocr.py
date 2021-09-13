@@ -9,7 +9,7 @@ from src.services.region_unifier import Region_Unifier
 import cv2,copy
 from src.utilities.model_response import set_bg_image
 from src.utilities.request_parse import MapKeys,UpdateKeys
-from src.services.overlap_remove import RemoveOverlap
+from src.services.overlap_remove import RemoveOverlap,merger_lines_words
 from src.services.dynamic_adjustment import coord_adjustment
 
 
@@ -23,11 +23,6 @@ breaks = vision.enums.TextAnnotation.DetectedBreak.BreakType
 def get_text(page_c_lines,file,path,page_dict,page_regions,page_c_words,font_info,file_properties,idx):
     
     #path = config.BASE_DIR+path
-    #img = cv2.imread(path)
-    
-    #img[175 < img ] = 255
-    #masked_path = path.split('.jpg')[0]+"_watermarks.jpg"
-    #cv2.imwrite(masked_path,img)
     with io.open(path, 'rb') as image_file:
         content = image_file.read()
     image = vision.types.Image(content=content)
@@ -133,7 +128,7 @@ def get_document_bounds(page_c_lines,file,response,page_dict,page_regions,page_c
                     word_vertices.append({"x": word.bounding_box.vertices[2].x, "y": word.bounding_box.vertices[2].y})
                     word_vertices.append({"x": word.bounding_box.vertices[3].x, "y": word.bounding_box.vertices[3].y})
                     word_region["boundingBox"]["vertices"] = word_vertices
-                    page_dict["words"].append(word_region)
+                    
                     word_text = ''.join([
                         symbol.text for symbol in word.symbols
                     ])
@@ -145,18 +140,21 @@ def get_document_bounds(page_c_lines,file,response,page_dict,page_regions,page_c
                     else:
                         if len(page.property.detected_languages)!=0:
                             word_region["language"] = page.property.detected_languages[0].language_code
-
-    
-    if "craft_line" in file['config']["OCR"].keys() and file['config']["OCR"]["craft_line"]=="True":
-        page_lines = page_c_lines
-        print("craft lines are processing--->>>")
-    else:
-        page_lines   =  page_dict["lines"]
-        print("google lines are processing--->>>")
-    if len(page_lines)>0:
-        page_lines = removeoverlap.remove_overlap(page_lines)
+                    page_dict["words"].append(word_region)
 
     page_words   =  page_dict["words"]
+    if "craft_line" in file['config']["OCR"].keys() and file['config']["OCR"]["craft_line"]=="True":
+        page_lines = page_c_lines
+    elif "line_layout" in file['config']["OCR"].keys() and file['config']["OCR"]["line_layout"]=="True":
+        page_lines = page_c_lines
+    else:
+        page_lines   =  page_dict["lines"]
+    if len(page_lines)>0:
+        page_lines = removeoverlap.remove_overlap(page_lines)
+        # page_lines = merger_lines_words(page_lines,page_words)
+        # page_lines = removeoverlap.remove_overlap(page_lines)
+
+    
 
     #add font information to words
     page_words   = set_font_info(page_words,font_info)
@@ -194,6 +192,7 @@ def verify__table_structure(regions):
                 line_del_index = []
                 for line_idx,line in enumerate(region['regions']):
                     if 'regions' in line.keys():
+                        #for word_idx,word in enumerate(line['regions']):
                         pass
                     else:
                         line_del_index.append(line_idx)
@@ -253,7 +252,10 @@ def segment_regions(file,words, lines,regions,page_c_words,path,file_properties,
     #regions = segment_regions(page_words,page_lines,page_regions)
     width, height = file_properties.get_pageinfo(0)
     v_list, n_text_regions = region_unifier.region_unifier(idx,file,words,lines,regions,page_c_words,path)
-    save_path = mask_image_craft(path, v_list, idx, file_properties, width, height)
+    if "mask_image" in file['config']["OCR"].keys() and file['config']["OCR"]["mask_image"]=="False":
+        save_path = "None"
+    else:
+        save_path = mask_image_craft(path, v_list, idx, file_properties, width, height)
     if "top_correction" in file['config']["OCR"].keys() and file['config']["OCR"]["top_correction"]=="True":
         v_list = coord_alignment(v_list,False)
         v_list = verify__table_structure(v_list)

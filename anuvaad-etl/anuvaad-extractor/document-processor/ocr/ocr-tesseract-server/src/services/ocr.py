@@ -1,13 +1,7 @@
-import uuid, os, io
-import config
-import sys
+import uuid, os, io, sys, config, cv2, copy
 import numpy as np
-from google.cloud import vision
-from src.services.segment import horzontal_merging, break_block
-from src.utilities.region_operations import merge_text, set_font_info
+from src.utilities.region_operations import  set_font_info
 from src.services.region_unifier import Region_Unifier
-from src.services.overlap_remove import RemoveOverlap
-import cv2,copy
 from src.utilities.model_response import set_bg_image
 from src.utilities.request_parse import MapKeys,UpdateKeys
 from src.utilities.tesseract.dynamic_adjustment import coord_adjustment
@@ -16,38 +10,27 @@ from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
 
 region_unifier = Region_Unifier()
-removeoverlap = RemoveOverlap()
 keys = MapKeys()
 update_key = UpdateKeys()
 
-client = vision.ImageAnnotatorClient()
-breaks = vision.enums.TextAnnotation.DetectedBreak.BreakType
-
-def get_text(lang,page_c_lines,file,path,page_dict,page_regions,page_c_words,font_info,file_properties,idx):
+def get_text(lang,page_c_lines,file,path,page_regions,page_c_words,font_info,file_properties,idx):
     
-    #path = config.BASE_DIR+path.split('upload/')[1]
-    with io.open(path, 'rb') as image_file:
-        content = image_file.read()
-    image = vision.types.Image(content=content)
-    response = client.document_text_detection(image=image)
-    page_output,page_words,save_path = get_document_bounds(lang,path,page_c_lines,file,response.full_text_annotation,page_dict,page_regions,page_c_words,font_info,file_properties,idx)
+    #path = config.BASE_DIR+path
+    page_output,page_words,save_path = get_document_bounds(lang,path,page_c_lines,file,page_regions,page_c_words,font_info,file_properties,idx)
     return page_output,page_words,save_path
-
 
 def text_extraction(file_properties,image_paths,file):
     page_res = []
     width, height = file_properties.get_pageinfo(0)
     lang = file_properties.get_language()
     for idx,image_path in enumerate(image_paths):
-
-        
         font_info = file_properties.get_fontinfo(idx)
         page_id   = str(uuid.uuid4())
         page_dict = {"identifier": page_id,"resolution": config.EXRACTION_RESOLUTION }
         page_regions =  file_properties.get_regions(idx)
         page_c_words = file_properties.get_words(idx)
         page_c_lines = file_properties.get_lines(idx)
-        page_output,page_words,save_path = get_text(lang,page_c_lines,file,image_path,page_dict,page_regions,page_c_words,font_info,file_properties,idx)
+        page_output,page_words,save_path = get_text(lang,page_c_lines,file,image_path,page_regions,page_c_words,font_info,file_properties,idx)
         
         #save_path = mask_image_vision(image_path, page_words, idx, file_properties, width, height)
         page_output = set_bg_image(page_output, save_path, idx,file)
@@ -55,101 +38,12 @@ def text_extraction(file_properties,image_paths,file):
         file_properties.delete_regions(idx)
         file_properties.pop_fontinfo(idx)
 
-
     return file_properties.get_file()
 
-def extract_line(paragraph):
-    line_coord = []
-    line_text  = []
-    line = ""
-    top_left_x    = sys.maxsize; top_left_y    = sys.maxsize; top_right_x = -1; top_right_y    = sys.maxsize
-    bottom_left_x = sys.maxsize; bottom_left_y = -1;      bottom_right_x  = -1; bottom_right_y =-1
-    for word in paragraph.words:
-        for symbol in word.symbols:
-            line += symbol.text
-            top_left_x     = min(top_left_x,symbol.bounding_box.vertices[0].x);    top_left_y     = min(top_left_y,symbol.bounding_box.vertices[0].y)
-            top_right_x    = max(top_right_x,symbol.bounding_box.vertices[1].x);   top_right_y    = min(top_right_y,symbol.bounding_box.vertices[1].y)
-            bottom_left_x  = min(bottom_left_x,symbol.bounding_box.vertices[3].x); bottom_left_y  = max(bottom_left_y,symbol.bounding_box.vertices[3].y)
-            bottom_right_x = max(bottom_right_x,symbol.bounding_box.vertices[2].x);bottom_right_y = max(bottom_right_y,symbol.bounding_box.vertices[2].y)
-            if symbol.property.detected_break.type == breaks.SPACE:
-                line += ' '  
-            if symbol.property.detected_break.type == breaks.EOL_SURE_SPACE or symbol.property.detected_break.type == breaks.HYPHEN:
-                line += ' '
-                lines_coord = []
-                line_text.append(line)
-                lines_coord.append({'x':top_left_x,'y':top_left_y});lines_coord.append({'x':top_right_x,'y':top_right_y})
-                lines_coord.append({'x':bottom_right_x,'y':bottom_right_y});lines_coord.append({'x':bottom_left_x,'y':bottom_left_y})
-                line_coord.append(lines_coord)
-                line = ''
-                top_left_x    = sys.maxsize ;top_left_y   = sys.maxsize; top_right_x = -1;top_right_y    = sys.maxsize
-                bottom_left_x = sys.maxsize;bottom_left_y = -1  ; bottom_right_x     = -1;bottom_right_y =-1
-            if symbol.property.detected_break.type == breaks.LINE_BREAK:
-                lines_coord = []
-                lines_coord.append({'x':top_left_x,'y':top_left_y});lines_coord.append({'x':top_right_x,'y':top_right_y})
-                lines_coord.append({'x':bottom_right_x,'y':bottom_right_y});lines_coord.append({'x':bottom_left_x,'y':bottom_left_y})
-                line_coord.append(lines_coord)
-                line_text.append(line)
-                line = ''
-                top_left_x    = sys.maxsize ;top_left_y   = sys.maxsize; top_right_x = -1;top_right_y    = sys.maxsize
-                bottom_left_x = sys.maxsize;bottom_left_y = -1  ; bottom_right_x     = -1;bottom_right_y = -1
-    return line_coord, line_text
-
-def add_line(page_dict, line_coord, line_text):
-    for coord, text in zip(line_coord, line_text):
-        line_region = {"identifier": str(uuid.uuid4()), "boundingBox":{"vertices":[]}}
-        line_region["boundingBox"]["vertices"] = coord
-        line_region["text"] = text
-        page_dict["lines"].append(line_region)
-    return page_dict
-
-def get_document_bounds(lang,path,page_c_lines,file,response,page_dict,page_regions,page_c_words,font_info,file_properties,idx):
-    page_dict["regions"] = []
-    page_dict["lines"]   = []
-    page_dict["words"]   = []
-    for i,page in enumerate(response.pages):
-        page_dict["vertices"]=  [{"x":0,"y":0},{"x":page.width,"y":0},{"x":page.width,"y":page.height},{"x":0,"y":page.height}]
-        for block in page.blocks:
-            block_region = {"identifier": str(uuid.uuid4()), "boundingBox":{"vertices":[]}, "class":'PARA',}
-            block_vertices = []
-            block_vertices.append({"x": block.bounding_box.vertices[0].x, "y": block.bounding_box.vertices[0].y})
-            block_vertices.append({"x": block.bounding_box.vertices[1].x, "y": block.bounding_box.vertices[1].y})
-            block_vertices.append({"x": block.bounding_box.vertices[2].x, "y": block.bounding_box.vertices[2].y})
-            block_vertices.append({"x": block.bounding_box.vertices[3].x, "y": block.bounding_box.vertices[3].y})
-            block_region["boundingBox"]["vertices"] = block_vertices
-            page_dict["regions"].append(block_region)
-            for paragraph in block.paragraphs:
-                line_coord, line_text = extract_line(paragraph)
-                page_dict = add_line(page_dict, line_coord, line_text)
-                for word in paragraph.words:
-                    word_region = {"identifier": str(uuid.uuid4()), "boundingBox":{"vertices":[]}}
-                    word_vertices = []
-                    word_vertices.append({"x": word.bounding_box.vertices[0].x, "y": word.bounding_box.vertices[0].y})
-                    word_vertices.append({"x": word.bounding_box.vertices[1].x, "y": word.bounding_box.vertices[1].y})
-                    word_vertices.append({"x": word.bounding_box.vertices[2].x, "y": word.bounding_box.vertices[2].y})
-                    word_vertices.append({"x": word.bounding_box.vertices[3].x, "y": word.bounding_box.vertices[3].y})
-                    word_region["boundingBox"]["vertices"] = word_vertices
-                    word_text = ''.join([
-                        symbol.text for symbol in word.symbols
-                    ])
-                    word_region["text"] = word_text
-                    word_region["conf"] = word.confidence
-                    page_dict["words"].append(word_region)
-                    if len(word.symbols[0].property.detected_languages)!=0:
-                        word_region["language"] = word.symbols[0].property.detected_languages[0].language_code
-                    else:
-                        if len(page.property.detected_languages)!=0:
-                            word_region["language"] = page.property.detected_languages[0].language_code
-    
-    if "craft_line" in file['config']["OCR"].keys() and file['config']["OCR"]["craft_line"]=="True":
-        page_lines = page_c_lines
-    else:
-        page_lines =  page_dict["lines"]
-    if len(page_lines)>0:
-        page_lines = removeoverlap.remove_overlap(page_lines)
-
-    page_words   =  page_dict["words"]
-    page_words   = set_font_info(page_words,font_info)
-    v_list,save_path = segment_regions(lang,path,file,page_words,page_lines,page_regions,page_c_words,file_properties,idx)
+def get_document_bounds(lang,path,page_lines,file,page_regions,page_words,font_info,file_properties,idx):
+    if len(page_words)>0:
+        page_words   = set_font_info(page_words,font_info)
+    v_list,save_path = segment_regions(lang,path,file,page_words,page_lines,page_regions,file_properties,idx)
 
     return v_list,page_words,save_path
 
@@ -181,7 +75,6 @@ def verify__table_structure(regions):
                         pass
                     else:
                         line_del_index.append(line_idx)
-
                 if len(line_del_index)>0:
                     line_updated = delete_region(region['regions'],line_del_index)
                 else:
@@ -193,62 +86,21 @@ def verify__table_structure(regions):
         regions = delete_region(regions,region_del_index)
     return regions
     
-def coord_alignment(regions,top_flag):
-    region_del_index = []
-    for region_idx,region in enumerate(regions):
-        if 'regions' in region.keys():
-            if 'class' in region.keys() and region['class'] in ["PARA","HEADER","FOOTER"]:
-                line_del_index = []
-                for line_idx,line in enumerate(region['regions']):
-                    if 'regions' in line.keys():
-                        line_t = keys.get_top(line); line_h = keys.get_height(line); line_b = keys.get_bottom(line)
-                        min_t = sys.maxsize
-                        for word_idx, word in enumerate(line['regions']):
-                            word_t = keys.get_top(word)
-                            if word_t<min_t:
-                                min_t = word_t
-                        new_top =  int((min_t+line_t)/2)
-                        if top_flag==True:
-                            line = update_coord(copy.deepcopy(line),new_top,line_t,line_b)
-                        if "class" not in line.keys():
-                            line['class']="LINE"
-                        region['regions'][line_idx] = copy.deepcopy(line)
-                    else:
-                        line_del_index.append(line_idx)
-                
-                if len(line_del_index)>0:
-                    line_updated = delete_region(region['regions'],line_del_index)
-                else:
-                    line_updated = region['regions']
-                regions[region_idx]['regions'] = copy.deepcopy(line_updated)
-            elif 'class' not in region.keys():
-                region['class']  = "PARA"   
-                regions[region_idx] = copy.deepcopy(region)    
-        else:
-            region_del_index.append(region_idx)
-    if len(region_del_index)>0:
-        regions = delete_region(regions,region_del_index)
-    return regions
 
-def segment_regions(lang,path,file,words, lines,regions,page_c_words,file_properties,idx):
+def segment_regions(lang,path,file,words, lines,regions,file_properties,idx):
     width, height = file_properties.get_pageinfo(0)
-    v_list, n_text_regions = region_unifier.region_unifier(idx,file,words,lines,regions,page_c_words,path)
-    '''  
-        tesseract at line level using google line crops
-    '''
-    log_info("multiprocesing tesseract ocr started", None)
+    v_list, n_text_regions = region_unifier.region_unifier(idx,file,lines,regions,path)
+    log_info("tesseract ocr started", None)
+    #if idx==2:
     v_list = multi_processing_tesseract(v_list,path,lang,width, height)
-    log_info("multiprocesing tesseract ocr completed", None)
-
+    log_info("tesseract ocr completed", None)
     save_path = mask_image_craft(path, v_list, idx, file_properties, width, height)
+   # save_path =None
     if "top_correction" in file['config']["OCR"].keys() and file['config']["OCR"]["top_correction"]=="True":
-        v_list = coord_alignment(v_list,False)
         v_list = verify__table_structure(v_list)
         return v_list,save_path
     else:
-        v_list = coord_alignment(v_list,False)
         v_list = verify__table_structure(v_list)
-        
     return v_list,save_path
 
 def end_point_correction(region, y_margin,x_margin, ymax,xmax):
@@ -278,6 +130,7 @@ def mask_table_region(image,region,image_height,image_width,y_margin,x_margin,fi
         return image
     except:
         return image
+        
 def remove_noise(img):
     try:
         res = img.copy()
@@ -297,12 +150,10 @@ def remove_noise(img):
 
 def mask_image_craft(path, page_regions,page_index,file_properties,image_width,image_height,margin= 0 ,fill=255):
     try:
-        #path = config.BASE_DIR+path
         image   = cv2.imread(path)
         for region_idx, page_region in enumerate(page_regions):
             if page_region is not None and 'class' in page_region.keys():
                 region_class = page_region['class']
-                
                 if region_class not in ["IMAGE","OTHER","SEPARATOR"]:
                     if region_class =='TABLE':
                         y_margin=0; x_margin=0
@@ -354,15 +205,12 @@ def mask_image_craft(path, page_regions,page_index,file_properties,image_width,i
 def mask_image_vision(path, page_regions,page_index,file_properties,image_width,image_height,margin= 0 ,fill=255):
     try:
         image   = cv2.imread(path)
-        
         for region in page_regions:
             row_top, row_bottom,row_left,row_right = end_point_correction(region, 2,image_height,image_width)
-            
             if len(image.shape) == 2 :
                 image[row_top - margin : row_bottom + margin , row_left - margin: row_right + margin] = fill
             if len(image.shape) == 3 :
                 image[row_top - margin: row_bottom + margin, row_left - margin: row_right + margin,:] = fill
-            
         if '.jpg' in path:
             save_path = path.split('.jpg')[0]+"_bgimages_"+'.jpg'
         elif '.png' in path:

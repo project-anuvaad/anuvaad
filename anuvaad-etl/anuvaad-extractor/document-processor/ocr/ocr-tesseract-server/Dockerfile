@@ -20,13 +20,13 @@
 # RUN pip install -r requirements.txt
 # RUN pip cache purge
 
-FROM anuvaadio/anuvaad-ocr-gv-server:10-0ee3dde0
+FROM anuvaadio/anuvaad-ocr-tesseract-server:32-b584693df
 #FROM anuvaadio/python-opencv-slim:2
 COPY / /app
 WORKDIR /app
 #RUN apt install -y libspatialindex-dev python-rtree
 RUN pip install -r requirements.txt
-RUN apt-get update
+#RUN apt-get update
 RUN apt-get install -y tesseract-ocr \
    && apt-get install -y curl
 
