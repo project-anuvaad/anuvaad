@@ -29,12 +29,13 @@ def get_text(app_context, base_dir):
     file_properties = File(files[0])
 
     align_img = file_properties.get_tilt_align_config()
-    if align_img is not None and align_img == 'True' or config.ALIGN :
-        for file_index,file_imgs in enumerate(images):
-            for img in file_imgs:
-                #print(img)
-                image,angle = Orientation(img,File(files[file_index]),).re_orient_east()
-                #print(image,"***",angle)
+    if config.ALIGN :
+        if align_img is not None and align_img == 'True' :
+            for file_index,file_imgs in enumerate(images):
+                for img in file_imgs:
+                    #print(img)
+                    image,angle = Orientation(img,File(files[file_index]),).re_orient_east()
+                    #print(image,"***",angle)
 
     # custom line detection model
 
