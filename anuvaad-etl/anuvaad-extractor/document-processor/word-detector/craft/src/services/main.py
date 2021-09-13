@@ -1,5 +1,6 @@
 from src.services.collate import RemoveOverlap, merger_lines_words
 from src.services.detect_text import get_coords
+from src.utilities.tilt_alignment import Orientation
 from anuvaad_auditor.loghandler import log_debug
 from anuvaad_auditor.loghandler import log_exception
 from anuvaad_auditor.loghandler import log_info
@@ -21,12 +22,19 @@ def get_text(app_context, base_dir):
     images = extract_images(app_context, base_dir)
 
     # Orientation correction
-
-
+    
     #languages = get_languages(app_context)
     words, lines = [], []
     files = get_files(app_context.application_context)
     file_properties = File(files[0])
+
+    align_img = file_properties.get_tilt_align_config()
+    if align_img is not None and align_img == 'True' or config.ALIGN :
+        for file_index,file_imgs in enumerate(images):
+            for img in file_imgs:
+                #print(img)
+                image,angle = Orientation(img,File(files[file_index]),).re_orient_east()
+                #print(image,"***",angle)
 
     # custom line detection model
 

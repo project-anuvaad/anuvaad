@@ -67,6 +67,13 @@ class File:
             return self.file['config']['OCR']['line_layout']
 
     @log_error
+    def get_tilt_align_config(self):
+        if 'align' not in self.file['config']['OCR'].keys():
+            return None
+        else:
+            return self.file['config']['OCR']['align']
+
+    @log_error
     def get_file(self):
         return self.file
 
