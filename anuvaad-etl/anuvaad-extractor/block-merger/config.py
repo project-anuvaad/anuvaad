@@ -108,7 +108,7 @@ CROP_CONFIG = {
     'mr':{'top':15, 'bottom':10,'right':5,'left':5}
 }
 
-CLASS_2_LANG = ['ta']
+CLASS_2_LANG = []  #['ta']
 
 CRAFT_MODEL_PATH =  "./src/utilities/craft_pytorch/model/craft_mlt_25k.pth"
 CRAFT_REFINE_MODEL_PATH = "./src/utilities/craft_pytorch/model/craft_refiner_CTW1500.pth"
