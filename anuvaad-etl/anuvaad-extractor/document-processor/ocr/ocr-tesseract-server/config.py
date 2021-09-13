@@ -46,19 +46,20 @@ SAVE_NO_PAGE = 1
 
 IS_DYNAMIC = False
 EXRACTION_RESOLUTION = 300
-BATCH_SIZE = 2
+BATCH_SIZE = 1
 DYNAMIC_MARGINS = False
 PERSPECTIVE_TRANSFORM = True
 FALL_BACK_LANGUAGE = None
 PSM = 7
 POST_PROCESSING_MODE = None
-MULTIPROCESS = True
+MULTIPROCESS = False
 DOUBLE_OCR_THRESHOLD = 20
 
 # crop config
 C_X = -7
 C_Y = 0
 
+HORIZONTAL_MERGING=True
 
 LANG_MAPPING = {
     "en": ["Latin", "Latin"],
@@ -71,7 +72,8 @@ LANG_MAPPING = {
     "ta": ['Tamil', "anuvaad_tam"],
     "te": ["Telugu", "Telugu"],
     "ml": ["Malayalam", "Malayalam"],
-    "ma": ["Marathi", "Marathi"]
+    "ma": ["Marathi", "Marathi"],
+    "pa": ["Punjabi", "Punjabi"],
 }
 
 DETECT_LANG_MAPPING = {
@@ -84,5 +86,8 @@ DETECT_LANG_MAPPING = {
     "Tamil": ['anuvaad_tam'],
     "Telugu": ["Telugu"],
     "Malayalam": ["Malayalam"],
-    "Marathi": ["Marathi"]
+    "Marathi": ["Marathi"],
+    "Punjabi": ["Punjabi"],
+    "Santali":["Santali"]
+
 }

@@ -137,7 +137,7 @@ def collate_regions(regions, lines, child_class=None, grand_children=False,regio
                         if line_poly:
                             area = region_poly.intersection(line_poly).area
                             reg_area = region_poly.area;  line_area = line_poly.area
-                            if reg_area>0 and line_area>0 and area/min(line_area,reg_area) >0.5 :
+                            if (reg_area>0 and line_area>0 and area/min(line_area,reg_area) >0.5):
                                 region_lines.append(lines[intr_index]);  lines_intersected.append(intr_index)
                 region_lines.sort(key=lambda x:x['boundingBox']['vertices'][0]['y'])
                 if len(region_lines) > 0:
@@ -146,15 +146,17 @@ def collate_regions(regions, lines, child_class=None, grand_children=False,regio
                 else:
                     regions[region_index][child_key] = []
             else:
-                regions[region_index][child_key] = []
+                regions[region_index][child_key] = [copy.deepcopy(region)]
+                regions[region_index][child_key][0]['class'] = "LINE"
 
     if region_flag:
         for line_index, line in enumerate(lines):
             if line_index not in lines_intersected:
                 if child_class is not None:
                     if child_class is 'LINE':
-                        line['class'] = 'PARA'
+                        #line['class'] = 'PARA'
                         line['regions'] = [copy.deepcopy(line)]
+                        line['class'] = 'PARA'
                 regions.append(line)
 
     return regions
@@ -177,12 +179,12 @@ def collate_cell_regions(regions, lines, child_class=None, grand_children=False,
                         if line_poly:
                             area = region_poly.intersection(line_poly).area
                             reg_area = region_poly.area;  line_area = line_poly.area
-                            if reg_area>0 and line_area>0 and area/min(line_area,reg_area) >0.5 :
+                            if (reg_area>0 and line_area>0 and region_poly.intersection(line_poly)):
                                 region_lines.append(lines[intr_index])
                                 lines_intersected.append(intr_index)
-                if child_key in region.keys() and type(region[child_key]) is list:
-                    pass
-                else:
+                # if child_key in region.keys() and type(region[child_key]) is list:
+                #     pass
+                if child_key not in region.keys():
                     region[child_key] = []
 
                 region_lines.sort(key=lambda x:x['boundingBox']['vertices'][0]['y'])
@@ -194,6 +196,30 @@ def collate_cell_regions(regions, lines, child_class=None, grand_children=False,
                     regions[region_index]['avg_size'] = get_avrage_size(region_lines)
                 
     return regions
+
+# def remvoe_regions(regions, lines):
+#     idx = index.Index();  lines_intersected = [];  not_intersecting  = []
+#     if regions !=None and len(regions) > 0:
+#         lines_intersected =[]
+#         for line_idx, line in enumerate(lines):
+#             poly = get_polygon(line['boundingBox'])
+#             if poly:
+#                 idx.insert(line_idx, poly.bounds)
+#         for region_index, region in enumerate(regions):
+#             region_poly = get_polygon(region['boundingBox'])
+#             if region_poly:
+#                 children_lines = list(idx.intersection(region_poly.bounds))
+#             if len(children_lines) > 0:
+#                 region_lines = []
+#                 for intr_index in children_lines:
+#                     region_lines.append(lines[intr_index])
+#                     lines_intersected.append(intr_index)
+
+#     for line_index, line in enumerate(lines):
+#         if line_index not in lines_intersected:
+#             not_intersecting.append(line)
+
+#     return not_intersecting
 
 def remvoe_regions(regions, lines):
     idx = index.Index();  lines_intersected = [];  not_intersecting  = []
@@ -210,8 +236,14 @@ def remvoe_regions(regions, lines):
             if len(children_lines) > 0:
                 region_lines = []
                 for intr_index in children_lines:
-                    region_lines.append(lines[intr_index])
-                    lines_intersected.append(intr_index)
+                    if intr_index not in lines_intersected:
+                        line_poly = get_polygon(lines[intr_index]['boundingBox'])
+                        if line_poly:
+                            area = region_poly.intersection(line_poly).area
+                            reg_area = region_poly.area;  line_area = line_poly.area
+                            if reg_area>0 and line_area>0 and area/min(line_area,reg_area) >0.5 :
+                                region_lines.append(lines[intr_index])
+                                lines_intersected.append(intr_index)
 
     for line_index, line in enumerate(lines):
         if line_index not in lines_intersected:

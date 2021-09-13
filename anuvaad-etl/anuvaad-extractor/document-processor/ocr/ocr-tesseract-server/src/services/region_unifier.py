@@ -269,19 +269,16 @@ class Region_Unifier:
             # else:
             sorted_page_regions = page_regions
 
-            text_regions, n_text_table_regions, tabel_regions, image_region, head_foot_region = self.get_text_tabel_region(
-                sorted_page_regions)
+            text_regions, n_text_table_regions, tabel_regions, image_region, head_foot_region = self.get_text_tabel_region(sorted_page_regions)
             # Remove any table which would overlap with an image
-            tabel_regions = remvoe_regions(copy.deepcopy(
-                image_region), copy.deepcopy(tabel_regions))
+            tabel_regions = remvoe_regions(copy.deepcopy(image_region), copy.deepcopy(tabel_regions))
             #filtered_lines = remvoe_regions(copy.deepcopy(image_region), copy.deepcopy(page_lines))
             filtered_lines = copy.deepcopy(page_lines)
             #page_lines2 = copy.deepcopy(page_lines)
 
             for idx, table in enumerate(tabel_regions):
                 if 'regions' in table.keys():
-                    filtered_lines = remvoe_regions(copy.deepcopy(
-                        table['regions']), copy.deepcopy(filtered_lines))
+                    filtered_lines = remvoe_regions(copy.deepcopy(table['regions']), copy.deepcopy(filtered_lines))
                     # Adding lines to table cells
                     tabel_regions[idx]['regions'] = collate_regions(regions=copy.deepcopy(table['regions']), lines=copy.deepcopy(
                         page_lines), child_class='LINE', grand_children=False, region_flag=False, child_key=True)
@@ -291,17 +288,13 @@ class Region_Unifier:
             tabel_regions = collate_cell_regions(copy.deepcopy(tabel_regions), copy.deepcopy(
                 page_lines), child_class='CELL_TEXT', grand_children=False, region_flag=False)
 
-            # Taking union of cell and lines coordinates which intersect (Why is this done?)
+            # Taking union of cell and lines coordinates which intersect
             #tabel_regions = self.table_no_cell(tabel_regions,page_lines2,idx2)
 
-            filtered_lines = remvoe_regions(copy.deepcopy(
-                tabel_regions), copy.deepcopy(page_lines))
-            text_regions = remvoe_regions(copy.deepcopy(
-                tabel_regions), copy.deepcopy(text_regions))
-            head_foot_list = collate_regions(copy.deepcopy(head_foot_region), copy.deepcopy(
-                filtered_lines), child_class='LINE', grand_children=False, region_flag=False)
-            filtered_lines = remvoe_regions(copy.deepcopy(
-                head_foot_list), copy.deepcopy(filtered_lines))
+            filtered_lines = remvoe_regions(copy.deepcopy(tabel_regions), copy.deepcopy(page_lines))
+            text_regions = remvoe_regions(copy.deepcopy(tabel_regions), copy.deepcopy(text_regions))
+            head_foot_list = collate_regions(copy.deepcopy(head_foot_region), copy.deepcopy(filtered_lines), child_class='LINE', grand_children=False, region_flag=False)
+            filtered_lines = remvoe_regions(copy.deepcopy(head_foot_list), copy.deepcopy(filtered_lines))
 
             text_regions = collate_regions(copy.deepcopy(text_regions), copy.deepcopy(
                 filtered_lines), child_class='LINE', grand_children=False, add_font=False)
@@ -309,11 +302,9 @@ class Region_Unifier:
 
             text_regions.extend(head_foot_list)
 
-            text_regions = self.add_region_attribute(
-                text_regions, tabel_regions)
+            text_regions = self.add_region_attribute(text_regions, tabel_regions)
             if len(text_regions) > 0:
-                text_regions.sort(
-                    key=lambda x: x['boundingBox']['vertices'][0]['y'])
+                text_regions.sort(key=lambda x: x['boundingBox']['vertices'][0]['y'])
                 text_regions = sort_regions(text_regions, [])
 
         except Exception as e:

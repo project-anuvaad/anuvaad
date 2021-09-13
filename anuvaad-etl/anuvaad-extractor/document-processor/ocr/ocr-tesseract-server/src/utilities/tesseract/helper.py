@@ -5,7 +5,7 @@ import os
 import cv2
 from src.utilities.tesseract.dynamic_adjustment import coord_adjustment
 from src.utilities.tesseract.post_process import post_process_ocr_text
-from src.utilities.tesseract.utils import scale_coords, crop_region, get_tess_text, frequent_height
+from src.utilities.tesseract.utils import scale_coords, crop_region, get_tess_text, frequent_height,adjust_crop_coord
 
 
 def tess_eval(input):
@@ -18,9 +18,8 @@ def tess_eval(input):
 
 def add_lines_to_tess_queue(page_lines, queue, lang, image, mode_height, rgn_idx, line_idx, cls, reg_left, reg_right, lang_detected):
     for index, coord in enumerate(page_lines):
-
-        image_crop, c_x, c_y = crop_region(
-            coord, image, cls, reg_left, reg_right)
+        adjusted_box,c_x,c_y = adjust_crop_coord(coord,cls,reg_left,reg_right)
+        image_crop = crop_region(adjusted_box,image)
         vertices = coord['boundingBox']['vertices']
         left = vertices[0]['x']
         top = vertices[0]['y']
