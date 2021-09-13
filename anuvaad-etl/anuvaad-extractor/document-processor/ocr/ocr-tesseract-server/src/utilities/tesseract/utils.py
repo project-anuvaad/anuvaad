@@ -167,6 +167,7 @@ def process_dfs(temp_df,left,top,lang,c_x,c_y):
         temp_dict1["text"]= row['text']
         temp_dict1["conf"]= row['conf']
         temp_dict1["language"]= lang
+        temp_dict1["class"] ='WORD'
         temp_dict1['boundingBox']={}
         temp_dict1['font']={'family': 'Arial Unicode MS', 'size': int(row["height"]), 'style': 'REGULAR'}
         temp_dict1['boundingBox']["vertices"] = vert
