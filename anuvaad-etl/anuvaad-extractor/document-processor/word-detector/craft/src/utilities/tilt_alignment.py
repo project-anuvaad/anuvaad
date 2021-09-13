@@ -25,57 +25,6 @@ class Orientation:
         #self.re_orient()
 
 
-
-
-    # def augment_df(self,df):
-    #     # dic = []
-    #     # for i,box in enumerate(self.bbox):
-    #     # dic.append({'x1': box[0] ,'y1': box[1] ,'x2': box[2] ,'y2': box[3] ,'x3': box[4] ,'y3': box[5] ,'x4': box[6] ,'y4': box[7]})
-    #     #df = pd.DataFrame(self.bbox, columns=['x1', 'y1', 'x2', 'y2', 'x3', 'y3', 'x4', 'y4'])
-    #     df['height'] = df['y4'] - df['y1']
-    #     df['width'] = df['x2'] - df['x1']
-    #     df['ymid'] = (df['y4'] + df['y3']) * 0.5
-    #     df['area'] = df['width'] * df['height']
-    #     df = df.sort_values(by=['ymid'])
-    #     df['group'] = None
-    #     df['line_change'] = 0
-    #     return df
-
-    # def dump_out(self, bbc, rot):
-    #     im = self.image.copy()
-    #     for box in bbc:
-    #         # print(box)
-    #         cv2.polylines(im, [np.array(box).astype(np.int32).reshape((-1, 1, 2))], True, color=(255, 255, 0),
-    #                       thickness=1)
-    #     cv2.imwrite('tmp/' + str(rot) + '.png', im)
-
-    # def get_rotaion_angle(self, text_cor_df):
-
-    #     bbox_df = text_cor_df.copy()
-    #     bbox_df = self.augment_df(bbox_df)
-
-    #     bbox_df['delta_x'] = bbox_df['x2'] - bbox_df['x1']
-    #     bbox_df['delta_y'] = bbox_df['y2'] - bbox_df['y1']
-    #     box_dir = [bbox_df['delta_x'].mean(), bbox_df['delta_y'].mean()]
-    #     # print(box_dir)
-    #     x_axis = [1, 0]
-    #     try:
-    #         cosine = np.dot(box_dir, x_axis) / (np.linalg.norm(box_dir) * np.linalg.norm(x_axis))
-    #     except Exception as e:
-    #         print('ERROR in finding angle of rotaion!!!')
-    #         print(e)
-    #         cosine = 1
-    #     angle = np.arccos(cosine) * 180 / np.pi
-    #     avrage_height = bbox_df['height'].mean()
-
-    #     avrage_width = bbox_df['width'].mean()
-    #     #if avrage_height > avrage_width:
-    #     #    angle = 90 - angle
-
-    #     return angle * np.sign(box_dir[1])
-
-
-
     def rotate_bound(self,image, angle):
         # grab the dimensions of the image and then determine the
         # center
@@ -101,61 +50,7 @@ class Orientation:
         return cv2.warpAffine(image, M, (nW, nH),flags=cv2.INTER_CUBIC, borderMode=cv2.BORDER_REPLICATE)
 
 
-    # def re_orient(self,image):
-    #     lang = 'hi'
 
-    #     craft_config = self.file_properties.get_craft_model_config()
-
-    #     if craft_config == None :
-    #         text_threshold = config.LANGUAGE_LINE_THRESOLDS[lang]['text_threshold']
-    #         low_text_threshold = config.LANGUAGE_LINE_THRESOLDS[lang]['low_text']
-    #         link_threshold = config.LANGUAGE_LINE_THRESOLDS[lang]['link_threshold']
-    #     elif 'text_threshold' and 'low_text' and 'link_threshold' in craft_config.keys():
-    #         text_threshold = craft_config['text_threshold']
-    #         low_text_threshold = craft_config['low_text']
-    #         link_threshold = craft_config['link_threshold']
-
-    #     lines = detect_text_per_page([self.image], \
-    #                                  network=True, \
-    #                                  text_threshold=text_threshold, \
-    #                                  low_text_threshold=low_text_threshold,
-    #                                  link_threshold=link_threshold)[0]
-
-    #     # words = detect_text_per_page([self.image], \
-    #     #                              network=False, \
-    #     #                              text_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['text_threshold'], \
-    #     #                              low_text_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['low_text'],
-    #     #                              link_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['link_threshold'])[0]
-
-
-
-    #     angle = self.get_rotaion_angle(lines)
-    #     #angle = self.get_rotaion_angle(words)
-    #     print("Angle of tilt detected {} ".format(angle))
-
-    #     if abs(angle) > 2.5:
-    #         self.image = self.rotate_bound(self.image, -angle)
-
-    #         lines = detect_text_per_page([self.image], \
-    #                                      network=True, \
-    #                                      text_threshold=text_threshold, \
-    #                                      low_text_threshold=low_text_threshold,
-    #                                      link_threshold=link_threshold)[0]
-            
-    #         cv2.imwrite(self.image_path, self.image)
-
-    #     words = detect_text_per_page([self.image], \
-    #                                 network=False, \
-    #                                 text_threshold=text_threshold, \
-    #                                 low_text_threshold=low_text_threshold,
-    #                                 link_threshold=link_threshold)[0]
-    #     angle = self.get_rotaion_angle(lines)
-    #     print("Angle of tilt after correction {} ".format(angle))
-
-
-    #     #lines = words
-
-    #     return words, lines
 
     def east_detect(self,image,args): 
 
@@ -192,16 +87,11 @@ class Orientation:
         for y in range(0, numRows):
             
             scoresData = scores[0, 0, y]
-            xData0 = geometry[0, 0, y]
-            xData1 = geometry[0, 1, y]
-            xData2 = geometry[0, 2, y]
-            xData3 = geometry[0, 3, y]
             anglesData = geometry[0, 4, y]
 
             for x in range(0, numCols):
                 if scoresData[x] < args["min_confidence"]:
                     continue
-                (offsetX, offsetY) = (x * 4.0, y * 4.0)
                 
                 angle = anglesData[x]
                 angl.append(angle*180/(np.pi))
@@ -267,6 +157,112 @@ class Orientation:
         print("Angle detectd is  {} ".format(angle))
 
         return image,angle
+
+
+    # def re_orient(self,image):
+    #     lang = 'hi'
+
+    #     craft_config = self.file_properties.get_craft_model_config()
+
+    #     if craft_config == None :
+    #         text_threshold = config.LANGUAGE_LINE_THRESOLDS[lang]['text_threshold']
+    #         low_text_threshold = config.LANGUAGE_LINE_THRESOLDS[lang]['low_text']
+    #         link_threshold = config.LANGUAGE_LINE_THRESOLDS[lang]['link_threshold']
+    #     elif 'text_threshold' and 'low_text' and 'link_threshold' in craft_config.keys():
+    #         text_threshold = craft_config['text_threshold']
+    #         low_text_threshold = craft_config['low_text']
+    #         link_threshold = craft_config['link_threshold']
+
+    #     lines = detect_text_per_page([self.image], \
+    #                                  network=True, \
+    #                                  text_threshold=text_threshold, \
+    #                                  low_text_threshold=low_text_threshold,
+    #                                  link_threshold=link_threshold)[0]
+
+    #     # words = detect_text_per_page([self.image], \
+    #     #                              network=False, \
+    #     #                              text_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['text_threshold'], \
+    #     #                              low_text_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['low_text'],
+    #     #                              link_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['link_threshold'])[0]
+
+
+
+    #     angle = self.get_rotaion_angle(lines)
+    #     #angle = self.get_rotaion_angle(words)
+    #     print("Angle of tilt detected {} ".format(angle))
+
+    #     if abs(angle) > 2.5:
+    #         self.image = self.rotate_bound(self.image, -angle)
+
+    #         lines = detect_text_per_page([self.image], \
+    #                                      network=True, \
+    #                                      text_threshold=text_threshold, \
+    #                                      low_text_threshold=low_text_threshold,
+    #                                      link_threshold=link_threshold)[0]
+            
+    #         cv2.imwrite(self.image_path, self.image)
+
+    #     words = detect_text_per_page([self.image], \
+    #                                 network=False, \
+    #                                 text_threshold=text_threshold, \
+    #                                 low_text_threshold=low_text_threshold,
+    #                                 link_threshold=link_threshold)[0]
+    #     angle = self.get_rotaion_angle(lines)
+    #     print("Angle of tilt after correction {} ".format(angle))
+
+
+    #     #lines = words
+
+    #     return words, lines
+
+    # def augment_df(self,df):
+    #     # dic = []
+    #     # for i,box in enumerate(self.bbox):
+    #     # dic.append({'x1': box[0] ,'y1': box[1] ,'x2': box[2] ,'y2': box[3] ,'x3': box[4] ,'y3': box[5] ,'x4': box[6] ,'y4': box[7]})
+    #     #df = pd.DataFrame(self.bbox, columns=['x1', 'y1', 'x2', 'y2', 'x3', 'y3', 'x4', 'y4'])
+    #     df['height'] = df['y4'] - df['y1']
+    #     df['width'] = df['x2'] - df['x1']
+    #     df['ymid'] = (df['y4'] + df['y3']) * 0.5
+    #     df['area'] = df['width'] * df['height']
+    #     df = df.sort_values(by=['ymid'])
+    #     df['group'] = None
+    #     df['line_change'] = 0
+    #     return df
+
+    # def dump_out(self, bbc, rot):
+    #     im = self.image.copy()
+    #     for box in bbc:
+    #         # print(box)
+    #         cv2.polylines(im, [np.array(box).astype(np.int32).reshape((-1, 1, 2))], True, color=(255, 255, 0),
+    #                       thickness=1)
+    #     cv2.imwrite('tmp/' + str(rot) + '.png', im)
+
+    # def get_rotaion_angle(self, text_cor_df):
+
+    #     bbox_df = text_cor_df.copy()
+    #     bbox_df = self.augment_df(bbox_df)
+
+    #     bbox_df['delta_x'] = bbox_df['x2'] - bbox_df['x1']
+    #     bbox_df['delta_y'] = bbox_df['y2'] - bbox_df['y1']
+    #     box_dir = [bbox_df['delta_x'].mean(), bbox_df['delta_y'].mean()]
+    #     # print(box_dir)
+    #     x_axis = [1, 0]
+    #     try:
+    #         cosine = np.dot(box_dir, x_axis) / (np.linalg.norm(box_dir) * np.linalg.norm(x_axis))
+    #     except Exception as e:
+    #         print('ERROR in finding angle of rotaion!!!')
+    #         print(e)
+    #         cosine = 1
+    #     angle = np.arccos(cosine) * 180 / np.pi
+    #     avrage_height = bbox_df['height'].mean()
+
+    #     avrage_width = bbox_df['width'].mean()
+    #     #if avrage_height > avrage_width:
+    #     #    angle = 90 - angle
+
+    #     return angle * np.sign(box_dir[1])
+
+
 
 
     #
