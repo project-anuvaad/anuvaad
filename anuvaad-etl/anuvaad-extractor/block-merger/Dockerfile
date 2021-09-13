@@ -61,7 +61,7 @@
 
 
 
-FROM anuvaadio/anuvaad-block-merger:227-9aa425d3
+FROM anuvaadio/anuvaad-block-merger:264-1d5bd4508
 
 
 #FROM anuvaadio/python-opencv-slim:2
