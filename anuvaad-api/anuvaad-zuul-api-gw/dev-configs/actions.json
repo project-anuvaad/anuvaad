@@ -679,6 +679,30 @@
             "active":true,
             "whiteList":true,
             "description":"API for ANUVAAD OCR to be used by ULCA"
+        },
+        {
+            "id": "dae2209d-e3ac-4ed2-9789-c1bb03bdf913",
+            "uri": "/anuvaad-nmt-models/v0/fetch-models/*",
+            "module": "ANUVAAD-NMT-MODELS",
+            "active": true,
+            "whiteList": false,
+            "description": "API to fetch NMT models"
+        },
+        {
+            "id": "f13e0c81-b559-444d-bb57-8d0360f7a2e8",
+            "uri": "/anuvaad-nmt-models/v0/create-models",
+            "module": "ANUVAAD-NMT-MODELS",
+            "active": true,
+            "whiteList": false,
+            "description": "API to create NMT models"
+        },
+        {
+            "id": "4851c243-bb56-4faf-9290-a46740e5c00e",
+            "uri": "/anuvaad-nmt-models/v0/update-models/*",
+            "module": "ANUVAAD-NMT-MODELS",
+            "active": true,
+            "whiteList": false,
+            "description": "API to update NMT models"
         }
     ]
 }
