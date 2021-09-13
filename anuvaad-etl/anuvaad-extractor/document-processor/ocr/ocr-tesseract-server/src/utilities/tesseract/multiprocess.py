@@ -111,8 +111,11 @@ def check_horizontal_merging(words,cls_name,mode_height,vertices,line):
     tmp_words = copy.deepcopy(words)
     if config.HORIZONTAL_MERGING and line_height>mode_height*1.2 and cls_name not in ['CELL','CELL_TEXT'] and len(words)>0:
         h_lines =  horzontal_merging(tmp_words)
-        if len(h_lines)>0:
+        if len(h_lines)>1:
             line_list    = collate_regions(copy.deepcopy(h_lines), copy.deepcopy(words),child_class='WORD',add_font=False)
+        elif len(h_lines)==1:
+            line_list = copy.deepcopy([line])
+            line_list[0]['regions']= copy.deepcopy(words)
         else:
             line_list = copy.deepcopy(words)
         return line_list

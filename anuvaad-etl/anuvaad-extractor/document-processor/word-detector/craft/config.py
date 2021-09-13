@@ -109,9 +109,14 @@ LINE_LAYOUT_MODEL_PATH = "./src/utilities/primalinenet/anuvaad_line_v1.pth"
 LINE_LAYOUT_CONFIG_PATH = "./src/utilities/primalinenet/config.yaml"
 ##########################################################################
 # Alignment
+EAST_MODEL = "./src/utilities/east/frozen_east_text_detection.pb"
+ANGLE_TOLLERANCE  = 0.25
+MIN_CONFIDENCE    = 0.5
+MARGIN_TOLLERANCE = 9
+EAST_WIDTH        = 1280
+EAST_HEIGHT       = 1280
 ALIGN = True
 ALIGN_MODE = 'FAST'
-
 
 ###########################################################################
 
