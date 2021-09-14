@@ -14,8 +14,9 @@ from services.service import common_obj
 
 
 class DocxTransform(object):
-    def __init__(self, input_filename, json_data):
+    def __init__(self, input_filename, json_data, new_flow=True):
         self.json_data = json_data
+        self.new_flow = new_flow
         self.file_name_without_ext = os.path.splitext(input_filename)[0]
         self.file_id = self.file_name_without_ext
 
@@ -59,7 +60,8 @@ class DocxTransform(object):
         return input_docx
 
     def write_json_file(self, transformed_obj):
-        out_file_name = config.DOCX_FILE_PREFIX + self.file_name_without_ext + '.json'
+        #out_file_name = config.DOCX_FILE_PREFIX + self.file_name_without_ext + '.json'
+        out_file_name = config.DOCX1_FILE_PREFIX + self.file_name_without_ext + '.json'
         return common_obj.write_json_file(out_file_name=out_file_name, transformed_obj=transformed_obj)
 
     def distribute_over_runs(self, iterable_obj, trans_para):
@@ -227,13 +229,11 @@ class DocxTransform(object):
 
     def add_new_paragraph_to_json(self, para):
         try:
-            sub_para_counter = -1
             for idx, subpara in enumerate(common_obj.get_runs(para, para_obj=True)):
-                sub_para_counter += 1
                 self.para_count += 1
                 json_para = self.generate_json_for_para(para=subpara, file_id=self.file_id,
                                                         para_idx=str(self.sequence_para_index),
-                                                        sub_para_idx=str(sub_para_counter))
+                                                        sub_para_idx=str(idx))
 
                 words_no = common_obj.word_count(json_para.get('text'))
                 self.word_count += words_no
@@ -242,7 +242,7 @@ class DocxTransform(object):
                     self.run_count += 1
                     json_run = self.generate_json_for_run(run=run, file_id=self.file_id,
                                                           para_idx=str(self.sequence_para_index),
-                                                          run_idx=str(idr), sub_para_idx=str(sub_para_counter))
+                                                          run_idx=str(idr), sub_para_idx=str(idx))
                     json_para['children'].append(json_run)
 
                 self.page_list[self.page_number - 1]['text_blocks'].append(json_para)
@@ -256,7 +256,7 @@ class DocxTransform(object):
             self.para_count += 1
 
             for runs in common_obj.get_runs(para, para_obj=True):
-                for idr, run in runs:
+                for idr, run in enumerate(runs):
                     self.run_count += 1
                     json_run = self.generate_para_struct_json_for_run(run=run, file_id=self.file_id,
                                                                       para_idx=str(self.sequence_para_index),
@@ -292,24 +292,49 @@ class DocxTransform(object):
 
     def translate_paragraphs(self, para):
         try:
-            sub_para_counter = -1
-            for idx, runs in enumerate(common_obj.get_runs(para, para_obj=True)):
-                sub_para_counter += 1
-                para_id = common_obj.generate_id(file_id=self.file_id, para=str(self.sequence_para_index),
-                                                 sub_para=str(sub_para_counter))
+            runs = common_obj.get_runs(para, para_obj=True)
+            if self.new_flow is True:
+                for idx, run_list in enumerate(runs):
+                    para_id = common_obj.generate_id(file_id=self.file_id, para=str(self.sequence_para_index),
+                                                     sub_para=str(idx))
+                    if para_id in self.trans_map:
+                        self.distribute_over_runs(run_list, trans_para=self.trans_map[para_id])
+                    else:
+                        # raise FileErrors("translate_docx_file:", "PARA ID :{} not found in fetch content".format(para_id))
+                        log_info("PARA ID :{} not found in fetch content".format(para_id), self.json_data)
+            else:
+                run_list = common_obj.merge_runs(runs)
+                para_id = common_obj.generate_id(file_id=self.file_id, para=str(self.sequence_para_index))
+
                 if para_id in self.trans_map:
-                    self.distribute_over_runs(runs, trans_para=self.trans_map[para_id])
+                    self.distribute_over_runs(run_list, trans_para=self.trans_map[para_id])
                 else:
-                    #raise FileErrors("translate_docx_file:", "PARA ID :{} not found in fetch content".format(para_id))
+                    # raise FileErrors("translate_docx_file:", "PARA ID :{} not found in fetch content".format(para_id))
                     log_info("PARA ID :{} not found in fetch content".format(para_id), self.json_data)
+
         except Exception as e:
             log_info(f"translate_docx_file :: DISTRIBUTE OVER RUN FAILED FOR PARAGRAPH SEQ:{self.sequence_para_index}"
                      f"ERROR: {str(e)}", self.json_data)
 
+    #translate para - old flow below
+    # def translate_paragraphs(self, para):
+    #     try:
+    #         for idx, subpara in enumerate(common_obj.get_runs(para, para_obj=True)):
+    #             para_id = common_obj.generate_id(file_id=self.file_id, para=str(self.sequence_para_index),
+    #                                              sub_para=str(idx))
+    #             if para_id in self.trans_map:
+    #                 self.distribute_over_runs(subpara, trans_para=self.trans_map[para_id])
+    #             else:
+    #                 #raise FileErrors("translate_docx_file:", "PARA ID :{} not found in fetch content".format(para_id))
+    #                 log_info("PARA ID :{} not found in fetch content".format(para_id), self.json_data)
+    #     except Exception as e:
+    #         log_info(f"translate_docx_file :: DISTRIBUTE OVER RUN FAILED FOR PARAGRAPH SEQ:{self.sequence_para_index}"
+    #                  f"ERROR: {str(e)}", self.json_data)
+
     def translate_run_stored_as_para_json(self, para):
         try:
             for runs in common_obj.get_runs(para, para_obj=True):
-                for idr, run in runs:
+                for idr, run in enumerate(runs):
                     run_id = common_obj.generate_id(file_id=self.file_id,
                                                     para=str(self.sequence_para_index),
                                                     run=str(idr))

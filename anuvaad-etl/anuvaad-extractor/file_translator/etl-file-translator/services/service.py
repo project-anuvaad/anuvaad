@@ -107,6 +107,14 @@ class Common(object):
                 para_text += ru.text
         return para_text
 
+    def get_inner_runs(self, iterable_obj):
+        run_list = []
+        inner_runs = iterable_obj.xpath('.//w:r')
+        if inner_runs:
+            for irun in inner_runs:
+                run_list.append(irun)
+        return run_list
+
     def get_runs(self, iterable_obj, para_obj=False, run_obj=False, run_lst=False, file_type=config.TYPE_DOCX):
         if len([i for i in [para_obj, run_obj, run_lst] if i]) > 1:
             raise Exception('::Get Runs:: more than one can not be True')
@@ -115,30 +123,24 @@ class Common(object):
         if para_obj and file_type == config.TYPE_PPTX:
             return iterable_obj.runs
         if para_obj:
-            runs = [[] for i in range(20)]
-            run_list_counter = 0
+            runs = []
+            temp_list = []
             for rid, child in enumerate(iterable_obj._element):
                 if isinstance(child, CT_R):
                     run_obj = Run(child, iterable_obj)
-                    runs[run_list_counter].append(run_obj)
+                    temp_list.append(run_obj)
                 elif isinstance(child, CT_MATH):
-                    run_list_counter += 1
+                    runs.append(temp_list)
+                    temp_list = []
                 elif isinstance(child, CT_DRAWING):
-                    run_list_counter += 1
+                    runs.append(temp_list)
+                    temp_list = []
                 elif isinstance(child, CT_HYPERLINK):
-                    run_list_counter += 1
-                    inner_runs = child.xpath('.//w:r')
-                    if inner_runs:
-                        for irun in inner_runs:
-                            runs[run_list_counter].append(irun)
-                    run_list_counter += 1
+                    runs.append(temp_list)
+                    runs.append(self.get_inner_runs(child))
                 elif isinstance(child, CT_SMARTTAG):
-                    run_list_counter += 1
-                    inner_runs = child.xpath('.//w:r')
-                    if inner_runs:
-                        for irun in inner_runs:
-                            runs[run_list_counter].append(irun)
-                    run_list_counter += 1
+                    runs.append(temp_list)
+                    runs.append(self.get_inner_runs(child))
 
             parent_run_list = [x for x in runs if x]
             return parent_run_list
@@ -146,6 +148,13 @@ class Common(object):
             return [iterable_obj]
         if run_lst:
             return iterable_obj
+
+    def merge_runs(self, runs):
+        merged_runs = []
+        for run in runs:
+            for r in run:
+                merged_runs.append(r)
+        return merged_runs
 
     def distribute_over_runs(self, iterable_obj, trans_para):
         start_run = True

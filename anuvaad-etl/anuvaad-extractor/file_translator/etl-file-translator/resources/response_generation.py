@@ -82,15 +82,20 @@ class Response(object):
                         out_file_type = 'json'
 
                     elif in_file_type == "json" and download_flow:
-                        if config.DOCX_FILE_PREFIX in input_filename:
-                            json_file_name = input_filename.split(config.DOCX_FILE_PREFIX)[-1]
+                        if config.DOCX_FILE_PREFIX in input_filename or config.DOCX1_FILE_PREFIX in input_filename:
+                            name = config.DOCX1_FILE_PREFIX if config.DOCX1_FILE_PREFIX in input_filename else config.DOCX_FILE_PREFIX
+
+                            json_file_name = input_filename.split(name)[-1]
                             DOCX_file_name = json_file_name.replace('.json', '.docx')
 
-                            docx_transform_obj = DocxTransform(input_filename=DOCX_file_name, json_data=self.json_data)
+                            new_flow = True if config.DOCX1_FILE_PREFIX in input_filename else False
+
+                            docx_transform_obj = DocxTransform(input_filename=DOCX_file_name, json_data=self.json_data, new_flow=new_flow)
                             docx_obj = docx_transform_obj.read_docx_file(DOCX_file_name)
 
                             fc_obj = FetchContent(record_id=input_filename, json_data=self.json_data)
                             fc_obj.generate_map_from_fetch_content_response()
+                            #block_trans_map = dict()  #for local testing purposes only
 
                             translated_docx = docx_transform_obj.translate_docx_file(docx_obj, fc_obj.block_trans_map)
                             translated_docx_file_name = docx_transform_obj.write_docx_file(translated_docx)

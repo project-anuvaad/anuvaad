@@ -230,6 +230,7 @@ register_element_cls('w:hyperlink', CT_HYPERLINK)
 register_element_cls('w:pict', CT_PICTURE)
 register_element_cls('w:txbxContent', CT_TXBXCONTENT)
 register_element_cls('m:oMath', CT_MATH)
+#register_element_cls('w:oMath', CT_MATH)
 register_element_cls('w:drawing', CT_DRAWING)
 register_element_cls('w:smartTag', CT_SMARTTAG)
 # TODO
