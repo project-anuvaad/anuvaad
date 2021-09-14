@@ -88,9 +88,9 @@ class Response(object):
                             json_file_name = input_filename.split(name)[-1]
                             DOCX_file_name = json_file_name.replace('.json', '.docx')
 
-                            new_flow = True if config.DOCX1_FILE_PREFIX in input_filename else False
+                            is_new_flow = True if config.DOCX1_FILE_PREFIX in input_filename else False
 
-                            docx_transform_obj = DocxTransform(input_filename=DOCX_file_name, json_data=self.json_data, new_flow=new_flow)
+                            docx_transform_obj = DocxTransform(input_filename=DOCX_file_name, json_data=self.json_data, is_new_flow=is_new_flow)
                             docx_obj = docx_transform_obj.read_docx_file(DOCX_file_name)
 
                             fc_obj = FetchContent(record_id=input_filename, json_data=self.json_data)

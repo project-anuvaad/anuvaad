@@ -14,9 +14,9 @@ from services.service import common_obj
 
 
 class DocxTransform(object):
-    def __init__(self, input_filename, json_data, new_flow=True):
+    def __init__(self, input_filename, json_data, is_new_flow=True):
         self.json_data = json_data
-        self.new_flow = new_flow
+        self.is_new_flow = is_new_flow
         self.file_name_without_ext = os.path.splitext(input_filename)[0]
         self.file_id = self.file_name_without_ext
 

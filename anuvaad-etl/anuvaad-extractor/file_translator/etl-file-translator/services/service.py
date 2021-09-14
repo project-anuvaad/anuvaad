@@ -141,7 +141,7 @@ class Common(object):
                 elif isinstance(child, CT_SMARTTAG):
                     runs.append(temp_list)
                     runs.append(self.get_inner_runs(child))
-
+            runs.append(temp_list)
             parent_run_list = [x for x in runs if x]
             return parent_run_list
         if run_obj:
