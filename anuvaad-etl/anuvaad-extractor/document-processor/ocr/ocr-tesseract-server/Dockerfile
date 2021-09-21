@@ -25,10 +25,12 @@ FROM anuvaadio/anuvaad-ocr-tesseract-server:32-b584693df
 COPY / /app
 WORKDIR /app
 #RUN apt install -y libspatialindex-dev python-rtree
+
 RUN pip install -r requirements.txt
 #RUN apt-get update
 RUN apt-get install -y tesseract-ocr \
    && apt-get install -y curl
+RUN apt-get install tesseract-ocr-eng
 
 COPY start.sh /usr/bin/start.sh
 RUN chmod +x /usr/bin/start.sh
