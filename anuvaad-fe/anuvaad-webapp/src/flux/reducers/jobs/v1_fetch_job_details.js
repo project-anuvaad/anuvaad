@@ -76,7 +76,7 @@ function get_document_details(input) {
       timeline["stepOrder"] = task["stepOrder"];
       timeline["status"] = task["status"];
 
-      if (task["stepOrder"] === 0 && task["status"] !== "FAILED") {
+      if (task["stepOrder"] === 0 && task["status"] !== "FAILED" && task.workflowCode === 'WF_A_FCBMTKTR') {
         document["converted_filename"] = task["output"][0]["outputFile"];
       }
       if (task["stepOrder"] === 2) {

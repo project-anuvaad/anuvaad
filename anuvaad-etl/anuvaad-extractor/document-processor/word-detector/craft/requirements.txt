@@ -22,22 +22,23 @@
 # layoutparser==0.1.2
 # fvcore
 
-scikit-learn == 0.24.2
-opencv-python == 4.4.0.42
-torch == 1.9.0
-torchvision == 0.10.0
-layoutparser == 0.2.0
-funcy == 1.16
-pdf2image == 1.15.1
-pycocotools == 2.0.2
-fvcore == 0.1.5.post20210722
+scikit-learn==0.24.2
+opencv-python==4.4.0.42
+torch==1.9.0
+torchvision==0.10.0
+layoutparser==0.2.0
+funcy==1.16
+pdf2image==1.15.1
+pycocotools==2.0.2
+fvcore==0.1.5.post20210722
 imagesize
-tqdm == 4.61.0
-kafka_python == 2.0.1
-Flask == 1.1.2
-anuvaad_auditor == 0.1.6
-shapely~ = 1.7.0
-imutils~ = 0.5.3
-Rtree == 0.9.4
-Flask_Cors == 3.0.8
-Flask_RESTful == 0.3.8
+tqdm==4.61.0
+kafka_python==2.0.1
+Flask==1.1.2
+anuvaad_auditor==0.1.6
+shapely==1.7.0
+imutils==0.5.3
+Rtree==0.9.4
+Flask_Cors==3.0.8
+Flask_RESTful==0.3.8
+scikit-image==0.18.1

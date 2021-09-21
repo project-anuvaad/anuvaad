@@ -82,7 +82,8 @@ ENV DEBIAN_FRONTEND = "noninteractive"
 # RUN apt install -y libopencv-dev python3-opencv
 # RUN apt-get install poppler-utils
 # RUN apt install -y libspatialindex-dev python3-rtree
-# RUN pip install -r requirements.txt
+RUN pip install -r requirements.txt
+#RUN pip install scikit-image == 0.18.1
 # RUN apt-get install -y make git
 # RUN pip install 'git+https://github.com/facebookresearch/detectron2.git#egg=detectron2'
 RUN apt-get update
