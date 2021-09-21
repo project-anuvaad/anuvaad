@@ -30,7 +30,9 @@ RUN pip install -r requirements.txt
 #RUN apt-get update
 RUN apt-get install -y tesseract-ocr \
    && apt-get install -y curl
-RUN export TESSDATA_PREFIX=/usr/share/tesseract-ocr/4.00/tessdata
+
+
+RUN export TESSDATA_PREFIX=/usr/share/tesseract-ocr/4.00/tessdata/
 
 COPY start.sh /usr/bin/start.sh
 RUN chmod +x /usr/bin/start.sh
