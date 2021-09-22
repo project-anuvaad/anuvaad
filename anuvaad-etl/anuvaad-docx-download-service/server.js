@@ -2,7 +2,8 @@ const express = require("express");
 const app = express();
 const fs = require("fs");
 const { generateDocx } = require("./generate-docx/generateDocx");
-const https = require("https");
+// const https = require("https");
+const http = require("http");
 const { refactorSourceJSON } = require("./generate-docx/utils");
 const bodyParser = require("body-parser");
 const path = require("path");
@@ -33,7 +34,7 @@ app.post(
     console.log("calling content-handler");
     console.log("options", options);
 
-    var req = https.request(options, (res) => {
+    var req = http.request(options, (res) => {
       console.log("res", res, options);
       if (res.statusCode === 200) {
         console.log("inside Status code 200", res.statusCode);
