@@ -357,14 +357,14 @@ class InteractiveDocHeader extends React.Component {
                     >
                         As PDF
                     </MenuItem>} */}
-                    {workflow !== 'WF_A_FTTKTR' ?
-                        <MenuItem
-                            style={{ borderTop: "1px solid #D6D6D6" }}
-                            onClick={this.fetchDocxFile}
-                        >
-                            As DOCX
-                        </MenuItem>
-                        :
+                    {workflow === 'WF_A_FTTKTR' &&
+                        // <MenuItem
+                        //     style={{ borderTop: "1px solid #D6D6D6" }}
+                        //     onClick={this.fetchDocxFile}
+                        // >
+                        //     As DOCX
+                        // </MenuItem>
+                        // :
                         <MenuItem
                             style={{ borderTop: "1px solid #D6D6D6" }}
                             onClick={this.fetchDigitalFile}
