@@ -64,12 +64,6 @@ function get_document_details(input) {
     document["spent_time"] = "...";
     document["workflowCode"] = job["workflowCode"];
 
-<<<<<<< HEAD
-            if (task['stepOrder'] === 0 && task['status'] !== 'FAILED') {
-                document["converted_filename"] = task["output"][0]["outputFile"];
-
-            }
-=======
     job["taskDetails"].forEach((task) => {
       let timeline = {};
       timeline["module"] = task["tool"];
@@ -81,7 +75,6 @@ function get_document_details(input) {
       }
       timeline["stepOrder"] = task["stepOrder"];
       timeline["status"] = task["status"];
->>>>>>> develop
 
       if (task["stepOrder"] === 0 && task["status"] !== "FAILED" && task.workflowCode === 'WF_A_FCBMTKTR') {
         document["converted_filename"] = task["output"][0]["outputFile"];
