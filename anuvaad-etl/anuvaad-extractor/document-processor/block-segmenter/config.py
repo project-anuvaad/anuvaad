@@ -37,6 +37,7 @@ ENABLE_CORS = False
 # CONSUMER_GROUP               = os.environ.get(CONSUMER_GROUP_identifier,CONSUMER_GROUP_default)
 
 
+
 # kafka stage 
 
 input_topic_default = 'anuvaad-dp-tools-block-segmenter-input-satge'
