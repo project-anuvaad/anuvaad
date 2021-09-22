@@ -30,8 +30,9 @@ app.post(
         "auth-token": authToken,
       },
     };
-
+    console.log("calling content-handler");
     var req = https.request(options, (res) => {
+      console.log("res", res);
       if (res.statusCode === 200) {
         console.log("inside Status code 200", res.statusCode);
         res.on("data", (d) => {
@@ -41,6 +42,7 @@ app.post(
         res.on("end", (e) => {
           console.log("finished reading data");
           data = JSON.stringify(refactorSourceJSON(JSON.parse(data).data));
+          console.log('saving response to file');
           fs.writeFile("./upload/source.json", data, async (err) => {
             if (!err) {
               try {
@@ -87,6 +89,7 @@ app.post(
     });
 
     req.on("error", (e) => {
+      console.log("error", e);
       response.status(500).send({
         http: {
           status: 500,
