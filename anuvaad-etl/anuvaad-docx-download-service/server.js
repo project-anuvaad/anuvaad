@@ -31,6 +31,8 @@ app.post(
       },
     };
     console.log("calling content-handler");
+    console.log("options", options);
+
     var req = https.request(options, (res) => {
       console.log("res", res, options);
       if (res.statusCode === 200) {
