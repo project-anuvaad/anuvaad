@@ -22,6 +22,8 @@ class WordRepo:
     def search_vernacular(self, word, locale):
         log_info('attempting to search ({}), target word in locale ({})'.format(word, locale), AppContext.getContext())
         result = self.wordModel.search_target(word, locale)
+        if result:
+            result['parallel_words'].append({"locale": "en","name": result["name"],"pos": []})
         return result
 
     def search(self, src_word, src_locale, tgt_locale):

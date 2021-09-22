@@ -52,11 +52,26 @@ class File:
     
     @log_error
     def get_craft_config(self):
-        if 'craft' not in self.file['config'].keys():
+        if 'craft_line' not in self.file['config']['OCR'].keys():
             return None
         else:
-            return self.file['config']['craft']
+            return self.file['config']['OCR']['craft_line']
+    @log_error
+    def get_craft_model_config(self):
+        return self.file['config']['OCR']
+    @log_error
+    def get_line_layout_config(self):
+        if 'line_layout' not in self.file['config']['OCR'].keys():
+            return None
+        else:
+            return self.file['config']['OCR']['line_layout']
 
+    @log_error
+    def get_tilt_align_config(self):
+        if 'align' not in self.file['config']['OCR'].keys():
+            return None
+        else:
+            return self.file['config']['OCR']['align']
 
     @log_error
     def get_file(self):

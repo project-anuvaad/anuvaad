@@ -62,7 +62,7 @@ def process_word_detector_kf():
                     log_info('process_word_detector_kf - received invalid data {}'.format(msg.value), None)
                     continue
                 data            = Consumer.get_json_data(msg.value)
-                print(data)
+                #print(data)
 
 
                 consumer.commit_async() 

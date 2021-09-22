@@ -89,7 +89,7 @@ class WordModel(object):
     def search_target(self, word, locale):
         try:
             collections = get_db()[DB_SCHEMA_NAME]
-            docs         = collections.find({'parallel_words': { '$elemMatch': {'locale': locale, 'name': word }}}).hint({"name":1})
+            docs         = collections.find({'parallel_words': { '$elemMatch': {'locale': locale, 'name': word }}})
             # collections.find({'parallel_words': { '$elemMatch': {'locale': locale, 'name': word }} })
             for doc in docs:
                 return normalize_bson_to_json(doc)
