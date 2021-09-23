@@ -28,7 +28,7 @@ app.post(
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        "auth-token": authToken,
+        // "auth-token": authToken,
       },
       port: "5001",
     };
