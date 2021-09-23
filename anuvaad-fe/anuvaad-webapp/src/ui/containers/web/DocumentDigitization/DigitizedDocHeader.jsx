@@ -173,7 +173,7 @@ class DigitizedDocHeader extends React.Component {
                     >
                         As TXT
                     </MenuItem>
-                    <MenuItem
+                    {/* <MenuItem
                         style={{ borderTop: "1px solid #D6D6D6" }}
                         onClick={() => {
                             this.setState({ anchorEl: null })
@@ -182,7 +182,7 @@ class DigitizedDocHeader extends React.Component {
                         }}
                     >
                         As PDF
-                    </MenuItem>
+                    </MenuItem> */}
                 </StyledMenu>
                 <Button variant="outlined" color="primary" style={{ marginLeft: "10px" }} onClick={this.props.togglebtnstatus}>
                     {this.props.status ? "Hide Image" : "Show Image"}
