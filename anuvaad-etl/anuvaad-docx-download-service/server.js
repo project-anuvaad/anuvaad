@@ -24,7 +24,7 @@ app.post(
     let data = "";
     var options = {
       hostname: "gateway_anuvaad-content-handler",
-      path: `/v0/fetch-content?record_id=${jobId}&start_page=0&end_page=0`,
+      path: `/anuvaad/content-handler/v0/fetch-content?record_id=${jobId}&start_page=0&end_page=0`,
       method: "GET",
       headers: {
         "Content-Type": "application/json",
