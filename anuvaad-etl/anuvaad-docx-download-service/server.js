@@ -23,13 +23,14 @@ app.post(
     let { fname, jobId, authToken } = request.body;
     let data = "";
     var options = {
-      hostname: "gateway_anuvaad-content-handler:5001",
+      hostname: "gateway_anuvaad-content-handler",
       path: `/v0/fetch-content?record_id=${jobId}&start_page=0&end_page=0`,
       method: "GET",
       headers: {
         "Content-Type": "application/json",
         "auth-token": authToken,
       },
+      port: "5001",
     };
     console.log("calling content-handler");
     console.log("options", options);
