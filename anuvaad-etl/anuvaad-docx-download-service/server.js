@@ -22,6 +22,7 @@ app.post(
     console.log("inside download-docx");
     let { fname, jobId, authToken, jobName } = request.body;
     jobName = jobName.substr(0, jobName.lastIndexOf("."));
+    console.log(jobName);
     let data = "";
     var options = {
       hostname: HOSTNAME,
