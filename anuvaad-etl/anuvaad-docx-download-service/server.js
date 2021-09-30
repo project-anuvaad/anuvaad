@@ -20,7 +20,8 @@ app.post(
   "/anuvaad-etl/anuvaad-docx-downloader/v0/download-docx",
   (request, response) => {
     console.log("inside download-docx");
-    let { fname, jobId, authToken,jobName } = request.body;
+    let { fname, jobId, authToken, jobName } = request.body;
+    jobName = jobName.substr(0, jobName.lastIndexOf("."));
     let data = "";
     var options = {
       hostname: HOSTNAME,
@@ -51,7 +52,7 @@ app.post(
             if (!err) {
               try {
                 console.log("inside try");
-                generateDocx(jobName,fname, data.page_height, data.page_width);
+                generateDocx(jobName, fname, data.page_height, data.page_width);
                 fs.readFile(
                   `./upload/${fname}`,
                   { encoding: "utf-8" },
