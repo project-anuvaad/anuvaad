@@ -114,7 +114,6 @@ class FileContentUpdateResource(Resource):
         blocks          = body['blocks']
         AppContext.addRecordID(record_id)
         log_info("FileContentUpdateResource for user ({}), to update ({}) blocks".format(user_id, len(blocks)), AppContext.getContext())
-        log_info(str(body), AppContext.getContext())
         try:
             result, updated_blocks  = fileContentRepo.update(record_id,user_id, blocks, workflowCode, modifiedSentences)
 
@@ -144,7 +143,6 @@ class FileContentStoreReference(Resource):
 
         records          = body['records']
         log_info("FileContentStoreReference - received {} record/s ".format(len(records)), AppContext.getContext())
-        log_info(str(body), AppContext.getContext())
         try:
             result  = fileContentRepo.store_reference(records)
 
@@ -170,7 +168,6 @@ class FileContentGetReference(Resource):
 
         records          = body['job_ids']
         log_info("FileContentGetReference - received {} record/s ".format(len(records)), AppContext.getContext())
-        log_info(str(body), AppContext.getContext())
         try:
             result  = fileContentRepo.get_reference(records)
 

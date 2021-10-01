@@ -40,7 +40,7 @@ for blueprint in vars(routes).values():
 
 if __name__ == "__main__":
     #start_kafka()
-    print(app.url_map,' dskjhfklsdjhgflksdlokgjksdljglkdsjglkdslkgjlkdsjgkdsjgksdjgkdjslkgjdslkjglkdsjg')
+    print(app.url_map)
     app.run(host=config.HOST, port=config.PORT, debug=config.DEBUG)
     
 

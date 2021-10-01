@@ -55,7 +55,7 @@ class SaveSentenceResource(Resource):
         workflowCode    = body['workflowCode']
 
         AppContext.addRecordID(None)
-        log_info("SaveSentenceResource for user {}, number sentences to update {} request {}".format(user_id, len(sentences), body), AppContext.getContext())
+        log_info("SaveSentenceResource for user {}, number of sentences to update : {} ".format(user_id, len(sentences)), AppContext.getContext())
 
         try:
             result = sentenceRepo.update_sentences(user_id, sentences, workflowCode)
