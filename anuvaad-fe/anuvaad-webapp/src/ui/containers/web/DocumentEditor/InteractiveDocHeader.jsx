@@ -305,6 +305,7 @@ class InteractiveDocHeader extends React.Component {
     let fname = this.props.match.params.jobid.replace(".json", ".docx");
     let jobId = encodeURI(this.props.match.params.jobid);
     let jobName = this.props.match.params.filename;
+    jobName = jobName.substr(0, jobName.lastIndexOf("."));
     const apiObj = new DownloadDOCX(jobId, fname, jobName);
     this.setState({
       anchorEl: null,
@@ -321,7 +322,10 @@ class InteractiveDocHeader extends React.Component {
           let url = URL.createObjectURL(data);
           const link = document.createElement("a");
           link.href = url;
-          link.setAttribute("download", fname);
+          link.setAttribute(
+            "download",
+            `${jobName}_${fname.substr(0, fname.lastIndexOf("|"))}.docx`
+          );
           document.body.appendChild(link);
           link.click();
           link.parentNode.removeChild(link);
