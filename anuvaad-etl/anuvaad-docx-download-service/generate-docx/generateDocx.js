@@ -2,7 +2,7 @@ const officegen = require('officegen')
 const fs = require('fs')
 const { generateTableArray } = require('./utils');
 
-const generateDocx = (fname, height, width) => {
+const generateDocx = (jobName,fname, height, width) => {
 
     let docx = officegen({
         type: 'docx',
@@ -71,7 +71,7 @@ const generateDocx = (fname, height, width) => {
         }
     })
 
-    out = fs.createWriteStream(`./upload/${fname}`)
+    out = fs.createWriteStream(`./upload/${jobName}_${fname}`)
     out.on('error', function (err) {
         console.log(err)
     })
