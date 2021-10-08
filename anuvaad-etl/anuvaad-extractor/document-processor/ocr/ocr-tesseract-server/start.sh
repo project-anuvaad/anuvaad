@@ -15,6 +15,10 @@ url_tam='https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvaad_tam.traineddata
 hin_modelpath='/usr/share/tesseract-ocr/4.00/tessdata/anuvaad_hin.traineddata'
 url_hin='https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvaad_hin.traineddata?AWSAccessKeyId=AKIAUAXLRTC3KS46AZTB&Signature=m9%2BL1bZNrBKNSVA9GKXd8c%2BZEW8%3D&Expires=1687155687'
 
+kan_modelpath='/usr/share/tesseract-ocr/4.00/tessdata/anuvaad_kan.traineddata'
+url_kan='https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvaad_kan.traineddata?AWSAccessKeyId=AKIAXX2AMEIRJY2GNYVZ&Signature=gDiNsqrV0n2%2BWZSMwesyqkLOYZ8%3D&Expires=1694149503'
+
+
 #rm $tam_modelpath
 if ! [ -f $tam_modelpath ]; then
   curl -o $tam_modelpath $url_tam
@@ -24,5 +28,10 @@ fi
 if ! [ -f $hin_modelpath ]; then
   curl -o $hin_modelpath $url_hin
   echo downloading hindi weight file
+fi
+
+if ! [ -f $kan_modelpath ]; then
+  curl -o $kan_modelpath $url_kan
+  echo downloading kannada weight file
 fi
 python app.py
