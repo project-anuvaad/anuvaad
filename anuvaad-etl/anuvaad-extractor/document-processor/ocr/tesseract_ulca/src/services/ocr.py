@@ -78,7 +78,7 @@ class TextExtraction:
                 weight_path = '/usr/share/tesseract-ocr/4.00/tessdata/' + lang + '.traineddata'
                 if not os.path.exists(weight_path):
                     download = 'curl -L -o ' + weight_path + \
-                        ' https://github.com/tesseract-ocr/tessdata_best/raw/master/script/' + \
+                        ' https://github.com/tesseract-ocr/tessdata_best/raw/main/script/' + \
                         lang + '.traineddata'
                     os.system(download)
             except Exception as e:

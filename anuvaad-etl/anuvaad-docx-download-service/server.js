@@ -20,7 +20,9 @@ app.post(
   "/anuvaad-etl/anuvaad-docx-downloader/v0/download-docx",
   (request, response) => {
     console.log("inside download-docx");
-    let { fname, jobId, authToken } = request.body;
+    let { fname, jobId, authToken, jobName } = request.body;
+    jobName = jobName.substr(0, jobName.lastIndexOf("."));
+    console.log(jobName);
     let data = "";
     var options = {
       hostname: HOSTNAME,
@@ -51,15 +53,15 @@ app.post(
             if (!err) {
               try {
                 console.log("inside try");
-                generateDocx(fname, data.page_height, data.page_width);
+                generateDocx(jobName, fname, data.page_height, data.page_width);
                 fs.readFile(
-                  `./upload/${fname}`,
+                  `./upload/${jobName}_${fname}`,
                   { encoding: "utf-8" },
                   (err, data) => {
                     setTimeout(() => {
                       console.log("inside setTimeout");
                       response.sendFile(
-                        path.join(__dirname, `./upload/${fname}`)
+                        path.join(__dirname, `./upload/${jobName}_${fname}`)
                       );
                     }, 2000);
                   }

@@ -63,7 +63,7 @@ HORIZONTAL_MERGING=True
 
 LANG_MAPPING = {
     "en": ["Latin", "Latin"],
-    "kn": ['Kannada', "Kannada"],
+    "kn": ['Kannada', "anuvaad_kan"],
     "gu": ["Gujrati", "Gujrati"],
     "or": ["Oriya", "Oriya"],
     "hi": ["Devanagari", "anuvaad_hin"],
@@ -78,7 +78,7 @@ LANG_MAPPING = {
 
 DETECT_LANG_MAPPING = {
     "Latin": ["Latin"],
-    "Kannada": ['Kannada'],
+    "Kannada": ['anuvaad_kan'],
     "Gujrati": ["Gujrati"],
     "Oriya": ["Oriya"],
     "Devanagari": ["anuvaad_hin"],
