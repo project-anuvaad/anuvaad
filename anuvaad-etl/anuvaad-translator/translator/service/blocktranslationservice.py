@@ -122,14 +122,12 @@ class BlockTranslationService:
         if 'retranslate' in block_translate_input["input"].keys():
             retranslate = block_translate_input["input"]["retranslate"]
             if retranslate:
-                modified_sentences = []
                 log_info("Retranslation job!", block_translate_input)
         for block in block_translate_input["input"]["textBlocks"]:
             if 'tokenized_sentences' in block.keys():
                 for sentence in block["tokenized_sentences"]:
                     if retranslate:
-                        modified_sentences.append(sentence["s_id"])
-                        add_to_nmt = retranslate
+                        add_to_nmt = sentence["s_id"] in modified_sentences
                     else:
                         if 'save' not in sentence.keys():
                             sentence["save"] = False
