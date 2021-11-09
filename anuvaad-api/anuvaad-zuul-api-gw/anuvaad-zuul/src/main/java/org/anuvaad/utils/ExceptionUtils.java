@@ -104,6 +104,11 @@ public class ExceptionUtils {
                 e = e.getCause();
             String exceptionName = e.getClass().getSimpleName();
             String exceptionMessage = ((Throwable) e).getMessage();
+            if (exceptionName.equalsIgnoreCase("ZuulRuntimeException")) {
+                logger.error("ZuulRuntimeException | Cause: ", e);
+                if(exceptionMessage.equalsIgnoreCase(HttpStatus.TOO_MANY_REQUESTS.toString()))
+                    _setExceptionBody(HttpStatus.TOO_MANY_REQUESTS, getErrorInfoObject(exceptionName, exceptionMessage));
+            }
             if (exceptionName.equalsIgnoreCase("ZuulRuntimeException"))
                 logger.error("ZuulRuntimeException | Cause: ", e);
             if (exceptionName.equalsIgnoreCase("HttpHostConnectException") ||
