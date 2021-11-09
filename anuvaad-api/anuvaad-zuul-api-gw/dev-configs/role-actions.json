@@ -954,6 +954,56 @@
             "role":"EXTENSION",
             "actionID": "01803b45-67fb-4b24-a6b3-083dfb9b09d9",
             "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "dae2209d-e3ac-4ed2-9789-c1bb03bdf913",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "f13e0c81-b559-444d-bb57-8d0360f7a2e8",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "4851c243-bb56-4faf-9290-a46740e5c00e",
+            "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "dae2209d-e3ac-4ed2-9789-c1bb03bdf913",
+            "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "f13e0c81-b559-444d-bb57-8d0360f7a2e8",
+            "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "4851c243-bb56-4faf-9290-a46740e5c00e",
+            "active":true
+        },
+        {
+            "role":"ANNOTATOR",
+            "actionID": "dae2209d-e3ac-4ed2-9789-c1bb03bdf913",
+            "active":true
+        },
+        {
+            "role":"ANNOTATOR",
+            "actionID": "f13e0c81-b559-444d-bb57-8d0360f7a2e8",
+            "active":true
+        },
+        {
+            "role":"ANNOTATOR",
+            "actionID": "4851c243-bb56-4faf-9290-a46740e5c00e",
+            "active":true
+        },
+        {
+            "role":"ANNOTATOR",
+            "actionID": "eadf42e8-eb6b-4d33-a599-15323981568d",
+            "active":true
         }
     ]
 }
