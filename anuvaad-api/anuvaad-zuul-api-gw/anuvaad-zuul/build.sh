@@ -1,4 +1,7 @@
 #!/bin/bash
+export JAVA_HOME=/data/jdk-11.0.2
+export MAVEN_HOME=/data/apache-maven-3.8.3
+mvn -version
 mvn compile
 mvn clean install
 
