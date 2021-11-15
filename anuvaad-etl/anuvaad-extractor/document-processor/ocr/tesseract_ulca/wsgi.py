@@ -1,5 +1,5 @@
-from app import app
+from app import ocrapp
 import config
 
 if __name__ == "__main__":
-    app.run(host=config.HOST, port=config.PORT, debug=config.DEBUG)
+    ocrapp.run(host=config.HOST, port=config.PORT, debug=config.DEBUG)
