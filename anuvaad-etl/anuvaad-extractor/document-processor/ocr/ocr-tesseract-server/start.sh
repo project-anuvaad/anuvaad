@@ -34,4 +34,5 @@ if ! [ -f $kan_modelpath ]; then
   curl -o $kan_modelpath $url_kan
   echo downloading kannada weight file
 fi
+
 python app.py
