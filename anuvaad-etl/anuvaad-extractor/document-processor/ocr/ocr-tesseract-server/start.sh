@@ -61,4 +61,5 @@ if ! [ -f $ori_modelpath ]; then
   curl -o $ori_modelpath $url_ori
   echo downloading oriya weight file
 fi
+
 python app.py

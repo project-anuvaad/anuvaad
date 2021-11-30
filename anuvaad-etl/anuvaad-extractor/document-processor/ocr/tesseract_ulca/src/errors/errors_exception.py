@@ -2,7 +2,7 @@ class FormatError(Exception):
     def __init__(self, code, message):
         self._code = code
         self._message = message
-    
+
     @property
     def code(self):
         return self._code
@@ -12,13 +12,14 @@ class FormatError(Exception):
         return self._message
 
     def __str__(self):
-        return self.__class__.__name__ + ': ' + self.message
+        return self.__class__.__name__ + ": " + self.message
+
 
 class WorkflowkeyError(Exception):
     def __init__(self, code, message):
         self._code = code
         self._message = message
-    
+
     @property
     def code(self):
         return self._code
@@ -28,14 +29,14 @@ class WorkflowkeyError(Exception):
         return self._message
 
     def __str__(self):
-        return self.__class__.__name__ + ': ' + self.message
+        return self.__class__.__name__ + ": " + self.message
 
 
 class FileErrors(Exception):
     def __init__(self, code, message):
         self._code = code
         self._message = message
-    
+
     @property
     def code(self):
         return self._code
@@ -45,13 +46,17 @@ class FileErrors(Exception):
         return self._message
 
     def __repr__(self):
-        return { "code" : self.code, "message" : self.__class__.__name__ + ': ' + self.message }
+        return {
+            "code": self.code,
+            "message": self.__class__.__name__ + ": " + self.message,
+        }
+
 
 class ServiceError(Exception):
     def __init__(self, code, message):
         self._code = code
         self._message = message
-    
+
     @property
     def code(self):
         return self._code
@@ -61,13 +66,14 @@ class ServiceError(Exception):
         return self._message
 
     def __str__(self):
-        return self.__class__.__name__ + ': ' + self.message
+        return self.__class__.__name__ + ": " + self.message
+
 
 class KafkaConsumerError(Exception):
     def __init__(self, code, message):
         self._code = code
         self._message = message
-    
+
     @property
     def code(self):
         return self._code
@@ -77,13 +83,14 @@ class KafkaConsumerError(Exception):
         return self._message
 
     def __str__(self):
-        return self.__class__.__name__ + ': ' + self.message
+        return self.__class__.__name__ + ": " + self.message
+
 
 class KafkaProducerError(Exception):
     def __init__(self, code, message):
         self._code = code
         self._message = message
-    
+
     @property
     def code(self):
         return self._code
@@ -93,4 +100,7 @@ class KafkaProducerError(Exception):
         return self._message
 
     def __repr__(self):
-        return { "code" : self.code, "message" : self.__class__.__name__ + ': ' + self.message }
+        return {
+            "code": self.code,
+            "message": self.__class__.__name__ + ": " + self.message,
+        }
