@@ -18,6 +18,17 @@ url_hin='https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvaad_hin.traineddata
 kan_modelpath='/usr/share/tesseract-ocr/4.00/tessdata/anuvaad_kan.traineddata'
 url_kan='https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvaad_kan.traineddata?AWSAccessKeyId=AKIAXX2AMEIRJY2GNYVZ&Signature=gDiNsqrV0n2%2BWZSMwesyqkLOYZ8%3D&Expires=1694149503'
 
+ben_modelpath='/usr/share/tesseract-ocr/4.00/tessdata/anuvaad_ben.traineddata'
+url_ben='https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvaad_ben.traineddata?AWSAccessKeyId=AKIAXX2AMEIRJY2GNYVZ&Signature=ku%2FdynTtJVvaf55dwYC%2FMt3pKqo%3D&Expires=1698743313'
+
+mal_modelpath='/usr/share/tesseract-ocr/4.00/tessdata/anuvaad_mal.traineddata'
+url_mal='https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvaad_mal.traineddata?AWSAccessKeyId=AKIAXX2AMEIRJY2GNYVZ&Signature=hX%2Bo%2BTTvwoN7IBcX%2FIgFTwMHoGs%3D&Expires=1698743610'
+
+mar_modelpath='/usr/share/tesseract-ocr/4.00/tessdata/anuvaad_mar.traineddata'
+url_mar='https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvaad_mar.traineddata?AWSAccessKeyId=AKIAXX2AMEIRJY2GNYVZ&Signature=aTu5Ps9hL90clfPMZIVOEPx5%2Fl0%3D&Expires=1698743699'
+
+ori_modelpath='/usr/share/tesseract-ocr/4.00/tessdata/anuvaad_ori.traineddata'
+url_ori='https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvaad_ori.traineddata?AWSAccessKeyId=AKIAXX2AMEIRJY2GNYVZ&Signature=5aqEjjOryEhE4ElV2i8oHgVY%2F7I%3D&Expires=1698743792'
 
 #rm $tam_modelpath
 if ! [ -f $tam_modelpath ]; then
@@ -33,5 +44,21 @@ fi
 if ! [ -f $kan_modelpath ]; then
   curl -o $kan_modelpath $url_kan
   echo downloading kannada weight file
+fi
+if ! [ -f $ben_modelpath ]; then
+  curl -o $ben_modelpath $url_ben
+  echo downloading bengali weight file
+fi
+if ! [ -f $mal_modelpath ]; then
+  curl -o $mal_modelpath $url_mal
+  echo downloading malyalam weight file
+fi
+if ! [ -f $mar_modelpath ]; then
+  curl -o $mar_modelpath $url_mar
+  echo downloading marathi weight file
+fi
+if ! [ -f $ori_modelpath ]; then
+  curl -o $ori_modelpath $url_ori
+  echo downloading oriya weight file
 fi
 python app.py
