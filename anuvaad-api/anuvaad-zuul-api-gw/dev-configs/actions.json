@@ -1,0 +1,708 @@
+{
+    "actions":[
+        {
+            "id":"30b20c13-db5a-465c-a6b4-50a7c0daee57",
+            "uri":"/anuvaad-etl/wf-manager/v1/workflow/async/initiate",
+            "module":"WORKFLOW-MANAGER",
+            "active":true,
+            "whiteList":false,
+            "description":"API to initiate ASYNC workflows"
+        },
+        {
+            "id":"01803b45-67fb-4b24-a6b3-083dfb9b09d9",
+            "uri":"/anuvaad-etl/wf-manager/v1/workflow/sync/initiate",
+            "module":"WORKFLOW-MANAGER",
+            "active":true,
+            "whiteList":false,
+            "description":"API to initiate SYNC workflows"
+        },
+        {
+            "id":"c720db5f-986c-4e84-892c-b5c34a349f74",
+            "uri":"/anuvaad-etl/wf-manager/v1/workflow/interrupt",
+            "module":"WORKFLOW-MANAGER",
+            "active":false,
+            "whiteList":false,
+            "description":"API to interrupt workflows"
+        },
+        {
+            "id":"400bf52e-d7ef-4bdb-9ce5-8f64b42ada9c",
+            "uri":"/anuvaad-etl/wf-manager/v1/workflow/jobs/search/bulk",
+            "module":"WORKFLOW-MANAGER",
+            "active":true,
+            "whiteList":false,
+            "description":"API to search workflow jobs"
+        },
+        {
+            "id":"41e9fca3-fa0b-425c-af2b-847ef35c4734",
+            "uri":"/anuvaad-etl/wf-manager/v1/workflow/configs/search",
+            "module":"WORKFLOW-MANAGER",
+            "active":false,
+            "whiteList":false,
+            "description":"API to initiate workflow configs"
+        },
+        {
+            "id":"5e1b1f65-35ad-41b5-8132-d1254cdc17bc",
+            "uri":"/anuvaad-etl/wf-manager/v1/workflow/jobs/mark-inactive",
+            "module":"WORKFLOW-MANAGER",
+            "active":true,
+            "whiteList":false,
+            "description":"API to mark jobs inactive for user"
+        },
+        {
+            "id":"9050cae6-b3f5-4c87-99e0-09019ad86267",
+            "uri":"/anuvaad/user-mgmt/v1/users/create",
+            "module":"USER-MANAGEMENT-SYSTEM",
+            "active":true,
+            "whiteList":true,
+            "description":"API to create user in the system"
+        },
+        {
+            "id":"216313cc-0668-442f-a13e-3fd022be5eb2",
+            "uri":"/anuvaad/user-mgmt/v1/users/update",
+            "module":"USER-MANAGEMENT-SYSTEM",
+            "active":true,
+            "whiteList":false,
+            "description":"API to update user in the system"
+        },
+        {
+            "id":"36677274-7ac3-4319-8170-f2e007341ecf",
+            "uri":"/anuvaad/user-mgmt/v1/users/search",
+            "module":"USER-MANAGEMENT-SYSTEM",
+            "active":true,
+            "whiteList":false,
+            "description":"API to search users from the system"
+        },
+        {
+            "id":"420add6a-c61f-4520-88ab-025378b626b8",
+            "uri":"/anuvaad/user-mgmt/v1/users/login",
+            "module":"USER-MANAGEMENT-SYSTEM",
+            "active":true,
+            "whiteList":true,
+            "description":"API to login"
+        },
+        {
+            "id":"d0875fd6-4ae3-40ca-bb0d-b93feafe459a",
+            "uri":"/anuvaad/user-mgmt/v1/users/auth-token-search",
+            "module":"USER-MANAGEMENT-SYSTEM",
+            "active":true,
+            "whiteList":true,
+            "description":"API to search users based on an active auth token"
+        },
+        {
+            "id":"80e2444d-9270-4877-b79b-182d122744a7",
+            "uri":"/anuvaad/user-mgmt/v1/users/forgot-password",
+            "module":"USER-MANAGEMENT-SYSTEM",
+            "active":true,
+            "whiteList":true,
+            "description":"API for forgot password flow"
+        },
+        {
+            "id":"36122d56-6077-48eb-a2d8-303b1460d4ac",
+            "uri":"/anuvaad/user-mgmt/v1/users/reset-password",
+            "module":"USER-MANAGEMENT-SYSTEM",
+            "active":true,
+            "whiteList":false,
+            "description":"API for reset password flow"
+        },
+        {
+            "id":"0f2e4131-1207-4f22-9ddd-77ba8d22066f",
+            "uri":"/anuvaad/user-mgmt/v1/users/verify-user",
+            "module":"USER-MANAGEMENT-SYSTEM",
+            "active":true,
+            "whiteList":true,
+            "description":"API for User activation"
+        },
+        {
+            "id":"8ef47a2a-0a85-4efe-865e-8c52b567bf74",
+            "uri":"/anuvaad/user-mgmt/v1/users/onboard-users",
+            "module":"USER-MANAGEMENT-SYSTEM",
+            "active":true,
+            "whiteList":false,
+            "description":"API for Onboarding new users"
+        },
+        {
+            "id":"1bf2b56f-9b83-404f-98c6-e59ab89e24a6",
+            "uri":"/anuvaad/user-mgmt/v1/users/fetch-users-records",
+            "module":"USER-MANAGEMENT-SYSTEM",
+            "active":true,
+            "whiteList":false,
+            "description":"API for fetching user records"
+        },
+        {
+            "id":"986bb1b6-ac89-4430-a7ec-ba04f1ab470d",
+            "uri":"/anuvaad/user-mgmt/v1/users/activate-user",
+            "module":"USER-MANAGEMENT-SYSTEM",
+            "active":true,
+            "whiteList":false,
+            "description":"API for deactivating users"
+        },
+        {
+            "id":"6ec79e2c-fc83-4cc6-a7f3-c9034e3ca6e5",
+            "uri":"/anuvaad/user-mgmt/v1/extension/users/get/token",
+            "module":"USER-MANAGEMENT-SYSTEM",
+            "active":true,
+            "whiteList":true,
+            "description":"API for registering extension users"
+        },
+        {
+            "id":"76952b3b-6017-4d58-86e2-246a16b1c952",
+            "uri":"/anuvaad/user-mgmt/v1/org/upsert",
+            "module":"USER-MANAGEMENT-SYSTEM",
+            "active":true,
+            "whiteList":false,
+            "description":"API for creating orgs"
+        },
+        {
+            "id":"0976372a-28b2-438b-9ec5-15952a31d224",
+            "uri":"/anuvaad/user-mgmt/v1/org/search",
+            "module":"USER-MANAGEMENT-SYSTEM",
+            "active":true,
+            "whiteList":false,
+            "description":"API for searching orgs"
+        },
+        {
+            "id":"b5ff81c9-8c7b-44eb-ad19-92c4d21b239c",
+            "uri":"/anuvaad/user-mgmt/v1/users/get-roles",
+            "module":"USER-MANAGEMENT-SYSTEM",
+            "active":true,
+            "whiteList":false,
+            "description":"API to fetch roles"
+        },
+        {
+            "id":"bde39a83-8a4f-400e-bcf0-d14b8895f0ae",
+            "uri":"/anuvaad-etl/translator/v1/text/translate",
+            "module":"ANUVAAD-TRANSLATOR",
+            "active":true,
+            "whiteList":false,
+            "description":"API to translate text"
+        },
+        {
+            "id":"3a670c68-737f-4546-9cf6-54de188a0298",
+            "uri":"/anuvaad-etl/translator/v1/tmx/create",
+            "module":"ANUVAAD-TRANSLATOR",
+            "active":true,
+            "whiteList":false,
+            "description":"API to create TMX records"
+        },
+        {
+            "id":"753e2245-75d8-4d88-bb87-26874c184907",
+            "uri":"/anuvaad-etl/translator/v1/tmx/delete",
+            "module":"ANUVAAD-TRANSLATOR",
+            "active":true,
+            "whiteList":false,
+            "description":"API to delete TMX records"
+        },
+        {
+            "id":"8ae246ee-8b27-4dcf-93df-faad13b3c64b",
+            "uri":"/anuvaad-etl/translator/v1/tmx/bulk/create/xls-upload",
+            "module":"ANUVAAD-TRANSLATOR",
+            "active":true,
+            "whiteList":false,
+            "description":"API to create TMX records via XLS upload"
+        },
+        {
+            "id":"98360963-7f7b-4b4b-93d5-5f055d283868",
+            "uri":"/anuvaad-etl/translator/v1/tmx/get-all-keys",
+            "module":"ANUVAAD-TRANSLATOR",
+            "active":true,
+            "whiteList":false,
+            "description":"API to fetch TMX data through API"
+        },
+        {
+            "id":"c5e9002e-4784-453d-b5dc-3dbafb09bc1c",
+            "uri":"/anuvaad-etl/translator/v1/glossary/create",
+            "module":"ANUVAAD-TRANSLATOR",
+            "active":true,
+            "whiteList":false,
+            "description":"API to create glossary"
+        },
+        {
+            "id":"36a3d56e-34b4-4d66-90cd-dea526f70f0b",
+            "uri":"/anuvaad-etl/translator/v1/glossary/delete",
+            "module":"ANUVAAD-TRANSLATOR",
+            "active":true,
+            "whiteList":false,
+            "description":"API to delete glossary"
+        },
+        {
+            "id":"588efe49-4f9d-4101-b274-aa9755717b52",
+            "uri":"/anuvaad-etl/translator/v1/glossary/get",
+            "module":"ANUVAAD-TRANSLATOR",
+            "active":true,
+            "whiteList":false,
+            "description":"API to fetch glossary data"
+        },
+        {
+            "id":"e5d0b999-a2bb-41af-a267-2494b15fb6a5",
+            "uri":"/nmt-inference/v1/fetch-models/*",
+            "module":"ANUVAAD-NMT",
+            "active":true,
+            "whiteList":false,
+            "description":"API to fetch NMT models"
+        },
+        {
+            "id":"f08cb87c-9e10-4b23-9de5-52c6ff70d405",
+            "uri":"/nmt-inference/v3/translate-anuvaad",
+            "module":"ANUVAAD-NMT",
+            "active":true,
+            "whiteList":true,
+            "description":"API for doc translation"
+        },
+        {
+            "id":"75a424ae-ae00-44da-86f8-3809dd9a6458",
+            "uri":"/nmt-inference/v2/interactive-translation",
+            "module":"ANUVAAD-NMT",
+            "active":true,
+            "whiteList":false,
+            "description":"API for interactive translation"
+        },
+        {
+            "id":"400772fd-15c1-4c89-9ab2-ad6b577916c4",
+            "uri":"/nmt-inference/v1/create-models",
+            "module":"ANUVAAD-NMT",
+            "active":true,
+            "whiteList":false,
+            "description":"API to create NMT models"
+        },
+        {
+            "id":"cdbd4630-a2cd-4f32-a167-ebc734e43421",
+            "uri":"/nmt-inference/v1/update-models/*",
+            "module":"ANUVAAD-NMT",
+            "active":true,
+            "whiteList":false,
+            "description":"API to update NMT models"
+        },
+        {
+            "id":"ecda9694-e636-4211-aa85-4b146a9a543c",
+            "uri":"/nmt-inference/v1/delete-models/*",
+            "module":"ANUVAAD-NMT",
+            "active":true,
+            "whiteList":false,
+            "description":"API to delete NMT models"
+        },
+        {
+            "id":"5b5ca44a-ddd8-4576-88d5-e370a48c368e",
+            "uri":"/nmt-inference/v2/fetch-models/*",
+            "module":"ANUVAAD-NMT",
+            "active":true,
+            "whiteList":false,
+            "description":"API to fetch NMT models"
+        },
+        {
+            "id":"433f58d2-de6f-4027-8689-43eee482c3ec",
+            "uri":"/nmt-inference/v4/translate",
+            "module":"ANUVAAD-NMT",
+            "active":true,
+            "whiteList":false,
+            "description":"API for machine translation"
+        },
+        {
+            "id":"fe0decb2-78de-4f53-8ca7-c073ab2b1396",
+            "uri":"/nmt-inference/v3/interactive-translation",
+            "module":"ANUVAAD-NMT",
+            "active":true,
+            "whiteList":false,
+            "description":"API for interactive translation"
+        },
+        {
+            "id":"752bff69-e7ed-44bd-9218-ee65f4febb8c",
+            "uri":"/nmt-inference/v1/labse-aligner",
+            "module":"ANUVAAD-NMT",
+            "active":true,
+            "whiteList":false,
+            "description":"API for LABSE alignment"
+        },
+        {
+            "id":"b0c793d1-215c-4de6-8d88-714f8394e75a",
+            "uri":"/anuvaad-api/file-uploader/v0/upload-file",
+            "module":"FILE-UPLOADER",
+            "active":true,
+            "whiteList":false,
+            "description":"API to upload files"
+        },
+        {
+            "id":"7f3c15a0-bdc4-4dc5-8ebb-5c7ba80ee016",
+            "uri":"/anuvaad-api/file-uploader/v0/download-file",
+            "module":"FILE-UPLOADER",
+            "active":true,
+            "whiteList":false,
+            "description":"API to download files"
+        },
+        {
+            "id":"634ca662-2ebd-4952-b517-d5fd54d3ac17",
+            "uri":"/anuvaad-api/file-uploader/v0/serve-file",
+            "module":"FILE-UPLOADER",
+            "active":true,
+            "whiteList":false,
+            "description":"API to serve files"
+        },
+        {
+            "id":"b533843f-5259-4723-b670-b9f483d9db43",
+            "uri":"/anuvaad/content-handler/v0/fetch-content",
+            "module":"CONTENT-HANDLER",
+            "active":true,
+            "whiteList":false,
+            "description":"API to fetch content from CH"
+        },
+        {
+            "id":"9cb0222b-a4c1-41da-baa3-67fb84924ada",
+            "uri":"/anuvaad/content-handler/v0/save-content-sentence",
+            "module":"CONTENT-HANDLER",
+            "active":true,
+            "whiteList":false,
+            "description":"API to update sentences in CH"
+        },
+        {
+            "id":"3b9b7642-356a-4027-9c2a-ac44901dd5d4",
+            "uri":"/anuvaad/content-handler/v0/update-content",
+            "module":"CONTENT-HANDLER",
+            "active":true,
+            "whiteList":false,
+            "description":"API to update blocks in CH"
+        },
+        {
+            "id":"a1d46e6d-bbe6-4ffc-bb8e-cc8412e0353d",
+            "uri":"/anuvaad/content-handler/v0/fetch-content-sentence",
+            "module":"CONTENT-HANDLER",
+            "active":true,
+            "whiteList":false,
+            "description":"API to fetch sentences in CH"
+        },
+        {
+            "id":"736e5d42-e8da-4a6d-b89d-1cca1b54c787",
+            "uri":"/anuvaad/content-handler/v0/records/user-translation-search",
+            "module":"CONTENT-HANDLER",
+            "active":true,
+            "whiteList":false,
+            "description":"API to fetch sentence memory in CH"
+        },
+        {
+            "id":"95d0525e-d654-496d-a77e-049bffe46ab0",
+            "uri":"/anuvaad/content-handler/v0/dictionary/search",
+            "module":"CONTENT-HANDLER",
+            "active":true,
+            "whiteList":false,
+            "description":"API to search dictionary"
+        },
+        {
+            "id":"a50d17b9-1db3-448b-a3b2-90777938fe03",
+            "uri":"/anuvaad/content-handler/v0/fetch-content-sentence",
+            "module":"CONTENT-HANDLER",
+            "active":true,
+            "whiteList":false,
+            "description":"API to fetch sentence details"
+        },
+        {
+            "id":"604a9915-194d-44b3-87c2-300935adc932",
+            "uri":"/anuvaad/content-handler/v0/dictionary/update",
+            "module":"CONTENT-HANDLER",
+            "active":true,
+            "whiteList":false,
+            "description":"API to update dictionary"
+        },
+        {
+            "id":"9b8af8f1-c2a1-4a49-9b10-d7c125712395",
+            "uri":"/anuvaad/content-handler/v0/records/search",
+            "module":"CONTENT-HANDLER",
+            "active":true,
+            "whiteList":false,
+            "description":"API to search records"
+        },
+        {
+            "id":"5b3dd208-5611-4a8c-9dd1-c4362ccf8371",
+            "uri":"/anuvaad/ocr-content-handler/v0/ocr/save-document",
+            "module":"OCR-CONTENT-HANDLER",
+            "active":true,
+            "whiteList":false,
+            "description":"API to save OCR docs"
+        },
+        {
+            "id":"7d8858c2-dc66-43e9-8d7c-2931ac0908e9",
+            "uri":"/anuvaad/ocr-content-handler/v0/ocr/update-word",
+            "module":"OCR-CONTENT-HANDLER",
+            "active":true,
+            "whiteList":false,
+            "description":"API to update ocr record word"
+        },
+        {
+            "id":"a3b0fa2f-b088-49c9-8f87-5d0f764b9ccf",
+            "uri":"/anuvaad/ocr-content-handler/v0/ocr/fetch-document",
+            "module":"OCR-CONTENT-HANDLER",
+            "active":true,
+            "whiteList":false,
+            "description":"API to fetch ocr docs"
+        },
+        {
+            "id":"9c1da068-aac9-4e93-97c0-e4dfa0306dfd",
+            "uri":"/anuvaad-etl/document-converter/v0/document-converter",
+            "module":"DOCUMENT-CONVERTER",
+            "active":true,
+            "whiteList":false,
+            "description":"API to document conversion"
+        },
+        {
+            "id":"68e90db3-0146-4e04-ba94-18671b1c5995",
+            "uri":"/anuvaad-etl/document-converter/v0/document-exporter",
+            "module":"DOCUMENT-CONVERTER",
+            "active":true,
+            "whiteList":false,
+            "description":"API to export ocr digitized doc"
+        },
+        {
+            "id":"a22e8462-160e-4372-88c0-d1e4713568fd",
+            "uri":"/anuvaad-telemetry/v1/telemetry",
+            "module":"ANUVAAD-TELEMETRY",
+            "active":true,
+            "whiteList":true,
+            "description":"API to register telemetry entries"
+        },
+        {
+            "id":"0052fbd8-c904-4463-9a37-18838b0679ad",
+            "uri":"/anuvaad-etl/extractor/aligner/v1/sentences/align",
+            "module":"ALIGNER",
+            "active":true,
+            "whiteList":true,
+            "description":"API to start alignment jobs"
+        },
+        {
+            "id":"33a3d08d-0b3c-496b-9dc0-7428da39608b",
+            "uri":"/anuvaad-etl/document-processor/word-detector/v0/craft/process",
+            "module":"WORD-DETECTOR",
+            "active":true,
+            "whiteList":true,
+            "description":"API for word detection"
+        },
+        {
+            "id":"d0746e99-e744-4dfe-9757-68438e021f3e",
+            "uri":"/anuvaad-etl/document-processor/layout-detector/v0/prima/process",
+            "module":"LAYOUT-DETECTOR",
+            "active":true,
+            "whiteList":true,
+            "description":"API for layout detection"
+        },
+        {
+            "id":"b75a304b-e9a0-42c8-b6e7-1da4f4e50902",
+            "uri":"/anuvaad-etl/document-processor/evaluator/v0/process",
+            "module":"VISUAL-EVALUATOR",
+            "active":true,
+            "whiteList":true,
+            "description":"API for visual evaluator"
+        },
+        {
+            "id":"07a03771-08a5-4a95-a4a6-38b9dbdefa91",
+            "uri":"/anuvaad-etl/document-processor/ocr/google-vision/v0/extract-text",
+            "module":"OCR",
+            "active":true,
+            "whiteList":true,
+            "description":"API for OCR"
+        },
+        {
+            "id":"e53e6edd-5eab-402e-9156-d0ec621e0138",
+            "uri":"/anuvaad-etl/tokeniser/v0/tokenisation-wf",
+            "module":"TOKENISER",
+            "active":true,
+            "whiteList":false,
+            "description":"API tokenise paragraphs from a text file"
+        },
+        {
+            "id":"724f7f09-2d6a-43c3-8155-8acc779dc833",
+            "uri":"/anuvaad-etl/tokeniser/v0/paragraphs-tokenisation-wf",
+            "module":"TOKENISER",
+            "active":true,
+            "whiteList":false,
+            "description":"API tokenise paragraph from a list of paragraphs"
+        },
+        {
+            "id":"5eeecf48-65e7-4c3e-a455-0bd29b0e0838",
+            "uri":"/anuvaad-etl/tokeniser/v0/tokenisation",
+            "module":"TOKENISER",
+            "active":true,
+            "whiteList":false,
+            "description":"API tokenise paragraphs from a text file"
+        },
+        {
+            "id":"4d987d15-c096-4367-aeaa-cb5052bd2032",
+            "uri":"/anuvaad-etl/notifier/v0/notifier/bulksearch",
+            "module":"ANUVAAD-NOTIFIER",
+            "active":true,
+            "whiteList":true,
+            "description":"API for notifier"
+        },
+        {
+            "id":"52042b5e-1068-43bf-b00b-4e502374e539",
+            "uri":"/anuvaad-etl/tokeniser-ocr/v0/tokenisation-wf",
+            "module":"TOKENISER-OCR",
+            "active":true,
+            "whiteList":false,
+            "description":"API tokenise paragraphs from a json file of ocr"
+        },
+        {
+            "id":"7dfdea6c-3dbf-43f0-949e-f78ce99e8c1d",
+            "uri":"/anuvaad-annotation/sentence-annotation/v0/task/create",
+            "module":"ANUVAAD-ANNOTATION",
+            "active":true,
+            "whiteList":false,
+            "description":"API to create annotation task"
+        },
+        {
+            "id":"eb88f8fa-7649-4a30-9f59-d242ebe25bdd",
+            "uri":"/anuvaad-annotation/sentence-annotation/v0/user/task/search",
+            "module":"ANUVAAD-ANNOTATION",
+            "active":true,
+            "whiteList":false,
+            "description":"API to search annotation task"
+        },
+        {
+            "id":"07ce7b32-4eb3-4269-b73b-b69d5b84e2fd",
+            "uri":"/anuvaad-annotation/sentence-annotation/v0/annotation-type/task/search",
+            "module":"ANUVAAD-ANNOTATION",
+            "active":true,
+            "whiteList":false,
+            "description":"API to search annotation task on type"
+        },
+        {
+            "id":"3c02f80e-c12d-4555-9dcb-fc540be64645",
+            "uri":"/anuvaad-annotation/sentence-annotation/v0/task/details/search",
+            "module":"ANUVAAD-ANNOTATION",
+            "active":true,
+            "whiteList":false,
+            "description":"API to search task details"
+        },
+        {
+            "id":"75675521-a94e-424b-b2e8-1c46a3c4dc9b",
+            "uri":"/anuvaad-annotation/sentence-annotation/v0/task/annotation/grading",
+            "module":"ANUVAAD-ANNOTATION",
+            "active":true,
+            "whiteList":false,
+            "description":"API to grade annotations"
+        },
+        {
+            "id":"e6132e87-0616-4efe-9c68-6b4a37b16d18",
+            "uri":"/anuvaad-nmt-adapter/gnmt/v0/translate",
+            "module":"ANUVAAD-NMT-ADAPTER",
+            "active":true,
+            "whiteList":false,
+            "description":"API for GNMT adapter"
+        },
+        {
+            "id":"b705297f-ede2-47e8-a264-29b8fc8189cf",
+            "uri":"/aai4b-nmt-inference/v1/translate",
+            "module":"AIB-NMT",
+            "active":true,
+            "whiteList":true,
+            "description":"API for AIB NMT"
+        },
+        {
+            "id":"9467457b-d12e-4a8c-8aab-471c65a0d2e2",
+            "uri":"/aai4b-nmt-inference/v0/translate",
+            "module":"AIB-NMT",
+            "active":true,
+            "whiteList":true,
+            "description":"API for AIB NMT for ULCA"
+        },
+        {
+            "id":"5e2c99cf-b6e2-41e4-a183-23b011e56d6f",
+            "uri":"/aai4b-nmt-inference/v0/interactive-translation",
+            "module":"AIB-NMT",
+            "active":true,
+            "whiteList":true,
+            "description":"API for AIB NMT Interactive"
+        },
+        {
+            "id":"1fd85b70-ee0e-4bb8-aff4-fe1c57efcf21",
+            "uri":"/dashboard/getUserReport",
+            "module":"ANUVAAD-DASHBOARD",
+            "active":true,
+            "whiteList":false,
+            "description":"API for Anuvaad Dashboard"
+        },
+        {
+            "id":"e8a2d3c4-bbe8-4a63-950e-5687278cd8d2",
+            "uri":"/anuvaad-etl/anuvaad-docx-downloader/v0/download-docx",
+            "module":"ANUVAAD-DOCX-DOWNLOADER",
+            "active":true,
+            "whiteList":true,
+            "description":"API for docx download"
+        },
+        {
+            "id":"074d7840-5340-4881-9143-b3ecb9775265",
+            "uri":"/anuvaad-etl/file-translator/v0/download-wf",
+            "module":"ANUVAAD-TRANSLATED-FILE-DOWNLOADER",
+            "active":true,
+            "whiteList":false,
+            "description":"API for translated file download"
+        },
+        {
+            "id":"52021bff-bdb8-47a3-8e0b-b09590d4a4bd",
+            "uri":"/anuvaad-etl/file-translator/v0/transform-wf",
+            "module":"ANUVAAD-TRANSFORM-FILE-TO-JSON",
+            "active":true,
+            "whiteList":false,
+            "description":"API for transform file to json format"
+        },
+        {
+            "id":"1162882f-4096-4d8a-8905-ef68b34bfbbc",
+            "uri":"/anuvaad/content-handler/v0/ref-link/store",
+            "module":"CH",
+            "active":true,
+            "whiteList":false,
+            "description":"ANUVAAD-CH-S3 URL STORE"
+        },
+        {
+            "id":"eadf42e8-eb6b-4d33-a599-15323981568d",
+            "uri":"/anuvaad/content-handler/v0/ref-link/fetch",
+            "module":"CH",
+            "active":true,
+            "whiteList":false,
+            "description":"ANUVAAD-CH-S3 URL FETCH"
+        },
+        {
+            "id":"c4cf7a7f-4749-4abd-9f15-8bbbfcc74dcf",
+            "uri":"/nmt-inference/health",
+            "module":"ANUVAAD-NMT",
+            "active":true,
+            "whiteList":true,
+            "description":"NMT GPU health API"
+        },
+        {
+            "id":"48e4d402-34e4-41ef-9f84-1f5e8a27b657",
+            "uri":"/nmt-inference/v0/translate",
+            "module":"ANUVAAD-NMT",
+            "active":true,
+            "whiteList":true,
+            "description":"API for ANUVAAD NMT translate"
+        },
+        {
+            "id":"51ccb837-e34d-4fd4-843d-96291107c178",
+            "uri":"/anuvaad/ocr/v0/ulca-ocr",
+            "module":"ANUVAAD-ULCA-OCR",
+            "active":true,
+            "whiteList":true,
+            "description":"API for ANUVAAD OCR to be used by ULCA"
+        },
+        {
+            "id": "dae2209d-e3ac-4ed2-9789-c1bb03bdf913",
+            "uri": "/anuvaad-nmt-models/v0/fetch-models/*",
+            "module": "ANUVAAD-NMT-MODELS",
+            "active": true,
+            "whiteList": false,
+            "description": "API to fetch NMT models"
+        },
+        {
+            "id": "f13e0c81-b559-444d-bb57-8d0360f7a2e8",
+            "uri": "/anuvaad-nmt-models/v0/create-models",
+            "module": "ANUVAAD-NMT-MODELS",
+            "active": true,
+            "whiteList": false,
+            "description": "API to create NMT models"
+        },
+        {
+            "id": "4851c243-bb56-4faf-9290-a46740e5c00e",
+            "uri": "/anuvaad-nmt-models/v0/update-models/*",
+            "module": "ANUVAAD-NMT-MODELS",
+            "active": true,
+            "whiteList": false,
+            "description": "API to update NMT models"
+        }
+    ]
+}

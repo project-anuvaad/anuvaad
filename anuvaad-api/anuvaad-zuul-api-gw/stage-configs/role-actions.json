@@ -1,0 +1,639 @@
+{
+    "role-actions":[
+        {
+            "role":"TRANSLATOR",
+            "actionID": "30b20c13-db5a-465c-a6b4-50a7c0daee57",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "400bf52e-d7ef-4bdb-9ce5-8f64b42ada9c",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "01803b45-67fb-4b24-a6b3-083dfb9b09d9",
+            "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "216313cc-0668-442f-a13e-3fd022be5eb2",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "bde39a83-8a4f-400e-bcf0-d14b8895f0ae",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "e5d0b999-a2bb-41af-a267-2494b15fb6a5",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "b0c793d1-215c-4de6-8d88-714f8394e75a",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "7f3c15a0-bdc4-4dc5-8ebb-5c7ba80ee016",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "634ca662-2ebd-4952-b517-d5fd54d3ac17",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "b533843f-5259-4723-b670-b9f483d9db43",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "9cb0222b-a4c1-41da-baa3-67fb84924ada",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "95d0525e-d654-496d-a77e-049bffe46ab0",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "a50d17b9-1db3-448b-a3b2-90777938fe03",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "604a9915-194d-44b3-87c2-300935adc932",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "9b8af8f1-c2a1-4a49-9b10-d7c125712395",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "9c1da068-aac9-4e93-97c0-e4dfa0306dfd",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "5e1b1f65-35ad-41b5-8132-d1254cdc17bc",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "f08cb87c-9e10-4b23-9de5-52c6ff70d405",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "75a424ae-ae00-44da-86f8-3809dd9a6458",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "3a670c68-737f-4546-9cf6-54de188a0298",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "8ae246ee-8b27-4dcf-93df-faad13b3c64b",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "98360963-7f7b-4b4b-93d5-5f055d283868",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "36122d56-6077-48eb-a2d8-303b1460d4ac",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "e53e6edd-5eab-402e-9156-d0ec621e0138",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "52042b5e-1068-43bf-b00b-4e502374e539",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "5eeecf48-65e7-4c3e-a455-0bd29b0e0838",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "753e2245-75d8-4d88-bb87-26874c184907",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "c5e9002e-4784-453d-b5dc-3dbafb09bc1c",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "36a3d56e-34b4-4d66-90cd-dea526f70f0b",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "588efe49-4f9d-4101-b274-aa9755717b52",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "5b3dd208-5611-4a8c-9dd1-c4362ccf8371",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "7d8858c2-dc66-43e9-8d7c-2931ac0908e9",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "a3b0fa2f-b088-49c9-8f87-5d0f764b9ccf",
+            "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "8ef47a2a-0a85-4efe-865e-8c52b567bf74",
+            "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "36677274-7ac3-4319-8170-f2e007341ecf",
+            "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "1bf2b56f-9b83-404f-98c6-e59ab89e24a6",
+            "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "986bb1b6-ac89-4430-a7ec-ba04f1ab470d",
+            "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "36122d56-6077-48eb-a2d8-303b1460d4ac",
+            "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "8ae246ee-8b27-4dcf-93df-faad13b3c64b",
+            "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "b0c793d1-215c-4de6-8d88-714f8394e75a",
+            "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "400bf52e-d7ef-4bdb-9ce5-8f64b42ada9c",
+            "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "9b8af8f1-c2a1-4a49-9b10-d7c125712395",
+            "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "b533843f-5259-4723-b670-b9f483d9db43",
+            "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "76952b3b-6017-4d58-86e2-246a16b1c952",
+            "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "7f3c15a0-bdc4-4dc5-8ebb-5c7ba80ee016",
+            "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "753e2245-75d8-4d88-bb87-26874c184907",
+            "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "3a670c68-737f-4546-9cf6-54de188a0298",
+            "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "c5e9002e-4784-453d-b5dc-3dbafb09bc1c",
+            "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "36a3d56e-34b4-4d66-90cd-dea526f70f0b",
+            "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "588efe49-4f9d-4101-b274-aa9755717b52",
+            "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "e5d0b999-a2bb-41af-a267-2494b15fb6a5",
+            "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "30b20c13-db5a-465c-a6b4-50a7c0daee57",
+            "active":true
+        },
+        {
+            "role":"ANNOTATOR",
+            "actionID": "30b20c13-db5a-465c-a6b4-50a7c0daee57",
+            "active":true
+        },
+        {
+            "role":"ANNOTATOR",
+            "actionID": "400bf52e-d7ef-4bdb-9ce5-8f64b42ada9c",
+            "active":true
+        },
+        {
+            "role":"ANNOTATOR",
+            "actionID": "01803b45-67fb-4b24-a6b3-083dfb9b09d9",
+            "active":true
+        },
+        {
+            "role":"ANNOTATOR",
+            "actionID": "bde39a83-8a4f-400e-bcf0-d14b8895f0ae",
+            "active":true
+        },
+        {
+            "role":"ANNOTATOR",
+            "actionID": "e5d0b999-a2bb-41af-a267-2494b15fb6a5",
+            "active":true
+        },
+        {
+            "role":"ANNOTATOR",
+            "actionID": "b0c793d1-215c-4de6-8d88-714f8394e75a",
+            "active":true
+        },
+        {
+            "role":"ANNOTATOR",
+            "actionID": "7f3c15a0-bdc4-4dc5-8ebb-5c7ba80ee016",
+            "active":true
+        },
+        {
+            "role":"ANNOTATOR",
+            "actionID": "634ca662-2ebd-4952-b517-d5fd54d3ac17",
+            "active":true
+        },
+        {
+            "role":"ANNOTATOR",
+            "actionID": "b533843f-5259-4723-b670-b9f483d9db43",
+            "active":true
+        },
+        {
+            "role":"ANNOTATOR",
+            "actionID": "9cb0222b-a4c1-41da-baa3-67fb84924ada",
+            "active":true
+        },
+        {
+            "role":"ANNOTATOR",
+            "actionID": "95d0525e-d654-496d-a77e-049bffe46ab0",
+            "active":true
+        },
+        {
+            "role":"ANNOTATOR",
+            "actionID": "a50d17b9-1db3-448b-a3b2-90777938fe03",
+            "active":true
+        },
+        {
+            "role":"ANNOTATOR",
+            "actionID": "604a9915-194d-44b3-87c2-300935adc932",
+            "active":true
+        },
+        {
+            "role":"ANNOTATOR",
+            "actionID": "9b8af8f1-c2a1-4a49-9b10-d7c125712395",
+            "active":true
+        },
+        {
+            "role":"ANNOTATOR",
+            "actionID": "9c1da068-aac9-4e93-97c0-e4dfa0306dfd",
+            "active":true
+        },
+        {
+            "role":"ANNOTATOR",
+            "actionID": "5e1b1f65-35ad-41b5-8132-d1254cdc17bc",
+            "active":true
+        },
+        {
+            "role":"ANNOTATOR",
+            "actionID": "f08cb87c-9e10-4b23-9de5-52c6ff70d405",
+            "active":true
+        },
+        {
+            "role":"ANNOTATOR",
+            "actionID": "75a424ae-ae00-44da-86f8-3809dd9a6458",
+            "active":true
+        },
+        {
+            "role":"ANNOTATOR",
+            "actionID": "3a670c68-737f-4546-9cf6-54de188a0298",
+            "active":true
+        },
+        {
+            "role":"ANNOTATOR",
+            "actionID": "8ae246ee-8b27-4dcf-93df-faad13b3c64b",
+            "active":true
+        },
+        {
+            "role":"ANNOTATOR",
+            "actionID": "98360963-7f7b-4b4b-93d5-5f055d283868",
+            "active":true
+        },
+        {
+            "role":"ANNOTATOR",
+            "actionID": "36122d56-6077-48eb-a2d8-303b1460d4ac",
+            "active":true
+        },
+        {
+            "role":"ANNOTATOR",
+            "actionID": "e53e6edd-5eab-402e-9156-d0ec621e0138",
+            "active":true
+        },
+        {
+            "role":"ANNOTATOR",
+            "actionID": "5eeecf48-65e7-4c3e-a455-0bd29b0e0838",
+            "active":true
+        },
+        {
+            "role":"ANNOTATOR",
+            "actionID": "753e2245-75d8-4d88-bb87-26874c184907",
+            "active":true
+        },
+        {
+            "role":"ANNOTATOR",
+            "actionID": "c5e9002e-4784-453d-b5dc-3dbafb09bc1c",
+            "active":true
+        },
+        {
+            "role":"ANNOTATOR",
+            "actionID": "36a3d56e-34b4-4d66-90cd-dea526f70f0b",
+            "active":true
+        },
+        {
+            "role":"ANNOTATOR",
+            "actionID": "588efe49-4f9d-4101-b274-aa9755717b52",
+            "active":true
+        },
+        {
+            "role":"ANNOTATOR",
+            "actionID": "5b3dd208-5611-4a8c-9dd1-c4362ccf8371",
+            "active":true
+        },
+        {
+            "role":"ANNOTATOR",
+            "actionID": "7d8858c2-dc66-43e9-8d7c-2931ac0908e9",
+            "active":true
+        },
+        {
+            "role":"ANNOTATOR",
+            "actionID": "a3b0fa2f-b088-49c9-8f87-5d0f764b9ccf",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "400772fd-15c1-4c89-9ab2-ad6b577916c4",
+            "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "400772fd-15c1-4c89-9ab2-ad6b577916c4",
+            "active":true
+        },
+        {
+            "role":"ANNOTATOR",
+            "actionID": "400772fd-15c1-4c89-9ab2-ad6b577916c4",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "cdbd4630-a2cd-4f32-a167-ebc734e43421",
+            "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "cdbd4630-a2cd-4f32-a167-ebc734e43421",
+            "active":true
+        },
+        {
+            "role":"ANNOTATOR",
+            "actionID": "cdbd4630-a2cd-4f32-a167-ebc734e43421",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "ecda9694-e636-4211-aa85-4b146a9a543c",
+            "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "ecda9694-e636-4211-aa85-4b146a9a543c",
+            "active":true
+        },
+        {
+            "role":"ANNOTATOR",
+            "actionID": "ecda9694-e636-4211-aa85-4b146a9a543c",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "5b5ca44a-ddd8-4576-88d5-e370a48c368e",
+            "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "5b5ca44a-ddd8-4576-88d5-e370a48c368e",
+            "active":true
+        },
+        {
+            "role":"ANNOTATOR",
+            "actionID": "5b5ca44a-ddd8-4576-88d5-e370a48c368e",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "433f58d2-de6f-4027-8689-43eee482c3ec",
+            "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "433f58d2-de6f-4027-8689-43eee482c3ec",
+            "active":true
+        },
+        {
+            "role":"ANNOTATOR",
+            "actionID": "433f58d2-de6f-4027-8689-43eee482c3ec",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "fe0decb2-78de-4f53-8ca7-c073ab2b1396",
+            "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "fe0decb2-78de-4f53-8ca7-c073ab2b1396",
+            "active":true
+        },
+        {
+            "role":"ANNOTATOR",
+            "actionID": "fe0decb2-78de-4f53-8ca7-c073ab2b1396",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "7dfdea6c-3dbf-43f0-949e-f78ce99e8c1d",
+            "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "7dfdea6c-3dbf-43f0-949e-f78ce99e8c1d",
+            "active":true
+        },
+        {
+            "role":"ANNOTATOR",
+            "actionID": "7dfdea6c-3dbf-43f0-949e-f78ce99e8c1d",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "eb88f8fa-7649-4a30-9f59-d242ebe25bdd",
+            "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "eb88f8fa-7649-4a30-9f59-d242ebe25bdd",
+            "active":true
+        },
+        {
+            "role":"ANNOTATOR",
+            "actionID": "eb88f8fa-7649-4a30-9f59-d242ebe25bdd",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "07ce7b32-4eb3-4269-b73b-b69d5b84e2fd",
+            "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "07ce7b32-4eb3-4269-b73b-b69d5b84e2fd",
+            "active":true
+        },
+        {
+            "role":"ANNOTATOR",
+            "actionID": "07ce7b32-4eb3-4269-b73b-b69d5b84e2fd",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "3c02f80e-c12d-4555-9dcb-fc540be64645",
+            "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "3c02f80e-c12d-4555-9dcb-fc540be64645",
+            "active":true
+        },
+        {
+            "role":"ANNOTATOR",
+            "actionID": "3c02f80e-c12d-4555-9dcb-fc540be64645",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "75675521-a94e-424b-b2e8-1c46a3c4dc9b",
+            "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "75675521-a94e-424b-b2e8-1c46a3c4dc9b",
+            "active":true
+        },
+        {
+            "role":"ANNOTATOR",
+            "actionID": "75675521-a94e-424b-b2e8-1c46a3c4dc9b",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "e6132e87-0616-4efe-9c68-6b4a37b16d18",
+            "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "e6132e87-0616-4efe-9c68-6b4a37b16d18",
+            "active":true
+        },
+        {
+            "role":"ANNOTATOR",
+            "actionID": "e6132e87-0616-4efe-9c68-6b4a37b16d18",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "68e90db3-0146-4e04-ba94-18671b1c5995",
+            "active":true
+        },
+        {
+            "role":"ANNOTATOR",
+            "actionID": "68e90db3-0146-4e04-ba94-18671b1c5995",
+            "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "98360963-7f7b-4b4b-93d5-5f055d283868",
+            "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "b5ff81c9-8c7b-44eb-ad19-92c4d21b239c",
+            "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "0976372a-28b2-438b-9ec5-15952a31d224",
+            "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "752bff69-e7ed-44bd-9218-ee65f4febb8c",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "752bff69-e7ed-44bd-9218-ee65f4febb8c",
+            "active":true
+        },
+        {
+            "role":"ANNOTATOR",
+            "actionID": "752bff69-e7ed-44bd-9218-ee65f4febb8c",
+            "active":true
+        }
+    ]
+}
