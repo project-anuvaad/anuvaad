@@ -51,14 +51,12 @@ def OCR(app_context):
             if len(errors) > 0 or len(exceptions) > 0 :
                 response['errors'] = errors
                 response['exceptions'] = exceptions
-                response['code'] = 400
                 
             return response
         else:
             return {
                 'output': sentences,
-                'config': config,
-                'code'  : 400
+                'config': config
                  
 
             }
