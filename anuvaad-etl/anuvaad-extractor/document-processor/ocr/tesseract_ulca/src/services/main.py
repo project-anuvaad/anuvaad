@@ -47,7 +47,7 @@ def OCR(app_context):
     try:
         sentences, errors,exceptions, config = process_input(app_context)
         if sentences != None :
-            response = {'output': sentences,'config': config , 'code':200}
+            response = {'output': sentences,'config': config}
             if len(errors) > 0 or len(exceptions) > 0 :
                 response['errors'] = errors
                 response['exceptions'] = exceptions
