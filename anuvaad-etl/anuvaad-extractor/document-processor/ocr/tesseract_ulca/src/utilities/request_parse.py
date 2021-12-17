@@ -4,6 +4,7 @@ from anuvaad_auditor.loghandler import log_exception
 import requests
 import numpy as np
 import cv2
+import base64
 import hashlib
 from html import escape
 
@@ -27,22 +28,40 @@ def log_error(method):
 class File:
     def __init__(self, file):
         self.file = self.remove_html(file)
+        self.im_source = None
+        self.set_image_source()
 
     @log_error
     def get_language(self):
-        return self.file["config"]["OCR"]["language"]
+        return self.file["config"]["OCR"]["language"] 
+
+    @log_error
+    def set_image_source(self):
+        if 'imageUri' in self.file.keys() and self.file["imageUri"] is not None:
+            self.im_source = 'imageUri'
+        elif 'imageContent' in self.file.keys() : 
+            self.im_source = 'imageContent'
+
 
     @log_error
     def get_image(self, im_index):
-        im_url = self.file["imageUri"][im_index]
-        resp = requests.get(im_url)
-        image = np.asarray(bytearray(resp.content))
-        image = cv2.imdecode(image, cv2.IMREAD_COLOR)
-        return image
+        if self.im_source is 'imageUri':
+            im_url = self.file[self.im_source][im_index]
+            resp = requests.get(im_url)
+            image = np.asarray(bytearray(resp.content))
+            image = cv2.imdecode(image, cv2.IMREAD_COLOR)
+            return image
+        elif self.im_source is 'imageContent':
+            jpg_original = base64.b64decode( self.file[self.im_source][im_index])
+            jpg_as_np = np.frombuffer(jpg_original, dtype=np.uint8)
+            return cv2.imdecode(jpg_as_np,  flags=1)
+        return None
+        
+
 
     @log_error
     def get_images_len(self):
-        return len(self.file["imageUri"])
+        return len(self.file[self.im_source])
 
     @log_error
     def get_coords(self, im_index):
@@ -75,7 +94,7 @@ class File:
     @log_error
     def get_lang(self):
         return self.file["config"]["language"]["sourceLanguage"]
-
+    @log_error
     def check_key(self):
         if 'dev_key' in self.file :
             dev_key = self.file['dev_key']

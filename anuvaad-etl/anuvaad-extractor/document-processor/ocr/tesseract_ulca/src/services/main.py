@@ -28,14 +28,13 @@ def process_input(app_context):
                     exceptions.append({'im_indx' : im_index , "exception" : image_sentences})
                 else : 
                     exceptions.append('Developer access needed to view the exception')
-                # sentences.append({'source' :
-                #     "**** Image index {} not processed because  {} ****".format(im_index, image_sentences) })
+                
 
-        log_info("successfully completed ocr", None)
+        log_info(" Completed ocr process", None)
         return sentences, errors,exceptions, file_properties.get_config()
 
     except Exception as e:
-        log_exception("Error occured during google vision ocr",
+        log_exception("Error occured during ocr",
                       app_context.application_context, e)
         return None, None, None, None
 
