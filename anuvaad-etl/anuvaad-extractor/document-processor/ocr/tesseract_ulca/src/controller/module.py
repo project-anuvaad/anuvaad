@@ -24,11 +24,11 @@ file_ops = FileOperation()
 # rest request for block merging workflow service
 
 # rest request for layout detection individual service
-#class OCR(Resource):
+# class OCR(Resource):
 
-    # reading json request and reurnung final response
-@ocrapi.representation('application/json')
-@ocrapp.route(config.API_URL_PREFIX + '/v0/ulca-ocr', methods=["POST"])
+# reading json request and reurnung final response
+@ocrapi.representation("application/json")
+@ocrapp.route(config.API_URL_PREFIX + "/v0/ulca-ocr", methods=["POST"])
 def post():
     json_data = request.get_json()
     app_context.init()
