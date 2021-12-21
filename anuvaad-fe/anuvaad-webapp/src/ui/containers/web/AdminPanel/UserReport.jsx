@@ -33,7 +33,7 @@ class UserReport extends React.Component {
             role: localStorage.getItem("roles"),
             showInfo: false,
             offset: 0,
-            limit: 10,
+            limit: 0,
             currentPageIndex: 0,
             dialogMessage: null,
             timeOut: 3000,
@@ -603,8 +603,8 @@ class UserReport extends React.Component {
             page: this.state.currentPageIndex,
         };
         return (
-            <div style={{ height: window.innerHeight }}>
-                <div style={{ margin: "0% 3% 3% 3%", paddingTop: "7%" }}>
+            <div style={{ minHeight: window.innerHeight - 2 }}>
+                <div style={{ margin: "0% 3% 3% 3%", paddingTop: "7%", paddingBottom: "1%" }}>
                     <UserReportHeader />
                     {/* {!this.state.showLoader && ( */}
                     <MuiThemeProvider theme={this.getMuiTheme()}>
