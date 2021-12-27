@@ -1,6 +1,6 @@
-# TOKENISATION
+# ANNOTATION SERVICE
 
-Tokenisation service Converts a paragraph into sentences.
+Service to create annotation tasks.
 
 ## Prerequisites
 - python 3.7
@@ -15,45 +15,6 @@ After successful installation of prerequisites, you will have to run app.py
 
 ```bash
 python app.py
-```
-This service is used to tokenise sentences from a paragraph. After initiating this service,
-hit: ```http://0.0.0.0:5001/api/v0/tokenisation```
-### Request Format
-```json
-POST/tokenisation
-Accept list of files
-
-{
-        "files": [
-            {
-                "locale": "en",
-                "path": "text file which contains paragraphs",
-                "type": "txt"
-            },
-            {....},
-            {....}
-        ]}
-```
-### Response
-```
-POST/tokenisation
-Returns txt file which have tokenised sentences
-
-{
-    "files": [
-        {
-            "inputFile": "input txt file",
-            "outputFile": "text file conaining tokenised sentences",
-            "outputLocale": "en",
-            "outputType": "txt"
-        },
-        {....},
-        {....}
-    ],
-    "state": "SENTENCE-TOKENISED",
-    "status": "SUCCESS"
-}
-```
-For more information about api documentation, please check @ ```https://github.com/project-anuvaad/anuvaad/blob/dev-sentence/anuvaad-etl/anuvaad-extractor/sentence/docs/sentence-api-contarct.yml```
+`
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
