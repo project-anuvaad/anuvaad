@@ -3,14 +3,19 @@ import C from "../../constants";
 import ENDPOINTS from "../../../../configs/apiendpoints";
 
 export default class DownloadDOCX extends API {
-  constructor(jobId, fname, jobName, timeout = 2000) {
+  constructor(jobId, fname, jobName, type = 'trans', timeout = 2000) {
     super("POST", timeout, false);
     this.type = C.DOWNLOAD_DOCX_FILE;
     this.jobId = jobId;
     this.fname = fname;
     this.jobName = jobName;
     this.response = "";
-    this.endpoint = `${super.apiEndPointAuto()}${ENDPOINTS.downloadDocxFile}`;
+    if (type === 'trans') {
+      this.endpoint = `${super.apiEndPointAuto()}${ENDPOINTS.downloadDocxFile}`;
+    } else {
+      // this.endpoint = `http://localhost:5001${ENDPOINTS.downloadOcrDocxFile}`;
+      this.endpoint = `${super.apiEndPointAuto()}${ENDPOINTS.downloadOcrDocxFile}`;
+    }
   }
 
   toString() {
