@@ -622,7 +622,15 @@
             "module":"ANUVAAD-DOCX-DOWNLOADER",
             "active":true,
             "whiteList":true,
-            "description":"API for docx download"
+            "description":"API for converting fetch-content response to docx"
+        },
+        {
+            "id":"65af21b8-e7fc-4d3a-9f9b-9ee779441b06",
+            "uri":"/anuvaad-etl/anuvaad-docx-downloader/ocr/v0/download-docx",
+            "module":"ANUVAAD-DOCX-DOWNLOADER",
+            "active":true,
+            "whiteList":true,
+            "description":"API for converting fetch-document (ocr) response to docx"
         },
         {
             "id":"074d7840-5340-4881-9143-b3ecb9775265",
