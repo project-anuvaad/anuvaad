@@ -11,7 +11,7 @@ const { refactorSourceJSONnew } = require("./generate-docx/utilsnew");
 const bodyParser = require("body-parser");
 const path = require("path");
 const { HOSTNAME } = require("./config/end-point-config");
-const  cors = require("cors")
+// const  cors = require("cors")
 console.log("server.js called");
 app.use(bodyParser.json());
 
@@ -19,7 +19,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(cors())
+// app.use(cors())
 
 app.post(
   "/anuvaad-etl/anuvaad-docx-downloader/v0/download-docx",
