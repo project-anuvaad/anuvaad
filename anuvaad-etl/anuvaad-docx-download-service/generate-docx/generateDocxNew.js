@@ -3,7 +3,7 @@ const fs = require('fs')
 const { generateTableArray } = require('./utilsnew');
 
 const generateDocxNew = (jobName,fname, height, width) => {
-    // console.log('gd=====')
+    console.log('gd=====')
 
     let docx = officegen({
         type: 'docx',
@@ -49,6 +49,11 @@ const generateDocxNew = (jobName,fname, height, width) => {
             if (is_para && !is_table && !is_image) {
                 
                 console.log('token item =================', tokens)
+                console.log('tokens.avg_size', tokens.avg_size)
+                console.log('font_size ******************', font_size)
+
+                // font_size = `${tokens.avg_size}pt`
+
                 // console.log('tokens.tokenized_sentences ****************', tokens.tokenized_sentences)
                 
                 tokens.tokenized_sentences && tokens.tokenized_sentences.forEach(token => {
