@@ -4,14 +4,14 @@ const fs = require("fs");
 const { generateDocx } = require("./generate-docx/generateDocx");
 const { generateDocxNew } = require("./generate-docx/generateDocxNew");
 
-const https = require("https");
+// const https = require("https");
 const http = require("http");
 const { refactorSourceJSON } = require("./generate-docx/utils");
 const { refactorSourceJSONnew } = require("./generate-docx/utilsnew");
 const bodyParser = require("body-parser");
 const path = require("path");
 const { HOSTNAME } = require("./config/end-point-config");
-const  cors = require("cors")
+// const  cors = require("cors")
 console.log("server.js called");
 app.use(bodyParser.json());
 
@@ -19,7 +19,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(cors())
+// app.use(cors())
 
 app.post(
   "/anuvaad-etl/anuvaad-docx-downloader/v0/download-docx",
@@ -124,19 +124,19 @@ app.post(
     const job = `${jobId}|${jobName}`;
     let data = "";
     var options = {
-      hostname: "auth.anuvaad.org",
+      hostname: HOSTNAME,
       path: `/anuvaad/ocr-content-handler/v0/ocr/fetch-document?recordID=${encodeURI(
         job
       )}&start_page=0&end_page=0`,
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        "auth-token": authToken,
+        // "auth-token": authToken,
       },
-      // port: "5001",
+      port: "5001",
     };
 
-    var req = https.request(options, (res) => {
+    var req = http.request(options, (res) => {
       console.log("res", res.statusCode, res.statusMessage);
       if (res.statusCode === 200) {
         console.log("inside Status code 200", res.statusCode);
