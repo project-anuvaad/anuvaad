@@ -2,9 +2,9 @@ const express = require("express");
 const app = express();
 const fs = require("fs");
 const { generateDocx } = require("./generate-docx/generateDocx");
-const { generateDocxNew } = require("./generate-docx/generateDocxNew")
+const { generateDocxNew } = require("./generate-docx/generateDocxNew");
 
-const https = require("https");
+// const https = require("https");
 const http = require("http");
 const { refactorSourceJSON } = require("./generate-docx/utils");
 const { refactorSourceJSONnew } = require("./generate-docx/utilsnew");
@@ -121,21 +121,23 @@ app.post(
   (request, response) => {
     console.log("inside digitize download-docx");
     let { fname, jobId, authToken, jobName } = request.body;
-    const job = `${jobId}|${jobName}`
+    const job = `${jobId}|${jobName}`;
     let data = "";
     var options = {
       hostname: HOSTNAME,
-      path: `/anuvaad/ocr-content-handler/v0/ocr/fetch-document?recordID=${encodeURI(job)}&start_page=0&end_page=0`,
+      path: `/anuvaad/ocr-content-handler/v0/ocr/fetch-document?recordID=${encodeURI(
+        job
+      )}&start_page=0&end_page=0`,
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        "auth-token": authToken,
+        // "auth-token": authToken,
       },
-      // port: "5001",
+      port: "5001",
     };
 
-    var req = https.request(options, (res) => {
-      console.log("res", res, options);
+    var req = http.request(options, (res) => {
+      console.log("res", res.statusCode, res.statusMessage);
       if (res.statusCode === 200) {
         console.log("inside Status code 200", res.statusCode);
         res.on("data", (d) => {
@@ -146,14 +148,19 @@ app.post(
           console.log("finished reading data");
           data = JSON.stringify(refactorSourceJSONnew(JSON.parse(data).data));
           console.log("saving response to file", data);
-          
+
           fs.writeFile("./upload/source.json", data, async (err) => {
             if (!err) {
               try {
                 console.log("inside try");
-                generateDocxNew(jobName, fname, data.page_height, data.page_width);
+                generateDocxNew(
+                  jobName,
+                  fname,
+                  data.page_height,
+                  data.page_width
+                );
                 jobName = jobName.substr(0, jobName.lastIndexOf("."));
-                console.log('jobName --------', jobName)
+                console.log("jobName --------", jobName);
                 fs.readFile(
                   `./upload/${jobName}_${fname}`,
                   { encoding: "utf-8" },
@@ -195,7 +202,7 @@ app.post(
     });
 
     req.on("error", (e) => {
-      // console.log("error", e);
+      console.log("error", e);
       response.status(500).send({
         http: {
           status: 500,
