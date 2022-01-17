@@ -119,7 +119,10 @@ app.post(
 app.post(
   "/anuvaad-etl/anuvaad-docx-downloader/ocr/v0/download-docx",
   (request, response) => {
-    console.log("inside digitize download-docx");
+    console.log(
+      "inside digitize download-docx",
+      process.env.CONTENT_HANDLER_SERVER_URL
+    );
     let { fname, jobId, authToken, jobName } = request.body;
     const job = `${jobId}|${jobName}`;
     let data = "";
@@ -133,7 +136,7 @@ app.post(
         "Content-Type": "application/json",
         // "auth-token": authToken,
       },
-      port: "5001",
+      // port: "5001",
     };
 
     var req = http.request(options, (res) => {
