@@ -4,7 +4,7 @@ const fs = require("fs");
 const { generateDocx } = require("./generate-docx/generateDocx");
 const { generateDocxNew } = require("./generate-docx/generateDocxNew");
 
-// const https = require("https");
+const https = require("https");
 const http = require("http");
 const { refactorSourceJSON } = require("./generate-docx/utils");
 const { refactorSourceJSONnew } = require("./generate-docx/utilsnew");
@@ -30,19 +30,19 @@ app.post(
     console.log(jobName);
     let data = "";
     var options = {
-      hostname: HOSTNAME,
+      hostname: "auth.anuvaad.org",
       path: `/anuvaad/content-handler/v0/fetch-content?record_id=${jobId}&start_page=0&end_page=0`,
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        // "auth-token": authToken,
+        "auth-token": authToken,
       },
-      port: "5001",
+      // port: "5001",
     };
     console.log("calling content-handler");
     console.log("options", options);
 
-    var req = http.request(options, (res) => {
+    var req = https.request(options, (res) => {
       console.log("res", res, options);
       if (res.statusCode === 200) {
         console.log("inside Status code 200", res.statusCode);
@@ -124,19 +124,19 @@ app.post(
     const job = `${jobId}|${jobName}`;
     let data = "";
     var options = {
-      hostname: "gateway_anuvaad-ocr-content-handler",
+      hostname: "auth.anuvaad.org",
       path: `/anuvaad/ocr-content-handler/v0/ocr/fetch-document?recordID=${encodeURI(
         job
       )}&start_page=0&end_page=0`,
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        // "auth-token": authToken,
+        "auth-token": authToken,
       },
-      port: "5001",
+      // port: "5001",
     };
 
-    var req = http.request(options, (res) => {
+    var req = https.request(options, (res) => {
       console.log("res", res.statusCode, res.statusMessage);
       if (res.statusCode === 200) {
         console.log("inside Status code 200", res.statusCode);
