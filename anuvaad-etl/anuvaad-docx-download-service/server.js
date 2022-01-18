@@ -119,15 +119,12 @@ app.post(
 app.post(
   "/anuvaad-etl/anuvaad-docx-downloader/ocr/v0/download-docx",
   (request, response) => {
-    console.log(
-      "inside digitize download-docx",
-      process.env.CONTENT_HANDLER_SERVER_URL
-    );
+    console.log("inside digitize download-docx");
     let { fname, jobId, authToken, jobName } = request.body;
     const job = `${jobId}|${jobName}`;
     let data = "";
     var options = {
-      hostname: HOSTNAME,
+      hostname: "gateway_anuvaad-ocr-content-handler",
       path: `/anuvaad/ocr-content-handler/v0/ocr/fetch-document?recordID=${encodeURI(
         job
       )}&start_page=0&end_page=0`,
@@ -136,7 +133,7 @@ app.post(
         "Content-Type": "application/json",
         // "auth-token": authToken,
       },
-      // port: "5001",
+      port: "5001",
     };
 
     var req = http.request(options, (res) => {
@@ -150,7 +147,7 @@ app.post(
         res.on("end", (e) => {
           console.log("finished reading data");
           data = JSON.stringify(refactorSourceJSONnew(JSON.parse(data).data));
-          console.log("saving response to file", data);
+          console.log("saving response to file");
 
           fs.writeFile("./upload/source.json", data, async (err) => {
             if (!err) {
