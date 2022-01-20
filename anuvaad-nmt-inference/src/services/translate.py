@@ -64,24 +64,12 @@ class TranslateService:
                         i['src'] = sentence_processor.moses_tokenizer(i['src'])
                         translation = encode_itranslate_decode(i,num_map,tp_tokenizer)
                         translation = [sentence_processor.indic_detokenizer(i) for i in translation]
-                    elif i['id'] == 7:
-                        "english-tamil"
-                        translation = encode_itranslate_decode(i,num_map,tp_tokenizer)
                     elif i['id'] == 10:  
                         "english-gujarati"
                         translation = encode_itranslate_decode(i,num_map,tp_tokenizer)                                               
                     elif i['id'] == 18:  
                         "english-punjabi"
                         translation = encode_itranslate_decode(i,num_map,tp_tokenizer)
-                    elif i['id'] == 42:  
-                        "english-marathi"
-                        translation = encode_itranslate_decode(i,num_map,tp_tokenizer)
-                    elif i['id'] == 6:
-                        "hindi-english"
-                        tp_tokenizer = sentence_processor.moses_tokenizer
-                        i['src'] = sentence_processor.indic_tokenizer(i['src'])
-                        translation = encode_itranslate_decode(i,num_map,tp_tokenizer)
-                        translation = [sentence_processor.moses_detokenizer(i) for i in translation]
                     elif i['id'] == 55:
                         "punjabi-english"
                         tp_tokenizer = sentence_processor.moses_tokenizer 

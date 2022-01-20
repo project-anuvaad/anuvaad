@@ -10,14 +10,14 @@ url_table='https://anuvaad-pubnet-weights.s3.amazonaws.com/model_tablenet_v2.pth
 url_judgement_prima_table_layout_model_v3='https://anuvaad-pubnet-weights.s3.amazonaws.com/judgement_prima_table_layout_modelv3.pth?AWSAccessKeyId=AKIAXX2AMEIRJY2GNYVZ&Signature=sHUrqNU4csPLKFx8bdm6tJ6WY4o%3D&Expires=1693557932'
 #url='https://anuvaad-pubnet-weights.s3.amazonaws.com/prima_judgement_trained_wgt.pth?AWSAccessKeyId=AKIAUAXLRTC3KS46AZTB'
 rm $tablenet
-if ! [ -f $tablenet ]; then
-  curl -o $tablenet $url_table
-  echo downloading weight file
-fi
+#if ! [ -f $tablenet ]; then
+curl -o $tablenet $url_table
+echo downloading weight file
+#fi
 rm $modelpath
-if ! [ -f $modelpath ]; then
-  curl -o $modelpath $url_judgement_prima_table_layout_model_v3
-  echo downloading weight file
-fi
+#if ! [ -f $modelpath ]; then
+curl -o $modelpath $url_judgement_prima_table_layout_model_v3
+echo downloading weight file
+#fi
 
 python app.py

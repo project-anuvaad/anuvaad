@@ -1,4 +1,4 @@
-from configs.wfmconfig import tool_blockmerger, tool_tokeniser
+from configs.wfmconfig import tool_blockmerger, tool_tokeniser, tool_filetranslator
 
 
 class Tokeniser:
@@ -12,12 +12,21 @@ class Tokeniser:
                 "files": wf_input["input"]["files"]
             }
         else:
-            tool_input = {
-                "record_id": wf_input["input"]["recordID"],
-                "model_id": wf_input["input"]["model"]["model_id"],
-                "locale": wf_input["input"]["locale"],
-                "text_blocks": wf_input["input"]["textBlocks"]
-            }
+            if 'paragraphs' in wf_input["input"].keys():
+                tool_input = {
+                    "model_id": wf_input["input"]["model_id"],
+                    "source_language_code":  wf_input["input"]["source_language_code"],
+                    "target_language_code": wf_input["input"]["target_language_code"],
+                    "locale": wf_input["input"]["locale"],
+                    "paragraphs": wf_input["input"]["paragraphs"]
+                }
+            else:
+                tool_input = {
+                    "record_id": wf_input["input"]["recordID"],
+                    "model_id": wf_input["input"]["model"]["model_id"],
+                    "locale": wf_input["input"]["locale"],
+                    "text_blocks": wf_input["input"]["textBlocks"]
+                }
         tok_input = {
             "jobID": wf_input["jobID"],
             "workflowCode": wf_input["workflowCode"],
@@ -31,7 +40,7 @@ class Tokeniser:
 
     # Returns a json of the format accepted by Tokeniser based on the predecessor.
     def get_tokeniser_input(self, task_output, predecessor):
-        predecessors = [tool_blockmerger]
+        predecessors = [tool_blockmerger, tool_filetranslator]
         if predecessor in predecessors:
             files = []
             op_files = task_output["output"]

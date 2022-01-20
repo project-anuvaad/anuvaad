@@ -1,3 +1,4 @@
+import json
 import os
 import time
 
@@ -11,9 +12,6 @@ from tmx.tmxrepo import TMXRepository
 from configs.translatorconfig import tmx_enabled
 from configs.translatorconfig import tmx_global_enabled
 from configs.translatorconfig import orgs_nmt_disable
-
-
-
 
 utils = TranslatorUtils()
 tmxservice = TMXService()
@@ -44,17 +42,20 @@ class BlockTranslationService:
                 if block_translate_input["metadata"]["orgID"] not in nmt_disabled_orgs:
                     log_info("API call to NMT...", block_translate_input)
                     nmt_response = utils.call_api(url, "POST", body, None, block_translate_input["metadata"]["userID"])
-                    log_info("Response received from NMT!", block_translate_input)
                 else:
                     log_info("Job belongs to NONMT type!", block_translate_input)
                     nmt_response = {"data": nmt_in_txt}
                 if nmt_response:
+                    if 'status' in nmt_response.keys():
+                        if nmt_response["status"]["statusCode"] != 200:
+                            fail_msg = "Error while translating from NMT: " + str(nmt_response["status"]["message"])
+                            log_error(fail_msg, block_translate_input, None)
                     ch_input = self.get_translations_ip_ch(nmt_response, block_translate_input)
                     if ch_input:
                         log_info("API call to CH...", block_translate_input)
                         ch_input["modifiedSentences"] = modified_sentences
-                        ch_response = utils.call_api(update_content_url, "POST", ch_input, None, block_translate_input["metadata"]["userID"])
-                        log_info("Response received from CH!", block_translate_input)
+                        ch_response = utils.call_api(update_content_url, "POST", ch_input, None,
+                                                     block_translate_input["metadata"]["userID"])
                         if ch_response:
                             if ch_response["http"]["status"] == 200:
                                 op_blocks = ch_response["data"]["blocks"]
@@ -109,43 +110,54 @@ class BlockTranslationService:
         sent_for_nmt, tmx_count = [], 0
         nmt_disabled_orgs = list(str(orgs_nmt_disable).split(","))
         if block_translate_input["metadata"]["orgID"] not in nmt_disabled_orgs:
-            tmx_present = self.is_tmx_present(block_translate_input)
+            tmx_present = utils.get_rbac_tmx_utm(block_translate_input["metadata"]["roles"], block_translate_input, True)[0]
+            if tmx_present:
+                tmx_present = self.is_tmx_present(block_translate_input)
         else:
             tmx_present = False
-        record_id, model_id = block_translate_input["input"]["recordID"], block_translate_input["input"]["model"]["model_id"]
-        modified_sentences, tmx_blocks_cache = [], {}
+        record_id, model_id = block_translate_input["input"]["recordID"], block_translate_input["input"]["model"][
+            "model_id"]
+        modified_sentences, retranslate, tmx_blocks_cache = [], False, {}
         if 'modifiedSentences' in block_translate_input["input"].keys():
             modified_sentences = block_translate_input["input"]["modifiedSentences"]
-        log_info("TMX Blocks Cache Size (Start): " + str(len(tmx_blocks_cache.keys())), block_translate_input)
+        if 'retranslate' in block_translate_input["input"].keys():
+            retranslate = block_translate_input["input"]["retranslate"]
+            if retranslate:
+                log_info("Retranslation job!", block_translate_input)
         for block in block_translate_input["input"]["textBlocks"]:
             if 'tokenized_sentences' in block.keys():
                 for sentence in block["tokenized_sentences"]:
-                    if 'save' not in sentence.keys():
-                        sentence["save"] = False
-                    if modified_sentences:
-                        add_to_nmt = (sentence["save"] is False) and (sentence["s_id"] in modified_sentences)
+                    if retranslate:
+                        add_to_nmt = retranslate
                     else:
-                        add_to_nmt = sentence["save"] is False
+                        if 'save' not in sentence.keys():
+                            sentence["save"] = False
+                        if modified_sentences:
+                            add_to_nmt = (sentence["save"] is False) and (sentence["s_id"] in modified_sentences)
+                        else:
+                            add_to_nmt = sentence["save"] is False
                     if add_to_nmt:
                         tmx_phrases = []
                         if tmx_present:
-                            tmx_phrases = self.fetch_tmx(sentence["src"], tmx_present, tmx_blocks_cache, block_translate_input)
+                            tmx_phrases = self.fetch_tmx(sentence["src"], tmx_present, tmx_blocks_cache,
+                                                         block_translate_input)
                         tmx_count += len(tmx_phrases)
                         n_id = str(record_id) + "|" + str(block["block_identifier"]) + "|" + str(sentence["s_id"])
-                        sent_nmt_in = {"s_id": sentence["s_id"], "src": sentence["src"], "n_id": n_id, "tmx_phrases": tmx_phrases}
+                        sent_nmt_in = {"s_id": sentence["s_id"], "src": sentence["src"], "n_id": n_id,
+                                       "tmx_phrases": tmx_phrases}
                         sent_for_nmt.append(sent_nmt_in)
         log_info("NMT: " + str(len(sent_for_nmt)) + " | TMX: " + str(tmx_count), block_translate_input)
-        log_info("TMX Blocks Cache Size (End): " + str(len(tmx_blocks_cache.keys())), block_translate_input)
         return sent_for_nmt, modified_sentences
 
-    # Checks if org level or user level TMX is applicable to the file under translation.
+    # Checks if org level or user level TMX is applicable to the blocks under translation.
     def is_tmx_present(self, block_translate_input):
         if tmx_enabled:
             if 'context' not in block_translate_input["input"].keys():
                 return False
             user_id = block_translate_input["metadata"]["userID"]
             org_id = block_translate_input["metadata"]["orgID"]
-            locale = block_translate_input["input"]["model"]["source_language_code"] + "|" + block_translate_input["input"]["model"]["target_language_code"]
+            locale = block_translate_input["input"]["model"]["source_language_code"] + "|" + \
+                     block_translate_input["input"]["model"]["target_language_code"]
             tmx_entries = tmx_repo.search_tmx_db(user_id, org_id, locale)
             if tmx_entries:
                 if tmx_entries == "USER":
@@ -174,15 +186,19 @@ class BlockTranslationService:
         return phrases
 
     # Parses the nmt response and builds input for ch
+    # No UTM here, cuz user is specifically asking the machine to translate
     def get_translations_ip_ch(self, nmt_response, block_translate_input):
         if 'data' in nmt_response.keys():
             if nmt_response['data']:
                 for translation in nmt_response["data"]:
+                    if type(translation) == "str":
+                        translation = json.loads(translation)
                     if translation["tmx_phrases"]:
-                        log_info("SRC: " + translation["src"] + " | TGT: " + translation["tgt"] +
-                                 " | TMX Count: " + str(len(translation["tmx_phrases"])), block_translate_input)
-                        translation["tgt"] = tmxservice.replace_nmt_tgt_with_user_tgt(translation["tmx_phrases"],
-                                                                                      translation["tgt"], block_translate_input)
+                        log_info("SRC: {} | TGT: {} | TMX Count: {}".format(translation["src"], translation["tgt"],
+                                                                            str(len(translation["tmx_phrases"]))), block_translate_input)
+                        translation["tgt"], translation["tmx_replacement"] = tmxservice.replace_nmt_tgt_with_user_tgt(translation["tmx_phrases"],
+                                                                                                                      translation["tgt"], block_translate_input)
+                        log_info(translation["tmx_replacement"], block_translate_input)
                     b_index, s_index = None, None
                     block_id, sentence_id = str(translation["n_id"]).split("|")[2], str(translation["n_id"]).split("|")[3]
                     blocks = block_translate_input["input"]["textBlocks"]
@@ -196,7 +212,9 @@ class BlockTranslationService:
                             s_index = k
                             break
                     if b_index is not None and s_index is not None:
-                        block_translate_input["input"]["textBlocks"][b_index]["tokenized_sentences"][s_index] = translation
+                        block_translate_input["input"]["textBlocks"][b_index]["tokenized_sentences"][
+                            s_index] = translation
         log_info("Input for CH update generated!", block_translate_input)
         return {"blocks": block_translate_input["input"]["textBlocks"],
-                "workflowCode": block_translate_input["workflowCode"], "record_id": block_translate_input["input"]["recordID"]}
+                "workflowCode": block_translate_input["workflowCode"],
+                "record_id": block_translate_input["input"]["recordID"]}

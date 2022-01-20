@@ -12,7 +12,10 @@ class Producer(object):
     # publishing massage with kafka producer
     def producer_fn(self):
         try:
-            producer = KafkaProducer(bootstrap_servers =  list((self.server_address).split(",")), value_serializer = lambda x:dumps(x).encode('utf-8'))
+            producer = KafkaProducer(
+                bootstrap_servers=list((self.server_address).split(",")),
+                value_serializer=lambda x: dumps(x).encode("utf-8"),
+            )
             log_info("producer_fn : producer returned succesfully", None)
             return producer
         except Exception as e:
@@ -20,6 +23,6 @@ class Producer(object):
 
     def push_data_to_queue(self, topic_name, push_data):
         producer = self.producer_fn()
-        producer.send(topic_name, value = push_data)
+        producer.send(topic_name, value=push_data)
         producer.flush()
         log_info("push_data_to_queue : successfully pushed data to output queue", None)

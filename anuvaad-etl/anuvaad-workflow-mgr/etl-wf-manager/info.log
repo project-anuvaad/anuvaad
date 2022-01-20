@@ -1046,3 +1046,17 @@ Traceback (most recent call last):
 FileNotFoundError: [Errno 2] No such file or directory: '/app/configs/wfconfig.yml'
 [2021-03-22 15:47:17,913] {loghandler.py:21} wfm-cons-th INFO in loghandler: WFM--(tZfC) | Running..........
 [2021-03-22 15:47:17,913] {loghandler.py:21} wfm-cons-th INFO in loghandler: WFM--(tZfC) | Topics: []
+[2021-05-18 23:04:17,137] {loghandler.py:21} wfm-core-cons-th INFO in loghandler: WFM-Core-(megb) | Running..........
+[2021-05-18 23:04:17,138] {loghandler.py:21} wfm-error-cons-th INFO in loghandler: WFM-Error-(tpVK) | Running..........
+[2021-05-18 23:04:17,139] {loghandler.py:21} wfm-core-cons-th INFO in loghandler: WFM-Core-(megb) | Topics: ['anuvaad-etl-wf-initiate-v3']
+[2021-05-18 23:04:17,139] {loghandler.py:21} wfm-error-cons-th INFO in loghandler: WFM-Error-(tpVK) | Topics: ['anuvaad-etl-wf-errors-v1']
+[2021-05-18 23:04:17,359] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5001/ (Press CTRL+C to quit)
+[2021-05-18 23:04:17,568] {loghandler.py:78} wfm-cons-th ERROR in loghandler: Exception while reading configs: [Errno 2] No such file or directory: '/app/configs/wfconfig.yml'
+Traceback (most recent call last):
+  File "/Users/mahulivishal/Desktop/anuvaad/anuvaad/anuvaad-etl/anuvaad-workflow-mgr/etl-wf-manager/utilities/wfmutils.py", line 70, in read_all_configs
+    open(file_path, 'wb').write(file.content)
+FileNotFoundError: [Errno 2] No such file or directory: '/app/configs/wfconfig.yml'
+[2021-05-18 23:04:17,573] {loghandler.py:21} wfm-cons-th INFO in loghandler: WFM--(zYKk) | Running..........
+[2021-05-18 23:04:17,573] {loghandler.py:21} wfm-cons-th INFO in loghandler: WFM--(zYKk) | Topics: []
+[2021-06-07 17:50:28,487] {_internal.py:113} Thread-1 INFO in _internal: 127.0.0.1 - - [07/Jun/2021 17:50:28] "[33mPOST /ulca/dataset/v0/load HTTP/1.1[0m" 404 -
+[2021-06-07 17:50:43,282] {_internal.py:113} Thread-2 INFO in _internal: 127.0.0.1 - - [07/Jun/2021 17:50:43] "[33mPOST /ulca/dataset/v0/load HTTP/1.1[0m" 404 -

@@ -3,7 +3,7 @@ from flask_restful import Api
 import config
 
 from resources import InteractiveTranslateResource, InteractiveMultiTranslateResource, OpenNMTTranslateResource,NMTTranslateResource, \
-                      InteractiveMultiTranslateResourceNew, TranslateResourceV4, InteractiveMultiTranslateResourceV3
+                      InteractiveMultiTranslateResourceNew, TranslateResourceV4, InteractiveMultiTranslateResourceV3, NMTTranslateResourceULCA
 
 TRANSLATE_BLUEPRINT = Blueprint("translate", __name__)
 
@@ -33,4 +33,8 @@ Api(TRANSLATE_BLUEPRINT).add_resource(
 
 Api(TRANSLATE_BLUEPRINT).add_resource(
     InteractiveMultiTranslateResourceV3, config.MODULE_NAME + "/v3/interactive-translation"
+)
+
+Api(TRANSLATE_BLUEPRINT).add_resource(
+    NMTTranslateResourceULCA, config.MODULE_NAME + "/v0/translate"
 )

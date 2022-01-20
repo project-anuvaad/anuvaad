@@ -10,7 +10,7 @@ def get_consumer(topics):
     try:
         consumer = KafkaConsumer(
             bootstrap_servers=list(str(config.bootstrap_server).split(",")),
-            value_deserializer=lambda x: json.loads(x.decode('utf-8')),group_id=kafka_topics.group_id)
+            value_deserializer=lambda x: json.loads(x.decode('utf-8')),group_id=kafka_topics.group_id,max_poll_interval_ms=600000)
     
         consumer.subscribe(topics)    
         log_info('get_consumer : consumer returned for topics:{}'.format(topics),MODULE_CONTEXT)
