@@ -48,6 +48,7 @@ const endpoints = {
   delete_user_glossary: "/anuvaad-etl/translator/v1/tmx/delete",
   getUserReport: '/dashboard/getUserReport',
   downloadDocxFile: '/anuvaad-etl/anuvaad-docx-downloader/v0/download-docx',
+  downloadOcrDocxFile: '/anuvaad-etl/anuvaad-docx-downloader/ocr/v0/download-docx',
   fetchDigitalDocLink: '/anuvaad/content-handler/v0/ref-link/fetch'
 };
 

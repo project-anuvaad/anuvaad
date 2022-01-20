@@ -175,7 +175,7 @@ class FileContentRepositories:
                 saved_block_results = self.blockModel.get_block_by_block_identifier(record_id,user_id, updated_block['data']['block_identifier'])
                 for saved_block in saved_block_results:
                     saved_blocks.append(saved_block['data'][0])
-                log_info("FileContentUpdateRepo -updated blocks : {}".format(str(saved_blocks)),AppContext.getContext())
+                log_info("FileContentUpdateRepo -updated blocks ",AppContext.getContext())
         return True, saved_blocks
 
     def store_reference(self,records):
