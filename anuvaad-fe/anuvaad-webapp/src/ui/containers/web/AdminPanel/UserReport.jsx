@@ -191,6 +191,7 @@ class UserReport extends React.Component {
     };
 
     getJobsAsPerPageAndLimit = (page, limit) => {
+        limit = 10
         return this.getJobsSortedByTimestamp().slice(
             page * limit,
             page * limit + limit
