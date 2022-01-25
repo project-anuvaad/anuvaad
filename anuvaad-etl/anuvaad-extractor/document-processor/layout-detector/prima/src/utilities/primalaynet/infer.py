@@ -332,7 +332,7 @@ def cell_layout(regions,image):
 			else:
 				other_regions.append(region)
 		other_regions.sort(key=lambda x: x['boundingBox']['vertices'][0]['y'],reverse=False)
-		other_regions,col_count = sort_regions(layouts,False,0)
+		other_regions,col_count = sort_regions(other_regions,False,0)
 		if len(table_regions)>0:
 			for idx,region in enumerate(table_regions):
 				region = region['boundingBox']['vertices']
