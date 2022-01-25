@@ -332,7 +332,7 @@ def cell_layout(regions,image):
 			else:
 				other_regions.append(region)
 		other_regions.sort(key=lambda x: x['boundingBox']['vertices'][0]['y'],reverse=False)
-		other_regions,col_count = sort_regions(other_regions,False,0)
+		other_regions,col_count = sort_regions(copy.deepcopy(other_regions),False,0)
 		if len(table_regions)>0:
 			for idx,region in enumerate(table_regions):
 				region = region['boundingBox']['vertices']
@@ -349,13 +349,13 @@ def cell_layout(regions,image):
 				layouts  = prima.update_box_format(bbox,tag,score)
 				#################### sort cell regions
 				layouts.sort(key=lambda x: x['boundingBox']['vertices'][0]['y'],reverse=False)
-				layouts,col_count = sort_regions(layouts,True,0)
+				sorted_layouts,col_count = sort_regions(copy.deepcopy(layouts),True,0)
 				if col_count==0:
 					col_count=1
-				row_count = int(len(layouts)/col_count)
+				row_count = int(len(sorted_layouts)/col_count)
 				tab_layouts['rows']=row_count
 				tab_layouts['columns']=col_count
-				tab_layouts['regions']=layouts
+				tab_layouts['regions']=copy.depcopy(sorted_layouts)
 				#table_region_process.append(tab_layouts)
 				other_regions.append(tab_layouts)
 			return other_regions
