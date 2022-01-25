@@ -38,7 +38,7 @@ class File:
         resp = requests.get(im_url)
         image = np.asarray(bytearray(resp.content))
         image = cv2.imdecode(image, cv2.IMREAD_COLOR)
-        return image
+        return image    
 
     @log_error
     def get_images_len(self):

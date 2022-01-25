@@ -102,3 +102,20 @@ class FileOperation(object):
             message = object_in['error']['message']
             error = post_error(code, message, None)
             return error
+
+
+
+
+def sort_regions(regions,check_rows_cols=False,col_count=0,sorted_region=[]):
+    check_y =regions[0]['boundingBox']['vertices'][0]['y']
+    spacing_threshold = abs(check_y - regions[0]['boundingBox']['vertices'][3]['y'])* 0.5  # *2 #*0.5
+    same_region =  list(filter(lambda x: (abs(x['boundingBox']['vertices'][0]['y']  - check_y) <= spacing_threshold), regions))
+    if check_rows_cols:
+        col_count=max(len(same_region),col_count)
+    next_region =   list(filter(lambda x: (abs(x['boundingBox']['vertices'][0]['y']  - check_y) > spacing_threshold), regions))
+    if len(same_region) >1 :
+       same_region.sort(key=lambda x: x['boundingBox']['vertices'][0]['x'],reverse=False)
+    sorted_region += same_region
+    if len(next_region) > 0:
+        sort_regions(next_region,check_rows_cols, col_count,sorted_region)
+    return sorted_region,col_count

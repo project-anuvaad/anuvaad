@@ -13,7 +13,7 @@ import numpy as np
 import copy
 from shapely.geometry import Polygon
 from src.utilities.remove_water_mark import clean_image
-
+from src.utilities.utils import sort_regions
 device = torch.device("cuda")
 #os.environ["CUDA_VISIBLE_DEVICES"] = ""
 
@@ -345,6 +345,14 @@ def cell_layout(regions,image):
 				layout   = model_primatablenet.detect(blank_image)
 				bbox,tag,score = prima.prima_region(layout)
 				layouts  = prima.update_box_format(bbox,tag,score)
+				#################### sort cell regions
+				layouts.sort(key=lambda x: x['boundingBox']['vertices'][0]['y'],reverse=False)
+				layouts,col_count = sort_regions(layouts,True,0)
+				if col_count==0:
+					col_count=1
+				row_count = int(len(layouts)/col_count)
+				tab_layouts['rows']=row_count
+				tab_layouts['columns']=col_count
 				tab_layouts['regions']=layouts
 				#table_region_process.append(tab_layouts)
 				other_regions.append(tab_layouts)
