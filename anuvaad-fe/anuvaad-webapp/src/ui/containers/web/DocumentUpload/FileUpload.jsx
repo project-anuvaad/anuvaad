@@ -519,11 +519,11 @@ class PdfUpload extends Component {
                     }
                     dropZoneClass={classes.dropZoneArea}
                     acceptedFiles={[
-                      ".txt,audio/*,.ods,.pptx,image/*,.psd,.pdf,.xlsm,.xltx,.xltm,.xla,.xltm,.docx,.rtf",
-                      ".txt",
+                      // ".txt,audio/*,.ods,.pptx,image/*,.psd,.pdf,.xlsm,.xltx,.xltm,.xla,.xltm,.docx,.rtf",
+                      // ".txt",
                       ".pdf",
-                      ".doc",
-                      ".ppt",
+                      ".docx",
+                      ".pptx",
                       ".excel",
                       ".xlsx",
                       ".xls",

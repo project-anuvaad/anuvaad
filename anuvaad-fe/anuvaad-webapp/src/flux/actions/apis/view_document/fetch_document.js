@@ -31,6 +31,9 @@ export default class BulkSearchAPI extends API {
   processResponse(res) {
     super.processResponse(res);
     if (res) {
+      if(res.jobs && res.jobs.length > 0) {
+        res.jobs = res.jobs.filter( (ele, ind) => ind === res.jobs.findIndex( elem => elem.jobID === ele.jobID))
+      }
       this.sentences = res;
     }
   }

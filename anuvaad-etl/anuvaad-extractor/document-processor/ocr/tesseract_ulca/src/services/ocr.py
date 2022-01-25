@@ -3,7 +3,7 @@ import pytesseract
 import config
 from html import escape
 
-escape_sequences = ['\x0c' , '\f' ,'\v' , '\x0b', None, '']
+escape_sequences = ["\x0c", "\f", "\v", "\x0b", None, ""]
 
 
 class TextExtraction:
@@ -50,7 +50,11 @@ class TextExtraction:
                 lang = self.lang
             text = pytesseract.image_to_string(self.image, lang=lang)
 
-            return [{"source": escape(line)} for line in text.split("\n") if line not in escape_sequences]
+            return [
+                {"source": escape(line)}
+                for line in text.split("\n")
+                if line not in escape_sequences
+            ]
         except Exception as e:
             return "Exception in tesseract ocr due to " + str(e)
 

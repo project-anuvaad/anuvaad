@@ -33,7 +33,7 @@ class UserReport extends React.Component {
             role: localStorage.getItem("roles"),
             showInfo: false,
             offset: 0,
-            limit: 10,
+            limit: 0,
             currentPageIndex: 0,
             dialogMessage: null,
             timeOut: 3000,
@@ -167,8 +167,13 @@ class UserReport extends React.Component {
         APITransport(apiObj);
     }
 
-    makeAPICallDocumentsTranslationProgress(jobIds) {
-        var recordIds = this.getRecordIds();
+    makeAPICallDocumentsTranslationProgress(limit) {
+        if (limit) {
+            var recordIds = this.getRecordIds(limit);
+        } else {
+            var recordIds = this.getRecordIds();
+        }
+       
         if (recordIds.length > 0) {
             const { APITransport } = this.props;
             const apiObj = new JobStatus(recordIds, true);
@@ -191,18 +196,28 @@ class UserReport extends React.Component {
     };
 
     getJobsAsPerPageAndLimit = (page, limit) => {
+        if(limit === 0) {  
+            this.setState({ limit: 10 });
+        }
         return this.getJobsSortedByTimestamp().slice(
             page * limit,
             page * limit + limit
         );
     };
 
-    getRecordIds = () => {
+    getRecordIds = (limit) => {
         let recordids = [];
-        this.getJobsAsPerPageAndLimit(
-            this.state.currentPageIndex,
-            this.state.limit
-        ).map((job) => job.recordId && recordids.push(job.recordId));
+        if (limit) {
+            this.getJobsAsPerPageAndLimit(
+                this.state.currentPageIndex,
+                limit
+            ).map((job) => job.recordId && recordids.push(job.recordId));
+        } else {
+            this.getJobsAsPerPageAndLimit(
+                this.state.currentPageIndex,
+                this.state.limit
+            ).map((job) => job.recordId && recordids.push(job.recordId));
+        }
         return recordids;
     };
 
@@ -586,6 +601,10 @@ class UserReport extends React.Component {
                             tableState.sortOrder
                         );
                         break;
+                    case "changeRowsPerPage":
+                        this.makeAPICallDocumentsTranslationProgress(tableState.rowsPerPage);
+                        this.setState({ showLoader: true })
+                        break;
                     default:
                 }
             },
@@ -603,8 +622,8 @@ class UserReport extends React.Component {
             page: this.state.currentPageIndex,
         };
         return (
-            <div style={{ height: window.innerHeight }}>
-                <div style={{ margin: "0% 3% 3% 3%", paddingTop: "7%" }}>
+            <div style={{ minHeight: window.innerHeight - 2 }}>
+                <div style={{ margin: "0% 3% 3% 3%", paddingTop: "7%", paddingBottom: "1%" }}>
                     <UserReportHeader />
                     {/* {!this.state.showLoader && ( */}
                     <MuiThemeProvider theme={this.getMuiTheme()}>

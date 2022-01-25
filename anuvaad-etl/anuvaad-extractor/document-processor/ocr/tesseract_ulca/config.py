@@ -20,4 +20,4 @@ LANG_MAPPING = {
     "te": ["Telugu"],
 }
 
-KEY_HASH = 'd1fede612afe30f317da6666a026e86d33ffce887bdb60b933452c5f059bb6c98062e5f200b3b8dddf12cfa2d4099dad5fe9bc820412bdebe45f73eba3bdae0c'
+KEY_HASH = "d1fede612afe30f317da6666a026e86d33ffce887bdb60b933452c5f059bb6c98062e5f200b3b8dddf12cfa2d4099dad5fe9bc820412bdebe45f73eba3bdae0c"

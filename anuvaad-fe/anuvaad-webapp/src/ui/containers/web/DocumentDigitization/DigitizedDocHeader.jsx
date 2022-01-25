@@ -32,6 +32,9 @@ import copylocation from '../../../../flux/actions/apis/view_digitized_document/
 import set_crop_size from '../../../../flux/actions/apis/view_digitized_document/set_crop_size';
 import reset_updated_word from '../../../../flux/actions/apis/view_digitized_document/reset_updated_word';
 
+import DownloadDOCX from "../../../../flux/actions/apis/document_translate/download_docx";
+import { translate } from "../../../../../src/assets/localisation";
+
 const StyledMenu = withStyles({
     paper: {
         border: '1px solid #d3d4d5',
@@ -116,10 +119,6 @@ class DigitizedDocHeader extends React.Component {
         )
     }
 
-    
-
-    
-
     openPDF = event => {
         this.props.showPdf()
     };
@@ -128,6 +127,55 @@ class DigitizedDocHeader extends React.Component {
         this.props.copylocation()
         this.props.set_crop_size("", true)
     }
+
+    fetchDocxFile = () => {
+        console.log('this.props.match.params', this.props.match.params)
+        let fname = this.props.match.params.filename.replace(".json", ".docx");
+        let jobId = encodeURI(this.props.match.params.jobId);
+        let jobName = this.props.match.params.filename;
+        // jobName = jobName.substr(0, jobName.lastIndexOf("."));
+        console.log("fname", fname);
+        console.log("jobId", jobId);
+        console.log("jobName", jobName);
+        const apiObj = new DownloadDOCX(jobId, fname, jobName, 'ocr');
+        this.setState({
+          anchorEl: null,
+          showStatus: true,
+          message: translate("common.page.label.download"),
+        });
+        fetch(apiObj.apiEndPoint(), {
+          method: "post",
+          headers: apiObj.getHeaders().headers,
+          body: JSON.stringify(apiObj.getBody()),
+        }).then((res) => {
+            console.log("res----------------------", res)
+          if (res.ok) {
+            res.blob().then((data) => {
+              let url = URL.createObjectURL(data);
+              const link = document.createElement("a");
+              link.href = url;
+              jobName = jobName.substr(0, jobName.lastIndexOf("."));
+              link.setAttribute(
+                "download",
+                `${jobName}_${fname.substr(0, fname.lastIndexOf("|"))}.docx`
+              );
+              document.body.appendChild(link);
+              link.click();
+              link.parentNode.removeChild(link);
+            });
+          } else {
+            this.setState({
+              anchorEl: null,
+              showStatus: true,
+              message: "Downloading failed...",
+            });
+          }
+        });
+        setTimeout(() => {
+          this.setState({ showStatus: false });
+        }, 3000);
+    };
+
     renderOptions() {
         const { anchorEl } = this.state;
         const openEl = Boolean(anchorEl);
@@ -182,6 +230,12 @@ class DigitizedDocHeader extends React.Component {
                         }}
                     >
                         As PDF
+                    </MenuItem>
+                    <MenuItem
+                        style={{ borderTop: "1px solid #D6D6D6" }}
+                        onClick={this.fetchDocxFile}
+                    >
+                        As DOCX
                     </MenuItem>
                 </StyledMenu>
                 <Button variant="outlined" color="primary" style={{ marginLeft: "10px" }} onClick={this.props.togglebtnstatus}>
