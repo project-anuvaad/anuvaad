@@ -318,51 +318,51 @@ prima = PRIMA()
 
 
 def cell_layout(regions,image):
-	try:
-		#print(image,"iiiiiiiiiiiiiiiiiiiiiiiiii")
-		#image   = cv2.imread("/home/naresh/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/layout-detector/prima/"+image)
-		#image   = cv2.imread(page_path)
+	#try:
+	#print(image,"iiiiiiiiiiiiiiiiiiiiiiiiii")
+	#image   = cv2.imread("/home/naresh/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/layout-detector/prima/"+image)
+	#image   = cv2.imread(page_path)
 
-		height, width, channels = image.shape
-		table_regions = []
-		other_regions = []
-		for region in regions:
-			if region['class']=='TABLE' or region['class']=='TableRegion':
-				table_regions.append(region)
-			else:
-				other_regions.append(region)
-		other_regions.sort(key=lambda x: x['boundingBox']['vertices'][0]['y'],reverse=False)
-		other_regions,col_count = sort_regions(copy.deepcopy(other_regions),False,0)
-		if len(table_regions)>0:
-			for idx,region in enumerate(table_regions):
-				region = region['boundingBox']['vertices']
-				bbox = [[region[0]['x'],region[0]['y'],region[2]['x'],region[2]['y']]]
-				tab_layouts  = prima.update_box_format(bbox,['TableRegion'],["99"])[0]
-				blank_image = np.zeros(image.shape, dtype=np.uint8)
-				blank_image[:,0:image.shape[1]//2] = (255,255,255)      # (B, G, R)
-				blank_image[:,image.shape[1]//2:image.shape[1]] = (255,255,255)
-				ymin = int(region[0]['y']) ; ymax = int(region[2]['y']) ; xmin = int(region[0]['x']); xmax = int(region[2]['x'])
-				crop_img = image[ymin:ymax,xmin:xmax,:]
-				blank_image[ymin:ymax,xmin:xmax] = crop_img
-				layout   = model_primatablenet.detect(blank_image)
-				bbox,tag,score = prima.prima_region(layout)
-				layouts  = prima.update_box_format(bbox,tag,score)
-				#################### sort cell regions
-				layouts.sort(key=lambda x: x['boundingBox']['vertices'][0]['y'],reverse=False)
-				sorted_layouts,col_count = sort_regions(copy.deepcopy(layouts),True,0)
-				if col_count==0:
-					col_count=1
-				row_count = int(len(sorted_layouts)/col_count)
-				tab_layouts['rows']=row_count
-				tab_layouts['columns']=col_count
-				tab_layouts['regions']=copy.depcopy(sorted_layouts)
-				#table_region_process.append(tab_layouts)
-				other_regions.append(tab_layouts)
-			return other_regions
+	height, width, channels = image.shape
+	table_regions = []
+	other_regions = []
+	for region in regions:
+		if region['class']=='TABLE' or region['class']=='TableRegion':
+			table_regions.append(region)
 		else:
-			return regions
+			other_regions.append(region)
+	#other_regions.sort(key=lambda x: x['boundingBox']['vertices'][0]['y'],reverse=False)
+	#other_regions,col_count = sort_regions(copy.deepcopy(other_regions),False,0)
+	if len(table_regions)>0:
+		for idx,region in enumerate(table_regions):
+			region = region['boundingBox']['vertices']
+			bbox = [[region[0]['x'],region[0]['y'],region[2]['x'],region[2]['y']]]
+			tab_layouts  = prima.update_box_format(bbox,['TableRegion'],["99"])[0]
+			blank_image = np.zeros(image.shape, dtype=np.uint8)
+			blank_image[:,0:image.shape[1]//2] = (255,255,255)      # (B, G, R)
+			blank_image[:,image.shape[1]//2:image.shape[1]] = (255,255,255)
+			ymin = int(region[0]['y']) ; ymax = int(region[2]['y']) ; xmin = int(region[0]['x']); xmax = int(region[2]['x'])
+			crop_img = image[ymin:ymax,xmin:xmax,:]
+			blank_image[ymin:ymax,xmin:xmax] = crop_img
+			layout   = model_primatablenet.detect(blank_image)
+			bbox,tag,score = prima.prima_region(layout)
+			layouts_updated  = copy.deepcopy(prima.update_box_format(bbox,tag,score))
+			#################### sort cell regions
+			layouts_updated.sort(key=lambda x: x['boundingBox']['vertices'][0]['y'],reverse=False)
+			sorted_layouts,col_count = sort_regions(copy.deepcopy(layouts_updated),True,0)
+			if col_count==0:
+				col_count=1
+			row_count = int(len(sorted_layouts)/col_count)
+			tab_layouts['rows']=row_count
+			tab_layouts['columns']=col_count
+			tab_layouts['regions']=copy.depcopy(sorted_layouts)
+			#table_region_process.append(tab_layouts)
+			other_regions.append(copy.deepcopy(tab_layouts))
+		return other_regions
+	else:
+		return regions
 
 		
-	except Exception as e:
-		log_exception("Error occured during cell layout detection",  app_context.application_context, e)
-		return None
+	# except Exception as e:
+	# 	log_exception("Error occured during cell layout detection",  app_context.application_context, e)
+	# 	return None
