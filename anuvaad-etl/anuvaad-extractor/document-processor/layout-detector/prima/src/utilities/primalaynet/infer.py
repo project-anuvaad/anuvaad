@@ -348,14 +348,14 @@ def cell_layout(regions,image):
 			bbox,tag,score = prima.prima_region(layout)
 			layouts_updated  = copy.deepcopy(prima.update_box_format(bbox,tag,score))
 			#################### sort cell regions
-			layouts_updated.sort(key=lambda x: x['boundingBox']['vertices'][0]['y'],reverse=False)
-			sorted_layouts,col_count = sort_regions(copy.deepcopy(layouts_updated),True,0)
-			if col_count==0:
-				col_count=1
-			row_count = int(len(sorted_layouts)/col_count)
-			tab_layouts['rows']=row_count
-			tab_layouts['columns']=col_count
-			tab_layouts['regions']=copy.depcopy(sorted_layouts)
+			# layouts_updated.sort(key=lambda x: x['boundingBox']['vertices'][0]['y'],reverse=False)
+			# sorted_layouts,col_count = sort_regions(copy.deepcopy(layouts_updated),True,0)
+			# if col_count==0:
+			# 	col_count=1
+			# row_count = int(len(sorted_layouts)/col_count)
+			# tab_layouts['rows']=row_count
+			# tab_layouts['columns']=col_count
+			tab_layouts['regions']=copy.depcopy(layouts_updated)
 			#table_region_process.append(tab_layouts)
 			other_regions.append(copy.deepcopy(tab_layouts))
 		return other_regions
