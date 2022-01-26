@@ -346,7 +346,7 @@ def cell_layout(regions,image):
 			blank_image[ymin:ymax,xmin:xmax] = crop_img
 			layout   = model_primatablenet.detect(blank_image)
 			bbox,tag,score = prima.prima_region(layout)
-			layouts_updated  = copy.deepcopy(prima.update_box_format(bbox,tag,score))
+			layouts_updated  = prima.update_box_format(bbox,tag,score)
 			#################### sort cell regions
 			# layouts_updated.sort(key=lambda x: x['boundingBox']['vertices'][0]['y'],reverse=False)
 			# sorted_layouts,col_count = sort_regions(copy.deepcopy(layouts_updated),True,0)
@@ -355,9 +355,9 @@ def cell_layout(regions,image):
 			# row_count = int(len(sorted_layouts)/col_count)
 			# tab_layouts['rows']=row_count
 			# tab_layouts['columns']=col_count
-			tab_layouts['regions']=copy.depcopy(layouts_updated)
+			tab_layouts['regions']=layouts_updated
 			#table_region_process.append(tab_layouts)
-			other_regions.append(copy.deepcopy(tab_layouts))
+			other_regions.append(tab_layouts)
 		return other_regions
 	else:
 		return regions
