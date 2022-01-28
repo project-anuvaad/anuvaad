@@ -61,7 +61,7 @@ const generateTableArray = (data) => {
                     align: 'left',
                     b: true,
                     sz: '20',
-                    fontFamily: cell.font_family ? cell.font_family : 'Arial Unicode MS'
+                    fontFamily: cell.font_family ? cell.font_family : 'Arial Unicode MS',
                 }
             })
         } else if(columns.length === collen) {
@@ -71,7 +71,7 @@ const generateTableArray = (data) => {
                     align: 'left',
                     b: false,
                     sz: '20',
-                    fontFamily: cell.font_family ? cell.font_family : 'Arial Unicode MS'
+                    fontFamily: cell.font_family ? cell.font_family : 'Arial Unicode MS',
                 }
             })
         }
