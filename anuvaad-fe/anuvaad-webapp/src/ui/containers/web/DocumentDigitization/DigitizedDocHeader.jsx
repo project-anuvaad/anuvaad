@@ -129,14 +129,10 @@ class DigitizedDocHeader extends React.Component {
     }
 
     fetchDocxFile = () => {
-        console.log('this.props.match.params', this.props.match.params)
         let fname = this.props.match.params.filename.replace(".json", ".docx");
         let jobId = encodeURI(this.props.match.params.jobId);
         let jobName = this.props.match.params.filename;
         // jobName = jobName.substr(0, jobName.lastIndexOf("."));
-        console.log("fname", fname);
-        console.log("jobId", jobId);
-        console.log("jobName", jobName);
         const apiObj = new DownloadDOCX(jobId, fname, jobName, 'ocr');
         this.setState({
           anchorEl: null,
@@ -148,7 +144,6 @@ class DigitizedDocHeader extends React.Component {
           headers: apiObj.getHeaders().headers,
           body: JSON.stringify(apiObj.getBody()),
         }).then((res) => {
-            console.log("res----------------------", res)
           if (res.ok) {
             res.blob().then((data) => {
               let url = URL.createObjectURL(data);

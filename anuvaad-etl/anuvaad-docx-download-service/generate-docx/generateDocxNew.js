@@ -11,7 +11,8 @@ const generateDocxNew = (jobName,fname, height, width) => {
         pageSize: {
             width,
             height
-        }
+        },
+        pageMargins: { top: 1000, left: 1000, bottom: 1000, right: 1000 },
     })
 
     docx.on('finalize', function (written) {
@@ -55,24 +56,12 @@ const generateDocxNew = (jobName,fname, height, width) => {
                 })
             }  else if (tokens.class === 'TABLE') {
                 let tableArray = generateTableArray(tokens);
-                const style = {
-                    '@w:val': 'single',
-                    '@w:sz': '1',
-                    '@w:tblCellSpacing': '0',
-                }
-                const borderStyle = {
-                    'w:top': style,
-                    'w:bottom': style,
-                    'w:left': style,
-                    'w:right': style,
-                    'w:insideH': style,
-                    'w:insideV': style,
-                }
+
                 const tableStyle = {
-                    tableColWidth: 2461,
-                    tableSize: 8,
+                    tableColWidth: 3261,
+                    tableSize: 1,
                     tableAlign: 'left',
-                    borderStyle: borderStyle
+                    tableFontFamily: 'Arial Unicode MS',
                 }
                 docx.createTable(tableArray, tableStyle);
             } else if (tokens.class === 'BGIMAGE') {
@@ -101,7 +90,7 @@ const generateDocxNew = (jobName,fname, height, width) => {
 
 const sortData = (data) => {
     let sortedData = Array.isArray(data) ? data.sort((a, b) => {
-        if (a['page_no'] === b['page_no'])
+        // if (a['page_no'] === b['page_no'])
             return a.top - b.top
     }) : []
     return sortedData;

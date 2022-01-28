@@ -49,7 +49,7 @@ const generateTableArray = (data) => {
             cell.regions.forEach( txt => {
                 celltext.push(txt.text)
             })
-            tgt = celltext.join(' ')
+            tgt = celltext.join('')
         } else {
             tgt = cell.regions[0].txt
         }
@@ -58,8 +58,9 @@ const generateTableArray = (data) => {
             columns.push({
                 val: tgt,
                 opts: {
-                    b: false,
-                    sz: cell.font_size + 'pt',
+                    align: 'left',
+                    b: true,
+                    sz: '20',
                     fontFamily: cell.font_family ? cell.font_family : 'Arial Unicode MS'
                 }
             })
@@ -67,8 +68,9 @@ const generateTableArray = (data) => {
             rowsarr.push({
                 val: tgt,
                 opts: {
+                    align: 'left',
                     b: false,
-                    sz: cell.font_size + 'pt',
+                    sz: '20',
                     fontFamily: cell.font_family ? cell.font_family : 'Arial Unicode MS'
                 }
             })
