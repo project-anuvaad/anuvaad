@@ -38,41 +38,55 @@ const generateTableArray = (data) => {
     let tableArray = []
     let columns = []
     let rows = []
-    let row_index = 0
-    data.childrens.forEach(child => {
-        let tgt = child.tokenized_sentences !== undefined ? child.tokenized_sentences.map(val => val.tgt) : []
-        if (child.cell_index[0] === 0) {
+    let rowsarr = []
+    let collen = data.columns
+    let rowlen = data.regions.length - collen
+
+    data.regions.forEach(cell => {
+        let celltext = []
+        let tgt = ''
+        if(cell.regions.length > 0 ){
+            cell.regions.forEach( txt => {
+                celltext.push(txt.text)
+            })
+            tgt = celltext.join(' ')
+        } else {
+            tgt = cell.regions[0].txt
+        }
+
+        if(columns.length !== collen) {
             columns.push({
-                val: tgt.join(' '),
+                val: tgt,
                 opts: {
                     b: false,
-                    sz: child.font_size + 'pt',
-                    fontFamily: child.font_family
+                    sz: cell.font_size + 'pt',
+                    fontFamily: cell.font_family ? cell.font_family : 'Arial Unicode MS'
                 }
             })
-        } else if (row_index !== child.cell_index[0]) {
+        } else if(columns.length === collen) {
+            rowsarr.push({
+                val: tgt,
+                opts: {
+                    b: false,
+                    sz: cell.font_size + 'pt',
+                    fontFamily: cell.font_family ? cell.font_family : 'Arial Unicode MS'
+                }
+            })
+        }
+    })
+
+    if (rowsarr.length === rowlen) {
+        rowsarr.forEach(cell => {
+            rows.push(cell)
             if (columns.length) {
                 tableArray.push(columns)
+                columns = []
             }
-
-            if (rows.length) {
+            if (rows.length === collen) {
                 tableArray.push(rows)
                 rows = []
             }
-
-            rows.push(tgt.join(' '))
-            row_index = child.cell_index[0]
-        } else if (row_index === child.cell_index[0]) {
-            rows.push(tgt.join(' '))
-            columns = []
-        }
-    })
-    if (rows.length) {
-        tableArray.push(rows);
-        rows = []
-    } else if (columns.length) {
-        tableArray.push(columns)
-        columns = []
+        })
     }
     return tableArray;
 }
