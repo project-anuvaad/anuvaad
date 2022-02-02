@@ -57,25 +57,24 @@ def process_vision_ocr_kf():
             wait_for_control = controlQueue.get(block=True)
 
             for msg in consumer:
-                pass
 
-                # if Consumer.get_json_data(msg.value) == None:
-                #     log_info('process_ocr_gv_15_kf - received invalid data {}'.format(msg.value), None)
-                #     continue
-                # data            = Consumer.get_json_data(msg.value)
-
-
-                # consumer.commit_async()  # <--- This is what we need
-                # # Optionally, To check if everything went good
-                # #print('New Kafka offset: %s' % consumer.committed(TopicPartition(config.input_topic, msg.partition)))
+                if Consumer.get_json_data(msg.value) == None:
+                    log_info('process_ocr_gv_15_kf - received invalid data {}'.format(msg.value), None)
+                    continue
+                data            = Consumer.get_json_data(msg.value)
 
 
-                # jobid           = data['jobID']
-                # log_info('process_ocr_gv_15_kf - received message from kafka, dumping into internal queue', data)
-                # input_files, workflow_id, jobid, tool_name, step_order = file_ops.json_input_format(data)
+                consumer.commit_async()  # <--- This is what we need
+                # Optionally, To check if everything went good
+                #print('New Kafka offset: %s' % consumer.committed(TopicPartition(config.input_topic, msg.partition)))
 
-                # Queue.put(data)
-                # break
+
+                jobid           = data['jobID']
+                log_info('process_ocr_gv_15_kf - received message from kafka, dumping into internal queue', data)
+                input_files, workflow_id, jobid, tool_name, step_order = file_ops.json_input_format(data)
+
+                Queue.put(data)
+                break
 
             ########################################
             # else:
