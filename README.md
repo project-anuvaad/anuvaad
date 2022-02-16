@@ -16,8 +16,8 @@
 
 ### Components  ###
 
-Component  | Details
-------------- | -------------
+Component     | Details
+--------------| ----------------
 Workflow Manager(WM)  | Centralized Orchestrator based on user request.
 Auditor  | Python package/library used for formatting , exception handling.
 File Uploader  | Microservice to upload and maintain user documents.
