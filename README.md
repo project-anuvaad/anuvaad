@@ -10,6 +10,37 @@
 | Translator | [![Build Status](http://jenkins.idc.tarento.com/buildStatus/icon?job=anuvaad%2Fanuvaad-etl-translator)](http://jenkins.idc.tarento.com/job/anuvaad/job/anuvaad-etl-translator/) |
 
 
-# Anuvaad Solution Diagram #
 
 ![Anuvaad Solution Diagram](https://github.com/project-anuvaad/anuvaad/blob/feature/documentation/anuvaad-documentation/images/Anuvaad_Solution_Diagram.png)
+
+### Solution Components  ###
+
+__Workflow Manager(WM)__
+```
+    Workflow Manager
+```
+
+__Anuvaad Auditor__
+```
+    Anuvaad Auditor
+```
+
+__File Uploader__
+```
+    File Uploader
+```
+
+__File Converter__
+```
+    File Converter
+```
+
+__Aligner__
+```
+    Aligner
+```
+
+__Tokenizer__
+```
+    Tokenizer
+```
