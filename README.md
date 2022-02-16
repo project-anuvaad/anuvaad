@@ -15,32 +15,7 @@
 
 ### Solution Components  ###
 
-__Workflow Manager(WM)__
-```
-    Workflow Manager
-```
-
-__Anuvaad Auditor__
-```
-    Anuvaad Auditor
-```
-
-__File Uploader__
-```
-    File Uploader
-```
-
-__File Converter__
-```
-    File Converter
-```
-
-__Aligner__
-```
-    Aligner
-```
-
-__Tokenizer__
-```
-    Tokenizer
-```
+Component  | Details
+------------- | -------------
+Workflow Manager(WM)  | Centralized Orchestrator based on user request.
+Auditor  | Python package used for formatting , exception handling
