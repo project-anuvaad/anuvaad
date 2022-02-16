@@ -12,7 +12,7 @@
 
 
 
-![Anuvaad Solution Diagram](https://github.com/project-anuvaad/anuvaad/blob/feature/documentation/anuvaad-documentation/images/Anuvaad_Solution_Diagram.png)
+![Anuvaad Solution Diagram](https://github.com/project-anuvaad/anuvaad/blob/master/anuvaad-documentation/images/Anuvaad_Solution_Diagram.png)
 
 ### Components  ###
 
