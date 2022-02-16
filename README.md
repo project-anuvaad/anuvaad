@@ -8,3 +8,8 @@
 |User Management | [![Build Status](http://jenkins.idc.tarento.com/buildStatus/icon?job=anuvaad%2Fanuvaad-user-management)](http://jenkins.idc.tarento.com/job/anuvaad/job/anuvaad-user-management/)|
 | Tokeniser | [![Build Status](http://jenkins.idc.tarento.com/buildStatus/icon?job=anuvaad%2Fanuvaad-etl-tokeniser)](http://jenkins.idc.tarento.com/job/anuvaad/job/anuvaad-etl-tokeniser/) |
 | Translator | [![Build Status](http://jenkins.idc.tarento.com/buildStatus/icon?job=anuvaad%2Fanuvaad-etl-translator)](http://jenkins.idc.tarento.com/job/anuvaad/job/anuvaad-etl-translator/) |
+
+
+# Anuvaad Solution Diagram #
+
+![Anuvaad Solution Diagram](https://github.com/project-anuvaad/anuvaad/blob/feature/documentation/anuvaad-documentation/images/Anuvaad_Solution_Diagram.png)
