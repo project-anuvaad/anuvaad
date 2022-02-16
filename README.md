@@ -17,7 +17,7 @@
 ### Components  ###
 
 Component     | Details
---------------| ----------------
+--------------| -------------
 Workflow Manager(WM)  | Centralized Orchestrator based on user request.
 Auditor  | Python package/library used for formatting , exception handling.
 File Uploader  | Microservice to upload and maintain user documents.
@@ -34,7 +34,7 @@ Translation Memory X(TMX)  | System translation memory to facilitate overriding 
 User Translation Memory(UTM)  | System tracks and remembers individual user translations or corrected translations and applies automatically when same sentences are encountered again.
 
 
-### AI/ML models  ###
+### AI/ML Assets  ###
 Component  | Details
 ------------- | -------------
 [PRIMA](https://github.com/Layout-Parser/layout-model-training)  | Layout detection model.
