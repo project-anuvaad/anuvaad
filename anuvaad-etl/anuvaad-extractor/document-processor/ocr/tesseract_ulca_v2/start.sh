@@ -33,7 +33,7 @@ url_mar='https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvaad_mar.traineddata
 ori_modelpath='/usr/share/tesseract-ocr/4.00/tessdata/anuvaad_ori.traineddata'
 url_ori='https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvaad_ori.traineddata?AWSAccessKeyId=AKIAXX2AMEIRJY2GNYVZ&Signature=5aqEjjOryEhE4ElV2i8oHgVY%2F7I%3D&Expires=1698743792'
 
-scene_text_line_detection_modelpath='./src/utilities/primalinenet/scene_text_line_detection_model.pth'
+scene_text_line_detection_modelpath='./src/utilities/primalinenet/scene_text_judgement_line_detection_v1_model.pth'
 url_scene_text_line_detection_modelpath='https://anuvaad-pubnet-weights.s3.amazonaws.com/scene_text_judgement_line_detection_v1_model.pth?AWSAccessKeyId=AKIAXX2AMEIRJY2GNYVZ&Signature=zTv5bP4Pt6NoLN%2FLUC7JrLBBrxs%3D&Expires=1705824951'
 
 
