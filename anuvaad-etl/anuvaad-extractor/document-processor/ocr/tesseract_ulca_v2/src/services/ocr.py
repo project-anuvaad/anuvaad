@@ -78,15 +78,16 @@ class TextExtraction:
                 masked_image = mask_image(self.image,lines)
                 masked_text = pytesseract.image_to_string(masked_image, lang=lang)
                 text.extend(masked_text)
-            filtered_lines=[]
+            filtered_lines=""
             for line in text:
                 tmp_lines= line.split("\n")
                 for tmp_line in tmp_lines:
                     if tmp_line not in escape_sequences:
-                        filtered_lines.append(tmp_line)
+                        filtered_lines=filtered_lines+tmp_line+"\n "
+            filtered_lines = filtered_lines.rstrip("\n ")
 
             return [
-                    {"source": line } for line in filtered_lines
+                    {"source": filtered_lines } #for line in filtered_lines
             ]
 
         else:
