@@ -79,7 +79,6 @@ class TextExtraction:
                 masked_text = pytesseract.image_to_string(masked_image, lang=lang)
                 text.extend(masked_text)
             filtered_lines=[]
-
             for line in text:
                 tmp_lines= line.split("\n")
                 for tmp_line in tmp_lines:

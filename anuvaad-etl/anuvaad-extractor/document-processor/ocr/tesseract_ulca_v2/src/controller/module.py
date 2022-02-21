@@ -28,7 +28,7 @@ file_ops = FileOperation()
 
 # reading json request and reurnung final response
 @ocrapi.representation("application/json")
-@ocrapp.route(config.API_URL_PREFIX + "/v0/ulca-ocr-v2", methods=["POST"])
+@ocrapp.route(config.API_URL_PREFIX + "/v0/ulca-ocr", methods=["POST"])
 def post():
     json_data = request.get_json()
     app_context.init()

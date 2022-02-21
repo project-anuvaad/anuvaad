@@ -105,7 +105,7 @@ def get_tess_text(image_crop,lang,left,top,c_x,c_y):
     dfs = pytesseract.image_to_data(image_crop,config='--psm 7',lang=lang+"+"+lang2,output_type=Output.DATAFRAME)
     dfs = check_text_df(dfs,image_crop,lang,lang2)
     text = process_dfs(dfs)
-    #print("text",text)
+    text = text.lstrip()
 
     return text
 def process_dfs(temp_df):
