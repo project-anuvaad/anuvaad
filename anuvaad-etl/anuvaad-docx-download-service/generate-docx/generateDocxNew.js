@@ -29,10 +29,10 @@ const generateDocxNew = (jobName,fname, height, width) => {
     let parsedSource = JSON.parse(sourceJson)
 
     parsedSource.forEach((pages, p) => {
-        pages.regions.forEach((tokens, i) => {
-            tokens.top = tokens.boundingBox.vertices[0].y - tokens.boundingBox.vertices[0].x
-        })
-        pages.regions = sortData(pages.regions)
+        // pages.regions.forEach((tokens, i) => {
+        //     tokens.top = tokens.boundingBox.vertices[0].y - tokens.boundingBox.vertices[0].x
+        // })
+        // pages.regions = sortData(pages.regions)
 
         pages.regions.forEach((tokens, i) => {
 
@@ -65,9 +65,9 @@ const generateDocxNew = (jobName,fname, height, width) => {
                 }
                 docx.createTable(tableArray, tableStyle);
             } else if (tokens.class === 'BGIMAGE') {
-                console.log('is image', tokens)
-                // fs.writeFileSync(tokens.data, tokens.base64, 'base64')
-                // pObj.addImage(tokens.data, { cx: tokens.text_width, cy: tokens.text_height })
+                // console.log('is image', tokens)
+                // fs.writeFileSync(tokens.data, '', 'base64')
+                // pObj.addImage(tokens.data)
                 // fs.writeFileSync(`./upload/${tokens.block_identifier}.png`, tokens.base64, 'base64')
                 // pObj.addImage(`./upload/${tokens.block_identifier}.png`, { cx: tokens.text_width, cy: tokens.text_height })
             }
