@@ -74,6 +74,10 @@ class TextExtraction:
             print("Tesseract process started---->>>>>")
             text  = multi_processing_tesseract(lines,self.image,lang)
             print("Tesseract process successfully completed---->>>>>")
+            if config.DEBUG_POSTPROCESS:
+                return [
+                    {"image_name":self.image_name,"source": text }
+            ]
             if config.MASK_OUT:
                 masked_image = mask_image(self.image,lines)
                 masked_text = pytesseract.image_to_string(masked_image, lang=lang)

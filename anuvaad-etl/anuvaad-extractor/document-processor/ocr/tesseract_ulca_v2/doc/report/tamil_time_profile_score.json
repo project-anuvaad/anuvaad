@@ -1,0 +1,1410 @@
+{
+    "config": {
+      "language": {
+        "sourceLanguage": "ta"
+      }
+    },
+    "output": [
+      {
+        "image_name": "/home/naresh/git_folders/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/tesseract_ulca_v2/doc/data/tamil/tamil_10",
+        "source": [
+          {
+            "text_with_pp": " | (",
+            "text_without_pp": " | (",
+            "time_with_pp": 0.5048339366912842,
+            "time_without_pp": 0.5009233951568604
+          },
+          {
+            "text_with_pp": " .லம் வனச்சரகம்",
+            "text_without_pp": " .லம் வனச்சரகம்",
+            "time_with_pp": 0.6019477844238281,
+            "time_without_pp": 0.5986535549163818
+          },
+          {
+            "text_with_pp": " To",
+            "text_without_pp": " To",
+            "time_with_pp": 2.5285630226135254,
+            "time_without_pp": 0.4767036437988281
+          },
+          {
+            "text_with_pp": " SILENTVALLEY |",
+            "text_without_pp": " SILENTVALLEY |",
+            "time_with_pp": 0.5053541660308838,
+            "time_without_pp": 0.5020651817321777
+          }
+        ]
+      },
+      {
+        "image_name": "/home/naresh/git_folders/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/tesseract_ulca_v2/doc/data/tamil/9f5a448e5743e7ca21b39ac06c6bc38b_0_46660bc4-a281-42e0-9b36-c48c0261eeff",
+        "source": [
+          {
+            "text_with_pp": " Free Darshan Tokens Will Be Issued",
+            "text_without_pp": " Free Darshan Tokens Will Be Issued",
+            "time_with_pp": 0.6813840866088867,
+            "time_without_pp": 0.6785798072814941
+          },
+          {
+            "text_with_pp": " RN I",
+            "text_without_pp": " RN I",
+            "time_with_pp": 0.5951004028320312,
+            "time_without_pp": 0.5928418636322021
+          },
+          {
+            "text_with_pp": " (near Step No. 2083)",
+            "text_without_pp": " (near Step No. 2083)",
+            "time_with_pp": 0.6254053115844727,
+            "time_without_pp": 0.6229846477508545
+          },
+          {
+            "text_with_pp": " மடையாதை வழுரியாாக வரும் பக்தர்கவைக்கு",
+            "text_without_pp": " மடையாதை வழுரியாாக வரும் பக்தர்கவைக்கு",
+            "time_with_pp": 0.8545916080474854,
+            "time_without_pp": 0.8521721363067627
+          },
+          {
+            "text_with_pp": " இவைச தரிசண டோக்கன்‌ கானி கோபுறும்‌.",
+            "text_without_pp": " இவைச தரிசண டோக்கன்‌ கானி கோபுறும்‌.",
+            "time_with_pp": 0.586529016494751,
+            "time_without_pp": 0.5840182304382324
+          },
+          {
+            "text_with_pp": " EE CN",
+            "text_without_pp": " EE CN",
+            "time_with_pp": 0.5999200344085693,
+            "time_without_pp": 0.596813440322876
+          }
+        ]
+      },
+      {
+        "image_name": "/home/naresh/git_folders/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/tesseract_ulca_v2/doc/data/tamil/11-1491887040-english-replaces-hindi-on-highway-milestones-04_0_fd4206a8-3c79-4fee-a7ee-0c0965ad5dbb",
+        "source": [
+          {
+            "text_with_pp": " 43.0",
+            "text_without_pp": " 43.0",
+            "time_with_pp": 0.3144872188568115,
+            "time_without_pp": 0.3116118907928467
+          },
+          {
+            "text_with_pp": " பங்களூர்‌",
+            "text_without_pp": " பங்களூர்‌",
+            "time_with_pp": 2.2597131729125977,
+            "time_without_pp": 0.36263489723205566
+          },
+          {
+            "text_with_pp": " 215;",
+            "text_without_pp": " 215;",
+            "time_with_pp": 0.644965648651123,
+            "time_without_pp": 0.6414282321929932
+          },
+          {
+            "text_with_pp": " SIE",
+            "text_without_pp": " SIE",
+            "time_with_pp": 0.44086456298828125,
+            "time_without_pp": 0.43854188919067383
+          }
+        ]
+      },
+      {
+        "image_name": "/home/naresh/git_folders/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/tesseract_ulca_v2/doc/data/tamil/tamil_7",
+        "source": [
+          {
+            "text_with_pp": " ம்ர் நீவால்",
+            "text_without_pp": "",
+            "time_with_pp": 1.367952585220337,
+            "time_without_pp": 0.358478307723999
+          }
+        ]
+      },
+      {
+        "image_name": "/home/naresh/git_folders/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/tesseract_ulca_v2/doc/data/tamil/15260665162_754ab8caa5_b_0_74fb4de1-1a4f-4eb5-98ee-a1dd133a266d",
+        "source": [
+          {
+            "text_with_pp": " BE VWAREOE DOG",
+            "text_without_pp": " BE VWAREOE DOG",
+            "time_with_pp": 0.44121479988098145,
+            "time_without_pp": 0.4388575553894043
+          },
+          {
+            "text_with_pp": " (00001 0)0400",
+            "text_without_pp": " (00001 0)0400",
+            "time_with_pp": 0.5066351890563965,
+            "time_without_pp": 0.5044190883636475
+          }
+        ]
+      },
+      {
+        "image_name": "/home/naresh/git_folders/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/tesseract_ulca_v2/doc/data/tamil/82064170_0_5c53b566-79df-4090-acec-77e44378e4b3",
+        "source": [
+          {
+            "text_with_pp": " Parry's Corner",
+            "text_without_pp": " Parry's Corner",
+            "time_with_pp": 0.35042810440063477,
+            "time_without_pp": 0.3480870723724365
+          },
+          {
+            "text_with_pp": " பாரிமுனை",
+            "text_without_pp": "",
+            "time_with_pp": 0.7133073806762695,
+            "time_without_pp": 0.38610363006591797
+          },
+          {
+            "text_with_pp": " Secretariat",
+            "text_without_pp": " Secretariat",
+            "time_with_pp": 0.30145978927612305,
+            "time_without_pp": 0.2991652488708496
+          },
+          {
+            "text_with_pp": " தலைமைச்‌ செயலகம்‌",
+            "text_without_pp": " தலைமைச்‌ செயலகம்‌",
+            "time_with_pp": 0.3385183811187744,
+            "time_without_pp": 0.3359038829803467
+          },
+          {
+            "text_with_pp": " TET",
+            "text_without_pp": " EET",
+            "time_with_pp": 2.9061522483825684,
+            "time_without_pp": 0.49698662757873535
+          },
+          {
+            "text_with_pp": " 13a",
+            "text_without_pp": " 77.0",
+            "time_with_pp": 2.4164767265319824,
+            "time_without_pp": 0.40262413024902344
+          }
+        ]
+      },
+      {
+        "image_name": "/home/naresh/git_folders/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/tesseract_ulca_v2/doc/data/tamil/1534164394086_FrontView TSI-scence_0_9f6a5f12-4fec-4b8e-b212-a8a8a8e1518e",
+        "source": [
+          {
+            "text_with_pp": " கன்காச் கங்‌, எனக TENKASI Jn",
+            "text_without_pp": " கன்காச் கங்‌, எனக TENKASI Jn",
+            "time_with_pp": 0.8457546234130859,
+            "time_without_pp": 0.8432161808013916
+          },
+          {
+            "text_with_pp": " தென்காசிசந்திப்பு JUNCTION",
+            "text_without_pp": " CP",
+            "time_with_pp": 2.0734243392944336,
+            "time_without_pp": 0.9575741291046143
+          },
+          {
+            "text_with_pp": " Facedais",
+            "text_without_pp": " Facedais",
+            "time_with_pp": 2.5261433124542236,
+            "time_without_pp": 0.4405202865600586
+          },
+          {
+            "text_with_pp": " hh PI",
+            "text_without_pp": " oP",
+            "time_with_pp": 0.8844194412231445,
+            "time_without_pp": 0.406787633895874
+          },
+          {
+            "text_with_pp": " EXE",
+            "text_without_pp": " EXE",
+            "time_with_pp": 2.054032564163208,
+            "time_without_pp": 0.35243821144104004
+          },
+          {
+            "text_with_pp": " RR",
+            "text_without_pp": " RR",
+            "time_with_pp": 2.797834634780884,
+            "time_without_pp": 0.481522798538208
+          },
+          {
+            "text_with_pp": " EO IE",
+            "text_without_pp": " EO IE",
+            "time_with_pp": 0.5512063503265381,
+            "time_without_pp": 0.5489439964294434
+          }
+        ]
+      },
+      {
+        "image_name": "/home/naresh/git_folders/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/tesseract_ulca_v2/doc/data/tamil/_72780162_bus_sign_0_f0731db6-03b8-4c1a-ab71-cf83e7bb59e1",
+        "source": [
+          {
+            "text_with_pp": "",
+            "text_without_pp": "",
+            "time_with_pp": 3.135406970977783,
+            "time_without_pp": 0.3646395206451416
+          },
+          {
+            "text_with_pp": " jiமீணத நாய்மார்களுக்காக ஜெக்கப்படடுள்ள!",
+            "text_without_pp": " jiமீணத நாய்மார்களுக்காக ஜெக்கப்படடுள்ள!",
+            "time_with_pp": 0.7546577453613281,
+            "time_without_pp": 0.7521047592163086
+          },
+          {
+            "text_with_pp": " ‘RESERRVEDIFORIPREGNANTMOTHERS!-",
+            "text_without_pp": " ‘RESERRVEDIFORIPREGNANTMOTHERS!-",
+            "time_with_pp": 3.5630428791046143,
+            "time_without_pp": 0.7229905128479004
+          },
+          {
+            "text_with_pp": " DD DISS SC COS Sta",
+            "text_without_pp": " DD DISS SC COS Sta",
+            "time_with_pp": 0.6647582054138184,
+            "time_without_pp": 0.6621768474578857
+          },
+          {
+            "text_with_pp": " உர்ப்பீணீத நாய்மார்களுக்காக ுக்கப்ப்‌ டன்ன",
+            "text_without_pp": " உர்ப்பீணீத நாய்மார்களுக்காக ுக்கப்ப்‌ டன்ன",
+            "time_with_pp": 0.8968057632446289,
+            "time_without_pp": 0.8911478519439697
+          },
+          {
+            "text_with_pp": " ESERR JED FOR PREGNANT",
+            "text_without_pp": " ESERR JED FOR PREGNANT",
+            "time_with_pp": 0.5201301574707031,
+            "time_without_pp": 0.5177009105682373
+          }
+        ]
+      },
+      {
+        "image_name": "/home/naresh/git_folders/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/tesseract_ulca_v2/doc/data/tamil/aluminium-street-name-sign-board-500x500_0_6e6a0b4a-43ea-4c6c-8944-ac6e22eaf4b2",
+        "source": [
+          {
+            "text_with_pp": " கல்லூரி நிழற்சாலை",
+            "text_without_pp": "",
+            "time_with_pp": 0.7640838623046875,
+            "time_without_pp": 0.3531479835510254
+          },
+          {
+            "text_with_pp": "",
+            "text_without_pp": "",
+            "time_with_pp": 3.1488518714904785,
+            "time_without_pp": 0.27194952964782715
+          },
+          {
+            "text_with_pp": " College Ave.",
+            "text_without_pp": " College Ave.",
+            "time_with_pp": 0.44617509841918945,
+            "time_without_pp": 0.44381093978881836
+          }
+        ]
+      },
+      {
+        "image_name": "/home/naresh/git_folders/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/tesseract_ulca_v2/doc/data/tamil/99f81c25a645b727dcc9a01914e09323_0_4570ffff-7beb-422e-932d-f41c9c8d07b5",
+        "source": [
+          {
+            "text_with_pp": " PRESS“BOOKDEPOT",
+            "text_without_pp": "",
+            "time_with_pp": 7.182842493057251,
+            "time_without_pp": 0.4096801280975342
+          },
+          {
+            "text_with_pp": " Sy ODE",
+            "text_without_pp": " Sy ODE",
+            "time_with_pp": 1.0313973426818848,
+            "time_without_pp": 1.0285522937774658
+          }
+        ]
+      },
+      {
+        "image_name": "/home/naresh/git_folders/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/tesseract_ulca_v2/doc/data/tamil/chennai-egmore-7591_0_4f58c738-a608-4e36-8fc9-f17509fe125e",
+        "source": [
+          {
+            "text_with_pp": " ' சென்னை எழும்ப",
+            "text_without_pp": " ' சென்னை எழும்ப",
+            "time_with_pp": 0.4985618591308594,
+            "time_without_pp": 0.4962010383605957
+          },
+          {
+            "text_with_pp": " CHENNAI EGMORE",
+            "text_without_pp": " CHENNAI EGMORE",
+            "time_with_pp": 0.4651014804840088,
+            "time_without_pp": 0.46272754669189453
+          },
+          {
+            "text_with_pp": " Je<{ [INGE",
+            "text_without_pp": "",
+            "time_with_pp": 0.989783525466919,
+            "time_without_pp": 0.4630122184753418
+          },
+          {
+            "text_with_pp": " LUGGAGE",
+            "text_without_pp": " LUGGAGE",
+            "time_with_pp": 0.4482135772705078,
+            "time_without_pp": 0.4458942413330078
+          }
+        ]
+      },
+      {
+        "image_name": "/home/naresh/git_folders/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/tesseract_ulca_v2/doc/data/tamil/830c798ed2deba61afdabdc9a958ab10-1024x768-scence_0_e21912c5-7fd3-4501-a5eb-92d5b6e7d81f",
+        "source": [
+          {
+            "text_with_pp": " MTT Al)",
+            "text_without_pp": " MTT Al)",
+            "time_with_pp": 0.5001773834228516,
+            "time_without_pp": 0.49791812896728516
+          },
+          {
+            "text_with_pp": " DES {TN",
+            "text_without_pp": " DES {TN",
+            "time_with_pp": 0.42702341079711914,
+            "time_without_pp": 0.4227011203765869
+          },
+          {
+            "text_with_pp": " VUE",
+            "text_without_pp": " VUE",
+            "time_with_pp": 2.26255202293396,
+            "time_without_pp": 0.42592883110046387
+          }
+        ]
+      },
+      {
+        "image_name": "/home/naresh/git_folders/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/tesseract_ulca_v2/doc/data/tamil/3_0_75903437-b4f0-4da1-a945-4cb15209e70c",
+        "source": [
+          {
+            "text_with_pp": " CTR IE",
+            "text_without_pp": " CTR IE",
+            "time_with_pp": 1.5152459144592285,
+            "time_without_pp": 1.5129480361938477
+          },
+          {
+            "text_with_pp": " சைவ உணவகம்‌",
+            "text_without_pp": " சைவ உணவகம்‌",
+            "time_with_pp": 1.0546257495880127,
+            "time_without_pp": 1.0523595809936523
+          },
+          {
+            "text_with_pp": " LUTE,",
+            "text_without_pp": " LUTE,",
+            "time_with_pp": 2.80890154838562,
+            "time_without_pp": 0.4638664722442627
+          }
+        ]
+      },
+      {
+        "image_name": "/home/naresh/git_folders/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/tesseract_ulca_v2/doc/data/tamil/chennaisignboards_0011LR_905_0_35d24c8e-35a1-4839-9e3a-16027528c65f",
+        "source": [
+          {
+            "text_with_pp": " FO MG",
+            "text_without_pp": " EE",
+            "time_with_pp": 0.8949365615844727,
+            "time_without_pp": 0.41402149200439453
+          },
+          {
+            "text_with_pp": " |",
+            "text_without_pp": " |",
+            "time_with_pp": 0.35285234451293945,
+            "time_without_pp": 0.35051631927490234
+          },
+          {
+            "text_with_pp": "",
+            "text_without_pp": "",
+            "time_with_pp": 4.48499321937561,
+            "time_without_pp": 0.3464083671569824
+          }
+        ]
+      },
+      {
+        "image_name": "/home/naresh/git_folders/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/tesseract_ulca_v2/doc/data/tamil/4_0_258f3032-9736-48c9-afb7-bbe06fa6d8f6",
+        "source": [
+          {
+            "text_with_pp": " அடையார்‌ & வேளச்சேர்‌",
+            "text_without_pp": " அடையார்‌ & வேளச்சேர்‌",
+            "time_with_pp": 1.1325974464416504,
+            "time_without_pp": 1.1293525695800781
+          },
+          {
+            "text_with_pp": " பேருந்து நீறுத்தம்",
+            "text_without_pp": " பேருந்து நீறுத்தம்",
+            "time_with_pp": 1.177488088607788,
+            "time_without_pp": 1.1735610961914062
+          },
+          {
+            "text_with_pp": " செல்லும்‌ வழி",
+            "text_without_pp": " செல்லும்‌ வழி",
+            "time_with_pp": 0.6803700923919678,
+            "time_without_pp": 0.6778037548065186
+          },
+          {
+            "text_with_pp": " 0-=0",
+            "text_without_pp": " [=|",
+            "time_with_pp": 2.5804476737976074,
+            "time_without_pp": 0.5108613967895508
+          },
+          {
+            "text_with_pp": " EXIT FOR BUSES TOWARDS",
+            "text_without_pp": " EXIT FOR BUSES TOWARDS",
+            "time_with_pp": 0.8982477188110352,
+            "time_without_pp": 0.8954908847808838
+          },
+          {
+            "text_with_pp": " ADYAR & VELACHERY",
+            "text_without_pp": " ADYAR & VELACHERY",
+            "time_with_pp": 1.0807154178619385,
+            "time_without_pp": 1.077141523361206
+          },
+          {
+            "text_with_pp": " தீ.நகா & பிராட்வே",
+            "text_without_pp": " தீ.நகா & பிராட்வே",
+            "time_with_pp": 0.9296853542327881,
+            "time_without_pp": 0.9273619651794434
+          },
+          {
+            "text_with_pp": " பேருந்து நீறுத்தம்",
+            "text_without_pp": " பேருந்து நீறுத்தம்",
+            "time_with_pp": 0.8047614097595215,
+            "time_without_pp": 0.8008220195770264
+          },
+          {
+            "text_with_pp": " செல்லும்‌ வழி",
+            "text_without_pp": " செல்லும்‌ வழி",
+            "time_with_pp": 0.782475471496582,
+            "time_without_pp": 0.7800760269165039
+          },
+          {
+            "text_with_pp": " EXIT FOR BUSES TOWARDS",
+            "text_without_pp": " EXIT FOR BUSES TOWARDS",
+            "time_with_pp": 0.8885955810546875,
+            "time_without_pp": 0.8860175609588623
+          },
+          {
+            "text_with_pp": " T.NAGAR & BROADWAY",
+            "text_without_pp": " T.NAGAR & BROADWAY",
+            "time_with_pp": 0.8590435981750488,
+            "time_without_pp": 0.856640100479126
+          }
+        ]
+      },
+      {
+        "image_name": "/home/naresh/git_folders/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/tesseract_ulca_v2/doc/data/tamil/2_0_859a3cba-b610-4fa3-bdab-01c5dce21e1d",
+        "source": [
+          {
+            "text_with_pp": " ்ை 0ர் வ்்",
+            "text_without_pp": " ்ை 0ர் வ்்",
+            "time_with_pp": 3.194597005844116,
+            "time_without_pp": 3.1914615631103516
+          },
+          {
+            "text_with_pp": " VC ிய்",
+            "text_without_pp": " VC ிய்",
+            "time_with_pp": 3.083423614501953,
+            "time_without_pp": 3.0807929039001465
+          },
+          {
+            "text_with_pp": " டIC கால்ல!",
+            "text_without_pp": " டIC கால்ல!",
+            "time_with_pp": 1.5146327018737793,
+            "time_without_pp": 1.5122272968292236
+          },
+          {
+            "text_with_pp": " OT",
+            "text_without_pp": " OT",
+            "time_with_pp": 14.783514499664307,
+            "time_without_pp": 2.43459415435791
+          },
+          {
+            "text_with_pp": " வேச்சேர், செவ்லவு-ி",
+            "text_without_pp": " வேச்சேர், செவ்லவு-ி",
+            "time_with_pp": 2.0094754695892334,
+            "time_without_pp": 2.0072202682495117
+          }
+        ]
+      },
+      {
+        "image_name": "/home/naresh/git_folders/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/tesseract_ulca_v2/doc/data/tamil/7f97bbe1-5f0e-48d2-b6d6-976dd655f12a_Tiruvallur-railway_0_04871e1f-6ab1-45fa-8650-6a021bf5a0b9",
+        "source": [
+          {
+            "text_with_pp": " திருவள்ளூர்",
+            "text_without_pp": "",
+            "time_with_pp": 1.8214285373687744,
+            "time_without_pp": 0.2846190929412842
+          },
+          {
+            "text_with_pp": " > Rom TIRUVALLUR",
+            "text_without_pp": " UR",
+            "time_with_pp": 2.8833658695220947,
+            "time_without_pp": 0.43289685249328613
+          },
+          {
+            "text_with_pp": " ANIEED,",
+            "text_without_pp": " ANIEED,",
+            "time_with_pp": 2.686302900314331,
+            "time_without_pp": 0.35310840606689453
+          }
+        ]
+      },
+      {
+        "image_name": "/home/naresh/git_folders/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/tesseract_ulca_v2/doc/data/tamil/a-road-sign-denotes-the-direction-to-auroville-an-experimental-township-near-puducherry-tamil-nadu-india-2BW5HA8_0_059e8487-3e6b-42b6-adad-78fe48fcd95d",
+        "source": [
+          {
+            "text_with_pp": " தமிழ்நாடு அரசு",
+            "text_without_pp": " தமிழ்நாடு அரசு",
+            "time_with_pp": 0.526348352432251,
+            "time_without_pp": 0.5236189365386963
+          },
+          {
+            "text_with_pp": " நெடுஞ்சாலைத்‌ துறை",
+            "text_without_pp": "",
+            "time_with_pp": 0.8502795696258545,
+            "time_without_pp": 0.34746479988098145
+          },
+          {
+            "text_with_pp": " \"ஆரோவில்‌",
+            "text_without_pp": " \"ஆரோவில்‌",
+            "time_with_pp": 0.3974428176879883,
+            "time_without_pp": 0.3951442241668701
+          },
+          {
+            "text_with_pp": " Tl",
+            "text_without_pp": " Tl",
+            "time_with_pp": 2.2148325443267822,
+            "time_without_pp": 0.3035132884979248
+          },
+          {
+            "text_with_pp": " AUROVILLE\"",
+            "text_without_pp": " AUROVILLE\"",
+            "time_with_pp": 0.4569106101989746,
+            "time_without_pp": 0.4528803825378418
+          },
+          {
+            "text_with_pp": " (EEE",
+            "text_without_pp": " (EEE",
+            "time_with_pp": 2.1461546421051025,
+            "time_without_pp": 0.43900132179260254
+          },
+          {
+            "text_with_pp": " yep oul",
+            "text_without_pp": " ES",
+            "time_with_pp": 0.8580691814422607,
+            "time_without_pp": 0.4644510746002197
+          },
+          {
+            "text_with_pp": " CET EES",
+            "text_without_pp": " CET EES",
+            "time_with_pp": 0.3661224842071533,
+            "time_without_pp": 0.3638601303100586
+          },
+          {
+            "text_with_pp": " alamy",
+            "text_without_pp": " alamy",
+            "time_with_pp": 0.3205757141113281,
+            "time_without_pp": 0.31748127937316895
+          },
+          {
+            "text_with_pp": " Image ID: 2BWSHA8",
+            "text_without_pp": " NER",
+            "time_with_pp": 1.070054054260254,
+            "time_without_pp": 0.5542881488800049
+          },
+          {
+            "text_with_pp": " www.alamy.com",
+            "text_without_pp": " www.alamy.com",
+            "time_with_pp": 0.4010634422302246,
+            "time_without_pp": 0.3987255096435547
+          }
+        ]
+      },
+      {
+        "image_name": "/home/naresh/git_folders/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/tesseract_ulca_v2/doc/data/tamil/7981de29-d8a7-4d8d-903d-f12014be1ee5-jpg_0_9edffd6e-94db-4272-b30c-9b74e3b3469d",
+        "source": [
+          {
+            "text_with_pp": " உறுதீவாழ்‌।",
+            "text_without_pp": " உறுதீவாழ்‌।",
+            "time_with_pp": 0.4326314926147461,
+            "time_without_pp": 0.4302799701690674
+          },
+          {
+            "text_with_pp": " சாமலகளின்‌ பேனர்‌ களிழ்ந்து",
+            "text_without_pp": " சாமலகளின்‌ பேனர்‌ களிழ்ந்து",
+            "time_with_pp": 0.4684944152832031,
+            "time_without_pp": 0.4661567211151123
+          },
+          {
+            "text_with_pp": " ௬ ட CUES sisi",
+            "text_without_pp": " ௬ ட CUES sisi",
+            "time_with_pp": 0.5654242038726807,
+            "time_without_pp": 0.5629894733428955
+          },
+          {
+            "text_with_pp": " சகோதரியின்‌ இழப்பு மனதீற்கு மிகுந்த வேதனை அளிக்கிறது",
+            "text_without_pp": " சகோதரியின்‌ இழப்பு மனதீற்கு மிகுந்த வேதனை அளிக்கிறது",
+            "time_with_pp": 0.7299175262451172,
+            "time_without_pp": 0.7273340225219727
+          },
+          {
+            "text_with_pp": " / தவறுகள் நடப்பதற்கு முன்னால் நாம் 4ந்தீத்து எசயல்பட தவ",
+            "text_without_pp": " / தவறுகள் நடப்பதற்கு முன்னால் நாம் 4ந்தீத்து எசயல்பட தவ",
+            "time_with_pp": 0.7321586608886719,
+            "time_without_pp": 0.7290968894958496
+          },
+          {
+            "text_with_pp": " ஒரு கீழப்பு நமக்கு அறிவுறுத்துகீன்றது கீனிமேலாவது",
+            "text_without_pp": " ஒரு கீழப்பு நமக்கு அறிவுறுத்துகீன்றது கீனிமேலாவது",
+            "time_with_pp": 0.6287212371826172,
+            "time_without_pp": 0.6261003017425537
+          },
+          {
+            "text_with_pp": " சிந்தித்து செயல்படுவோம்‌. அந்த சகோதரியின்‌ ஆத்மா சாந்தியடைய |",
+            "text_without_pp": " சிந்தித்து செயல்படுவோம்‌. அந்த சகோதரியின்‌ ஆத்மா சாந்தியடைய |",
+            "time_with_pp": 0.4663403034210205,
+            "time_without_pp": 0.46364808082580566
+          },
+          {
+            "text_with_pp": " கறைவளை பிராத்தீக்கின்றோம்‌",
+            "text_without_pp": " கறைவளை பிராத்தீக்கின்றோம்‌",
+            "time_with_pp": 0.46180129051208496,
+            "time_without_pp": 0.4595460891723633
+          },
+          {
+            "text_with_pp": " தல ணித் படங்களுக்கு அவர் புகழை பரப்பும் விதமாக",
+            "text_without_pp": " தல ணித் படங்களுக்கு அவர் புகழை பரப்பும் விதமாக",
+            "time_with_pp": 0.9686844348907471,
+            "time_without_pp": 0.9659156799316406
+          },
+          {
+            "text_with_pp": " எந்த ஒரு நீகழ்விலும்‌ பொது அடைங்களில்‌ பேனர்‌.",
+            "text_without_pp": " எந்த ஒரு நீகழ்விலும்‌ பொது அடைங்களில்‌ பேனர்‌.",
+            "time_with_pp": 0.9602065086364746,
+            "time_without_pp": 0.9551429748535156
+          },
+          {
+            "text_with_pp": " வைக்க மாட்டோம்‌ என £6 ராமி எடுக்கின்றோம்‌.",
+            "text_without_pp": " வைக்க மாட்டோம்‌ என £6 ராமி எடுக்கின்றோம்‌.",
+            "time_with_pp": 0.7998535633087158,
+            "time_without_pp": 0.7962446212768555
+          },
+          {
+            "text_with_pp": " மனிதகடவுள் அஜித் பக்தர்கள் மதுற",
+            "text_without_pp": " மனிதகடவுள் அஜித் பக்தர்கள் மதுற",
+            "time_with_pp": 0.6034882068634033,
+            "time_without_pp": 0.601050853729248
+          }
+        ]
+      },
+      {
+        "image_name": "/home/naresh/git_folders/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/tesseract_ulca_v2/doc/data/tamil/tamil_5",
+        "source": [
+          {
+            "text_with_pp": "",
+            "text_without_pp": "",
+            "time_with_pp": 3.3790273666381836,
+            "time_without_pp": 0.2679867744445801
+          },
+          {
+            "text_with_pp": " UEETIKTT)",
+            "text_without_pp": " UEETIKTT)",
+            "time_with_pp": 2.5200726985931396,
+            "time_without_pp": 0.46528077125549316
+          },
+          {
+            "text_with_pp": " IE",
+            "text_without_pp": " IE",
+            "time_with_pp": 2.4790754318237305,
+            "time_without_pp": 0.34616899490356445
+          },
+          {
+            "text_with_pp": " த | மருத்துவனை",
+            "text_without_pp": " த | மருத்துவனை",
+            "time_with_pp": 0.6483902931213379,
+            "time_without_pp": 0.6457958221435547
+          },
+          {
+            "text_with_pp": " 0.5",
+            "text_without_pp": " 0.5",
+            "time_with_pp": 0.43590712547302246,
+            "time_without_pp": 0.4335970878601074
+          }
+        ]
+      },
+      {
+        "image_name": "/home/naresh/git_folders/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/tesseract_ulca_v2/doc/data/tamil/tamil_1",
+        "source": [
+          {
+            "text_with_pp": " ளற்களளமுட ன்‌",
+            "text_without_pp": " ளற்களளமுட ன்‌",
+            "time_with_pp": 0.5193748474121094,
+            "time_without_pp": 0.5169627666473389
+          }
+        ]
+      },
+      {
+        "image_name": "/home/naresh/git_folders/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/tesseract_ulca_v2/doc/data/tamil/6_0_3b3547c8-b166-4edf-a50c-508f304d7f39",
+        "source": [
+          {
+            "text_with_pp": " சென்னை சென்ட்ரல்‌ தங்களை அன்புடன்‌",
+            "text_without_pp": " சென்னை சென்ட்ரல்‌ தங்களை அன்புடன்‌",
+            "time_with_pp": 1.119999885559082,
+            "time_without_pp": 1.1173481941223145
+          },
+          {
+            "text_with_pp": " வரவேற்கிறது",
+            "text_without_pp": " வரவேற்கிறது",
+            "time_with_pp": 0.5084738731384277,
+            "time_without_pp": 0.5061416625976562
+          },
+          {
+            "text_with_pp": " OC EI BE SRC CSE",
+            "text_without_pp": " OC EI BE SRC CSE",
+            "time_with_pp": 1.0538835525512695,
+            "time_without_pp": 1.0495550632476807
+          },
+          {
+            "text_with_pp": " IIS CC I",
+            "text_without_pp": " IIS CC I",
+            "time_with_pp": 0.827568531036377,
+            "time_without_pp": 0.8250961303710938
+          },
+          {
+            "text_with_pp": " CHENNAI CENTRAL STATION",
+            "text_without_pp": " CHENNAI CENTRAL STATION",
+            "time_with_pp": 0.8545339107513428,
+            "time_without_pp": 0.851006031036377
+          },
+          {
+            "text_with_pp": " WELCOMES YOU",
+            "text_without_pp": " WELCOMES YOU",
+            "time_with_pp": 0.7571887969970703,
+            "time_without_pp": 0.7549011707305908
+          },
+          {
+            "text_with_pp": " TOURISM FACILITATION CENTRE\"",
+            "text_without_pp": " TOURISM FACILITATION CENTRE\"",
+            "time_with_pp": 0.5305783748626709,
+            "time_without_pp": 0.5282111167907715
+          },
+          {
+            "text_with_pp": " CHENNAL RAIL MUSEUM SOUVENIR SHOP",
+            "text_without_pp": " CHENNAL RAIL MUSEUM SOUVENIR SHOP",
+            "time_with_pp": 0.644742488861084,
+            "time_without_pp": 0.6420209407806396
+          }
+        ]
+      },
+      {
+        "image_name": "/home/naresh/git_folders/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/tesseract_ulca_v2/doc/data/tamil/14_0_5d91d702-6a3a-4acd-9a9d-443044cd9c52",
+        "source": [
+          {
+            "text_with_pp": " எத்திராத 2",
+            "text_without_pp": " எத்திராத 2",
+            "time_with_pp": 0.4298677444458008,
+            "time_without_pp": 0.4275662899017334
+          },
+          {
+            "text_with_pp": " | Kuo",
+            "text_without_pp": " | Kuo",
+            "time_with_pp": 0.316699743270874,
+            "time_without_pp": 0.3143000602722168
+          },
+          {
+            "text_with_pp": "",
+            "text_without_pp": "",
+            "time_with_pp": 2.3842554092407227,
+            "time_without_pp": 0.25961899757385254
+          }
+        ]
+      },
+      {
+        "image_name": "/home/naresh/git_folders/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/tesseract_ulca_v2/doc/data/tamil/tamil_9",
+        "source": [
+          {
+            "text_with_pp": " Oe Pd",
+            "text_without_pp": "",
+            "time_with_pp": 0.6512868404388428,
+            "time_without_pp": 0.26830625534057617
+          },
+          {
+            "text_with_pp": " OE om",
+            "text_without_pp": " OE om",
+            "time_with_pp": 0.5625813007354736,
+            "time_without_pp": 0.5603077411651611
+          },
+          {
+            "text_with_pp": " 1 Oo",
+            "text_without_pp": " oS",
+            "time_with_pp": 2.528938055038452,
+            "time_without_pp": 0.37311673164367676
+          },
+          {
+            "text_with_pp": " இனிகோ நகர்‌ EUG BE Era IE",
+            "text_without_pp": " Ey",
+            "time_with_pp": 2.539055347442627,
+            "time_without_pp": 0.3221144676208496
+          }
+        ]
+      },
+      {
+        "image_name": "/home/naresh/git_folders/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/tesseract_ulca_v2/doc/data/tamil/text",
+        "source": [
+          {
+            "text_with_pp": " he",
+            "text_without_pp": " he",
+            "time_with_pp": 0.44690656661987305,
+            "time_without_pp": 0.4445078372955322
+          }
+        ]
+      },
+      {
+        "image_name": "/home/naresh/git_folders/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/tesseract_ulca_v2/doc/data/tamil/7ae50b6b-04dd-4950-ad51-ece9d9ef6030_Ramanathapuram-railway_0_b1f72adf-5cb2-494e-afe9-f97a06988b94",
+        "source": [
+          {
+            "text_with_pp": " சொமநாதப்ரம்",
+            "text_without_pp": " ரொமநாதபுரம்‌",
+            "time_with_pp": 2.464874029159546,
+            "time_without_pp": 0.4645962715148926
+          },
+          {
+            "text_with_pp": " ATAAOATGEE",
+            "text_without_pp": " ATAAOATGEE",
+            "time_with_pp": 2.685502290725708,
+            "time_without_pp": 0.37911391258239746
+          },
+          {
+            "text_with_pp": " RAMANATHAPURAM",
+            "text_without_pp": " RAMANATHAPURAM",
+            "time_with_pp": 0.3520386219024658,
+            "time_without_pp": 0.34970760345458984
+          },
+          {
+            "text_with_pp": " om",
+            "text_without_pp": " Hillbiom",
+            "time_with_pp": 0.8229544162750244,
+            "time_without_pp": 0.39290690422058105
+          },
+          {
+            "text_with_pp": " | ASkGIf.com",
+            "text_without_pp": " | ASkGIf.com",
+            "time_with_pp": 0.5286741256713867,
+            "time_without_pp": 0.5263767242431641
+          }
+        ]
+      },
+      {
+        "image_name": "/home/naresh/git_folders/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/tesseract_ulca_v2/doc/data/tamil/300px-Eraniel_Railway_Station-scence_0_9951fe98-a530-446c-9d22-60cc027d6108",
+        "source": [
+          {
+            "text_with_pp": " 3.0",
+            "text_without_pp": " 3.0",
+            "time_with_pp": 2.0355708599090576,
+            "time_without_pp": 0.30106592178344727
+          },
+          {
+            "text_with_pp": " FE",
+            "text_without_pp": " FE",
+            "time_with_pp": 2.0546953678131104,
+            "time_without_pp": 0.3096964359283447
+          },
+          {
+            "text_with_pp": "",
+            "text_without_pp": "",
+            "time_with_pp": 2.5500307083129883,
+            "time_without_pp": 0.3524937629699707
+          },
+          {
+            "text_with_pp": " 11.0",
+            "text_without_pp": "",
+            "time_with_pp": 1.5973930358886719,
+            "time_without_pp": 0.26781797409057617
+          }
+        ]
+      },
+      {
+        "image_name": "/home/naresh/git_folders/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/tesseract_ulca_v2/doc/data/tamil/tamil_4",
+        "source": [
+          {
+            "text_with_pp": " RL",
+            "text_without_pp": " RL",
+            "time_with_pp": 2.561434745788574,
+            "time_without_pp": 0.4462711811065674
+          },
+          {
+            "text_with_pp": " ©",
+            "text_without_pp": " ©",
+            "time_with_pp": 0.30434608459472656,
+            "time_without_pp": 0.30193161964416504
+          },
+          {
+            "text_with_pp": " El",
+            "text_without_pp": " El",
+            "time_with_pp": 2.3703465461730957,
+            "time_without_pp": 0.36104750633239746
+          }
+        ]
+      },
+      {
+        "image_name": "/home/naresh/git_folders/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/tesseract_ulca_v2/doc/data/tamil/5618574437_f051925047_0_33512c21-1b8c-4427-8585-ec93efea6197",
+        "source": [
+          {
+            "text_with_pp": " | திருரெல்லவேலி சந்திப்ப",
+            "text_without_pp": " | திருரெல்லவேலி சந்திப்ப",
+            "time_with_pp": 0.49431943893432617,
+            "time_without_pp": 0.4918227195739746
+          },
+          {
+            "text_with_pp": " Teddies Ye",
+            "text_without_pp": " Teddies Ye",
+            "time_with_pp": 0.4171321392059326,
+            "time_without_pp": 0.4148733615875244
+          },
+          {
+            "text_with_pp": " TIRUNELVEUJUNCTION",
+            "text_without_pp": " TIRUNELVELIJUNCTION",
+            "time_with_pp": 0.7453393936157227,
+            "time_without_pp": 0.38502955436706543
+          }
+        ]
+      },
+      {
+        "image_name": "/home/naresh/git_folders/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/tesseract_ulca_v2/doc/data/tamil/Amma-unavagam-in-kanyakumari_0_b90012cf-d125-4138-b83d-bbc99048ac77",
+        "source": [
+          {
+            "text_with_pp": " அம்மா உணவகம்‌",
+            "text_without_pp": " அம்மா உணவகம்‌",
+            "time_with_pp": 0.4506113529205322,
+            "time_without_pp": 0.44722509384155273
+          },
+          {
+            "text_with_pp": " விலைப்பட்டியல்‌",
+            "text_without_pp": " VET",
+            "time_with_pp": 0.9718217849731445,
+            "time_without_pp": 0.5363903045654297
+          },
+          {
+            "text_with_pp": " RE EE",
+            "text_without_pp": " RE EE",
+            "time_with_pp": 0.6406121253967285,
+            "time_without_pp": 0.6369297504425049
+          },
+          {
+            "text_with_pp": " சாம்பார்‌ சாதம்‌",
+            "text_without_pp": " சாம்பார்‌ சாதம்‌",
+            "time_with_pp": 0.44564056396484375,
+            "time_without_pp": 0.44336795806884766
+          },
+          {
+            "text_with_pp": " ரூ. 5/-",
+            "text_without_pp": " ரூ. 5/-",
+            "time_with_pp": 0.4081838130950928,
+            "time_without_pp": 0.4046330451965332
+          },
+          {
+            "text_with_pp": " தயிர்‌ சாதம்‌",
+            "text_without_pp": " தயிர்‌ சாதம்‌",
+            "time_with_pp": 0.37356114387512207,
+            "time_without_pp": 0.3712892532348633
+          },
+          {
+            "text_with_pp": " ரூ. 3/",
+            "text_without_pp": " ரூ. 3/",
+            "time_with_pp": 0.32630372047424316,
+            "time_without_pp": 0.3240475654602051
+          },
+          {
+            "text_with_pp": " இங்கு பார்சல்‌ வழங்கப்படமாட்டாது",
+            "text_without_pp": " இங்கு பார்சல்‌ வழங்கப்படமாட்டாது",
+            "time_with_pp": 0.4309263229370117,
+            "time_without_pp": 0.42838168144226074
+          },
+          {
+            "text_with_pp": " காலை ' :7.00 முதல்‌ 10.00 மணி வரை",
+            "text_without_pp": " காலை ' :7.00 முதல்‌ 10.00 மணி வரை",
+            "time_with_pp": 0.5487532615661621,
+            "time_without_pp": 0.5428881645202637
+          },
+          {
+            "text_with_pp": " மதியம்‌ :12.00 முதல்‌ 3.00 மணி வரை",
+            "text_without_pp": " மதியம்‌ :12.00 முதல்‌ 3.00 மணி வரை",
+            "time_with_pp": 0.5439040660858154,
+            "time_without_pp": 0.5411293506622314
+          }
+        ]
+      },
+      {
+        "image_name": "/home/naresh/git_folders/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/tesseract_ulca_v2/doc/data/tamil/165px-NH209-Bannari-Road-Sign_0_e1bbaa1f-8ddb-4536-95ac-f51a95545527",
+        "source": [
+          {
+            "text_with_pp": " ETE<N",
+            "text_without_pp": " ETE<N",
+            "time_with_pp": 2.486431121826172,
+            "time_without_pp": 0.45214295387268066
+          },
+          {
+            "text_with_pp": " IE LA",
+            "text_without_pp": " 0....",
+            "time_with_pp": 1.5499546527862549,
+            "time_without_pp": 0.3673524856567383
+          },
+          {
+            "text_with_pp": " 82.0",
+            "text_without_pp": " 82.0",
+            "time_with_pp": 0.3064122200012207,
+            "time_without_pp": 0.30384325981140137
+          },
+          {
+            "text_with_pp": " uaoe",
+            "text_without_pp": " uaoe",
+            "time_with_pp": 2.3578600883483887,
+            "time_without_pp": 0.34127163887023926
+          },
+          {
+            "text_with_pp": " [ஈரோடு",
+            "text_without_pp": " [ஈரோடு",
+            "time_with_pp": 0.3719289302825928,
+            "time_without_pp": 0.3693234920501709
+          },
+          {
+            "text_with_pp": " 74.0",
+            "text_without_pp": " 74.0",
+            "time_with_pp": 0.3142738342285156,
+            "time_without_pp": 0.3119692802429199
+          },
+          {
+            "text_with_pp": " ERODE",
+            "text_without_pp": " ERODE",
+            "time_with_pp": 2.5806884765625,
+            "time_without_pp": 0.44234323501586914
+          },
+          {
+            "text_with_pp": " IBZ (4",
+            "text_without_pp": " IBZ (4",
+            "time_with_pp": 0.3619508743286133,
+            "time_without_pp": 0.35963892936706543
+          },
+          {
+            "text_with_pp": " 12.0",
+            "text_without_pp": " 12.0",
+            "time_with_pp": 0.28436779975891113,
+            "time_without_pp": 0.28205180168151855
+          },
+          {
+            "text_with_pp": " IRIE",
+            "text_without_pp": " IRIE",
+            "time_with_pp": 2.4087698459625244,
+            "time_without_pp": 0.37019848823547363
+          },
+          {
+            "text_with_pp": " IE",
+            "text_without_pp": " IE",
+            "time_with_pp": 2.3663740158081055,
+            "time_without_pp": 0.4530982971191406
+          },
+          {
+            "text_with_pp": " ES",
+            "text_without_pp": " ES",
+            "time_with_pp": 2.6879303455352783,
+            "time_without_pp": 0.4341135025024414
+          },
+          {
+            "text_with_pp": " 19.0",
+            "text_without_pp": " 19.0",
+            "time_with_pp": 0.28615689277648926,
+            "time_without_pp": 0.2838246822357178
+          }
+        ]
+      },
+      {
+        "image_name": "/home/naresh/git_folders/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/tesseract_ulca_v2/doc/data/tamil/tamil_3",
+        "source": [
+          {
+            "text_with_pp": " ஒரடுஞ்சாலைத்துமை",
+            "text_without_pp": " UO",
+            "time_with_pp": 2.467949390411377,
+            "time_without_pp": 0.5580306053161621
+          },
+          {
+            "text_with_pp": " MID <",
+            "text_without_pp": " MID <",
+            "time_with_pp": 0.44171833992004395,
+            "time_without_pp": 0.438525915145874
+          },
+          {
+            "text_with_pp": " UL",
+            "text_without_pp": " UL",
+            "time_with_pp": 3.7992746829986572,
+            "time_without_pp": 0.676661491394043
+          }
+        ]
+      },
+      {
+        "image_name": "/home/naresh/git_folders/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/tesseract_ulca_v2/doc/data/tamil/tamil_2",
+        "source": [
+          {
+            "text_with_pp": " லைத் டுட",
+            "text_without_pp": "",
+            "time_with_pp": 2.095308303833008,
+            "time_without_pp": 0.3281557559967041
+          },
+          {
+            "text_with_pp": " காழி கா 1",
+            "text_without_pp": " காழி கா 1",
+            "time_with_pp": 0.38905906677246094,
+            "time_without_pp": 0.3866586685180664
+          },
+          {
+            "text_with_pp": " காதால்‌ கயம்‌",
+            "text_without_pp": "",
+            "time_with_pp": 0.8724536895751953,
+            "time_without_pp": 0.3072984218597412
+          },
+          {
+            "text_with_pp": " ாலலை ஆரமயம்‌",
+            "text_without_pp": "",
+            "time_with_pp": 0.7676205635070801,
+            "time_without_pp": 0.30384230613708496
+          }
+        ]
+      },
+      {
+        "image_name": "/home/naresh/git_folders/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/tesseract_ulca_v2/doc/data/tamil/1505845825_img_20170822_114802_0_928cc2e1-f6f4-447d-9f5c-0fce4a9b23c3",
+        "source": [
+          {
+            "text_with_pp": " KANYAKUMARI",
+            "text_without_pp": " KRNYAKUMARI",
+            "time_with_pp": 1.0716094970703125,
+            "time_without_pp": 0.5177044868469238
+          },
+          {
+            "text_with_pp": " கன்னியாகுமாரி",
+            "text_without_pp": "",
+            "time_with_pp": 1.8487417697906494,
+            "time_without_pp": 0.36702847480773926
+          },
+          {
+            "text_with_pp": " TIRUNELVELI",
+            "text_without_pp": " TIRUNELVELI",
+            "time_with_pp": 0.4185061454772949,
+            "time_without_pp": 0.415069580078125
+          },
+          {
+            "text_with_pp": " திருவெல்வனேலி",
+            "text_without_pp": " திருவெல்வனேலி",
+            "time_with_pp": 3.056896686553955,
+            "time_without_pp": 0.525937557220459
+          },
+          {
+            "text_with_pp": " VIRUDHUNAGAR",
+            "text_without_pp": "",
+            "time_with_pp": 0.6839137077331543,
+            "time_without_pp": 0.2721743583679199
+          },
+          {
+            "text_with_pp": " விருதுநகர்",
+            "text_without_pp": " விருதுநகர்‌",
+            "time_with_pp": 2.028749704360962,
+            "time_without_pp": 0.491318941116333
+          },
+          {
+            "text_with_pp": " RAJAPALAYAM",
+            "text_without_pp": " RAJAPALAYAM",
+            "time_with_pp": 0.44504666328430176,
+            "time_without_pp": 0.44137072563171387
+          },
+          {
+            "text_with_pp": " LE TCO Top",
+            "text_without_pp": " LE TCO Top",
+            "time_with_pp": 0.7370316982269287,
+            "time_without_pp": 0.7345683574676514
+          },
+          {
+            "text_with_pp": " MADURAI CITY",
+            "text_without_pp": " MADURAI CITY",
+            "time_with_pp": 0.3796679973602295,
+            "time_without_pp": 0.3773982524871826
+          },
+          {
+            "text_with_pp": " மதுரை மாநகர்",
+            "text_without_pp": " மதுரை மாநகர்",
+            "time_with_pp": 0.7786350250244141,
+            "time_without_pp": 0.7753691673278809
+          },
+          {
+            "text_with_pp": " OTT",
+            "text_without_pp": " IMS",
+            "time_with_pp": 2.6413509845733643,
+            "time_without_pp": 0.4148094654083252
+          },
+          {
+            "text_with_pp": " DR ET",
+            "text_without_pp": " DR ET",
+            "time_with_pp": 0.42787671089172363,
+            "time_without_pp": 0.4255943298339844
+          },
+          {
+            "text_with_pp": " -08=17 11:48",
+            "text_without_pp": " -08=17 11:48",
+            "time_with_pp": 0.38066816329956055,
+            "time_without_pp": 0.3783438205718994
+          }
+        ]
+      },
+      {
+        "image_name": "/home/naresh/git_folders/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/tesseract_ulca_v2/doc/data/tamil/tamil_6",
+        "source": [
+          {
+            "text_with_pp": " வின்ஸைன்ட்",
+            "text_without_pp": " வின்ஸைன்ட்",
+            "time_with_pp": 0.7510554790496826,
+            "time_without_pp": 0.748298168182373
+          },
+          {
+            "text_with_pp": " ராட்டி, கக்‌, பிஸ்கட்‌. பன்‌",
+            "text_without_pp": " ராட்டி, கக்‌, பிஸ்கட்‌. பன்‌",
+            "time_with_pp": 0.6989343166351318,
+            "time_without_pp": 0.6950709819793701
+          }
+        ]
+      },
+      {
+        "image_name": "/home/naresh/git_folders/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/tesseract_ulca_v2/doc/data/tamil/chennai-military-hotel5_759_rakesh-reddy_0_48aa5817-5fd5-4519-8b38-c9201a9e7e58",
+        "source": [
+          {
+            "text_with_pp": " 3.0 0.9",
+            "text_without_pp": " 3.0 0.9",
+            "time_with_pp": 0.6166107654571533,
+            "time_without_pp": 0.6141719818115234
+          },
+          {
+            "text_with_pp": " LT",
+            "text_without_pp": " LT",
+            "time_with_pp": 2.574460029602051,
+            "time_without_pp": 0.41266393661499023
+          },
+          {
+            "text_with_pp": " (a Ora Soa",
+            "text_without_pp": " (a Ora Soa",
+            "time_with_pp": 0.4222428798675537,
+            "time_without_pp": 0.41980957984924316
+          },
+          {
+            "text_with_pp": " SRVELU (oz",
+            "text_without_pp": " SRVELU (oz",
+            "time_with_pp": 0.612084150314331,
+            "time_without_pp": 0.6079757213592529
+          },
+          {
+            "text_with_pp": "",
+            "text_without_pp": "",
+            "time_with_pp": 2.820544481277466,
+            "time_without_pp": 0.36928820610046387
+          },
+          {
+            "text_with_pp": " HALL",
+            "text_without_pp": " HALL",
+            "time_with_pp": 0.7866189479827881,
+            "time_without_pp": 0.7821953296661377
+          },
+          {
+            "text_with_pp": "",
+            "text_without_pp": "",
+            "time_with_pp": 3.005064010620117,
+            "time_without_pp": 0.33983397483825684
+          }
+        ]
+      },
+      {
+        "image_name": "/home/naresh/git_folders/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/tesseract_ulca_v2/doc/data/tamil/chennai-tamilnadu-india-july-04-260nw-672370774_0_898e2c31-9047-49f7-8215-a312838bff7f",
+        "source": [
+          {
+            "text_with_pp": " கலாஷேத்ரா சாலை",
+            "text_without_pp": " கலாஷேத்ரா சாலை",
+            "time_with_pp": 0.49637651443481445,
+            "time_without_pp": 0.493358850479126
+          },
+          {
+            "text_with_pp": " | KALAKSHETRA ROAD",
+            "text_without_pp": " | KALAKSHETRA ROAD",
+            "time_with_pp": 0.4179089069366455,
+            "time_without_pp": 0.4148683547973633
+          },
+          {
+            "text_with_pp": " CEE CE",
+            "text_without_pp": " CEE CE",
+            "time_with_pp": 0.5482051372528076,
+            "time_without_pp": 0.5451757907867432
+          },
+          {
+            "text_with_pp": " shutterstock.com - 672370774",
+            "text_without_pp": " shutterstock.com - 672370774",
+            "time_with_pp": 0.5551471710205078,
+            "time_without_pp": 0.5525374412536621
+          }
+        ]
+      },
+      {
+        "image_name": "/home/naresh/git_folders/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/tesseract_ulca_v2/doc/data/tamil/tamil_8",
+        "source": [
+          {
+            "text_with_pp": " 50 நா",
+            "text_without_pp": " வாகா",
+            "time_with_pp": 0.921807050704956,
+            "time_without_pp": 0.42313694953918457
+          },
+          {
+            "text_with_pp": " ந ட்‌ ப A",
+            "text_without_pp": " பா்‌",
+            "time_with_pp": 3.067147970199585,
+            "time_without_pp": 0.491086483001709
+          },
+          {
+            "text_with_pp": " EAE PEN MM",
+            "text_without_pp": " umidoanan.",
+            "time_with_pp": 2.7635767459869385,
+            "time_without_pp": 0.44629383087158203
+          },
+          {
+            "text_with_pp": " blesseddevasahayampill",
+            "text_without_pp": " blesseddevasahayampill",
+            "time_with_pp": 3.2250542640686035,
+            "time_without_pp": 0.5729267597198486
+          }
+        ]
+      },
+      {
+        "image_name": "/home/naresh/git_folders/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/tesseract_ulca_v2/doc/data/tamil/440px-16381_Mumbai_CST_Kanyakumari_Express_-_Train_Board_1_0_349ab823-4376-48fc-8666-0bac2597024f",
+        "source": [
+          {
+            "text_with_pp": " கன்னியாகுமரி-விரைவு வண்டி",
+            "text_without_pp": " கன்னியாகுமரி-விரைவு வண்டி",
+            "time_with_pp": 0.41306304931640625,
+            "time_without_pp": 0.4107697010040283
+          },
+          {
+            "text_with_pp": " ௨ழ)032001 ஒஃஸஶ்டஸ்",
+            "text_without_pp": " ௨ழ)032001 ஒஃஸஶ்டஸ்",
+            "time_with_pp": 0.47144412994384766,
+            "time_without_pp": 0.4688386917114258
+          },
+          {
+            "text_with_pp": " கனக்‌ எ",
+            "text_without_pp": "",
+            "time_with_pp": 0.8856275081634521,
+            "time_without_pp": 0.254549503326416
+          },
+          {
+            "text_with_pp": " KANNIYAKUMARI EXPRESS",
+            "text_without_pp": " KANNIYAKUMARI EXPRESS",
+            "time_with_pp": 0.3122708797454834,
+            "time_without_pp": 0.3099493980407715
+          },
+          {
+            "text_with_pp": " 16382)",
+            "text_without_pp": " 16382)",
+            "time_with_pp": 0.2935459613800049,
+            "time_without_pp": 0.2911555767059326
+          },
+          {
+            "text_with_pp": " KANNIVAKUMARI",
+            "text_without_pp": " KANNIVAKUMARI",
+            "time_with_pp": 0.4590439796447754,
+            "time_without_pp": 0.4553029537200928
+          },
+          {
+            "text_with_pp": " MUMBAI",
+            "text_without_pp": " MUMBAI",
+            "time_with_pp": 0.42457151412963867,
+            "time_without_pp": 0.4215836524963379
+          },
+          {
+            "text_with_pp": " 16381.0",
+            "text_without_pp": " 16381.0",
+            "time_with_pp": 0.40821075439453125,
+            "time_without_pp": 0.40428829193115234
+          }
+        ]
+      }
+    ]
+  }

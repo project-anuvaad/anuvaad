@@ -1,7 +1,7 @@
 import cv2
 import config
 import numpy as np
-import uuid,os
+import uuid,os,time
 import src.utilities.app_context as app_context
 import pytesseract
 import statistics
@@ -57,7 +57,7 @@ def check_lang(lang):
 
 def remove_row(temp_df):
     if temp_df is not None and len(temp_df)>0:
-        temp_df = temp_df[temp_df['conf']>50]
+        temp_df = temp_df[temp_df['conf']>10]
     return temp_df
 def ocr_cond(lang,image_crop,lang2,psm):
     temp_df = pytesseract.image_to_data(image_crop,config='--psm '+str(psm), lang=lang+"+"+lang2  ,output_type=Output.DATAFRAME)
@@ -72,7 +72,6 @@ def check_text_df(temp_df,image_crop,lang,lang2):
 
         tmp_df = temp_df
         temp_df = temp_df[temp_df.text.notnull()]
-        temp_df = remove_row(temp_df)
         temp_df = temp_df.reset_index()
         if temp_df is None or len(temp_df)==0:
             temp_df = ocr_cond(lang,image_crop,lang2,8)
@@ -80,6 +79,8 @@ def check_text_df(temp_df,image_crop,lang,lang2):
             temp_df = ocr_cond(lang2,image_crop,lang,7)
         if temp_df is None or len(temp_df)==0:
             temp_df = ocr_cond(lang2,image_crop,lang,8)
+        if temp_df is None or len(temp_df)==0:
+            temp_df = ocr_cond(lang,image_crop,lang2,6)
         if (temp_df is not None and len(temp_df)==1 and temp_df['conf'][0]<50) or len(temp_df)==0:
             temp_df = ocr_cond(lang,image_crop,lang2,8)
         if (temp_df is not None and len(temp_df)==1 and temp_df['conf'][0]<50) or len(temp_df)==0:
@@ -95,19 +96,31 @@ def check_text_df(temp_df,image_crop,lang,lang2):
         return temp_df
     except:
         return temp_df
-    
+def debug_postprocessing(image_crop,lang,lang2):
+    start_time = time.time()
+    dfs = pytesseract.image_to_data(image_crop,config='--psm 7',lang=lang+"+"+lang2,output_type=Output.DATAFRAME)
+    text_v1 = process_dfs(dfs)
+    total_time_v1 = abs(time.time()-start_time)
+    dfs = check_text_df(dfs,image_crop,lang,lang2)
+    text_v2 = process_dfs(dfs)
+    total_time_v2 = abs(time.time()-start_time)
+    resp = {"text_without_pp": text_v1,"time_without_pp":  total_time_v1, "text_with_pp": text_v2,"time_with_pp":total_time_v2}
+    return resp
 
 def get_tess_text(image_crop,lang,left,top,c_x,c_y):  
     lang2 = check_lang(lang)
     if config.CROP_SAVE:
         img_id = config.CROP_SAVE_PATH+str(uuid.uuid4())+".jpg"
         cv2.imwrite(img_id,image_crop)
-    dfs = pytesseract.image_to_data(image_crop,config='--psm 7',lang=lang+"+"+lang2,output_type=Output.DATAFRAME)
-    dfs = check_text_df(dfs,image_crop,lang,lang2)
-    text = process_dfs(dfs)
-    text = text.lstrip()
+    if config.DEBUG_POSTPROCESS:
+        return debug_postprocessing(image_crop,lang,lang2)
+    else:
+        dfs = pytesseract.image_to_data(image_crop,config='--psm 7',lang=lang+"+"+lang2,output_type=Output.DATAFRAME)
+        dfs = check_text_df(dfs,image_crop,lang,lang2)
+        text = process_dfs(dfs)
+        text = text.lstrip()
 
-    return text
+        return text
 def process_dfs(temp_df):
     temp_df = temp_df[temp_df.text.notnull()]
     line_text = ""
@@ -134,3 +147,7 @@ def get_crop_with_pers_transform(image, box, height=140):
     M = cv2.getPerspectiveTransform(pts1, pts2)
     result_img = cv2.warpPerspective(image,M,(int(w), int(height))) #flags=cv2.INTER_NEAREST
     return result_img
+
+
+
+

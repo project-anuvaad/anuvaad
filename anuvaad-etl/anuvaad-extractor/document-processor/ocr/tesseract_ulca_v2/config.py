@@ -2,7 +2,7 @@
 DEBUG = False
 API_URL_PREFIX = "/anuvaad/ocr"
 HOST = "0.0.0.0"
-PORT = 5000
+PORT = 5005
 
 
 ENABLE_CORS = False
@@ -64,10 +64,12 @@ MULTIPROCESS = False
 MASK_OUT=False
 DRAW_BOX=False
 CROP_SAVE=False
-SAVE_PATH_BOX="/home/ubuntu/tesseract_ulca_v2/draw_sample/"
-CROP_SAVE_PATH="/home/ubuntu/tesseract_ulca_v2/draw_crop_sample/"
+SAVE_PATH_BOX="draw_sample/"
+CROP_SAVE_PATH="draw_crop_sample/"
 
 # crop config
 C_X = -7
 C_Y = -3
 
+
+DEBUG_POSTPROCESS=False
