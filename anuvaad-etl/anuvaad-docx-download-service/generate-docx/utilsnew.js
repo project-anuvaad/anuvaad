@@ -45,7 +45,7 @@ const generateTableArray = (data) => {
     data.regions.forEach(cell => {
         let celltext = []
         let tgt = ''
-        if(cell.regions.length > 0 ){
+        if(cell.regions.length > 1 ){
             cell.regions.forEach( txt => {
                 celltext.push(txt.text)
             })
@@ -53,7 +53,7 @@ const generateTableArray = (data) => {
         } else if(cell.regions.length === 1 ) {
             tgt = cell.regions[0].txt
         } else  {
-            tgt = cell.regions[0].txt
+            tgt = ''
         }
 
         if(columns.length !== collen) {
