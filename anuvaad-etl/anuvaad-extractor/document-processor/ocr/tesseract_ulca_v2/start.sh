@@ -36,9 +36,15 @@ url_ori='https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvaad_ori.traineddata
 scene_text_line_detection_modelpath='./src/utilities/primalinenet/scene_text_judgement_line_detection_v1_model.pth'
 url_scene_text_line_detection_modelpath='https://anuvaad-pubnet-weights.s3.amazonaws.com/scene_text_judgement_line_detection_v1_model.pth?AWSAccessKeyId=AKIAXX2AMEIRJY2GNYVZ&Signature=zTv5bP4Pt6NoLN%2FLUC7JrLBBrxs%3D&Expires=1705824951'
 
+scene_text_east_angle_detection_modelpath='./src/utilities/east/east-model.ckpt-49491.data-00000-of-00001'
+url_scene_text_east_angle_detection_modelpath='https://anuvaad-pubnet-weights.s3.amazonaws.com/east-model.ckpt-49491.data-00000-of-00001?AWSAccessKeyId=AKIAXX2AMEIRJY2GNYVZ&Signature=XbR8OnEhYISllPYYuYkzFhmovUY%3D&Expires=1707278033'
 
 if ! [ -f $scene_text_line_detection_modelpath ]; then
   curl -o $scene_text_line_detection_modelpath $url_scene_text_line_detection_modelpath
+  echo downloading line detection weight file
+fi
+if ! [ -f $scene_text_east_angle_detection_modelpath ]; then
+  curl -o $scene_text_east_angle_detection_modelpath $url_scene_text_east_angle_detection_modelpath
   echo downloading line detection weight file
 fi
 rm $tam_modelpath
