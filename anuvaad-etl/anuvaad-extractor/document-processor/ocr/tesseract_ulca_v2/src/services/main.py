@@ -4,6 +4,7 @@ from anuvaad_auditor.loghandler import log_debug
 from src.utilities.request_parse import File
 from src.services.ocr import TextExtraction
 import config
+import cv2
 from src.utilities.tilt_alignment import Orientation
 
 

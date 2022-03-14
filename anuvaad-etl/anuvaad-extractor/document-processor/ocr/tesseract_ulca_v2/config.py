@@ -44,12 +44,13 @@ LINE_LAYOUT_CONFIG_PATH = "./src/utilities/primalinenet/scene_text_line_detectio
 ##########################################################################
 # Alignment
 #EAST_MODEL = "./src/utilities/east/frozen_east_text_detection.pb"
+EAST_CHECK_POINT_PATH = './src/utilities/east/east-model.ckpt-49491'
 ANGLE_TOLLERANCE  = 0.25
 MIN_CONFIDENCE    = 0.5
 MARGIN_TOLLERANCE = 9
 EAST_WIDTH        = 1280
 EAST_HEIGHT       = 1280
-ALIGN = False
+ALIGN = True
 ALIGN_MODE = 'FAST'
 
 DYNAMIC=False

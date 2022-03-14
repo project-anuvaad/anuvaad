@@ -2,7 +2,7 @@ const refactorSourceJSONnew = (sourceJson) => {
     // console.log('sourceJson', sourceJson)
     let index = -1
     let refactoredOutput = []
-    sourceJson.pages.forEach((src, i) => {
+    // sourceJson.pages.forEach((src, i) => {
         // console.log('src ============>', src)
         // console.log('i =================>', i)
         // src.text_blocks && src.text_blocks.forEach(val => {
@@ -22,7 +22,7 @@ const refactorSourceJSONnew = (sourceJson) => {
         //     if (image.attrib === 'IMAGE')
         //         refactoredOutput.push(image)
         // })
-    })
+    // })
     refactoredOutput = sortData(sourceJson.pages)
     return refactoredOutput;
 }
@@ -45,13 +45,15 @@ const generateTableArray = (data) => {
     data.regions.forEach(cell => {
         let celltext = []
         let tgt = ''
-        if(cell.regions.length > 0 ){
+        if(cell.regions.length > 1 ){
             cell.regions.forEach( txt => {
                 celltext.push(txt.text)
             })
             tgt = celltext.join('')
-        } else {
+        } else if(cell.regions.length === 1 ) {
             tgt = cell.regions[0].txt
+        } else  {
+            tgt = ''
         }
 
         if(columns.length !== collen) {
