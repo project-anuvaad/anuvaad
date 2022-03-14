@@ -71,5 +71,8 @@ CROP_SAVE_PATH="draw_crop_sample/"
 C_X = -7
 C_Y = -3
 
+### image superesolution
+SUPER_RESOLUTION=False
+SUPER_RES_MODEL="./src/utilities/superres/sr_model.hdf5"
 
 DEBUG_POSTPROCESS=False

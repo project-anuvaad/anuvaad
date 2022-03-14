@@ -1,4 +1,5 @@
 draw_sample
 draw_crop_sample
-data
+doc/data
+doc/bounding_box
 src/utilities/primalinenet/scene_text_judgement_line_detection_v1_model.pth

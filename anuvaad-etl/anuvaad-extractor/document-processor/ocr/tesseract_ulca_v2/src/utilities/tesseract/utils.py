@@ -9,6 +9,12 @@ from pytesseract import Output
 from src.utilities.tesseract.dynamic_adjustment import validate_region
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
+# from ISR.models import RDN
+
+
+
+# rdn = RDN(arch_params={'C':6, 'D':20, 'G':64, 'G0':64, 'x':2})
+# rdn.model.load_weights(config.SUPER_RES_MODEL)
 
 SECOND_LANG_MAPPING = {
     "Latin": ["Latin", "eng"],
@@ -107,13 +113,73 @@ def debug_postprocessing(image_crop,lang,lang2):
     resp = {"text_without_pp": text_v1,"time_without_pp":  total_time_v1, "text_with_pp": text_v2,"time_with_pp":total_time_v2}
     return resp
 
+def debug_superresolution(image_crop,image_crop2,lang,lang2):
+    start_time = time.time()
+    dfs = pytesseract.image_to_data(image_crop,config='--psm 7',lang=lang+"+"+lang2,output_type=Output.DATAFRAME)
+    text_v1 = process_dfs(dfs)
+    total_time_v1 = abs(time.time()-start_time)
+    start_time = time.time()
+    dfs = pytesseract.image_to_data(image_crop2,config='--psm 7',lang=lang+"+"+lang2,output_type=Output.DATAFRAME)
+    text_v2 = process_dfs(dfs)
+    total_time_v2 = abs(time.time()-start_time)
+    resp = {"text_without_sr": text_v1,"time_without_sr":  total_time_v1, "text_with_sr": text_v2,"time_with_sr":total_time_v2}
+    return resp
+
+def hybrid_ocr(image_crop,lang,lang2):
+    resp={}
+    start_time = time.time()
+    #####  no post processing
+    dfs = pytesseract.image_to_data(image_crop,config='--psm 7',lang=lang+"+"+lang2,output_type=Output.DATAFRAME)
+    text_v1 = process_dfs(dfs)
+    total_time_v1 = abs(time.time()-start_time)
+    resp["text_without_pp"]= text_v1;  resp["time_without_pp"]= total_time_v1
+
+    ##### post processing with no image superresolution
+    dfs2 = check_text_df(dfs,image_crop,lang,lang2)
+    text_v2 = process_dfs(dfs2)
+    total_time_v2 = abs(time.time()-start_time)
+    resp["text_with_pp"]= text_v2;  resp["time_with_pp"]= total_time_v2
+
+    ##### post processing with image superresolution
+    start_time = time.time()
+    image_crop_sr = super_resolution(image_crop)
+    dfs3 = pytesseract.image_to_data(image_crop_sr,config='--psm 7',lang=lang+"+"+lang2,output_type=Output.DATAFRAME)
+    dfs3 = check_text_df(dfs3,image_crop_sr,lang,lang2)
+    text_v3 = process_dfs(dfs3)
+    total_time_v3 = abs(time.time()-start_time)
+    resp["text_with_pp_sr"]= text_v3;  resp["time_with_pp_sr"]= total_time_v3
+
+    ##### post processing with&without(hybrid) image superresolution
+    dfs2_upd = dfs2[dfs2.text.notnull()]
+    dfs3_upd = dfs3[dfs3.text.notnull()]
+    if sum(list(dfs2_upd['conf']))>sum(list(dfs3_upd['conf'])):
+        text_v4   = process_dfs(dfs2_upd)
+    else:
+        text_v4   = process_dfs(dfs3_upd)
+    resp["text_with_pp_sr_hybrid"]= text_v4;  resp["time_with_pp_sr_hybrid"]= total_time_v3+total_time_v2
+    
+    #print("without super resolution: ",dfs)
+    print("with super resolution: ",resp)
+    return resp
+
+
+
+def super_resolution(image):
+    #image = rdn.predict(image)
+    return image
+
 def get_tess_text(image_crop,lang,left,top,c_x,c_y):  
     lang2 = check_lang(lang)
+    if config.SUPER_RESOLUTION:
+        image_crop_sr = super_resolution(image_crop)
     if config.CROP_SAVE:
         img_id = config.CROP_SAVE_PATH+str(uuid.uuid4())+".jpg"
         cv2.imwrite(img_id,image_crop)
     if config.DEBUG_POSTPROCESS:
-        return debug_postprocessing(image_crop,lang,lang2)
+        txt = hybrid_ocr(image_crop,lang,lang2)
+        #return debug_superresolution(image_crop,image_crop_sr,lang,lang2)
+        return txt
+        #return debug_postprocessing(image_crop_sr,lang,lang2)
     else:
         dfs = pytesseract.image_to_data(image_crop,config='--psm 7',lang=lang+"+"+lang2,output_type=Output.DATAFRAME)
         dfs = check_text_df(dfs,image_crop,lang,lang2)
