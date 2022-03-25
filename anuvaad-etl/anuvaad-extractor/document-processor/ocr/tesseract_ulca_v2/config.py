@@ -2,7 +2,7 @@
 DEBUG = False
 API_URL_PREFIX = "/anuvaad/ocr"
 HOST = "0.0.0.0"
-PORT = 5005
+PORT = 5000
 
 
 ENABLE_CORS = False
