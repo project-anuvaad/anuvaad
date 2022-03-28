@@ -129,6 +129,7 @@ class DigitizedDocHeader extends React.Component {
     }
 
     fetchDocxFile = () => {
+        console.log('this.props.match.params', this.props.match.params)
         let fname = this.props.match.params.filename.replace(".json", ".docx");
         let jobId = encodeURI(this.props.match.params.jobId);
         let jobName = this.props.match.params.filename;
