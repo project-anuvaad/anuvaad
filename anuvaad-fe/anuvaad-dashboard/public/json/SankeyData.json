@@ -1,0 +1,20 @@
+{
+  "nodes": [
+    { "node": 0, "name": "Data 1" },
+    { "node": 1, "name": "Data 2" },
+    { "node": 2, "name": "Data 3" },
+    { "node": 3, "name": "Data 4" },
+    { "node": 4, "name": "Data 5" },
+    { "node": 5, "name": "Data 6" }
+  ],
+  "links": [
+    { "source": 0, "target": 2, "value": 2 },
+    { "source": 1, "target": 2, "value": 2 },
+    { "source": 1, "target": 3, "value": 2 },
+    { "source": 0, "target": 4, "value": 2 },
+    { "source": 2, "target": 3, "value": 2 },
+    { "source": 2, "target": 4, "value": 2 },
+    { "source": 3, "target": 4, "value": 4 },
+    { "source": 5, "target": 2, "value": 3 }
+  ]
+}

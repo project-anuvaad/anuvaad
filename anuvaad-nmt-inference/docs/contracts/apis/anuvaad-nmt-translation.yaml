@@ -1,0 +1,132 @@
+swagger: "2.0"
+info:
+  version: 4.0.0
+  title: Anuvaad NMT Translation system- API Contract
+  description: A NMT based translation system in Indic languages
+  contact:
+    name: Kumar Deepak
+    email: kumar.deepak@tarento.com
+
+schemes:
+  - https
+produces:
+  - application/json  
+
+basePath: /nmt-inference
+
+paths: 
+  /v4/translate:
+    post:
+      summary: REST API to perform translation at sentence level.
+      description: This api takes a batch of sentences as input to translate. Along with this a unique sentence identifier (s_id) is required. Model id (model_id) is the optional parameter in request body. Api outputs translations of each sentence in standard format along with each s_id and src. Supporting 25 input sentences per request.
+      parameters:
+         - in: body
+           name: translate
+           required: true
+           description: Batch of sentences to be translated with source and target language information
+           schema:
+            $ref: '#/definitions/nmt_input'
+            
+      tags:
+      - nmt-translation
+
+      responses:
+        200:
+          description: On successful completion of the task.
+          schema:
+            $ref: '#/definitions/nmt_response_success'
+        401:
+          description: incorrect input data
+          schema:
+            $ref: '#/definitions/nmt_response_error'
+        404:
+          description: missing input data
+          schema:
+            $ref: '#/definitions/nmt_response_error'
+        500:
+          description: interal server/model error
+          schema:
+            $ref: '#/definitions/nmt_response_error'    
+  
+
+definitions:
+        
+  nmt_input:
+    type: object
+    description: Request object with list of sentences object and source and target language codes (ISO-639-1). Supporting 25 input sentences per request.
+    properties:
+      src_list:
+        type: array
+        items:
+          type: object
+          properties:
+            src:
+              type: string
+            s_id:
+              type: string
+              description: unique identifier for each sentence(src)
+      source_language_code:
+        type: string
+      target_language_code:
+        type: string
+      model_id:
+        type: integer  
+        description: Optional, model indentifier in case of multiple models for given source and target language pair.
+      
+  nmt_response_success:
+    type: object
+    properties:        
+      data:
+        type: array
+        description: A list of translations in target language along with input and identifier data
+        items:
+          properties:
+            src:
+              type: string
+              description: Sentence to be translated.
+            s_id:
+              type: string
+              description: Input s_id has to be returned
+            tgt: 
+              type: string
+              description: Output translation of above src sentence
+            tagged_src:
+              type: string
+              description: Tagged version of src sentence, meant for keep tagging information of numbers in src.
+            tagged_tgt:
+              type: string
+              description : Tagged version of tgt output, meant for keeping information of numbers in tgt.
+
+      status:
+        $ref: '#/definitions/success_status'
+  
+  nmt_response_error:
+    type: object
+    description: In case of error return input object back in data field
+    properties:        
+      data:
+        $ref: '#/definitions/nmt_input' 
+      status:
+        $ref: '#/definitions/error_status'      
+  
+  error_status:
+    type: object
+    description: Error Status object 
+    properties:
+      statusCode: 
+        type: integer
+        description: http error status code
+      message:
+        type: string
+        description: Error message 
+  
+  success_status:
+    type: object
+    description: Success Status object 
+    properties:
+      statusCode: 
+        type: integer
+        description: http status code 200
+      message:
+        type: string
+        description: Success message 

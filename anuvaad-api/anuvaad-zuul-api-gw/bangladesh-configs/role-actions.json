@@ -1,0 +1,179 @@
+{
+    "role-actions":[
+        {
+            "role":"TRANSLATOR",
+            "actionID": "30b20c13-db5a-465c-a6b4-50a7c0daee57",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "400bf52e-d7ef-4bdb-9ce5-8f64b42ada9c",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "01803b45-67fb-4b24-a6b3-083dfb9b09d9",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "216313cc-0668-442f-a13e-3fd022be5eb2",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "bde39a83-8a4f-400e-bcf0-d14b8895f0ae",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "e5d0b999-a2bb-41af-a267-2494b15fb6a5",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "b0c793d1-215c-4de6-8d88-714f8394e75a",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "7f3c15a0-bdc4-4dc5-8ebb-5c7ba80ee016",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "634ca662-2ebd-4952-b517-d5fd54d3ac17",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "b533843f-5259-4723-b670-b9f483d9db43",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "9cb0222b-a4c1-41da-baa3-67fb84924ada",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "95d0525e-d654-496d-a77e-049bffe46ab0",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "a50d17b9-1db3-448b-a3b2-90777938fe03",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "604a9915-194d-44b3-87c2-300935adc932",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "9b8af8f1-c2a1-4a49-9b10-d7c125712395",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "9c1da068-aac9-4e93-97c0-e4dfa0306dfd",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "5e1b1f65-35ad-41b5-8132-d1254cdc17bc",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "f08cb87c-9e10-4b23-9de5-52c6ff70d405",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "75a424ae-ae00-44da-86f8-3809dd9a6458",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "3a670c68-737f-4546-9cf6-54de188a0298",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "8ae246ee-8b27-4dcf-93df-faad13b3c64b",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "98360963-7f7b-4b4b-93d5-5f055d283868",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "36122d56-6077-48eb-a2d8-303b1460d4ac",
+            "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "8ef47a2a-0a85-4efe-865e-8c52b567bf74",
+            "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "36677274-7ac3-4319-8170-f2e007341ecf",
+            "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "1bf2b56f-9b83-404f-98c6-e59ab89e24a6",
+            "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "986bb1b6-ac89-4430-a7ec-ba04f1ab470d",
+            "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "36122d56-6077-48eb-a2d8-303b1460d4ac",
+            "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "8ae246ee-8b27-4dcf-93df-faad13b3c64b",
+            "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "b0c793d1-215c-4de6-8d88-714f8394e75a",
+            "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "400bf52e-d7ef-4bdb-9ce5-8f64b42ada9c",
+            "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "9b8af8f1-c2a1-4a49-9b10-d7c125712395",
+            "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "b533843f-5259-4723-b670-b9f483d9db43",
+            "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "76952b3b-6017-4d58-86e2-246a16b1c952",
+            "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "7f3c15a0-bdc4-4dc5-8ebb-5c7ba80ee016",
+            "active":true
+        }
+    ]
+}

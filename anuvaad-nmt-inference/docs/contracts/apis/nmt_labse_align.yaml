@@ -1,0 +1,109 @@
+swagger: "2.0"
+info:
+  version: 1.0.0
+  title: Anuvaad NMT LABSE align service- API Contract
+  description: LABSE based alignment service to generate source and target phrase alignment
+  contact:
+    name: Kumar Deepak
+    email: kumar.deepak@tarento.com
+
+schemes:
+  - https
+produces:
+  - application/json  
+
+basePath: /nmt-inference
+
+paths: 
+  /v1/labse-aligner:
+    post:
+      summary: REST API to generate phrase alignment.
+      description: This api takes a list of source phrases(src_phrases) and target translation(tgt) dictionary as input and outputs aligned phrases for each requests.
+      parameters:
+         - in: body
+           name: align
+           required: true
+           description: List of src_phrases and tgt dictionary
+           schema:
+            $ref: '#/definitions/nmt_input'
+            
+      tags:
+      - nmt-labse-align
+
+      responses:
+        200:
+          description: On successful completion of the task.
+          schema:
+            $ref: '#/definitions/nmt_response'
+        401:
+          description: incorrect input data
+          schema:
+            $ref: '#/definitions/error_status'
+        404:
+          description: missing input data
+          schema:
+            $ref: '#/definitions/error_status'
+        500:
+          description: interal server/model error
+          schema:
+            $ref: '#/definitions/error_status'    
+  
+
+definitions:
+        
+  nmt_input:
+    type: array
+    description: A list of src_phrases and tgt dictionary for alignment.
+    items:
+      properties:
+        tgt:
+          type: string
+          description: NMT target/translated sentence from where the phrase needs to be extracted.
+        src_phrases:
+          type: array
+          description: list of source phrases for which the alignment has to be found in tgt
+      
+  nmt_response:
+    type: object
+    properties:        
+      response_body:
+        type: array
+        description: A list of alignment response
+        items:
+          properties:
+            tgt: 
+              type: string
+              description: NMT target/translated sentence from where the phrase needs to be extracted, returning same as in input request
+            src_phrases:
+              type: array
+              description: list of source phrases for which the alignment has to be found in tgt, returning same as in input request
+            aligned_phrases:
+              type: object
+              description: Dictionary containing the mapping of source phrase and aligned target phrase where key is the respective item in src_phrases and value is the aligned phrase from the target    
+            
+      status:
+        $ref: '#/definitions/status_obj'
+  
+
+  error_status:
+    description: response for status code is not 200
+    type: object
+    properties:
+      status:
+        $ref: '#/definitions/status_obj'
+  
+  status_obj:
+    type: object
+    description: Status object with every request
+    properties:
+      ok:
+        type: string
+        enum:
+          - "true"
+          - "false"
+      statusCode: 
+        type: integer
+        description: http status code
+      message:
+        type: string
+        description: Success message or reason of failure in case of error  

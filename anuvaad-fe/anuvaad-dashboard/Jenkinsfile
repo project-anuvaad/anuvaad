@@ -1,0 +1,42 @@
+
+node('server_build_slave') {
+
+try {
+
+    stage('checkout') {
+   	checkout scm
+}
+stage('Build') 
+	    withCredentials([string(credentialsId: 'vault-password', variable: 'vaultpass')]) {
+    
+     sh  '''
+            pwd
+             echo $vaultpass > vault_pass.txt
+                
+	      ansible-playbook -i /home/jenkins/jenkins_files/ansible/anuvaad-dashboard/inventory/local /home/jenkins/jenkins_files/ansible/anuvaad-dashboard/frontend_cred_encryption.yml -e "var_file=$var_file_name" --vault-id vault_pass.txt	
+	
+	    rm -rf vault_pass.txt
+		
+		cd anuvaad-fe/anuvaad-dashboard
+	
+	if [  -f "$(pwd)/build.zip" ]
+	     then
+	     rm -f $(pwd)/build.zip
+	fi
+	if [ $( docker ps -q -f status=exited --filter "name=$JOB_BASE_NAME" ) ]
+             then
+             docker rm "$JOB_BASE_NAME"
+        fi
+    	docker run -v $(pwd):/opt --name "$JOB_BASE_NAME" node:10.15.3-stretch /bin/bash -c "cd /opt && apt update && apt install -y zip && npm install && npm run build:staging && zip -r build.zip build && rm -rf build"
+	docker rm "$JOB_BASE_NAME"
+	   '''
+
+}
+ 
+}
+
+    catch (err) {
+        currentBuild.result = "FAILURE"
+        throw err
+    }
+}

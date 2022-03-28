@@ -1,0 +1,11 @@
+*/**/sample-data
+*/**/.ipynb_checkpoints/*
+*.log
+.idea
+.DS_Store
+
+## for anuvaad-fe
+##  - build
+##  - node_modules
+**/build
+**/node_modules

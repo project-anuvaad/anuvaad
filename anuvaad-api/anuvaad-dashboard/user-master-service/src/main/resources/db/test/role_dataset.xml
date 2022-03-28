@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+   
+
+    <retail_role id="1" budget="10000" deadline="2015-03-01 00:00:00" priority="H" title="Project 1" manager_ID="1" />
+    <retail_role id="3" budget="30000" deadline="2015-05-01 00:00:00" priority="H" title="Project 3" manager_ID="2" />
+</dataset>

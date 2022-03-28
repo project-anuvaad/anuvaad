@@ -1,0 +1,21 @@
+{
+    "id": 30,
+    "userName": "userName",
+    "name": "name",
+    "type": "EMPLOYEE",
+    "mobileNumber": "1234567890",
+    "emailId": "fu@bar.com",
+    "tenantId": "default",
+    "roles": [
+        {
+            "id": 1,
+            "name": "Employee",
+            "code": "EMPLOYEE"
+        },
+        {
+            "id": 2,
+            "name": "ULB Operator",
+            "code": "ULB"
+        }
+    ]
+}

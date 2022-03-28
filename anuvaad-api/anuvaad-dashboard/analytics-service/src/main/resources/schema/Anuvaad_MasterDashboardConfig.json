@@ -1,0 +1,296 @@
+{
+	"_comment": "Master dashboard which holds all the possible visualisation. Note new dashboards/visualisations can be added",
+	"dashboards": [
+		{
+			"name": "Anuvaad Telemetry",
+			"id": "anuvaadtelemetrydashboard",
+			"isActive": "",
+			"style": "tabbed",
+			"filters": [
+				{
+					"name": "Source Language",
+					"id": 1,
+					"key": "sl",
+					"values": [
+						"All",
+						"English",
+						"Bengali",
+						"Hindi",
+						"Malayalam",
+						"Telugu",
+						"Tamil",
+						"Kannada",
+						"Marathi",
+						"Punjabi",
+						"Gujarati"
+					]
+				},
+				{
+					"name": "Target Language",
+					"id": 2,
+					"key": "tl",
+					"values": [
+						"All",
+						"English",
+						"Bengali",
+						"Hindi",
+						"Malayalam",
+						"Telugu",
+						"Tamil",
+						"Kannada",
+						"Marathi",
+						"Punjabi",
+						"Gujarati"
+					]
+				}
+			],
+			"widgetCharts": [
+				{
+					"id": "totalUploadedDoc",
+					"name": "Total Uploaded Documents",
+					"code": "",
+					"chartType": "metric",
+					"order": 1,
+					"filter": "",
+					"headers": []
+				},
+				{
+					"id": "totalMerge",
+					"name": "Total Merge operations",
+					"code": "",
+					"chartType": "metric",
+					"order": 2,
+					"filter": "",
+					"headers": []
+				},
+				{
+					"id": "totalSplit",
+					"name": "Total Split Operations",
+					"code": "",
+					"chartType": "metric",
+					"order": 3,
+					"filter": "",
+					"headers": []
+				},
+				{
+					"id": "totalSave",
+					"name": "Total Saved Sentence",
+					"code": "",
+					"chartType": "metric",
+					"order": 4,
+					"filter": "",
+					"headers": []
+				}
+			],
+			"visualizations": [
+				{
+					"row": 1,
+					"name": "Language",
+					"vizArray": [
+						{
+							"id": 1,
+							"name": "Target Language",
+							"dimensions": {
+								"height": 250,
+								"width": 4
+							},
+							"vizType": "chart",
+							"noUnit": true,
+							"isCollapsible": false,
+							"charts": [
+								{
+									"id": "engTargetLang",
+									"name": "Target Language",
+									"code": "",
+									"chartType": "pie",
+									"filter": "",
+									"headers": []
+								}
+							]
+						},
+						{
+							"id": 2,
+							"name": "Source Language",
+							"dimensions": {
+								"height": 250,
+								"width": 4
+							},
+							"vizType": "chart",
+							"noUnit": true,
+							"isCollapsible": false,
+							"charts": [
+								{
+									"id": "sourceLangToEng",
+									"name": "Source Language",
+									"code": "",
+									"chartType": "pie",
+									"filter": "",
+									"headers": []
+								}
+							]
+						},
+						{
+							"id": 3,
+							"name": "Upload Document Trends",
+							"dimensions": {
+								"height": 250,
+								"width": 4
+							},
+							"vizType": "chart",
+							"noUnit": true,
+							"isCollapsible": false,
+							"charts": [
+								{
+									"id": "totalUploadedDocDayWise",
+									"name": "Upload Document Trends",
+									"code": "",
+									"chartType": "line",
+									"filter": "",
+									"headers": []
+								}
+							]
+						}
+					]
+				},
+				{
+					"row": 2,
+					"name": "Target Language",
+					"vizArray": [
+						{
+							"id": 1,
+							"name": "Completed Translation Trend",
+							"dimensions": {
+								"height": 250,
+								"width": 4
+							},
+							"vizType": "chart",
+							"noUnit": true,
+							"isCollapsible": false,
+							"charts": [
+								{
+									"id": "completedTranslationDayWise",
+									"name": "Completed Translation Trend",
+									"code": "",
+									"chartType": "line",
+									"filter": "",
+									"headers": []
+								}
+							]
+						},
+						{
+							"id": 2,
+							"name": "Failed Translation Trend",
+							"dimensions": {
+								"height": 250,
+								"width": 4
+							},
+							"vizType": "chart",
+							"noUnit": true,
+							"isCollapsible": false,
+							"charts": [
+								{
+									"id": "failedTranslationDayWise",
+									"name": "Failed Translation Trend",
+									"code": "",
+									"chartType": "line",
+									"filter": "",
+									"headers": []
+								}
+							]
+						},
+						{
+							"id": 3,
+							"name": "Merge Operations Trend",
+							"dimensions": {
+								"height": 250,
+								"width": 4
+							},
+							"vizType": "chart",
+							"noUnit": true,
+							"isCollapsible": false,
+							"charts": [
+								{
+									"id": "mergeTrend",
+									"name": "Merge Operations Trend",
+									"code": "",
+									"chartType": "line",
+									"filter": "",
+									"headers": []
+								}
+							]
+						}
+					]
+				},
+				{
+					"row": 3,
+					"name": "Target Language",
+					"vizArray": [
+						{
+							"id": 4,
+							"name": "Split Operations Trend",
+							"dimensions": {
+								"height": 250,
+								"width": 4
+							},
+							"vizType": "chart",
+							"noUnit": true,
+							"isCollapsible": false,
+							"charts": [
+								{
+									"id": "splitTrend",
+									"name": "Split Operations Trend",
+									"code": "",
+									"chartType": "line",
+									"filter": "",
+									"headers": []
+								}
+							]
+						},
+						{
+							"id": 5,
+							"name": "Save Records Trend",
+							"dimensions": {
+								"height": 250,
+								"width": 4
+							},
+							"vizType": "chart",
+							"noUnit": true,
+							"isCollapsible": false,
+							"charts": [
+								{
+									"id": "saveTrend",
+									"name": "Save Records Trend",
+									"code": "",
+									"chartType": "line",
+									"filter": "",
+									"headers": []
+								}
+							]
+						},
+						{
+							"id": 6,
+							"name": "New User Trend",
+							"dimensions": {
+								"height": 250,
+								"width": 4
+							},
+							"vizType": "chart",
+							"noUnit": true,
+							"isCollapsible": false,
+							"charts": [
+								{
+									"id": "createUserTrend",
+									"name": "New User Trend",
+									"code": "",
+									"chartType": "line",
+									"filter": "",
+									"headers": []
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	]
+}

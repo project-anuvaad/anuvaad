@@ -1,0 +1,114 @@
+swagger: "2.0"
+info:
+  version: 3.0.0
+  title: Anuvaad Interactive Translation - API Contract
+  description: A NMT based custom translation system to support document editing 
+  contact:
+    name: Kumar Deepak
+    email: kumar.deepak@tarento.com
+
+schemes:
+  - https
+produces:
+  - application/json  
+
+basePath: /nmt-inference
+
+paths:   
+  /v3/interactive-translation:
+    post:
+      summary: REST API to perform interactive translation at sentence level generating multiple possible translation.
+      description: This api takes a sentence, model id and target prefix tokens as input and outputs multiple customised translation based on the prefix.
+      parameters:
+         - in: body
+           name: multiple hypothesis
+           required: true
+           description: List of sentences to be edited/customised using interactive tool.
+           schema:
+            $ref: '#/definitions/interactive_translation_input'
+            
+      tags:
+      - interactive-translation-multiple-hypothesis
+
+      responses:
+        200:
+          description: On successful completion of the task.
+          schema:
+            $ref: '#/definitions/interactive_translation_multiple_hypothesis_response' 
+        401:
+          description: incorrect input data
+          schema:
+            $ref: '#/definitions/error_status'
+        404:
+          description: missing input data
+          schema:
+            $ref: '#/definitions/error_status'
+        500:
+          description: interal server/model error
+          schema:
+            $ref: '#/definitions/error_status'
+        
+
+definitions:
+        
+  interactive_translation_input:
+    type: array
+    description: A list of sentence-model_id dictionary for translation. Supporting 25 input sentences per message.
+    items:
+      properties:
+        src:
+          type: string
+          description: Sentence to be translated.
+        id:
+          type: integer
+          description: model id for performing the current translation.
+        target_prefix:
+          type: string
+          description: target prefix string in target language
+      
+  
+  interactive_translation_multiple_hypothesis_response:
+    type: object
+    properties:        
+      data:
+        type: array
+        description: A list of customised translation response along with intermediate data
+        items:
+          properties:
+            tagged_src:
+              type: string
+              description: Tagged version of src sentence, meant for keep tagging information of numbers in src.
+            tgt: 
+              type: array
+              description: Multiple customised output translations of above src sentence in list format  
+              items:
+                $ref: '#/definitions/outputs'
+            tagged_tgt:
+              type: array
+              description : Tagged version of each of the tgt outputs, meant for keeping information of numbers in tgt, in list format
+              items:
+                $ref: '#/definitions/outputs'
+      status:
+        $ref: '#/definitions/status_obj'
+  
+  outputs:
+    type: string
+    description: string outputs from model
+  
+  error_status:
+    description: response for status code is not 200
+    type: object
+    properties:
+      status:
+        $ref: '#/definitions/status_obj'
+  
+  status_obj:
+    type: object
+    description: Status object with every request
+    properties:
+      statusCode: 
+        type: integer
+        description: http status code
+      message:
+        type: string
+        description: Success message or reason of failure in case of error

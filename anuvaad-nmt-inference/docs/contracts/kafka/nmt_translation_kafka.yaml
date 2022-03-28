@@ -1,0 +1,97 @@
+swagger: "2.0"
+info:
+  version: 1.0.0
+  title: Anuvaad OpenNMT Translation system - Kafka Contract 
+  description: Kakfka contract for communicating with Anuvaad's NMT based translation system. This is meant to establish connection between NMT and Translation module with primary objective of performing translation at sentence level.
+  contact:
+    name: Kumar Deepak
+    email: kumar.deepak@tarento.com
+    
+    
+usecase:
+  perform-translation:
+    input_topic: anuvaad_nmt_translate
+    $ref: '#/definitions/translation_request'
+    
+  publish-translation-output:
+    output_topic: anuvaad_nmt_translate_processed
+    $ref: '#/definitions/translation_response'
+    
+    
+definitions:
+
+  translation_request:
+    type: object
+    description: NMT input request format for performing translation. The request is listened on the input_topic
+    properties:
+      message:
+        description: A list of sentence and node id dictionary for translation. Supporting 25 input sentences per message.
+        type: array
+        items:
+          properties:
+            src:
+              type: string
+              description: Sentence to be translated.
+            s_id: 
+              type: integer
+              description: Sentence id returned as it is
+            n_id:
+              type: integer
+              description: node id of the sentence returned as it is  
+        
+      id:
+        type: integer
+        description: model id for performing the current translation, specific to source and target pair.  
+        
+  translation_response:
+    type: object
+    description: Output from NMT after translation. The output is pushed to the output_topic under key "out"
+    properties:        
+      response_body:
+        type: array
+        description: A list of translation response along with intermediate and meta data
+        items:
+          properties:
+            src:
+              type: string
+              description: Sentence to be translated.
+            tgt: 
+              type: string
+              description: Output translation of above src sentence
+            tagged_src:
+              type: string
+              description: Tagged version of src sentence, meant for keep tagging information of numbers in src.
+            tagged_tgt:
+              type: string
+              description : Tagged version of tgt output, meant for keeping information of numbers in tgt.
+            pred_score:
+              type: number
+              description: float value of sentence prediction score
+            input_subwords:
+              type: string
+              description: subword information of src sentence
+            output_subwords:
+              type: string
+              description: subword information of tgt sentence
+            s_id: 
+              type: integer
+              description: returns the same input s_id (sentence id) associated with translation request
+            n_id:
+              type: integer
+              description: returns the same input n_id (node id) associated with translation request
+              
+      status:
+        type: object
+        description: Status object with every message
+        properties:
+          statusCode: 
+            type: integer
+            description: http status code
+          message:
+            type: string
+            description: Success message or reason of failure in case of error
+            
+
+        
+        
+ 

@@ -1,0 +1,32 @@
+.App{
+  margin-left: -100px;
+}
+
+@media (max-width: 800px) {
+  .GridFileDetails {
+    display: none;
+  }
+}
+
+.GridButton{
+  width: 100%; overflow:hidden; white-space:nowrap; pointer-events: none; font-size: 90%; font-weight: bold;
+}
+.Button{
+  width: 100%; pointer-events: none; font-size:'10px'; font-weight:bold;
+}
+
+.split {
+  display: flex;
+  flex-direction: row;
+}
+
+.gutter {
+  background-color: #eee;
+  background-repeat: no-repeat;
+  background-position: 50%;
+}
+
+.gutter.gutter-horizontal {
+  background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAeCAYAAADkftS9AAAAIklEQVQoU2M4c+bMfxAGAgYYmwGrIIiDjrELjpo5aiZeMwF+yNnOs5KSvgAAAABJRU5ErkJggg==');
+  cursor: col-resize;
+}

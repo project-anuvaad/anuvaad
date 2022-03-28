@@ -1,0 +1,18 @@
+{
+  "_comment": "Holds mapping for all visualizations supported by the application",
+  "dashboards" : [
+    {
+      "_comment":"",
+      "id": 1,
+      "name" : "Anuvaad Dashboards",
+      "isDefault" : true,
+      "code": "Anuvaad",
+      "urls": [
+        {
+          "configuration": "/dashboard/getDashboardConfig/Anuvaad/anuvaadtelemetrydashboard",
+          "getCharts": "/dashboard/getChartV2/Anuvaad"
+        }
+      ]
+    }
+  ]
+}

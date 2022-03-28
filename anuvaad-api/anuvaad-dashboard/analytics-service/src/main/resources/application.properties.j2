@@ -1,0 +1,49 @@
+server.port=8091
+
+spring.datasource.url=jdbc:mysql://localhost:3306/database
+spring.datasource.username=
+spring.datasource.password=
+spring.datasource.driver-class-name=com.mysql.jdbc.Driver
+spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration, org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration
+
+#----------------------------- ELASTIC SEARCH CONFIGURATIONS ------------------------------#
+
+# Anuvaad Dashboard
+services.esindexer.primary.host=http:{{ primary_host_http | b64decode }}
+services.esindexer.primary.host.name={{ host_name | b64decode }}
+services.esindexer.primary.host.port={{ host_port | b64decode }}
+services.esindexer.primary.username={{ username | b64decode }}
+services.esindexer.primary.password={{ password | b64decode }}
+
+
+es.index.name=_transaction
+es.document.type=transaction
+es.target.index.name=store_target
+es.target.document.type=storeTarget
+config.schema.paths=classpath*:schema/*.json
+
+#----------------------------- MISCELLANEOUS CONFIGURATION ----------------------------------#
+top.performance.record.count=5
+
+es.services.esindexer.host.search=/_search
+
+es.username=
+es.password=
+
+#----------------------------- AMAZON S3 CREDENTIALS -------------------------------------------------#
+aws.access.key.id = 
+aws.access.key.secret = 
+aws.region = ap-south-1
+aws.s3.audio.bucket = 
+
+# KAFKA SERVER CONFIGURATIONS
+spring.kafka.bootstrap.servers=localhost:9092
+
+spring.kafka.producer.key-serializer=org.apache.kafka.common.serialization.StringSerializer
+spring.kafka.producer.value-serializer=org.springframework.kafka.support.serializer.JsonSerializer
+
+# KAFKA PRODUCER CONFIGURATIONS
+kafka.producer.config.retries_config=0
+kafka.producer.config.batch_size_config=100000
+kafka.producer.config.linger_ms_config=100
+kafka.producer.config.buffer_memory_config=66554432
