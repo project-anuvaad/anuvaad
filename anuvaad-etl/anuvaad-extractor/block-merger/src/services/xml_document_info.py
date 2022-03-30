@@ -9,8 +9,12 @@ import config
 from config import FONT_SIZE_CONFIG
 from config import FONT_CONFIG
 
-def get_document_width_height(pages):
-    return int(pages[0].attrib['width']), int(pages[0].attrib['height'])
+def get_document_width_height(pages,w,h):
+    for idx in range(len(pages)):
+        w.append(int(pages[idx].attrib['width']))
+        h.append(int(pages[idx].attrib['height']))
+    #return int(pages[idx].attrib['width']),int(pages[idx].attrib['height'])
+    return w,h
 
 '''
     -    Normalizes the left & width value currently
@@ -102,12 +106,15 @@ def get_xml_info(filepath, lang='en'):
     tag             = 'page'
     pages           = get_specific_tags(xml, tag)
     print('Total number of pages (%d) in file (%s)' % (len(pages), os.path.basename(filepath)))
+    w = []
+    h = []
+    w,h  = get_document_width_height(pages,w,h)
     
-    width, height   = get_document_width_height(pages)
     fonts           = get_specific_tags(xml, 'fontspec')
 
+
     dfs             = []
-    for page in pages:
+    for idxx,page in enumerate(pages):
         t_ts        = []
         t_ls        = []
         t_ws        = []
@@ -119,7 +126,7 @@ def get_xml_info(filepath, lang='en'):
         attribs     = []
         f_familys_updated = []
         f_sizes_updated   = []       
-         
+
         texts       = get_specific_tags(page, 'text')
         for index, text in enumerate(texts):
             bold   =  get_specific_tags(text, 'b')
@@ -161,20 +168,22 @@ def get_xml_info(filepath, lang='en'):
         #df['children'] = None
         df.reset_index(inplace=True)
         df.rename(columns={'index':'xml_index'},inplace=True)
-        dfs.append(normalize_page_xml_df(df, width, height))
+   
+        dfs.append(normalize_page_xml_df(df, w[idxx], h[idxx]))
 
-    return dfs, width, height
+    return dfs,w,h
 
 def get_xml_image_info(filepath):
     xml             = get_xmltree(filepath)
     tag             = 'page'
     pages           = get_specific_tags(xml, tag)
     print('Total number of pages (%d) in file (%s)' % (len(pages), os.path.basename(filepath)))
-    
-    width, height   = get_document_width_height(pages)
+    w = []
+    h = []
+    w,h   = get_document_width_height(pages,w,h)
 
     dfs             = []
-    for page in pages:
+    for idxx,page in enumerate(pages):
         t_ts        = []
         t_ls        = []
         t_ws        = []
@@ -183,10 +192,9 @@ def get_xml_image_info(filepath):
         attribs     = []
         
         images      = get_specific_tags(page, 'image')
-        
         for index, image in enumerate(images):
             p_t, p_l, p_w, p_h, t_t, t_l, t_w, t_h, img_base64 = get_page_image_element_attrib(page, image)
-
+            
             if img_base64 == None:
                 continue
 
@@ -201,9 +209,9 @@ def get_xml_image_info(filepath):
                           columns =['text_top', 'text_left', 'text_width', 'text_height', 'base64', 'attrib'])
 
         df.reset_index(inplace=True)
-        dfs.append(normalize_page_xml_df(df, width, height))
+        dfs.append(normalize_page_xml_df(df, w[idxx], h[idxx]))
 
-    return dfs, width, height
+    return dfs,w,h
 
 def get_pdf_image_info(width, height, images_path):
     

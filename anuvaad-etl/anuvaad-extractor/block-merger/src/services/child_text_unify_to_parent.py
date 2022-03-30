@@ -82,7 +82,7 @@ class ChildTextUnify(object):
                 merge_df = self.get_parent_block(p_df,drop_lis)
                 merge_dfs.append(merge_df)
         except  Exception as e :
-            log_error('Error in merging child text to partent text' +e, app_context.application_context, e)
+            log_error('Error in merging child text to partent text ' + str(e), app_context.application_context, e)
             return None
         
         end_time         = time.time()

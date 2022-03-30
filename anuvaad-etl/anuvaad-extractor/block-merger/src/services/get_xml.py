@@ -16,6 +16,10 @@ from src.services.box_vertical_operations import (merge_vertical_blocks)
 from src.services.preprocess import  tag_heaader_footer_attrib
 from src.services.left_right_on_block import left_right_margin
 import src.utilities.app_context as app_context
+from src.utilities.primalaynet.header_footer import PRIMA
+
+
+primalaynet = PRIMA()
 
 
 def create_pdf_processing_paths(filepath, base_dir):
@@ -98,7 +102,7 @@ def process_input_pdf(filename, base_dir, lang):
     log_info('process_input_pdf: created dataframes successfully', app_context.application_context)
     end_time         = time.time()
     elapsed_time     = end_time - start_time
-    log_info('Processing of process_input_pdf completed in {}/{}, average per page {}'.format(elapsed_time, len(xml_dfs), (elapsed_time/len(xml_dfs))), app_context.application_context)
+    log_info('Processing of process_input_pdf completed in {}/{}, average per page {}'.format(elapsed_time, len(xml_dfs), (elapsed_time/max(1,len(xml_dfs)))), app_context.application_context)
 
     return img_dfs, xml_dfs, page_width, page_height, working_dir, pdf_bg_img_filepaths, pdf_image_paths
 
@@ -112,7 +116,11 @@ def get_vdfs(h_dfs):
         pages = len(h_dfs)
         for page_index in range(pages):
             h_df    = h_dfs[page_index]
-            v_df    = merge_vertical_blocks(h_df, document_configs, debug=False)
+            if len(h_df) > 1:
+                v_df    = merge_vertical_blocks(h_df, document_configs, debug=False)
+            else:
+                v_df = h_df
+                v_df['children'] = None
             v_dfs.append(v_df)
     except Exception as e :
         log_error('Error in creating v_dfs', app_context.application_context, e)
@@ -125,7 +133,7 @@ def get_vdfs(h_dfs):
     return v_dfs
 
 
-def get_hdfs(in_dfs, header_region, footer_region):
+def get_hdfs(in_dfs, header_region, footer_region,width_ratio,height_ratio,images=None,table=False):
 
     start_time          = time.time()
     try:
@@ -137,10 +145,23 @@ def get_hdfs(in_dfs, header_region, footer_region):
         document_configs = config.DOCUMENT_CONFIGS
         for page_index in range(pages):
             page_df   = in_dfs[page_index]
-            if multiple_pages :
-                page_df   = tag_heaader_footer_attrib(header_region , footer_region,page_df)
+            if config.HEADER_FOOTER_BY_PRIMA:
+                log_info('Starting header footer detetion with PRIMA',
+                         app_context.application_context)
+                if images != None :
+                    region_df  = primalaynet.predict_primanet(images[page_index], [])
+                    page_df = tag_heaader_footer_attrib(region_df, pd.DataFrame(), page_df,width_ratio,height_ratio)
+                else:
+                    page_df = tag_heaader_footer_attrib(header_region, footer_region, page_df,width_ratio,height_ratio)
 
-            h_df    = merge_horizontal_blocks(page_df, document_configs, debug=False)
+            else :
+                if multiple_pages :
+                    page_df   = tag_heaader_footer_attrib(header_region , footer_region,page_df,width_ratio,height_ratio)
+            if len(page_df) > 1:
+                h_df    = merge_horizontal_blocks(page_df, document_configs,table=table, debug=False)
+            else :
+                h_df = page_df
+
             h_dfs.append(h_df)
     except Exception as e :
         log_error('Error in creating h_dfs' +str(e), app_context.application_context, e)
@@ -148,7 +169,7 @@ def get_hdfs(in_dfs, header_region, footer_region):
 
     end_time         = time.time()
     elapsed_time     = end_time - start_time
-    log_info('Processing of get_hdfs completed in {}/{}, average per page {}'.format(elapsed_time, len(in_dfs), (elapsed_time/len(in_dfs))), app_context.application_context)
+    log_info('Processing of get_hdfs completed in {}/{}, average per page {}'.format(elapsed_time, len(in_dfs), (elapsed_time/max(len(in_dfs) ,1))), app_context.application_context)
 
     return h_dfs
 
@@ -162,6 +183,7 @@ def get_pdfs(page_dfs,lang):
         block_configs = config.BLOCK_CONFIGS
         for page_index in range(pages):
             page_df     = page_dfs[page_index]
+            page_df = page_df.reset_index(drop=True)
             cols        = page_df.columns.values.tolist()
             df          = pd.DataFrame(columns=cols)
             for index, row in page_df.iterrows():

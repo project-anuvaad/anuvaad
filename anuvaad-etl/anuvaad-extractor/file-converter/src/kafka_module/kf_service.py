@@ -13,7 +13,7 @@ import config
 
 def consumer_validator():
     try:
-        consumer_class = Consumer(config.tok_input_topic, config.bootstrap_server)
+        consumer_class = Consumer(config.tok_input_topic, list(str(config.bootstrap_server).split(",")))
         consumer = consumer_class.consumer_instantiate()
         log_info("consumer_validator --- consumer running -----", None)
         return consumer
@@ -24,7 +24,8 @@ def consumer_validator():
 def push_output(producer, topic_name, output, jobid, task_id):
     try:
         producer.push_data_to_queue(topic_name, output)
-        log_info("push_output : producer flushed value on topic %s"%(topic_name), jobid)
+        ctx = {"jobID": jobid, "taskID": task_id, "metadata": {"module": "FILE-CONVERTER"}}
+        log_info("push_output : producer flushed value on topic %s"%(topic_name), ctx)
     except Exception as e:
         response_custom = CustomResponse(Status.ERR_STATUS.value, jobid, task_id)
         log_exception("push_output : Response can't be pushed to queue %s"%(topic_name), jobid, None)
@@ -37,7 +38,7 @@ def process_fc_kf():
     DOWNLOAD_FOLDER =file_ops.file_download(config.download_folder)
     task_id = str("FC-" + str(task_timestamp))
     task_starttime = task_timestamp
-    producer_tok = Producer(config.bootstrap_server)
+    producer_tok = Producer(list(str(config.bootstrap_server).split(",")))
     # instatiation of consumer for respective topic
     try:
         consumer = consumer_validator()

@@ -17,7 +17,6 @@ from src.kafka_module.producer import Producer
 import src.utilities.app_context as app_context
 import requests
 
-
 file_ops = FileOperation()
 
 
@@ -25,13 +24,11 @@ class Response(object):
     def __init__(self, json_data, DOWNLOAD_FOLDER):
         self.json_data          = json_data
         self.DOWNLOAD_FOLDER    = DOWNLOAD_FOLDER
-
     def upload(self,json_file):
         url = config.file_upload_url
         r = requests.post(url, files = json_file)
         filename = r["data"]
         return filename
-
     def workflow_response(self, task_id, task_starttime, debug_flush=False):
 
         app_context.init()
@@ -52,10 +49,13 @@ class Response(object):
                 if debug_flush == False:
                     bm_response = DocumentStructure(app_context=app_context, file_name=input_filename, lang=in_locale)
                     if bm_response['code'] == 200:
-                        #output_filename_json = file_ops.writing_json_file(i, bm_response['rsp'], self.DOWNLOAD_FOLDER)
-                        output_filename = self.upload(bm_response['rsp'])
+                        
+                        output_filename_json = file_ops.writing_json_file(i, bm_response['rsp'], self.DOWNLOAD_FOLDER)
 
-                        file_res = file_ops.one_filename_response(input_filename, output_filename, in_locale, in_file_type)
+                        #output_filename = self.upload(bm_response['rsp'])
+                        #file_res = file_ops.one_filename_response(input_filename, output_filename, in_locale, in_file_type)
+
+                        file_res = file_ops.one_filename_response(input_filename, output_filename_json, in_locale, in_file_type)
                         output_file_response.append(file_res)
                         task_endtime = eval(str(time.time()).replace('.', '')[0:13])
                         response_true = CustomResponse(Status.SUCCESS.value, jobid, task_id)
@@ -97,15 +97,15 @@ class Response(object):
 
     def nonwf_response(self):
         log_info("non workflow response started the response generation", app_context.application_context)
-        input_files = self.json_data['files']
+        input_files = self.json_data['input']['files']
         error_validator = ValidationResponse(self.DOWNLOAD_FOLDER)
         try:
-            error_validator.inputfile_list_empty(input_files)
+            error_validator.inputfile_list_error(input_files)
             output_file_response = list()
-            for item in input_files:
+            for index, item in enumerate(input_files):
                 input_filename, in_file_type, in_locale = file_ops.accessing_files(item)
-                output_json_data = DocumentStructure(None, input_filename)
-                output_filename_json = file_ops.writing_json_file(i, output_json_data, self.DOWNLOAD_FOLDER)
+                output_json_data = DocumentStructure(app_context=app_context, file_name=input_filename, lang=in_locale)
+                output_filename_json = file_ops.writing_json_file(index, output_json_data, self.DOWNLOAD_FOLDER)
                 file_res = file_ops.one_filename_response(input_filename, output_filename_json, in_locale, in_file_type)
                 output_file_response.append(file_res)
             response_true = Status.SUCCESS.value

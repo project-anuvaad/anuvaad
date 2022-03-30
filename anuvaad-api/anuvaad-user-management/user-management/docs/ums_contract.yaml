@@ -1,0 +1,703 @@
+swagger: '2.0'
+info:
+  version: 1.0.0
+  title: Anuvaad User Management -API Contract
+  description: >-
+    A python based microservice for user management. This service will expose
+    REST APIs to maintain user and admin functionalities.
+  contact:
+    name: Jainy Joy
+    email: jainy.joy@tarento.com
+schemes:
+  - https
+host: 'auth.anuvaad.org'
+basePath: '/anuvaad/user-mgmt'
+consumes:
+  - application/json
+produces:
+  - application/json
+  
+  
+paths:
+  /v1/users/create:
+    post:
+      summary: REST API to register/create new users.
+      description: This API helps to create new users.
+      parameters:
+        - name: request
+          in: body
+          required: true
+          description: The user details to create.
+          schema:
+            $ref: '#/definitions/CreateUserRequest'
+      tags:
+        - Create Users
+      responses:
+        '200':
+          description: New users were created successfully.
+          schema:
+            $ref: '#/definitions/Status'
+        '400':
+          description: On input errors causing failure in user account creation.
+          schema:
+            $ref: '#/definitions/Error'
+        '500':
+          description: On system level errors causing failure in user account creation.
+          schema:
+            $ref: '#/definitions/Error'
+            
+  /v1/users/onboard-users:
+    post:
+      summary: REST API to onboard new users.
+      description: This API helps to oboard new users.
+      parameters:
+        - name: request
+          in: body
+          required: true
+          description: The user details to onboard.
+          schema:
+            $ref: '#/definitions/OnboardUserRequest'
+      tags:
+        - Onboard Users
+      responses:
+        '200':
+          description: New users were onboarded successfully.
+          schema:
+            $ref: '#/definitions/Status'
+        '400':
+          description: On input errors causing failure in user onboarding.
+          schema:
+            $ref: '#/definitions/Error'
+        '500':
+          description: On system level errors causing failure in user aonboarding.
+          schema:
+            $ref: '#/definitions/Error'
+            
+  /v1/users/verify-user:
+    post:
+      summary: REST API to verify user account.
+      description: This API helps to verify email account provided by the user.
+      parameters:
+        - name: request
+          in: body
+          required: true
+          description: Request to verify user account.
+          schema:
+            $ref: '#/definitions/VerifyUserRequest'
+      tags:
+        - Verify User
+      responses:
+        '200':
+          description: User has verified successfully.
+          schema:
+            $ref: '#/definitions/Status'
+        '400':
+          description: On input errors causing failure in user verification.
+          schema:
+            $ref: '#/definitions/Error'
+        '500':
+          description: On system level errors causing failure in user verification.
+          schema:
+            $ref: '#/definitions/Error'
+            
+  /v1/users/activate-user:
+    post:
+      summary: REST API for activating/deactivating a user account.
+      description: This API helps to activate or deactivate a user.
+      parameters:
+        - name: request
+          in: body
+          required: true
+          description: Request to activate/deactivate a user.
+          schema:
+            $ref: '#/definitions/ActivateUserRequest'
+      tags:
+        - Activate/Deactivate User
+      responses:
+        '200':
+          description: User has activated successfully.
+          schema:
+            $ref: '#/definitions/Status'
+        '400':
+          description: On input errors causing failure in user activation.
+          schema:
+            $ref: '#/definitions/Error'
+        '500':
+          description: On system level errors causing failure in user activation.
+          schema:
+            $ref: '#/definitions/Error'
+            
+  /v1/users/update:
+    post:
+      summary: REST API to update users.
+      description: >-
+        This API helps to search an user is existing or not based on various
+        criteria.
+      parameters:
+        - name: request
+          in: body
+          required: true
+          description: Request to update user records.
+          schema:
+            $ref: '#/definitions/UpdateUserRequest'
+      tags:
+        - Update User
+      responses:
+        '200':
+          description: Users were updated successfully.
+          schema:
+            $ref: '#/definitions/Status'
+        '400':
+          description: On input errors causing failure in user account updation.
+          schema:
+            $ref: '#/definitions/Error'
+        '500':
+          description: On system level errors causing failure in user account updation.
+          schema:
+            $ref: '#/definitions/Error'
+            
+  /v1/users/search:
+    post:
+      summary: REST API to search users.
+      description: This API helps to search an existing users.
+      parameters:
+        - name: request
+          in: body
+          required: true
+          description: Request to search user account.
+          schema:
+            $ref: '#/definitions/SearchUserRequest'
+      tags:
+        - Search User
+      responses:
+        '200':
+          description: Users was updated successfully.
+          schema:
+            $ref: '#/definitions/SearchUserResponse'
+            
+  /v1/users/auth-token-search:
+    post:
+      summary: REST API for auth token based search .
+      description: This API helps to fetch user records using his/her auth token.
+      parameters:
+        - name: request
+          in: body
+          required: true
+          description: The auth token search request.
+          schema:
+            $ref: '#/definitions/AuthTokenSearchRequest'
+      tags:
+        - Search User
+      responses:
+        '200':
+          description: Search is successful.
+          schema:
+            $ref: '#/definitions/SearchUserResponse'
+        '400':
+          description: On input errors causing failure in auth token search.
+          schema:
+            $ref: '#/definitions/Error'
+        '500':
+          description: On system level errors causing failure in auth token search.
+          schema:
+            $ref: '#/definitions/Error'
+            
+  /v1/users/login:
+    post:
+      summary: REST API to login.
+      description: This API helps to login a user.
+      parameters:
+        - name: request
+          in: body
+          required: true
+          description: The user credentials to login.
+          schema:
+            $ref: '#/definitions/UserLoginRequest'
+      tags:
+        - Login
+      responses:
+        '200':
+          description: Logged in successfully.
+          schema:
+            $ref: '#/definitions/UserLoginResponse'
+        '400':
+          description: On input errors causing failure in user login.
+          schema:
+            $ref: '#/definitions/Error'
+        '500':
+          description: On system level errors causing failure in user login.
+          schema:
+            $ref: '#/definitions/Error'
+            
+  /v1/users/logout:
+    post:
+      summary: REST API to logout.
+      description: This API helps to logout a user.
+      parameters:
+        - name: request
+          in: body
+          required: true
+          description: The user logout request.
+          schema:
+            $ref: '#/definitions/UserLogoutRequest'
+      tags:
+        - Logout
+      responses:
+        '200':
+          description: Logged out successfully.
+          schema:
+            $ref: '#/definitions/Status'
+        '400':
+          description: On input errors causing failure in user logout.
+          schema:
+            $ref: '#/definitions/Error'
+        '500':
+          description: On system level errors causing failure in user logout.
+          schema:
+            $ref: '#/definitions/Error'
+
+  /v1/users/forgot-password:
+    post:
+      summary: REST API for forgot password request.
+      description: This API helps to get a reset password link.
+      parameters:
+        - name: request
+          in: body
+          required: true
+          description: The forgot password request.
+          schema:
+            $ref: '#/definitions/ForgotPasswordRequest'
+      tags:
+        - Forgot Password
+      responses:
+        '200':
+          description: User has notfied successfully.
+          schema:
+            $ref: '#/definitions/Status'
+        '400':
+          description: On input errors causing failure in user notification.
+          schema:
+            $ref: '#/definitions/Error'
+        '500':
+          description: On system level errors causing failure in user notification.
+          schema:
+            $ref: '#/definitions/Error'
+            
+  /v1/users/reset-password:
+    post:
+      summary: REST API for resetting password.
+      description: This API helps to reset user's password.
+      parameters:
+        - name: request
+          in: body
+          required: true
+          description: The reset password request.
+          schema:
+            $ref: '#/definitions/ResetPasswordRequest'
+      tags:
+        - Reset Password
+      responses:
+        '200':
+          description: Password has resetted successfully.
+          schema:
+            $ref: '#/definitions/Status'
+        '400':
+          description: On input errors causing failure in password resetting.
+          schema:
+            $ref: '#/definitions/Error'
+        '500':
+          description: On system level errors causing failure in password resetting.
+          schema:
+            $ref: '#/definitions/Error'
+            
+  /v1/org/upsert:
+    post:
+      summary: REST API to create and update organizations.
+      description: This API helps to create and update organizations.
+      parameters:
+        - name: request
+          in: body
+          required: true
+          description: The org details to create/update.
+          schema:
+            $ref: '#/definitions/UpsertOrgRequest'
+      tags:
+        - Upsert Org
+      responses:
+        '200':
+          description: Request Successful.
+          schema:
+            $ref: '#/definitions/Status'
+        '400':
+          description: On input errors causing failure inorg upsert.
+          schema:
+            $ref: '#/definitions/Error'
+        '500':
+          description: On system level errors causing failure in org upsert.
+          schema:
+            $ref: '#/definitions/Error'
+            
+  /v1/org/search:
+    get:
+      summary: REST API to search organizations.
+      description: This API helps to search for organizations.
+      parameters:
+        - name: org-code
+          type: string
+          in: query
+          required: false
+          description: code of the org to search
+      tags:
+        - Search Org
+      responses:
+        '200':
+          description: Organizations were searched successfully.
+          schema:
+            $ref: '#/definitions/SearchOrgrResponse'
+        '400':
+          description: On input errors causing failure in org search.
+          schema:
+            $ref: '#/definitions/Error'
+        '500':
+          description: On system level errors causing failure in org search.
+          schema:
+            $ref: '#/definitions/Error'
+
+definitions:
+  User:
+    type: object
+    properties:
+      userID:
+        type: string
+        description: Unique 32-bit UUID per user.
+      name:
+        type: string
+        description: Name of the user.
+      userName:
+        type: string
+        description: 'User Name for the user as chosen by the user, unique for every user.'
+      password:
+        type: string
+        description: >-
+          Password for the user profile as chosen by the user abiding by the pwd
+          policy defined by the system. encrypted and stored.
+      email:
+        type: string
+        description: email id of the user.
+      phoneNo:
+        type: string
+        description: mobile number of the user
+      roles:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/Role'
+      orgID:
+        type: string
+        description: organization Id of the user
+        
+        
+  Role:
+    type: object
+    properties:
+      roleCode:
+        type: string
+        description: Unique code per role.
+      roleDesc:
+        type: string
+        description: Description of the role.
+  AuthData:
+    type: object
+    properties:
+      userName:
+        type: string
+        description: username of the logged in user
+      token:
+        type: string
+        description: auth token for the logged in user
+        
+        
+  Org:
+    type: object
+    properties: 
+      code:
+        type: string
+      active:
+        type: boolean
+      description:
+        type: string
+  
+        
+  Status:
+    type: object
+    properties:
+      ok:
+        type: string
+        description: true or false 
+      http:
+        type: object
+        properties:
+          status:
+            type: string
+            description: status code of the request
+      why:
+        type: string
+        description: response message
+      data:
+        type: object
+        description: data returned by the request
+      count:
+        type: integer
+        description: count of data items
+    
+  
+  CreateUserRequest:
+    type: object
+    properties:
+      users:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/User'
+        description: Details of the users to be registered.
+
+
+  OnboardUserRequest:
+    type: object
+    properties:
+      users:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/User'
+        description: Details of the users to be registered.
+        
+        
+  ActivateUserRequest:
+    type: object
+    properties:
+      userName:
+        type: string
+        description: unique username value.
+      is_active:
+        type: boolean
+        description: active status(true or false) of the user.
+
+
+  UpdateUserRequest:
+    type: object
+    properties:
+      users:
+        type: array
+        items:
+          type: object
+          properties: 
+            userID:
+              type: string
+              description: Unique IDs of the users
+            name:
+              type: string
+              description: Name of the user.
+            email:
+              type: string
+              description: email id of the user.
+            phoneNo:
+              type: string
+              description: mobile number of the user
+            orgID:
+              type: string
+              description: organization Id of the user
+        description: user details to update
+
+
+  SearchUserRequest:
+    type: object
+    properties:
+      userIDs:
+        type: array
+        items:
+          type: string
+        description: Unique IDs of the users.
+      userNames:
+        type: array
+        items:
+          type: string
+        description: Unique usernames of the users.
+      roleCodes:
+        type: array
+        items:
+          type: string
+          description: Parameter to search on roles.
+      offset:
+        type: integer
+        description: starting range 
+      limit:
+        type: integer
+        description: limit count
+        
+        
+  SearchUserResponse:
+    type: object
+    properties:
+      ok:
+        type: string
+        description: true or false 
+      http:
+        type: object
+        properties:
+          status:
+            type: string
+            description: status code of the request
+      why:
+        type: string
+        description: response message
+      data:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/User'
+      count:
+        type: integer
+        description: count of data items
+    
+  
+  UserLoginRequest:
+    type: object
+    properties:
+      userName:
+        type: string
+        description: Unique username of the user.
+      password:
+        type: string
+        description: Password of the user
+    description: Details of the user to be logged in.
+    
+    
+  UserLoginResponse:
+    type: object
+    properties:
+      ok:
+        type: string
+        description: true or false 
+      http:
+        type: object
+        properties:
+          status:
+            type: string
+            description: status code of the request
+      why:
+        type: string
+        description: response message
+      data:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/AuthData'
+      count:
+        type: integer
+        description: count of data items
+        
+        
+  UserLogoutRequest:
+    type: object
+    properties:
+      userName:
+        type: string
+        description: Unique username of the user
+    description: Details of the user to be logged out.
+
+
+  AuthTokenSearchRequest:
+    type: object
+    properties:
+      token:
+        type: string
+        description: Unique auth token of verified user
+    description: Request for user records.
+
+
+  ForgotPasswordRequest:
+    type: object
+    properties:
+      userName:
+        type: string
+        description: Unique username of the user.
+    description: Request for user records.
+    
+
+  ResetPasswordRequest:
+    type: object
+    properties:
+      userName:
+        type: string
+        description: Unique username of the user.
+      password:
+        type: string
+        description: password to be updated
+    description: Request for user records.
+
+
+  VerifyUserRequest:
+    type: object
+    properties:
+      userName:
+        type: string
+        description: unique username value.
+      userID:
+        type: string
+        description: unique userid value.
+  
+  
+  UpsertOrgRequest:
+    type: object
+    properties:
+      organizations:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/Org'
+        description: Details of the orgs to be upserted.
+  
+  
+  SearchOrgrResponse:
+    type: object
+    properties:
+      ok:
+        type: string
+        description: true or false 
+      http:
+        type: object
+        properties:
+          status:
+            type: string
+            description: status code of the request
+      why:
+        type: string
+        description: response message
+      data:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/Org'
+      count:
+        type: integer
+        description: count of data items
+
+  Error:
+    type: object
+    properties:
+      errorID:
+        type: string
+        description: Unique UUID for the error.
+      cause:
+        type: string
+        description: System generated cause of the error
+      code:
+        type: string
+        description: Unique code signifying the category for the error.
+      message:
+        type: string
+        description: User readable message pertaining to the error
+      timeStamp:
+        type: number
+        description: 13 digit epoch timestamp

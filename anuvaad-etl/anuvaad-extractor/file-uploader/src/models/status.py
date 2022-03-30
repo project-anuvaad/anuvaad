@@ -31,3 +31,4 @@ class Status(enum.Enum):
     ERROR_NOTFOUND_FILE = {'ok': False, 'http': {'status': 400}, 'why': 'file not found'}
     ERROR_WRONG_PASSWORD = {'ok': False, 'http': {'status': 400}, 'why': 'wrong password '}
     USER_ALREADY_EXISTS = {'ok': False, 'http': {'status': 400}, 'why': 'username already exists '}
+    FILE_BLANK_ERROR = {'ok': False, 'http': {'status': 400}, 'why': 'Blank File'}

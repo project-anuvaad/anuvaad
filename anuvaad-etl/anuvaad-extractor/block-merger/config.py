@@ -3,7 +3,7 @@ import os
 import time
 
 DEBUG = False
-API_URL_PREFIX = "/api/v0"
+API_URL_PREFIX = "/anuvaad-etl/block-merger"
 HOST = '0.0.0.0'
 PORT = 5001
 BASE_DIR      = 'upload'
@@ -27,8 +27,8 @@ bootstrap_server    = os.environ.get(kafka_ip_host, kf_local_server)
 TASK_STAT           = 'BLOCK-MERGER'
 
 CONSUMER_GROUP_default       = 'anuvaad-etl-bm-consumer-group'
-CONSUMER_GROUP_identifier    = 'KAFKA_ANUVAAD_ETL_BM_CONSUMER_GRP'
-CONSUMER_GROUP               = os.environ.get(CONSUMER_GROUP_identifier,CONSUMER_GROUP_default)
+CONSUMER_GROUP_identifire    = 'KAFKA_ANUVAAD_ETL_BM_CONSUMER_GRP'
+CONSUMER_GROUP               = os.environ.get(CONSUMER_GROUP_default,CONSUMER_GROUP_identifire)
 #folders and file path
 download_folder = 'upload'
 file_upload_url = str(os.environ.get('USER_FILE_UPLOADER_HOST', 'http://gateway_anuvaad-user-fileuploader:5001')) \
@@ -57,7 +57,7 @@ BLOCK_CONFIGS = {
     "right_margin_threshold": 0.10,  "left_margin_threshold": 0.10,
     "right_break_threshold": 0.06,   "left_break_threshold": 0.05,
     "header_left_threshold": 0.70,  "header_right_threshold": 0.85,
-    "space_multiply_factor": 1.8
+    "space_multiply_factor": 2.1
 }
 
 BLOCK_BREAK_CONFIG = {'margin_support': 2, 'width_threshold': 0.65}
@@ -98,13 +98,40 @@ FONT_SIZE_CONFIG = {
 CROP_CONFIG = {
     'en' : {'top':1, 'bottom':1,'right':1,'left':1},
     'hi': {'top':15, 'bottom':10,'right':5,'left':5},
+    'gu': {'top': 15, 'bottom': 10, 'right': 5, 'left': 5},
+    'or': {'top': 15, 'bottom': 10, 'right': 5, 'left': 5},
+    'bn': {'top': 15, 'bottom': 10, 'right': 5, 'left': 5},
     'ml': {'top':15, 'bottom':10,'right':5,'left':5},
     'kn':{'top':15, 'bottom':10,'right':5,'left':5 },
     'ta':{'top':10, 'bottom':15,'right':5,'left':10 },
+    'te':{'top':10, 'bottom':15,'right':5,'left':10 },
     'mr':{'top':15, 'bottom':10,'right':5,'left':5}
 }
 
-CLASS_2_LANG = ['ta']
+CLASS_2_LANG = []  #['ta']
 
-CRAFT_MODEL_PATH = "./src/utilities/craft_pytorch/model/craft_mlt_25k.pth"
-CRAFT_REFINE_MODEL_PATH = "/home/naresh/Tarento/anuvaad/anuvaad-etl/anuvaad-extractor/block-merger/src/utilities/craft_pytorch/model/craft_refiner_CTW1500.pth"
+CRAFT_MODEL_PATH =  "./src/utilities/craft_pytorch/model/craft_mlt_25k.pth"
+CRAFT_REFINE_MODEL_PATH = "./src/utilities/craft_pytorch/model/craft_refiner_CTW1500.pth"
+
+
+WATERMARK_THRESHOLD_LOW = 175
+WATERMARK_THRESHOLD_HIGH = 250
+
+
+PRIMA_SCORE_THRESH_TEST =0.5
+LAYOUT_MODEL_PATH =  "./src/utilities/primalaynet/model_final.pth"
+LAYOUT_CONFIG_PATH = "./src/utilities/primalaynet/config.yaml"
+#
+#LAYOUT_MODEL_PATH =  "/home/naresh/anuvaad_BM_prima_model/model_final.pth"
+#LAYOUT_CONFIG_PATH = "/home/naresh/anuvaad-BM/anuvaad/anuvaad-etl/anuvaad-extractor/block-merger/src/utilities/primalaynet/config.yaml"
+
+
+# LAYOUT_MODEL_PATH = '/home/dhiraj/Downloads/model_final.pth'
+# LAYOUT_CONFIG_PATH = '/home/dhiraj/Documents/anuvaad/anuvaad-etl/anuvaad-extractor/block-merger/src/utilities/primalaynet/config.yaml'
+
+HEADER_FOOTER_BY_PRIMA = True
+
+LAYOUT_CLASSES = ['HEADER','FOOTER']
+
+BM_PROCESSES = 3
+BM_OCR_PROCESSES = 2

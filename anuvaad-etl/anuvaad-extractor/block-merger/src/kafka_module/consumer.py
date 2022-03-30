@@ -13,7 +13,9 @@ class Consumer(object):
     # Consumer initialisation to consume message from queue
     def consumer_instantiate(self):
         try:
-            consumer = KafkaConsumer(self.topic_name, bootstrap_servers = list((self.server_address).split(",")), auto_offset_reset = 'latest', group_id = config.CONSUMER_GROUP, enable_auto_commit=True)
+            consumer = KafkaConsumer(self.topic_name, bootstrap_servers = list((self.server_address).split(",")), \
+                                     auto_offset_reset = 'earliest', group_id = config.CONSUMER_GROUP, \
+                                     enable_auto_commit=False)#,max_poll_interval_ms=30000000)
             log_info("consumer_instantiate : Consumer returned for topic: %s"%(self.topic_name), None)
             return consumer
         except Exception as e:

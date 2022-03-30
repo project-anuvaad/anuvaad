@@ -1,5 +1,5 @@
 __pycache__
-.vscode
+*.vscode
 *.log
 /env
 exp_result.py

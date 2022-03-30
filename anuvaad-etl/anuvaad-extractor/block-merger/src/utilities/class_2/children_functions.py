@@ -11,6 +11,11 @@ from src.utilities.class_2.break_block_condition_single_column import process_pa
 from src.utilities.class_2.page_layout.double_column import get_column
 from src.utilities.class_2.page_layout.utils import collate_regions
 from src.utilities.primalaynet.infer import predict_primanet
+from src.utilities.primalaynet.header_footer import PRIMA
+from anuvaad_auditor.loghandler import log_error
+
+primalaynet = PRIMA()
+
 
 def doc_pre_processing(filename, base_dir, lang):
     '''
@@ -25,50 +30,62 @@ def doc_pre_processing(filename, base_dir, lang):
     log_info("document preprocessing started ===>", app_context.application_context)
     flags = {}
     #pdf_data={}
-
-    img_dfs, xml_dfs, page_width, page_height, working_dir, pdf_bg_img_filepaths, pdf_image_paths = get_xml.process_input_pdf(
+    
+    img_dfs, xml_dfs,page_width, page_height,working_dir, pdf_bg_img_filepaths, pdf_image_paths, = get_xml.process_input_pdf(
         filename, base_dir, lang)
+    
+    pdf_img_height = []
+    pdf_img_width  = []
+    for idx,i in enumerate(pdf_image_paths):
 
-    img_filepath = pdf_image_paths[0]
-    image        = cv2.imread(img_filepath)
-    pdf_image_height  = image.shape[0]
-    pdf_image_width = image.shape[1]
+        img_filepath = pdf_image_paths[idx]
 
-    text_blocks_count = check_text(xml_dfs)
-    if (text_blocks_count == 0) or (lang in config.CLASS_2_LANG):
-        log_info("DocumentStructure : looks like the file is either empty or scanned", app_context.application_context)
-        flags['doc_class'] = 'class_2'
-    else:
-        flags['doc_class'] = 'class_1'
-
-    pdf_data = {'in_dfs':xml_dfs,'img_dfs':img_dfs , 'page_width':page_width,'page_height':page_height,
-                'pdf_bg_img_filepaths':pdf_bg_img_filepaths ,'pdf_image_paths':pdf_image_paths,
-                'pdf_image_height':pdf_image_height,'pdf_image_width':pdf_image_width}
-
+        image        = cv2.imread(img_filepath,0)
+        pdf_image_height, pdf_image_width = image.shape[:2]
+        # pdf_image_height  = image.shape[0]
+        pdf_img_height.append(pdf_image_height)
+        # pdf_image_width = image.shape[1]
+        pdf_img_width.append(pdf_image_width)
+        text_blocks_count = check_text(xml_dfs)
+        if (text_blocks_count == 0) or (lang in config.CLASS_2_LANG):
+            #print("DocumentStructure : looks like the file is either empty or scanned")
+            log_info("DocumentStructure : looks like the file is either empty or scanned", app_context.application_context)
+            flags['doc_class'] = 'class_2'
+        else:
+            flags['doc_class'] = 'class_1'
+        pdf_data = {'in_dfs':xml_dfs,'img_dfs':img_dfs , 'page_width':page_width,'page_height':page_height,
+                        'pdf_bg_img_filepaths':pdf_bg_img_filepaths ,'pdf_image_paths':pdf_image_paths,
+                        'pdf_image_height':pdf_img_height,'pdf_image_width':pdf_img_width
+                        }
     return pdf_data, flags
-
-
 
 def get_layout_proposals(pdf_data,flags) :
 
+    for indx in range(len(pdf_data["page_width"])):
+        width_ratio = pdf_data['page_width'][indx] / pdf_data['pdf_image_width'][indx]
+        height_ratio = pdf_data['page_height'][indx]/ pdf_data['pdf_image_height'][indx]
 
-    if (flags['page_layout'] =='single_column')or(flags['doc_class'] == 'class_1') :
-        h_dfs = get_xml.get_hdfs(pdf_data['in_dfs'],  pdf_data['header_region'], pdf_data['footer_region'])
+        if (flags['page_layout'] =='single_column')or(flags['doc_class'] == 'class_1') :
 
-        return h_dfs
-    else :
-        h_dfs = []
-        pdf_data['sub_in_dfs'] = []
-        if flags['page_layout'] == 'double_column' :
-            width_ratio = pdf_data['page_width'] / pdf_data['pdf_image_width']
-            height_ratio = pdf_data['page_height'] / pdf_data['pdf_image_height']
-            for page_index, pdf_image in enumerate(pdf_data['pdf_image_paths']):
-                
-                #regions = get_column(pdf_image, width_ratio)
-                regions = predict_primanet(pdf_image, pdf_data['in_dfs'][page_index],width_ratio,height_ratio)
-                sub_in_dfs = collate_regions(regions,pdf_data['in_dfs'][page_index])
+            h_dfs = get_xml.get_hdfs(pdf_data['in_dfs'],  pdf_data['header_region'], pdf_data['footer_region'],width_ratio,height_ratio ,images=pdf_data['pdf_image_paths'])
+            return h_dfs
+        else :
+            h_dfs = []
+            pdf_data['sub_in_dfs'] = []
+            if flags['page_layout'] == 'double_column' :
+
+                #for page_index, pdf_image in enumerate(pdf_data['pdf_image_paths']):
+                    
+                    #regions = get_column(pdf_image, width_ratio)
+                regions = predict_primanet(pdf_data['pdf_image_paths'][indx], pdf_data['in_dfs'][indx],width_ratio,height_ratio)
+                sub_in_dfs = collate_regions(regions,pdf_data['in_dfs'][indx])
                 pdf_data['sub_in_dfs'].append(sub_in_dfs)
-                sub_h_dfs  = get_xml.get_hdfs(sub_in_dfs,  pdf_data['header_region'], pdf_data['footer_region'])
+
+                if config.HEADER_FOOTER_BY_PRIMA:
+                    region_df = primalaynet.predict_primanet(pdf_data['pdf_image_paths'][indx], [])
+                    sub_h_dfs = get_xml.get_hdfs(sub_in_dfs,region_df, pd.DataFrame(),width_ratio,height_ratio)
+                else:
+                    sub_h_dfs  = get_xml.get_hdfs(sub_in_dfs,  pdf_data['header_region'], pdf_data['footer_region'],width_ratio,height_ratio)
                 for df in sub_in_dfs:
                     if len(df)<=1:
                         df['children']=None
@@ -79,7 +96,6 @@ def get_layout_proposals(pdf_data,flags) :
         #integrate pubnet
     #    pass
     #if flags['page_layout'] == 'dict' :
-
 
 def vertical_merging(pdf_data,flags):
 
@@ -149,36 +165,42 @@ def doc_structure_response(pdf_data,flags):
                     - text_df
                     - tabel_df
     '''
-    bg_dfs          = pdf_data['bg_dfs']
-    text_block_dfs  = pdf_data['p_dfs']
-    table_dfs       = pdf_data['table_dfs']
-    line_dfs        = pdf_data['line_dfs']
-    #if flags['doc_class'] == 'class_1':
-    page_width      = pdf_data['page_width']
-    page_height     = pdf_data['page_height']
-    # else :
-    #     page_width = pdf_data['pdf_image_width']
-    #     page_height = pdf_data['pdf_image_height']
+    try :
+        bg_dfs          = pdf_data['bg_dfs']
+        img_dfs         = pdf_data['img_dfs']
+        text_block_dfs  = pdf_data['p_dfs']
+        table_dfs       = pdf_data['table_dfs']
+        line_dfs        = pdf_data['line_dfs']
+        #if flags['doc_class'] == 'class_1':
+        # page_width      = pdf_data['page_width']
+        # page_height     = pdf_data['page_height']
+        # else :
+        #     page_width = pdf_data['pdf_image_width']
+        #     page_height = pdf_data['pdf_image_height']
 
-    log_info("document structure response started  ===>", app_context.application_context)
-    start_time = time.time()
-    response = {'result': []}
-    pages = len(text_block_dfs)
+        log_info("document structure response started  ===>", app_context.application_context)
+        start_time = time.time()
+        response = {'result': []}
+        pages = len(text_block_dfs)
 
-    for page_index in range(pages):
-        img_df = bg_dfs[page_index]
-        text_df = text_block_dfs[page_index]
-        text_df = get_xml.drop_update_col(text_df)
-        table_df = table_dfs[page_index]
-        line_df = line_dfs[page_index]
-        # text_df    = adopt_child(text_df)
+        for page_index in range(pages):
+            page_width      = pdf_data['page_width'][page_index]
+            page_height     = pdf_data['page_height'][page_index]
+            img_df    = bg_dfs[page_index].append(img_dfs[page_index])
+            text_df   = text_block_dfs[page_index]
+            text_df   = get_xml.drop_update_col(text_df)
+            table_df  = table_dfs[page_index]
+            line_df   = line_dfs[page_index]
+            # text_df    = adopt_child(text_df)
 
-        page_json = response_per_page(text_df, img_df, table_df, line_df, page_index, page_width, page_height)
-        response['result'].append(page_json)
-    end_time = time.time() - start_time
-    log_info("document structure response successfully completed {}".format(end_time), app_context.application_context)
+            page_json = response_per_page(text_df, img_df, table_df, line_df, page_index, page_width, page_height)
+            response['result'].append(page_json)
+        end_time = time.time() - start_time
+        log_info("document structure response successfully completed {}".format(end_time), app_context.application_context)
 
-    return response
+        return response
+    except Exception as e:
+        log_error('Error in response generation' + str(e), app_context.application_context, e)
 
 
 def response_per_page(p_df, img_df, table_df, line_df, page_no, page_width, page_height):

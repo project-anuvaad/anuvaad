@@ -4,10 +4,10 @@ import numpy as np
 from collections import namedtuple
 Rectangle = namedtuple('Rectangle', 'xmin ymin xmax ymax')
 import sys, random, torch, glob, torchvision
-from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
-from torchvision.models.detection.mask_rcnn import MaskRCNNPredictor
-from torchvision.transforms import transforms
-from skimage import io
+# from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
+# from torchvision.models.detection.mask_rcnn import MaskRCNNPredictor
+# from torchvision.transforms import transforms
+# from skimage import io
 
 
 seed = 1234

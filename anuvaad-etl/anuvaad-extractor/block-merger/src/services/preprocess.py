@@ -2,8 +2,11 @@ import pandas as pd
 #import config
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_error
-from config import PREPROCESS_CONFIGS as preprocess_config
+from config import PREPROCESS_CONFIGS as preprocess_config,HEADER_FOOTER_BY_PRIMA
 import src.utilities.app_context as app_context
+from src.utilities.primalaynet.header_footer import PRIMA
+
+
 import time
 from anuvaad_auditor.errorhandler import post_error_wf
 
@@ -120,20 +123,42 @@ def find_footer(xml_dfs, page_height,preprocess_config,):
     return regions_to_remove
 
 
-def add_attrib(page_df, region_to_change, attrib, margin=3):
+def add_attrib(df, region_to_change, width_ratio,height_ratio,attrib, margin=3):
+    left_key = 'text_left'
+    top_key = 'text_top'
+    width_key = 'text_width'
+    height_key = 'text_height'
     if len(region_to_change) > 0:
         for index, row in region_to_change.iterrows():
+            #print(row)
             area = [row['text_top'] - margin, row['text_left'] - margin, row['text_top'] + row['text_height'] + margin,
                     row['text_left'] + row['text_width'] + margin]
             #print(area)
             #print((page_df['text_top'] >= area[0]) & (page_df['text_left'] >= area[1]) & (
             #            page_df['text_top'] + page_df['text_height'] <= area[2]) & (
             #                  page_df['text_left'] + page_df['text_width'] <= area[3]))
-            page_df['attrib'].loc[(page_df['text_top'] >= area[0]) & (page_df['text_left'] >= area[1]) & (
-                        page_df['text_top'] + page_df['text_height'] <= area[2]) & (
-                                          page_df['text_left'] + page_df['text_width'] <= area[3])] = attrib
 
-    return page_df
+            # intersection = (page_df['text_top'] >= area[0]) & (page_df['text_left'] >= area[1]) & (
+            #             page_df['text_top'] + page_df['text_height'] <= area[2]) & (
+            #                               page_df['text_left'] + page_df['text_width'] <= area[3])
+            #
+
+            intersection = ((df[left_key] + df[width_key] * 0.5) >= area[1] * width_ratio ) \
+                     & ((df[top_key] + df[height_key] * 0.5) >= area[0]*height_ratio ) \
+                     & ((df[top_key] + df[height_key] * 0.5) <= (area[2])*height_ratio ) \
+                     & ((df[left_key] + df[width_key] * 0.5) <= (area[3]* width_ratio ) )
+
+            if intersection.sum() >0:
+                if HEADER_FOOTER_BY_PRIMA:
+                    df['attrib'].loc[intersection] = row['class']
+                else:
+                    df['attrib'].loc[intersection]  = attrib
+            #
+            # page_df['attrib'].loc[(page_df['text_top'] >= area[0]) & (page_df['text_left'] >= area[1]) & (
+            #             page_df['text_top'] + page_df['text_height'] <= area[2]) & (
+            #                               page_df['text_left'] + page_df['text_width'] <= area[3])] = attrib
+
+    return df
 
 
 def prepocess_pdf_regions(pdf_data,flags, config =preprocess_config ):
@@ -144,17 +169,19 @@ def prepocess_pdf_regions(pdf_data,flags, config =preprocess_config ):
     #    page_height =  pdf_data['pdf_image_height']
     #header_region = None
     #footer_region =None
-    #if len(xml_dfs) > 1 :
     try :
-        start_time = time.time()
-        header_region = find_header(xml_dfs,page_height,config)
-        footer_region = find_footer(xml_dfs,page_height,config)
-        end_time = time.time() - start_time
-        log_info('Header Footer detection completed successfully  in time {} '.format(end_time), app_context.application_context)
-        log_info('Footers found {} '.format(len(footer_region)), app_context.application_context)
-        log_info('Headers found {}'.format(len(header_region)),app_context.application_context)
+        if not HEADER_FOOTER_BY_PRIMA :
+            start_time = time.time()
+            header_region = find_header(xml_dfs,page_height,config)
+            footer_region = find_footer(xml_dfs,page_height,config)
+            end_time = time.time() - start_time
+            log_info('Header Footer detection completed successfully  in time {} '.format(end_time), app_context.application_context)
+            log_info('Footers found {} '.format(len(footer_region)), app_context.application_context)
+            log_info('Headers found {}'.format(len(header_region)),app_context.application_context)
+            pdf_data['header_region'], pdf_data['footer_region'] = header_region, footer_region
 
-        pdf_data['header_region'], pdf_data['footer_region'] = header_region, footer_region
+        else:
+            pdf_data['header_region'], pdf_data['footer_region'] = pd.DataFrame(), pd.DataFrame()
         return pdf_data
     except Exception as e:
         log_error('Error in finding header/footer ' + e ,app_context.application_context ,e)
@@ -162,11 +189,9 @@ def prepocess_pdf_regions(pdf_data,flags, config =preprocess_config ):
         return pdf_data
 
 
-    return header_region , footer_region
-
-def tag_heaader_footer_attrib(header_region , footer_region ,page_df,magrin=5):
-    page_df  = add_attrib(page_df, header_region ,attrib='HEADER',margin=magrin)
-    page_df = add_attrib(page_df, footer_region, attrib='FOOTER', margin=magrin)
+def tag_heaader_footer_attrib(header_region , footer_region ,page_df,width_ratio,height_ratio,magrin=5):
+    page_df  = add_attrib(page_df, header_region,width_ratio,height_ratio ,attrib='HEADER',margin=magrin)
+    page_df = add_attrib(page_df, footer_region,width_ratio,height_ratio,attrib='FOOTER', margin=magrin)
     return page_df
 
 

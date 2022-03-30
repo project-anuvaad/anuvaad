@@ -7,3 +7,5 @@ anuvaad-em==0.0.2
 anuvaad-auditor==0.0.7
 python-magic==0.4.18
 mongoengine==0.18.0
+pandas==1.2.4
+openpyxl==3.0.7

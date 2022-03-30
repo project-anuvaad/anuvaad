@@ -55,6 +55,12 @@ class TableRepositories:
         horizontal = cv2.erode (horizontal, horizontal_structure)
         horizontal = cv2.dilate (horizontal, horizontal_structure)
 
+        horizontal_size = 5 # int(horizontal.shape[1] / (self.SCALE * 2))
+        horizontal_structure = cv2.getStructuringElement(cv2.MORPH_RECT, (horizontal_size, 1))
+        horizontal = cv2.dilate(horizontal, horizontal_structure)
+        # horizontal = cv2.dilate(horizontal, horizontal_structure)
+        #horizontal = cv2.dilate(horizontal, horizontal_structure)
+
         #height_to_width_ratio = self.input_image.shape[0] / float(self.input_image.shape[1])
         #print(height_to_width_ratio)
         #vertical_size = int (vertical.shape [0] / (self.SCALE * height_to_width_ratio))
@@ -63,6 +69,7 @@ class TableRepositories:
         vertical_structure = cv2.getStructuringElement (cv2.MORPH_RECT, (1, vertical_size))
         vertical = cv2.erode (vertical, vertical_structure)
         vertical = cv2.dilate (vertical, vertical_structure)
+        #vertical = cv2.dilate(vertical, vertical_structure)
 
 
         # generating table borders

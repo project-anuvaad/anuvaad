@@ -12,3 +12,4 @@ upload
 src/utilities/pubnet/model
 venv
 .idea
+.vscode

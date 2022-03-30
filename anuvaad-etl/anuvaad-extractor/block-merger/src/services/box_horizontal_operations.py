@@ -3,8 +3,10 @@ import pandas as pd
 from src.services.box_horizontal_evalutions import (are_hlines,are_hlines_superscript)
 from src.services.box_grouping import arrange_grouped_line_indices
 from src.utilities.xml_utils import get_ngram
+from collections import Counter
 
-def merge_horizontal_blocks(in_df, configs, debug=False):
+
+def merge_horizontal_blocks(in_df, configs,table=False,debug=False):
     df = in_df.copy(deep=True)
     df = in_df.reset_index(drop=True)
 
@@ -13,7 +15,7 @@ def merge_horizontal_blocks(in_df, configs, debug=False):
     #This fails whten in_df contains only one node
     
     for index_gram in index_grams:
-        if are_hlines(df, configs, index_gram[0], index_gram[1], debug=debug):
+        if are_hlines(df, configs, index_gram[0], index_gram[1],table=table ,debug=debug):
             connections.append((index_gram[1], index_gram[0], 'CONNECTED'))
         else:
             connections.append((index_gram[1], index_gram[0], 'NOT_CONNECTED'))
@@ -57,6 +59,7 @@ def merge_horizontal_blocks(in_df, configs, debug=False):
 
             children_df.sort_values('text_width', axis=0, ascending=True, inplace=True)
 
+            block_df.at[index, 'attrib'] = most_frequent(children_df['attrib'])
             block_df.at[index, 'font_size'] = children_df.iloc[-1]['font_size']
             block_df.at[index, 'font_family'] = children_df.iloc[-1]['font_family']
             block_df.at[index, 'font_color'] = children_df.iloc[-1]['font_color']
@@ -114,3 +117,12 @@ def update_superscript_in_horizontal_boxes(in_df, configs, debug=False):
             in_df.at[index, 'children'] = updated_children_df.to_json()
 
     return in_df
+
+
+    
+def most_frequent(List): 
+    try:
+        occurence_count = Counter(List)
+    except:
+        pass 
+    return occurence_count.most_common(1)[0][0]
