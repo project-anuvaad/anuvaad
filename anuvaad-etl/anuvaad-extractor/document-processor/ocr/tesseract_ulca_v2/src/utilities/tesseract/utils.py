@@ -16,17 +16,33 @@ from anuvaad_auditor.loghandler import log_exception
 # rdn = RDN(arch_params={'C':6, 'D':20, 'G':64, 'G0':64, 'x':2})
 # rdn.model.load_weights(config.SUPER_RES_MODEL)
 
+# SECOND_LANG_MAPPING = {
+#     "Latin": ["Latin", "eng"],
+#     "Kannada": ['Kannada', "anuvaad_kan"],
+#     "Gujrati": ["Gujrati", "guj"],
+#     "Oriya": ["Oriya", "anuvaad_ori"],
+#     "Devanagari": ["Devanagari", "anuvaad_hin"],
+#     "Bengali": ["Bengali", "anuvaad_ben"],
+#     "Tamil": ['Tamil', "anuvaad_tam"],
+#     "Telugu": ["Telugu", "tel"],
+#     "Malayalam": ["Malayalam", "anuvaad_mal"],
+#     "Punjabi": ["Punjabi", "pun"]
+# }
+
 SECOND_LANG_MAPPING = {
     "Latin": ["Latin", "eng"],
-    "Kannada": ['Kannada', "anuvaad_kan"],
+    "anuvaad_kan": ['Kannada', "anuvaad_kan"],
     "Gujrati": ["Gujrati", "guj"],
-    "Oriya": ["Oriya", "anuvaad_ori"],
-    "Devanagari": ["Devanagari", "anuvaad_hin"],
-    "Bengali": ["Bengali", "anuvaad_ben"],
-    "Tamil": ['Tamil', "anuvaad_tam"],
+    "anuvaad_ori": ["Oriya", "anuvaad_ori"],
+    "anuvaad_hin": ["Devanagari", "anuvaad_hin"],
+    "anuvaad_ben": ["Bengali", "anuvaad_ben"],
+    "anuvaad_tam": ['Tamil', "anuvaad_tam"],
     "Telugu": ["Telugu", "tel"],
-    "Malayalam": ["Malayalam", "anuvaad_mal"],
-    "Punjabi": ["Punjabi", "pun"]
+    "anuvaad_mal": ["Malayalam", "anuvaad_mal"],
+    "Punjabi": ["Punjabi", "pun"],
+    "anuvaad_mar": ["Devanagari", "anuvaad_mar"],
+    "pan": ["pan", "pan"],
+    "sat": ["sat", "sat"]
 }
 
 def adjust_crop_coord(coord):
@@ -58,7 +74,7 @@ def crop_region(box,image):
 
 def check_lang(lang):
     if lang in SECOND_LANG_MAPPING.keys():
-        lang = SECOND_LANG_MAPPING[lang][1]
+        lang = SECOND_LANG_MAPPING[lang][0]
     return lang
 
 def remove_row(temp_df):

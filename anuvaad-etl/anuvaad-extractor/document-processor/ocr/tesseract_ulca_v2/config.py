@@ -1,5 +1,5 @@
 # import logging
-DEBUG = False
+DEBUG = True
 API_URL_PREFIX = "/anuvaad/ocr"
 HOST = "0.0.0.0"
 PORT = 5000
@@ -9,18 +9,34 @@ ENABLE_CORS = False
 IS_DYNAMIC = True
 EXRACTION_RESOLUTION = 300
 
+# LANG_MAPPING = {
+#     "en": ["Latin", "eng"],
+#     "kn": ['Kannada', "anuvaad_kan"],
+#     "gu": ["Gujarati", "guj"],
+#     "or": ["Oriya", "anuvaad_ori"],
+#     "hi": ["Devanagari", "anuvaad_hin"],
+#     "bn": ["Bengali", "anuvaad_ben"],
+#     "mr": ["Devanagari", "mar"],
+#     "ta": ['Tamil', "anuvaad_tam"],
+#     "te": ["Telugu", "tel"],
+#     "ml": ["Malayalam", "anuvaad_mal"],
+#     "ma": ["Devanagari", "anuvaad_mar"],
+#     "pa": ["pan", "pan"],
+#     "sa": ["sat", "sat"]
+
+# }
 LANG_MAPPING = {
     "en": ["Latin", "eng"],
-    "kn": ['Kannada', "anuvaad_kan"],
+    "kn": ["anuvaad_kan",'Kannada'],
     "gu": ["Gujarati", "guj"],
-    "or": ["Oriya", "anuvaad_ori"],
-    "hi": ["Devanagari", "anuvaad_hin"],
-    "bn": ["Bengali", "anuvaad_ben"],
+    "or": ["anuvaad_ori","Oriya"],
+    "hi": ["anuvaad_hin","Devanagari"],
+    "bn": ["anuvaad_ben","Bengali"],
     "mr": ["Devanagari", "mar"],
-    "ta": ['Tamil', "anuvaad_tam"],
+    "ta": ["anuvaad_tam",'Tamil'],
     "te": ["Telugu", "tel"],
-    "ml": ["Malayalam", "anuvaad_mal"],
-    "ma": ["Devanagari", "anuvaad_mar"],
+    "ml": ["anuvaad_mal","Malayalam"],
+    "ma": ["anuvaad_mar","Devanagari"],
     "pa": ["pan", "pan"],
     "sa": ["sat", "sat"]
 

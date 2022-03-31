@@ -61,6 +61,7 @@ class File:
 
         if self.im_source is "imageUri":
             im_url = self.file["image"][im_index][self.im_source]
+            
             resp = requests.get(im_url)
             image = np.asarray(bytearray(resp.content))
             decoded_image = cv2.imdecode(image, cv2.IMREAD_COLOR)
