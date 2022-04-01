@@ -27,6 +27,8 @@ WORKDIR /app
 #RUN apt-get install -y make git
 #RUN apt install -y libspatialindex-dev python-rtree
 RUN pip install -r requirements.txt
+RUN apt-get update
+RUN apt-get install python3.6-dev -y
 RUN apt-get install libleptonica-dev 
 RUN apt install tesseract-ocr -y
 #RUN apt-get install libtesseract-dev
