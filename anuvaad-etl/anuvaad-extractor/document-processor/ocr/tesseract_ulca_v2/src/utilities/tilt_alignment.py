@@ -337,7 +337,7 @@ class Orientation:
 
         # ckpt_state = tf.train.get_checkpoint_state(checkpoint_path)
         model_path = config.EAST_CHECK_POINT_PATH
-        print(model_path)
+        # print(model_path)
         # logger.info('Restore from {}'.format(model_path))
         saver.restore(sess, model_path)
 
