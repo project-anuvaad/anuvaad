@@ -153,12 +153,7 @@ app.post(
             if (!err) {
               try {
                 console.log("inside try");
-                generateDocxNew(
-                  jobName,
-                  fname,
-                  data.page_height,
-                  data.page_width
-                );
+                generateDocxNew(jobName,fname);
                 jobName = jobName.substr(0, jobName.lastIndexOf("."));
                 console.log("jobName --------", jobName);
                 fs.readFile(
