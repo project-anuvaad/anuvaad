@@ -2,12 +2,17 @@ const officegen = require('officegen')
 const fs = require('fs')
 const { generateTableArray } = require('./utilsnew');
 
-const generateDocxNew = (jobName,fname) => {
+const generateDocxNew = (jobName,fname, height, width) => {
     console.log('gd=====')
 
     let docx = officegen({
         type: 'docx',
         orientation: 'portrait',
+        pageSize: {
+            width,
+            height
+        },
+        pageMargins: { top: 1000, left: 1000, bottom: 1000, right: 1000 },
     })
 
     docx.on('finalize', function (written) {
@@ -56,12 +61,6 @@ const generateDocxNew = (jobName,fname) => {
                     borderStyle: borderStyle
                 }
                 docx.createTable(tableArray, tableStyle);
-            } else if (tokens.class === 'BGIMAGE') {
-                // console.log('is image', tokens)
-                // fs.writeFileSync(tokens.data, '', 'base64')
-                // pObj.addImage(tokens.data)
-                // fs.writeFileSync(`./upload/${tokens.block_identifier}.png`, tokens.base64, 'base64')
-                // pObj.addImage(`./upload/${tokens.block_identifier}.png`, { cx: tokens.text_width, cy: tokens.text_height })
             }
         })
     })
@@ -71,10 +70,10 @@ const generateDocxNew = (jobName,fname) => {
         console.log(err)
     })
 
-    // out.on('finish', function(err) {
-    //     // This is the real finish in case of creating a document file.
-    //     console.log('finish', err)
-    //  })
+    out.on('finish', function(err) {
+        // This is the real finish in case of creating a document file.
+        console.log('finish', err)
+     })
 
     // Async call to generate the output file:
     docx.generate(out)
