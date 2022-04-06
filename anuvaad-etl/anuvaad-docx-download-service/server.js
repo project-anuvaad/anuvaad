@@ -137,15 +137,12 @@ app.post(
     };
 
     var req = https.request(options, (res) => {
-      console.log("res", res.statusCode, res.statusMessage);
       if (res.statusCode === 200) {
-        console.log("inside Status code 200", res.statusCode);
         res.on("data", (d) => {
           data = data + d.toString();
         });
 
         res.on("end", (e) => {
-          console.log("finished reading data");
           data = JSON.stringify(refactorSourceJSONnew(JSON.parse(data).data));
           console.log("saving response to file");
 
@@ -160,7 +157,6 @@ app.post(
                   data.page_width
                 );
                 jobName = jobName.substr(0, jobName.lastIndexOf("."));
-                console.log("jobName --------", jobName);
                 fs.readFile(
                   `./upload/${jobName}_${fname}`,
                   { encoding: "utf-8" },
@@ -217,4 +213,3 @@ app.post(
   }
 );
 app.listen(5001);
-console.log("listening on port 5001");

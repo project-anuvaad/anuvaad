@@ -11,7 +11,8 @@ const generateDocxNew = (jobName,fname, height, width) => {
         pageSize: {
             width,
             height
-        }
+        },
+        pageMargins: { top: 1000, left: 1000, bottom: 1000, right: 1000 },
     })
 
     docx.on('finalize', function (written) {
@@ -29,44 +30,16 @@ const generateDocxNew = (jobName,fname, height, width) => {
 
     parsedSource.forEach((pages, p) => {
         pages.regions.forEach((tokens, i) => {
-            tokens.top = tokens.boundingBox.vertices[0].y - tokens.boundingBox.vertices[0].x
-        })
-        pages.regions = sortData(pages.regions)
-        console.log('pages', pages)
-
-        pages.regions.forEach((tokens, i) => {
-            console.log('inisde ths foreach')
-
-            const is_bold = (tokens.class !== null && tokens.class.indexOf('BOLD') !== -1) ? true : false;
-            const is_para = tokens.class === 'PARA' ? true : false
-            
-            const is_line = tokens.class === 'LINE' ? true : false
-
-            const is_table = tokens.class === 'TABLE_DATA' ? true : false
-            const is_image = tokens.class === 'IMAGE' ? true : false
-            const { font_color, font_size, text_left, font_family } = tokens
+            // const is_bold = (tokens.class !== null && tokens.class.indexOf('BOLD') !== -1) ? true : false;
+            // const { font_color, text_left, font_family } = tokens
             let pObj = docx.createP();
-            if (is_para && !is_table && !is_image) {
-                
-                console.log('token item =================', tokens)
-                console.log('tokens.avg_size', tokens.avg_size)
-                console.log('font_size ******************', font_size)
-
-                // font_size = `${tokens.avg_size}pt`
-
-                // console.log('tokens.tokenized_sentences ****************', tokens.tokenized_sentences)
-                
+            if (tokens.class === 'PARA') {
+                // const fs = tokens.avg_size * 0.20
                 tokens.tokenized_sentences && tokens.tokenized_sentences.forEach(token => {
-                    pObj.addText(token.src, {
-                        font_size: font_size,
-                        color: font_color,
-                        font_face: font_family,
-                        bold: is_bold,
-                    })
-                    pObj.options.indentLeft = `${text_left}`;
+                    pObj.addText(token.src)
+                    // pObj.options.indentLeft = `${text_left}`;
                 })
-            }
-            else if (is_table && !is_image) {
+            } else if (tokens.class === 'TABLE') {
                 let tableArray = generateTableArray(tokens);
                 const style = {
                     '@w:val': 'single',
@@ -88,9 +61,6 @@ const generateDocxNew = (jobName,fname, height, width) => {
                     borderStyle: borderStyle
                 }
                 docx.createTable(tableArray, tableStyle);
-            } else if (is_image) {
-                fs.writeFileSync(`./upload/${tokens.block_identifier}.png`, tokens.base64, 'base64')
-                pObj.addImage(`./upload/${tokens.block_identifier}.png`, { cx: tokens.text_width, cy: tokens.text_height })
             }
         })
     })
@@ -106,7 +76,6 @@ const generateDocxNew = (jobName,fname, height, width) => {
      })
 
     // Async call to generate the output file:
-    // console.log('out *******', out)
     docx.generate(out)
 }
 
