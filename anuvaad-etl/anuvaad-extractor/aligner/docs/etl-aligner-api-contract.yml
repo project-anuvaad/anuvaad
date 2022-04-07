@@ -1,0 +1,190 @@
+swagger: "2.0"
+info:
+  version: 1.0.0
+  title: Anuvaad ETL Aligner - API Contract
+  description: A python based microservice to align parallel sentences. This service will expose REST APIs and on the other hand will also be plugged into the system as a consumer that picks records posted onto the Kafka Queue.
+  contact:
+    name: Vishal Mahui
+    email: vishal.mahuli@tarento.com
+
+schemes:
+  - https
+basePath: '/anuvaad-etl/extractor/aligner'
+
+
+
+paths: 
+  /v1/sentences/align:
+    post:
+      summary: REST API to trigger an alignment job
+      description: This API accepts 2 txt files in 2 different locales such that - Files contain sentences.  
+      parameters:
+        - name: request
+          in: body
+          required: true
+          description: Request format accepted by this API.
+          schema:
+            $ref: '#/definitions/AlignRequest'
+            
+      tags:
+      - Align
+
+      responses:
+        202:
+          description: On successful initiation of the job.
+          schema:
+            $ref: '#/definitions/AlignResponse'
+        400:
+          description: On input errors causing a failure in the job.
+          schema:
+            $ref: 'https://raw.githubusercontent.com/project-anuvaad/anuvaad/wfmanager_feature/anuvaad-etl/docs/common-contract.yml#/definitions/Error'
+        500:
+          description: On system level errors causing failure in the job.
+          schema:
+            $ref: 'https://raw.githubusercontent.com/project-anuvaad/anuvaad/wfmanager_feature/anuvaad-etl/docs/common-contract.yml#/definitions/Error'
+  
+
+            
+  /v1/sentences/wflow/align:
+    post:
+      summary: REST API to trigger an alignment job through WFM as part of the workflow.
+      description: This API accepts txt files for alignment alongwith certain wf related data.
+      parameters:
+        - name: request
+          in: body
+          required: true
+          description: Request format accepted by this API.
+          schema:
+            $ref: 'https://raw.githubusercontent.com/project-anuvaad/anuvaad/wfmanager_feature/anuvaad-etl/docs/common-contract.yml#/definitions/TaskInput'
+            
+      tags:
+      - Wflow Align
+
+      responses:
+        200:
+          description: On successful execution of the job.
+          schema:
+            $ref: 'https://raw.githubusercontent.com/project-anuvaad/anuvaad/wfmanager_feature/anuvaad-etl/docs/common-contract.yml#/definitions/TaskOutput'
+        400:
+          description: On input errors causing a failure in the job.
+          schema:
+            $ref: 'https://raw.githubusercontent.com/project-anuvaad/anuvaad/wfmanager_feature/anuvaad-etl/docs/common-contract.yml#/definitions/Error'
+        500:
+          description: On system level errors causing failure in the job.
+          schema:
+            $ref: 'https://raw.githubusercontent.com/project-anuvaad/anuvaad/wfmanager_feature/anuvaad-etl/docs/common-contract.yml#/definitions/Error'
+
+        
+
+  /v1/alignment/jobs/get/<job_id>:
+    post:
+      summary: REST API to search wf job status.
+      description: This API provides a facility to search wf jobs based on various criteria. right now only job id is enabled. 
+      tags:
+        - Search
+        
+      responses:
+        200:
+          description: Either an empty or a non-empty array of responses.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/SearchResponse'
+              
+
+
+definitions:
+          
+  AlignRequest:
+    type: object
+    description: Details of the source and target files of which a parallel corp has to be generated
+    properties:
+      source:
+        type: object
+        description: Details of the source file
+        $ref: 'https://raw.githubusercontent.com/project-anuvaad/anuvaad/wfmanager_feature/anuvaad-etl/docs/common-contract.yml#/definitions/File'    
+      target:
+        type: object
+        description: Details of the target file
+        $ref: 'https://raw.githubusercontent.com/project-anuvaad/anuvaad/wfmanager_feature/anuvaad-etl/docs/common-contract.yml#/definitions/File'
+
+        
+  AlignResponse:
+    type: object
+    properties:
+      input:
+        type: object
+        description: Details of the request sent.
+        $ref: '#/definitions/AlignRequest'        
+      jobID:
+        type: string
+        description: A unique job ID generated for this alignment job
+      status:
+        type: string
+        description: Current status of the alignment job
+        enum:
+          - START
+          - INPROGRESS
+          - FAILED
+          - COMPLETE
+
+
+  Bucket:
+    type: object
+    properties:
+      source:
+        type: string
+        description: Filepath of the source file        
+      target:
+        type: string
+        description: Filepath of the target file
+
+  Output:
+    type: object
+    properties:
+      match:
+        type: object
+        description: Details of the parallel files which are aligned perfectly
+        $ref: '#/definitions/Bucket'        
+      almostMatch:
+        type: object
+        description: Details of the parallel files which are aligned on almost-match basis
+        $ref: '#/definitions/Bucket'  
+      noMatch:
+        type: object
+        description: Details of the lines in source file that didn't have a match in target
+        $ref: '#/definitions/Bucket'  
+
+
+  SearchResponse:
+    type: object
+    properties:
+      status:
+        type: string
+        description: Current status of the alignment job
+        enum:
+          - START
+          - INPROGRESS
+          - FAILED
+          - COMPLETE        
+      jobID:
+        type: string
+        description: A unique job ID generated for this alignment job
+      startTime:
+        type: integer
+        description: 13 digit Epoch value of the timestamp at instance of start of the job.
+      endTime:
+        type: integer
+        description: 13 digit Epoch value of the timestamp at instance of end of the job.
+      input:
+        type: object
+        description: Details of the request sent.
+        $ref: '#/definitions/AlignRequest' 
+      output:
+        type: object
+        description: Details of the output generated
+        $ref: '#/definitions/Output'
+      error:
+        type: object
+        description: Details of the error if occured while the job was being executed
+        $ref: 'https://raw.githubusercontent.com/project-anuvaad/anuvaad/wfmanager_feature/anuvaad-etl/docs/common-contract.yml#/definitions/Error' 
