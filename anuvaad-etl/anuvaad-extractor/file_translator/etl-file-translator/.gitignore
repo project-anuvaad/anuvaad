@@ -1,0 +1,14 @@
+para_sen_api.py
+**__pycache__
+*.vscode
+*.log
+/upload/
+uwsgi.ini
+wsgi_test.py
+response.json
+hindi_tokeniser_testing.py
+repositories/ocr_v3.py
+tmp
+test123.txt
+**.pyc
+/venv
