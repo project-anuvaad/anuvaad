@@ -20,7 +20,7 @@ def process_tokenization_kf():
     DOWNLOAD_FOLDER =file_ops.file_download(config.download_folder)
     # instatiation of consumer for respective topic
     try:
-        consumer_class = Consumer(config.input_topic, list(str(config.bootstrap_server).split(",")))
+        consumer_class = Consumer(config.input_topic, config.bootstrap_server)
         consumer = consumer_class.consumer_instantiate()
         log_info("process_tokenization_kf : trying to receive value from consumer ", None)
         for msg in consumer:

@@ -5,11 +5,7 @@ from nltk.tokenize import sent_tokenize
 class AnuvaadKannadaTokenizer(object):
 
     """
-    Default abbrevations
-    incomplete char range = ([\u0C80-\u0C84,\u0CBC-\u0CD6,\u0CE2-\u0CE3,\u0CF1-\u0CF2])
-    complete char range = ([\u0C85-\u0CB9,\u0CDE-\u0CE1])    
-    number range = ([\u0CE6-\u0CEF])
-    source for unicodes : https://unicode.org/charts/PDF/U0C80.pdf
+    abbrevations
     """
     _abbrevations_with_space_pattern = r'((\s)(([\u0C85-\u0CB9,\u0CDE-\u0CE1])([\u0C85-\u0CB9,\u0CDE-\u0CE1])?([\u0C80-\u0C84,\u0CBC-\u0CD6,\u0CE2-\u0CE3,\u0CF1-\u0CF2])?([\u0C85-\u0CB9,\u0CDE-\u0CE1])?([\u0C80-\u0C84,\u0CBC-\u0CD6,\u0CE2-\u0CE3,\u0CF1-\u0CF2])?(\u002e)(\s)?){1,})'
     _abbrevations_without_space_pattern = r'(^(([\u0C85-\u0CB9,\u0CDE-\u0CE1])([\u0C85-\u0CB9,\u0CDE-\u0CE1])?([\u0C80-\u0C84,\u0CBC-\u0CD6,\u0CE2-\u0CE3,\u0CF1-\u0CF2])?([\u0C85-\u0CB9,\u0CDE-\u0CE1])?([\u0C80-\u0C84,\u0CBC-\u0CD6,\u0CE2-\u0CE3,\u0CF1-\u0CF2])?(\u002e)(\s)?){1,})'

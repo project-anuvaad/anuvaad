@@ -28,6 +28,9 @@ bootstrap_server = os.environ.get(kafka_ip_host, kf_local_server)
 #folders and file path
 download_folder = 'upload'
 
+# internal url
+internal_gateway_url_save_data = 'http://gateway_anuvaad-content-handler:5001/api/v0/save-content'
+
 logging.basicConfig(
     filename=os.getenv("SERVICE_LOG", "server.log"),
     level=logging.DEBUG,
