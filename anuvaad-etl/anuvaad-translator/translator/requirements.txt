@@ -41,3 +41,5 @@ wrapt==1.11.2
 WTForms==2.2.1
 anuvaad-auditor==0.1.6
 xlrd==1.2.0
+itsdangerous==2.0.1
+Jinja2==3.0.3
