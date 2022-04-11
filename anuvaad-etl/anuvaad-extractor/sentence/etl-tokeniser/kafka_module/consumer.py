@@ -14,7 +14,7 @@ class Consumer(object):
     # Consumer initialisation to consume message from queue
     def consumer_instantiate(self):
         try:
-            consumer = KafkaConsumer(self.topic_name, bootstrap_servers = self.server_address, auto_offset_reset = 'latest', 
+            consumer = KafkaConsumer(self.topic_name, bootstrap_servers = [self.server_address], auto_offset_reset = 'latest', 
                                     enable_auto_commit=True, group_id = config.CONSUMER_GROUP, value_deserializer=lambda x: loads(x.decode('utf-8')))
             log_info("consumer_instantiate : Consumer returned for topic: %s"%(self.topic_name), None)
             return consumer

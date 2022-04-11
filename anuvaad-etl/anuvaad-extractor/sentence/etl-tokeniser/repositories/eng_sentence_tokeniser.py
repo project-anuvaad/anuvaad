@@ -52,6 +52,7 @@ class AnuvaadEngTokenizer(object):
         text = self.serialize_with_abbreviations_generalize_pattern(text)
         text = self.serialize_dates(text)
         text = self.serialize_with_abbrevations(text)
+        text = self.serialize_table_points(text)
         text = self.serialize_pattern(text)
         text = self.serialize_dots(text)
         text = self.serialize_brackets(text)
@@ -59,7 +60,6 @@ class AnuvaadEngTokenizer(object):
         text = self.serialize_dot_with_number_beginning(text)
         text = self.serialize_quotes_with_number(text)
         text = self.serialize_bullet_points(text)
-        text = self.serialize_table_points(text)
         sentences = self._tokenizer.tokenize(text)
         output = []
         for se in sentences:
@@ -151,7 +151,7 @@ class AnuvaadEngTokenizer(object):
         return text
 
     def serialize_quotes_with_number(self, text):
-        patterns = re.findall(r'([ ][“][0-9a-zA-Z]{1,}[.]|[“][0-9a-zA-Z]{1,}[.])',text)
+        patterns = re.findall(r'([ ][“][0-9a-zA-Z]{1,}[.])',text)
         index = 0
         if patterns is not None and isinstance(patterns, list):
             for pattern in patterns:

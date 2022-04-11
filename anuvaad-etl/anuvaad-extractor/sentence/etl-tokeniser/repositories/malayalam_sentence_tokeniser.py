@@ -83,6 +83,8 @@ class AnuvaadMalayalamTokenizer(object):
             se = self.deserialize_table_points(se)
             if se != '':
                 output.append(se.strip())
+                with open('upload/received_mal_text.txt', 'a') as f:
+                    f.write("%s\n"%se)
         print('--------------Process finished-------------')
         return output
 

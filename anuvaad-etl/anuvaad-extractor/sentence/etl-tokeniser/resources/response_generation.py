@@ -19,17 +19,15 @@ class Response(object):
     def __init__(self, json_data, DOWNLOAD_FOLDER):
         self.json_data =json_data
         self.DOWNLOAD_FOLDER = DOWNLOAD_FOLDER
-    
-    # Generating response for a workflow request coming from kafka consumer or flask server
+
     def workflow_response(self, task_id, task_starttime):
         input_key, workflow_id, jobid, tool_name, step_order, user_id = file_ops.json_input_format(self.json_data)
         log_info("workflow_response : started the response generation", self.json_data)
         error_validator = ValidationResponse(self.DOWNLOAD_FOLDER)
         tokenisation = Tokenisation(self.DOWNLOAD_FOLDER, self.json_data)
         try:
-            error_validator.wf_keyerror(jobid, workflow_id, tool_name, step_order)    # Validating Workflow key-values
-            error_validator.inputfile_list_empty(input_key)                           # Validating Input key for files input and only text input
-            # input key is a dictionary data for files input, "files" as a key
+            error_validator.wf_keyerror(jobid, workflow_id, tool_name, step_order)
+            error_validator.inputfile_list_empty(input_key)
             if not isinstance(input_key, list):
                 if 'files' in input_key.keys():
                     output_file_response = list()
@@ -41,10 +39,8 @@ class Response(object):
                             output_filename = tokenisation.tokenisation_response(input_file_data, in_locale, i)
                         elif in_file_type == "json":
                             input_jsonfile_data, file_write = file_ops.read_json_file(input_filename)
-                            # input_jsonfile_data['result'] = tokenisation.getting_incomplete_text_merging_blocks(input_jsonfile_data['result'])
                             input_jsonfile_data['result'] = [tokenisation.adding_tokenised_text_blockmerger(item, in_locale, page_id) 
                                                                 for page_id, item in enumerate(input_jsonfile_data['result'])]
-                            input_jsonfile_data['result'] = tokenisation.getting_incomplete_text_merging_blocks(input_jsonfile_data['result'])
                             input_jsonfile_data['file_locale'] = in_locale
                             #tokenisation.sending_data_to_content_handler(jobid, user_id, input_jsonfile_data)
                             json_data_write = json.dumps(input_jsonfile_data)
@@ -54,7 +50,6 @@ class Response(object):
                             output_filename = input_filename
                         file_res = file_ops.one_filename_response(input_filename, output_filename, in_locale, in_file_type)
                         output_file_response.append(file_res)
-            # input key is a list data of objects, object contain text and language code
             else:
                 output_file_response = []
                 for paragraph in input_key:
@@ -70,7 +65,6 @@ class Response(object):
             response = copy.deepcopy(response_success)
             log_info("workflow_response : successfully generated response for workflow", self.json_data)
             return response
-        # exceptions for workflow key error
         except WorkflowkeyError as e:
             response_custom = self.json_data
             response_custom['taskID'] = task_id
@@ -79,7 +73,6 @@ class Response(object):
             log_exception("workflow_response : workflow key error: key value missing", self.json_data, e)
             response = copy.deepcopy(response)
             return response
-        # exceptions for input key data validation
         except FileErrors as e:
             response_custom = self.json_data
             response_custom['taskID'] = task_id
@@ -88,7 +81,6 @@ class Response(object):
             log_exception("workflow_response : some error occured while validating file", self.json_data, e)
             response = copy.deepcopy(response)
             return response
-        # checking filedata unicodes and null data
         except FileEncodingError as e:
             response_custom = self.json_data
             response_custom['taskID'] = task_id
@@ -97,7 +89,6 @@ class Response(object):
             log_exception("workflow_response : service supports only utf-16 encoded file", self.json_data, e)
             response = copy.deepcopy(response)
             return response
-        # exceptions for tokenisation core logic and file writing of tokenised output
         except ServiceError as e:
             response_custom = self.json_data
             response_custom['taskID'] = task_id
@@ -106,7 +97,6 @@ class Response(object):
             log_exception("workflow_response : Error occured during tokenisation or file writing", self.json_data, e)
             response = copy.deepcopy(response)
             return response
-        # any other exception i.e. not covered in above exceptions
         except Exception as e:
             response_custom = self.json_data
             response_custom['taskID'] = task_id
@@ -116,15 +106,14 @@ class Response(object):
             response = copy.deepcopy(response)
             return response
 
-    # text block data as a input data.
     def workflow_response_block_tokeniser(self, task_id, task_starttime):
         input_key, workflow_id, jobid, tool_name, step_order, user_id = file_ops.json_input_format(self.json_data)
         log_info("workflow_response : started the block tokenisation response generation", self.json_data)
         error_validator = ValidationResponse(self.DOWNLOAD_FOLDER)
         tokenisation = Tokenisation(self.DOWNLOAD_FOLDER, self.json_data)
         try:
-            error_validator.wf_keyerror(jobid, workflow_id, tool_name, step_order)    # Validating Workflow key-values
-            error_validator.inputfile_list_empty(input_key)                           # Validating Input key for text block input
+            error_validator.wf_keyerror(jobid, workflow_id, tool_name, step_order)
+            error_validator.inputfile_list_empty(input_key)
             blocks_list, record_id, model_id, in_locale = file_ops.get_input_values_for_block_tokenise(input_key)
             input_key = tokenisation.adding_tokenised_text_blockmerger(input_key, in_locale, 0)
             task_endtime = eval(str(time.time()).replace('.', '')[0:13])
@@ -133,7 +122,6 @@ class Response(object):
             response = copy.deepcopy(response_success)
             log_info("workflow_response : successfully generated response for workflow", self.json_data)
             return response
-        # exceptions for workflow key error
         except WorkflowkeyError as e:
             response_custom = self.json_data
             response_custom['taskID'] = task_id
@@ -142,7 +130,6 @@ class Response(object):
             log_exception("workflow_response : workflow key error: key value missing", self.json_data, e)
             response = copy.deepcopy(response)
             return response
-        # exceptions for input key data 
         except FileErrors as e:
             response_custom = self.json_data
             response_custom['taskID'] = task_id
@@ -151,7 +138,6 @@ class Response(object):
             log_exception("workflow_response : some error occured while validating file", self.json_data, e)
             response = copy.deepcopy(response)
             return response
-        # exceptions for tokenisation core logic
         except ServiceError as e:
             response_custom = self.json_data
             response_custom['taskID'] = task_id
@@ -160,7 +146,6 @@ class Response(object):
             log_exception("workflow_response : Error occured during tokenisation or file writing", self.json_data, e)
             response = copy.deepcopy(response)
             return response
-        # any other exceptions
         except Exception as e:
             response_custom = self.json_data
             response_custom['taskID'] = task_id
@@ -170,7 +155,7 @@ class Response(object):
             response = copy.deepcopy(response)
             return response
         
-    # generating response for api requests other than workflow
+
     def nonwf_response(self):
         log_info("non workflow response : started the response generation", None)
         error_validator = ValidationResponse(self.DOWNLOAD_FOLDER)
@@ -178,7 +163,7 @@ class Response(object):
         try:
             if 'files' in self.json_data.keys():
                 input_files = self.json_data['files']
-                error_validator.inputfile_list_empty(input_files)                      # Validation of input key data
+                error_validator.inputfile_list_empty(input_files)
                 output_file_response = list()
                 for i, item in enumerate(input_files):
                     input_filename, in_file_type, in_locale = file_ops.accessing_files(item)
