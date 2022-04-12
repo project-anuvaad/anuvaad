@@ -3,5 +3,6 @@ TT__TT
 ?
 !
 :
-END_|_END
-END_||_END
+END_A
+END_B
+END_C

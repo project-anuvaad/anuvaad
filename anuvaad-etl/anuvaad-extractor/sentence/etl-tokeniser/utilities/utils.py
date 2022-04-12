@@ -1,10 +1,11 @@
 import os
 import json
 import time
+import re
 from pathlib import Path
 from anuvaad_auditor.errorhandler import post_error
 from anuvaad_auditor.errorhandler import post_error_wf
-from errors.errors_exception import FileEncodingError
+from errors.errors_exception import FileEncodingError, FileErrors
 
 
 class FileOperation(object):
@@ -52,6 +53,7 @@ class FileOperation(object):
             input_txt_filepath = self.input_path(input_filename)
             with open(input_txt_filepath, 'r', encoding='utf-16') as f:
                 input_file_data = f.readlines()
+            input_file_data = [' '.join([re.sub('\r\n|\n', '', text) for text in input_file_data])]
             return input_file_data
         except:
             raise FileEncodingError( 400, "Tokenisation failed due to encoding. Service supports only utf-16 encoded file.")
@@ -97,6 +99,24 @@ class FileOperation(object):
             "outputType" : in_file_type
         }
         return file_res
+
+    # output format for list of paragraphs
+    def one_obj_for_paragraphs_response(self, sentences, in_locale):
+        output_file_response = [{"sentences": []}]
+        output_file_response[0]["sentences"] = sentences
+        output_file_response[0]["in_locale"] = in_locale
+        return output_file_response
+
+    def add_aditional_fields(self, input_file_obj, output_file_obj):
+        for key, val in input_file_obj.items():
+            if key not in ['locale', 'path', 'type', 'paragraphs']:
+                if val is None or val == "":
+                    raise FileErrors("INPUT_VALUE_ERROR",
+                                     "Value under files are missing. Make sure you are using the correct Value for files keys.")
+                else:
+                    output_file_obj[key] = val
+
+        return output_file_obj
 
     # error manager integration 
     def error_handler(self, object_in, code, iswf):

@@ -12,4 +12,4 @@ repositories/ocr_v3.py
 tmp
 test123.txt
 **.pyc
-repositories/marathi_tok.py
+repositories/punjabi_sentence_tokeniser.py

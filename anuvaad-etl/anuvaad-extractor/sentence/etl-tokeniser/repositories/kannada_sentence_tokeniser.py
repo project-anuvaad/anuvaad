@@ -5,7 +5,11 @@ from nltk.tokenize import sent_tokenize
 class AnuvaadKannadaTokenizer(object):
 
     """
-    abbrevations
+    Default abbrevations
+    incomplete char range = ([\u0C80-\u0C84,\u0CBC-\u0CD6,\u0CE2-\u0CE3,\u0CF1-\u0CF2])
+    complete char range = ([\u0C85-\u0CB9,\u0CDE-\u0CE1])    
+    number range = ([\u0CE6-\u0CEF])
+    source for unicodes : https://unicode.org/charts/PDF/U0C80.pdf
     """
     _abbrevations_with_space_pattern = r'((\s)(([\u0C85-\u0CB9,\u0CDE-\u0CE1])([\u0C85-\u0CB9,\u0CDE-\u0CE1])?([\u0C80-\u0C84,\u0CBC-\u0CD6,\u0CE2-\u0CE3,\u0CF1-\u0CF2])?([\u0C85-\u0CB9,\u0CDE-\u0CE1])?([\u0C80-\u0C84,\u0CBC-\u0CD6,\u0CE2-\u0CE3,\u0CF1-\u0CF2])?(\u002e)(\s)?){1,})'
     _abbrevations_without_space_pattern = r'(^(([\u0C85-\u0CB9,\u0CDE-\u0CE1])([\u0C85-\u0CB9,\u0CDE-\u0CE1])?([\u0C80-\u0C84,\u0CBC-\u0CD6,\u0CE2-\u0CE3,\u0CF1-\u0CF2])?([\u0C85-\u0CB9,\u0CDE-\u0CE1])?([\u0C80-\u0C84,\u0CBC-\u0CD6,\u0CE2-\u0CE3,\u0CF1-\u0CF2])?(\u002e)(\s)?){1,})'
@@ -150,15 +154,23 @@ class AnuvaadKannadaTokenizer(object):
         return text
 
     def serialize_bullet_points(self, text):
-        pattern = re.compile(r'(?!^)[•]')
-        text = pattern.sub('TT__TT UU__UU', text)
+        pattern1 = re.compile(r'(?!^)[•]')
+        text = pattern1.sub('TT__TT UU_0_UU', text)
+        pattern2 = re.compile(r'(?!^)[▪]')
+        text = pattern2.sub('TT__TT UU_1_UU', text)
+        pattern3 = re.compile(r'(?!^)[●]')
+        text = pattern3.sub('TT__TT UU_2_UU', text)
         return text
 
     def deserialize_bullet_points(self, text):
         pattern = re.compile(re.escape('TT__TT'), re.IGNORECASE)
         text = pattern.sub('', text)
-        pattern = re.compile(re.escape('UU__UU'), re.IGNORECASE)
+        pattern = re.compile(re.escape('UU_0_UU'), re.IGNORECASE)
         text = pattern.sub('•', text)
+        pattern = re.compile(re.escape('UU_1_UU'), re.IGNORECASE)
+        text = pattern.sub('▪', text)
+        pattern = re.compile(re.escape('UU_2_UU'), re.IGNORECASE)
+        text = pattern.sub('●', text)
         return text
 
     def serialize_table_points(self, text):
@@ -200,7 +212,7 @@ class AnuvaadKannadaTokenizer(object):
                 text = pattern_obj.sub(pattern, text)
                 index+=1
         return text
-    
+
     def serialize_dates(self, text):
         patterns = re.findall(r'[0-9]{1,4}[.][0-9]{1,2}[.][0-9]{1,4}',text)
         index = 0
@@ -240,7 +252,7 @@ class AnuvaadKannadaTokenizer(object):
                 text = pattern_obj.sub(pattern, text)
                 index+=1
         return text
-    
+
 
     def serialize_quotes_with_number(self, text):
         patterns = re.findall(r'([ ][“][0-9a-zA-Z\u0C80-\u0CF2]{1,}[.])',text)
@@ -331,7 +343,7 @@ class AnuvaadKannadaTokenizer(object):
                 text = pattern_obj.sub(pattern, text)
                 index+=1
         return text
-           
+
     def serialize_with_abbrevations(self, text):
         index = 0
         index_for_without_space = 0
