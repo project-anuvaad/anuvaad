@@ -83,8 +83,6 @@ class AnuvaadMalayalamTokenizer(object):
             se = self.deserialize_table_points(se)
             if se != '':
                 output.append(se.strip())
-                with open('upload/received_mal_text.txt', 'a') as f:
-                    f.write("%s\n"%se)
         print('--------------Process finished-------------')
         return output
 
@@ -152,15 +150,23 @@ class AnuvaadMalayalamTokenizer(object):
         return text
 
     def serialize_bullet_points(self, text):
-        pattern = re.compile(r'(?!^)[•]')
-        text = pattern.sub('TT__TT UU__UU', text)
+        pattern1 = re.compile(r'(?!^)[•]')
+        text = pattern1.sub('TT__TT UU_0_UU', text)
+        pattern2 = re.compile(r'(?!^)[▪]')
+        text = pattern2.sub('TT__TT UU_1_UU', text)
+        pattern3 = re.compile(r'(?!^)[●]')
+        text = pattern3.sub('TT__TT UU_2_UU', text)
         return text
 
     def deserialize_bullet_points(self, text):
         pattern = re.compile(re.escape('TT__TT'), re.IGNORECASE)
         text = pattern.sub('', text)
-        pattern = re.compile(re.escape('UU__UU'), re.IGNORECASE)
+        pattern = re.compile(re.escape('UU_0_UU'), re.IGNORECASE)
         text = pattern.sub('•', text)
+        pattern = re.compile(re.escape('UU_1_UU'), re.IGNORECASE)
+        text = pattern.sub('▪', text)
+        pattern = re.compile(re.escape('UU_2_UU'), re.IGNORECASE)
+        text = pattern.sub('●', text)
         return text
 
     def serialize_table_points(self, text):

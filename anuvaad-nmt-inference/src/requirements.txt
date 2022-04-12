@@ -2,7 +2,7 @@ tqdm==4.30.*
 #torch==1.6.0
 torchtext==0.4.0
 Flask-Cors==3.0.9
-anuvaad-auditor==0.1.4
+anuvaad-auditor==0.1.6
 Flask-RESTful==0.3.8
 six==1.15.0
 kafka-python==2.0.2

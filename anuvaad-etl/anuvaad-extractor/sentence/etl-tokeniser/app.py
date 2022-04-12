@@ -10,6 +10,7 @@ import threading
 
 tok_app  = Flask(__name__)
 
+
 def start_kafka():
     try:
         t1 = threading.Thread(target=process_tokenization_kf, name='keep_on_running')
@@ -23,7 +24,7 @@ if config.ENABLE_CORS:
 
 for blueprint in vars(routes).values():
     if isinstance(blueprint, Blueprint):
-        tok_app.register_blueprint(blueprint, url_prefix=config.API_URL_PREFIX)
+        tok_app.register_blueprint(blueprint, url_prefix=config.context_path)
 
 
 if __name__ == "__main__":
