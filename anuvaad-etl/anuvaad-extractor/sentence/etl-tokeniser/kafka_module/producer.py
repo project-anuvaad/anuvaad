@@ -8,6 +8,7 @@ from errors.errors_exception import KafkaProducerError
 from utilities.model_response import CustomResponse
 import config
 
+
 # kafka producer class
 class Producer(object):
     def __init__(self):

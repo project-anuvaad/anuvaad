@@ -178,6 +178,7 @@ class UserReport extends React.Component {
             const uniqueIDs = recordIds.filter((val,id,array) => array.indexOf(val) == id);
             const { APITransport } = this.props;
             const apiObj = new JobStatus(uniqueIDs, true);
+            // const apiObj = new JobStatus(recordIds, true);
             APITransport(apiObj);
             this.setState({ showProgress: true, searchToken: false });
         }
@@ -198,7 +199,7 @@ class UserReport extends React.Component {
 
     getJobsAsPerPageAndLimit = (page, limit) => {
         if(limit === 0) {
-            limit = 10  
+            // limit = 10  
             this.setState({ limit: 10 });
         }
         return this.getJobsSortedByTimestamp().slice(
@@ -315,14 +316,14 @@ class UserReport extends React.Component {
             /**
              * user wanted to load next set of records
              */
-            // this.makeAPICallJobsBulkSearch(
-            //     this.state.offset + this.state.limit,
-            //     this.state.limit,
-            //     false,
-            //     false,
-            //     this.state.userID,
-            // );
-            this.makeAPICallDocumentsTranslationProgress();
+            this.makeAPICallJobsBulkSearch(
+                this.state.offset + this.state.limit,
+                this.state.limit,
+                false,
+                false,
+                this.state.userID,
+            );
+            // this.makeAPICallDocumentsTranslationProgress();
             this.setState({
                 currentPageIndex: page,
                 offset: this.state.offset + this.state.limit,

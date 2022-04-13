@@ -50,7 +50,7 @@ class ValidationResponse(object):
                         elif file_ops.check_path_exists(input_filepath) is False or file_ops.check_path_exists(self.DOWNLOAD_FOLDER) is False:
                             raise FileErrors("DIRECTORY_ERROR", "There is no input/output Directory.")
                         elif in_locale == "" or in_locale is None:
-                            raise FileErrors("LOCALE_ERROR", "No language input or unsupported language input.")
+                            raise FileErrors("LOCALE_ERROR", "No language input or None value.")
             elif 'blocks' in input_key.keys():
                 blocks_list, record_id, model_id, in_locale = file_ops.get_input_values_for_block_tokenise(input_key)
                 if in_locale == "" or in_locale is None:
@@ -61,7 +61,14 @@ class ValidationResponse(object):
                     raise FileErrors("MODEL_ID_ERROR", "No model id found for this request.")
                 elif not isinstance(blocks_list, list) or blocks_list == None:
                     raise FileErrors("BLOCKS_ERROR", "either blocks key isn't list type or none.")
-
+    
+    # checking support of tokeniser for languages
+    def check_language(self, language):
+        allowed_languages = ['en', 'hi', 'mr', 'ta', 'te', 'kn', 'ml', 'bn']
+        if language not in allowed_languages:
+            raise FileErrors("LOCALE_ERROR", "Currently, This language is not supported by tokeniser. \
+                We support these language codes 'en', 'hi', 'mr', 'ta', 'te', 'kn', 'ml', 'bn'")
+        
     # checking whether file is utf-16 encoded or not
     def file_encoding_error(self, input_file_data):
         try:
@@ -69,7 +76,8 @@ class ValidationResponse(object):
                 raise FileErrors("EMPTY_FILE", "No Data inside txt file or it is not converted into list.")
         except:
             raise FileEncodingError( 400, "Tokenisation failed due to encoding. Service supports only utf-16 encoded file.")
-
+    
+    # checking input request format
     def format_error(self, json_data):
         keys_checked = {'workflowCode','jobID','input','tool','stepOrder','metadata'}
         if json_data.keys() == {'files'}:

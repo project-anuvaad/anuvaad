@@ -1,8 +1,3 @@
-# Anuvaad Toolkit: Anuvaad Hindi Tokenizer
-#
-# Author: Aroop <aroop.ghosh@tarento.com>
-# URL: <http://developers.anuvaad.org/>
-
 import re
 from nltk.tokenize.punkt import PunktSentenceTokenizer, PunktParameters, PunktTrainer, PunktLanguageVars
 from nltk.tokenize import sent_tokenize
@@ -20,12 +15,12 @@ class AnuvaadHindiTokenizer(object):
     devanagri abbreviation symbol = ([\u0970-\u0971])
     source for unicodes : https://unicode.org/charts/PDF/U0900.pdf
     """
-    _abbrevations_with_non_generalize_pattern = [r'[ ]क्यू[.]',r'[ ]डब्लू[.]',r'[ ]एक्स[.]',r'[ ]वायी[.]',r'[ ]ज़ेड[.]',r'क्यू[.]',r'डब्लू[.]',r'एक्स[.]',r'वायी[.]',r'ज़ेड[.]',r'प्रो[.]',r'[ ]प्रो[.]',r'प्रा[.]',r'[ ]प्रा[.]']
-    _abbrevations_with_non_generalize = [' क्यू.',' डब्लू.',' एक्स.',' वायी.',' ज़ेड.','क्यू.','डब्लू.','एक्स.','वायी.','ज़ेड.','प्रो.', ' प्रो.','प्रा.', ' प्रा.']
+    _abbrevations_with_non_generalize_pattern = [r'[ ]क्यू[.]',r'[ ]डब्लू[.]',r'[ ]एक्स[.]',r'[ ]वायी[.]',r'[ ]ज़ेड[.]',r'क्यू[.]',r'डब्लू[.]',r'एक्स[.]',r'वायी[.]',r'ज़ेड[.]',r'प्रो[.]',r'[ ]प्रो[.]',r'प्रा[.]',r'[ ]प्रा[.]', r'[ ]संख्या[.]']
+    _abbrevations_with_non_generalize = [' क्यू.',' डब्लू.',' एक्स.',' वायी.',' ज़ेड.','क्यू.','डब्लू.','एक्स.','वायी.','ज़ेड.','प्रो.', ' प्रो.','प्रा.', ' प्रा.', ' संख्या.']
     _text_abbrevations_pattern_cic = r'((\s)(([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0962-\u0963])?([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])?(\u002e)(\s)?){1,})'
     #_text_abbrevations_pattern_cii = r'((\s)(([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0962-\u0963])?([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0962-\u0963])?(\u002e)(\s)?){1,})'
     _text_abbrevations_pattern_cci = r'((\s)(([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])?([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0962-\u0963])?(\u002e)(\s)?){1,})'
-    _text_colon_abbreviations_pattern = r'(([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097f])([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0970-\u0971])?[:](\s)?[\u0900-\u097F])'
+    _text_colon_abbreviations_pattern = r'(([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097f])([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0970-\u0971])?[:](\s)?[\u0900-\u097F|-])'
     _text_abbrevations_without_space_pattern = r'(^(([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0962-\u0963])?([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])?([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0962-\u0963])?(\u002e)(\s)?){1,})'
     _text_abbrevations_cic = []
     _text_abbrevations_cci = []
@@ -66,6 +61,9 @@ class AnuvaadHindiTokenizer(object):
 
     def tokenize(self, text):
         print('--------------Process started-------------')
+        text = self.serialize_with_abbrevations(text)
+        text = self.serialize_colon_abbreviations(text)
+        text = self.serialize_pattern(text)
         text = self.serialize_dates(text)
         text = self.serialize_time(text)
         text = self.serialize_table_points(text)
@@ -77,9 +75,6 @@ class AnuvaadHindiTokenizer(object):
         text = self.serialize_quotes_with_number(text)
         text = self.serialize_bullet_points(text)
         text = self.serialize_decimal(text)
-        text = self.serialize_pattern(text)
-        text = self.serialize_with_abbrevations(text)
-        text = self.serialize_colon_abbreviations(text)
         text = self.add_space_after_sentence_end(text)
         text = self.serialize_end(text)
         sentences = self._tokenizer.tokenize(text)
@@ -146,7 +141,7 @@ class AnuvaadHindiTokenizer(object):
         return text
 
     def add_space_after_sentence_end(self, text):
-        sentence_ends = ['.','?','!',';',':','।', '॥']
+        sentence_ends = ['.','?','!',';',':','।', '॥', '|']
         for sentence_end in sentence_ends:
             pattern = re.compile(r'['+sentence_end+'][ ]') #remove already correct patterns
             text = pattern.sub(sentence_end, text)
@@ -156,28 +151,40 @@ class AnuvaadHindiTokenizer(object):
 
     def serialize_end(self, text):
         pattern_d = re.compile(r'(\u0965)')
-        text = pattern_d.sub(' END_||_END', text)
-        pattern = re.compile(r'(\u0964)')
-        text = pattern.sub(' END_|_END ', text)
+        text = pattern_d.sub(' END_B', text)
+        pattern_e = re.compile(r'(\u0964)')
+        text = pattern_e.sub(' END_A ', text)
+        pattern_f = re.compile(r'(\u007C)')
+        text = pattern_f.sub(' END_C ', text)
         return text
 
     def deserialize_end(self, text):
-        pattern = re.compile(re.escape(' END_|_END'), re.IGNORECASE)
+        pattern = re.compile(re.escape(' END_A'), re.IGNORECASE)
         text = pattern.sub('।', text)
-        pattern = re.compile(re.escape(' END_||_END'), re.IGNORECASE)
+        pattern = re.compile(re.escape(' END_B'), re.IGNORECASE)
         text = pattern.sub('॥', text)
+        pattern = re.compile(re.escape(' END_C'), re.IGNORECASE)
+        text = pattern.sub('|', text)
         return text
 
     def serialize_bullet_points(self, text):
-        pattern = re.compile(r'(?!^)[•]')
-        text = pattern.sub('TT__TT UU__UU', text)
+        pattern1 = re.compile(r'(?!^)[•]')
+        text = pattern1.sub('TT__TT UU_0_UU', text)
+        pattern2 = re.compile(r'(?!^)[▪]')
+        text = pattern2.sub('TT__TT UU_1_UU', text)
+        pattern3 = re.compile(r'(?!^)[●]')
+        text = pattern3.sub('TT__TT UU_2_UU', text)
         return text
 
     def deserialize_bullet_points(self, text):
         pattern = re.compile(re.escape('TT__TT'), re.IGNORECASE)
         text = pattern.sub('', text)
-        pattern = re.compile(re.escape('UU__UU'), re.IGNORECASE)
+        pattern = re.compile(re.escape('UU_0_UU'), re.IGNORECASE)
         text = pattern.sub('•', text)
+        pattern = re.compile(re.escape('UU_1_UU'), re.IGNORECASE)
+        text = pattern.sub('▪', text)
+        pattern = re.compile(re.escape('UU_2_UU'), re.IGNORECASE)
+        text = pattern.sub('●', text)
         return text
 
     def serialize_table_points(self, text):

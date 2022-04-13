@@ -41,24 +41,12 @@ const generateDocxNew = (jobName,fname, height, width) => {
                 })
             } else if (tokens.class === 'TABLE') {
                 let tableArray = generateTableArray(tokens);
-                const style = {
-                    '@w:val': 'single',
-                    '@w:sz': '3',
-                    '@w:space': '1',
-                }
-                const borderStyle = {
-                    'w:top': style,
-                    'w:bottom': style,
-                    'w:left': style,
-                    'w:right': style,
-                    'w:insideH': style,
-                    'w:insideV': style,
-                }
+
                 const tableStyle = {
                     tableColWidth: 3261,
-                    tableSize: 24,
-                    tableAlign: 'center',
-                    borderStyle: borderStyle
+                    tableSize: 1,
+                    tableAlign: 'left',
+                    tableFontFamily: 'Arial Unicode MS',
                 }
                 docx.createTable(tableArray, tableStyle);
             }

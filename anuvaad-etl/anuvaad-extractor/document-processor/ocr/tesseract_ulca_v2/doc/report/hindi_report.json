@@ -1,0 +1,934 @@
+{
+    "config": {
+      "language": {
+        "sourceLanguage": "hi"
+      }
+    },
+    "output": [
+      {
+        "image_name": "/home/ubuntu/tesseract_ulca_v2/doc/data/hindi/NCERT-Solutions-for-Class-10-Science-Chapter-9-Heredity-and-Evolution-Hindi-Medium-12",
+        "source": [
+          {
+            "text_with_pp": " उत्तर",
+            "text_with_pp_sr": " उत्तर",
+            "text_with_pp_sr_hybrid": " उत्तर",
+            "text_without_pp": " उत्तर",
+            "time_with_pp": 0.43132972717285156,
+            "time_with_pp_sr": 0.6627869606018066,
+            "time_with_pp_sr_hybrid": 1.0941166877746582,
+            "time_without_pp": 0.428633451461792
+          },
+          {
+            "text_with_pp": " सन्‌ 1929 में ्रिटिश वैज्ञानिक जे . बी. एस. हात्डेन ने बताया कि",
+            "text_with_pp_sr": " सन् 1929 में ब्रिटिश वैज्ञानिक जे . बी. एस. हाल्डेन ने बताया कि",
+            "text_with_pp_sr_hybrid": " सन् 1929 में ब्रिटिश वैज्ञानिक जे . बी. एस. हाल्डेन ने बताया कि",
+            "text_without_pp": " सन्‌ 1929 में ्रिटिश वैज्ञानिक जे . बी. एस. हात्डेन ने बताया कि",
+            "time_with_pp": 0.6292154788970947,
+            "time_with_pp_sr": 3.662522554397583,
+            "time_with_pp_sr_hybrid": 4.291738033294678,
+            "time_without_pp": 0.6256701946258545
+          },
+          {
+            "text_with_pp": " शायद कृछ जटिल कार्बनिक अणुऔं का संश्लेष्ण हुआ जो जीवो के |",
+            "text_with_pp_sr": " शायद कुछ जटिल कार्बनिक अणुओऔं का संश्लेष्ण हुआ जो जीवो के |",
+            "text_with_pp_sr_hybrid": " शायद कृछ जटिल कार्बनिक अणुऔं का संश्लेष्ण हुआ जो जीवो के |",
+            "text_without_pp": " शायद कृछ जटिल कार्बनिक अणुऔं का संश्लेष्ण हुआ जो जीवो के |",
+            "time_with_pp": 0.7280874252319336,
+            "time_with_pp_sr": 3.5889480113983154,
+            "time_with_pp_sr_hybrid": 4.317035436630249,
+            "time_without_pp": 0.724602460861206
+          },
+          {
+            "text_with_pp": " लिए आवश्यक थे / प्राथमिक जीव अन्य रासायनिक संश्लेष्ण",
+            "text_with_pp_sr": " लिए आवश्यक थे / प्राथमिक जीव अन्य रासायनिक संश्लेष्ण",
+            "text_with_pp_sr_hybrid": " लिए आवश्यक थे / प्राथमिक जीव अन्य रासायनिक संश्लेष्ण",
+            "text_without_pp": " लिए आवश्यक थे / प्राथमिक जीव अन्य रासायनिक संश्लेष्ण",
+            "time_with_pp": 0.5801973342895508,
+            "time_with_pp_sr": 3.023115873336792,
+            "time_with_pp_sr_hybrid": 3.6033132076263428,
+            "time_without_pp": 0.5769901275634766
+          },
+          {
+            "text_with_pp": " उत्पन्न हृए होगें / इसके आमेनिया , मीथेन , तथा हाइड्रोजन",
+            "text_with_pp_sr": " उत्पन्न हृए होगें / इसके आमेनिया , मीथेन , तथा हाइड्रोजन",
+            "text_with_pp_sr_hybrid": " उत्पन्न हृए होगें / इसके आमेनिया , मीथेन , तथा हाइड्रोजन",
+            "text_without_pp": " उत्पन्न हृए होगें / इसके आमेनिया , मीथेन , तथा हाइड्रोजन",
+            "time_with_pp": 0.7098429203033447,
+            "time_with_pp_sr": 3.389918088912964,
+            "time_with_pp_sr_hybrid": 4.099761009216309,
+            "time_without_pp": 0.7065095901489258
+          },
+          {
+            "text_with_pp": " सल्फाइड के अपु परन्तु ऑक्सीजन के नंही थे | 100० ८ से कम",
+            "text_with_pp_sr": " सल्फाइड के अपु परन्तु ऑक्सीजन के नंही थे | 100० ८ से कम",
+            "text_with_pp_sr_hybrid": " सल्फाइड के अपु परन्तु ऑक्सीजन के नंही थे | 100० ८ से कम",
+            "text_without_pp": " सल्फाइड के अपु परन्तु ऑक्सीजन के नंही थे | 100० ८ से कम",
+            "time_with_pp": 0.6441390514373779,
+            "time_with_pp_sr": 3.5353243350982666,
+            "time_with_pp_sr_hybrid": 4.1794633865356445,
+            "time_without_pp": 0.6405298709869385
+          },
+          {
+            "text_with_pp": " ताप पर गैसीं के मिश्रण में चिंगारियां उत्पन्न करने पर एक सप्ताह |",
+            "text_with_pp_sr": " 'ताप पर गैसीं के मिश्रण में चिंगारियां उत्पन्न करने पर एक सप्ताह |",
+            "text_with_pp_sr_hybrid": " 'ताप पर गैसीं के मिश्रण में चिंगारियां उत्पन्न करने पर एक सप्ताह |",
+            "text_without_pp": " ताप पर गैसीं के मिश्रण में चिंगारियां उत्पन्न करने पर एक सप्ताह |",
+            "time_with_pp": 0.797426700592041,
+            "time_with_pp_sr": 3.61562442779541,
+            "time_with_pp_sr_hybrid": 4.413051128387451,
+            "time_without_pp": 0.7938752174377441
+          },
+          {
+            "text_with_pp": " बाद ।5 प्रतिशत कार्बन सरल कार्बनिक यौगिकों में बदल गए |",
+            "text_with_pp_sr": " बाद /5 प्रतिशत कार्बन सरल कार्बीनिक यौगिकों में बदल गए ।",
+            "text_with_pp_sr_hybrid": " बाद /5 प्रतिशत कार्बन सरल कार्बीनिक यौगिकों में बदल गए ।",
+            "text_without_pp": " बाद ।5 प्रतिशत कार्बन सरल कार्बनिक यौगिकों में बदल गए |",
+            "time_with_pp": 0.7114436626434326,
+            "time_with_pp_sr": 3.3804805278778076,
+            "time_with_pp_sr_hybrid": 4.09192419052124,
+            "time_without_pp": 0.7080864906311035
+          },
+          {
+            "text_with_pp": " वप हकर अपवि दवी द वम य",
+            "text_with_pp_sr": " mitre me",
+            "text_with_pp_sr_hybrid": " वप हकर अपवि दवी द वम य",
+            "text_without_pp": " वप हकर अपवि दवी द वम य",
+            "time_with_pp": 0.6547412872314453,
+            "time_with_pp_sr": 7.919849395751953,
+            "time_with_pp_sr_hybrid": 8.574590682983398,
+            "time_without_pp": 0.6517360210418701
+          },
+          {
+            "text_with_pp": " प्रश्र 10. अलैंगिक जनन की अपेक्षा लैंगिक जनन द्वारा उत्पन्न",
+            "text_with_pp_sr": " परक 10. अलैंगिक जनन की अपेक्षा लैंगिक जनन द्वारा उत्पन्न",
+            "text_with_pp_sr_hybrid": " प्रश्र 10. अलैंगिक जनन की अपेक्षा लैंगिक जनन द्वारा उत्पन्न",
+            "text_without_pp": " प्रश्र 10. अलैंगिक जनन की अपेक्षा लैंगिक जनन द्वारा उत्पन्न",
+            "time_with_pp": 0.6530783176422119,
+            "time_with_pp_sr": 3.311600685119629,
+            "time_with_pp_sr_hybrid": 3.964679002761841,
+            "time_without_pp": 0.6498181819915771
+          },
+          {
+            "text_with_pp": " विभिन्नताएँ अधिक स्थायी होती हैं, व्याख्या कीजिए। यह",
+            "text_with_pp_sr": " विभिन्नताएँ अधिक स्थायी होती हैं, व्याख्या कीजिए। यह",
+            "text_with_pp_sr_hybrid": " विभिन्नताएँ अधिक स्थायी होती हैं, व्याख्या कीजिए। यह",
+            "text_without_pp": " विभिन्नताएँ अधिक स्थायी होती हैं, व्याख्या कीजिए। यह",
+            "time_with_pp": 0.6452054977416992,
+            "time_with_pp_sr": 3.12372088432312,
+            "time_with_pp_sr_hybrid": 3.7689263820648193,
+            "time_without_pp": 0.6421284675598145
+          },
+          {
+            "text_with_pp": " लैंगिक प्रजनन करने वाले जीवों वेफ विकास को किस प्रकार",
+            "text_with_pp_sr": " लैगिक प्रजनन करने वाले जीवों वेफ विकास को किस प्रकार",
+            "text_with_pp_sr_hybrid": " लैंगिक प्रजनन करने वाले जीवों वेफ विकास को किस प्रकार",
+            "text_without_pp": " लैंगिक प्रजनन करने वाले जीवों वेफ विकास को किस प्रकार",
+            "time_with_pp": 0.6593234539031982,
+            "time_with_pp_sr": 3.288459300994873,
+            "time_with_pp_sr_hybrid": 3.9477827548980713,
+            "time_without_pp": 0.6560308933258057
+          },
+          {
+            "text_with_pp": " प्रभावित करता है?",
+            "text_with_pp_sr": " प्रभावित करता है?",
+            "text_with_pp_sr_hybrid": " प्रभावित करता है?",
+            "text_without_pp": " प्रभावित करता है?",
+            "time_with_pp": 0.47617220878601074,
+            "time_with_pp_sr": 1.218651533126831,
+            "time_with_pp_sr_hybrid": 1.6948237419128418,
+            "time_without_pp": 0.47351908683776855
+          },
+          {
+            "text_with_pp": " अलैंगिक जनन विभिन्नताएँ बहुत कम होती है क्योंकि 0\\^ प्रतिकृति |",
+            "text_with_pp_sr": " अलैंगिक जनन विभिन्नताएँ बहुत कम होती है क्योंकि 0\\4 प्रतिकृति न्‍",
+            "text_with_pp_sr_hybrid": " अलैंगिक जनन विभिन्नताएँ बहुत कम होती है क्योंकि 0\\^ प्रतिकृति |",
+            "text_without_pp": " अलैंगिक जनन विभिन्नताएँ बहुत कम होती है क्योंकि 0\\^ प्रतिकृति |",
+            "time_with_pp": 0.6217985153198242,
+            "time_with_pp_sr": 4.114902973175049,
+            "time_with_pp_sr_hybrid": 4.736701488494873,
+            "time_without_pp": 0.6184420585632324
+          },
+          {
+            "text_with_pp": " ब प त कण म कू",
+            "text_with_pp_sr": " ष पा त कण म कू",
+            "text_with_pp_sr_hybrid": " ष पा त कण म कू",
+            "text_without_pp": "",
+            "time_with_pp": 1.0406155586242676,
+            "time_with_pp_sr": 9.21366286277771,
+            "time_with_pp_sr_hybrid": 10.254278421401978,
+            "time_without_pp": 0.45821642875671387
+          },
+          {
+            "text_with_pp": " प ति न एव सावा सको सारा भिक",
+            "text_with_pp_sr": " क ति ज न एव वा सनको यरा भिक",
+            "text_with_pp_sr_hybrid": " क ति ज न एव वा सनको यरा भिक",
+            "text_without_pp": " प ति न एव सावा सको सारा भिक",
+            "time_with_pp": 0.5553157329559326,
+            "time_with_pp_sr": 7.114356994628906,
+            "time_with_pp_sr_hybrid": 7.669672727584839,
+            "time_without_pp": 0.5522277355194092
+          },
+          {
+            "text_with_pp": " जाती है।",
+            "text_with_pp_sr": " जाती है।",
+            "text_with_pp_sr_hybrid": " जाती है।",
+            "text_without_pp": " जाती है।",
+            "time_with_pp": 0.4345376491546631,
+            "time_with_pp_sr": 0.9011821746826172,
+            "time_with_pp_sr_hybrid": 1.3357198238372803,
+            "time_without_pp": 0.43200254440307617
+          },
+          {
+            "text_with_pp": " दुगि मनन में किन ट केतु एक छ णण के सेनी",
+            "text_with_pp_sr": " दुगि मनन में किन ट दत्‌ एक छ णण के सेनी",
+            "text_with_pp_sr_hybrid": " दुगि मनन में किन ट केतु एक छ णण के सेनी",
+            "text_without_pp": "",
+            "time_with_pp": 1.0073158740997314,
+            "time_with_pp_sr": 7.871412038803101,
+            "time_with_pp_sr_hybrid": 8.878727912902832,
+            "time_without_pp": 0.43445897102355957
+          }
+        ]
+      },
+      {
+        "image_name": "/home/ubuntu/tesseract_ulca_v2/doc/data/hindi/32",
+        "source": [
+          {
+            "text_with_pp": " हुडा सिटी सेंटर",
+            "text_with_pp_sr": " हुडा सिटी सेंटर",
+            "text_with_pp_sr_hybrid": " हुडा सिटी सेंटर",
+            "text_without_pp": " हुडा सिटी सेंटर",
+            "time_with_pp": 0.49042344093322754,
+            "time_with_pp_sr": 7.445437908172607,
+            "time_with_pp_sr_hybrid": 7.935861349105835,
+            "time_without_pp": 0.4876842498779297
+          },
+          {
+            "text_with_pp": " (3",
+            "text_with_pp_sr": " ($",
+            "text_with_pp_sr_hybrid": " (3",
+            "text_without_pp": " (3",
+            "time_with_pp": 2.7135486602783203,
+            "time_with_pp_sr": 3.854130744934082,
+            "time_with_pp_sr_hybrid": 6.567679405212402,
+            "time_without_pp": 0.4494290351867676
+          },
+          {
+            "text_with_pp": " ft",
+            "text_with_pp_sr": " £",
+            "text_with_pp_sr_hybrid": " £",
+            "text_without_pp": " ft",
+            "time_with_pp": 2.7172017097473145,
+            "time_with_pp_sr": 1.8442342281341553,
+            "time_with_pp_sr_hybrid": 4.56143593788147,
+            "time_without_pp": 0.452484130859375
+          },
+          {
+            "text_with_pp": " HUDA City Centre",
+            "text_with_pp_sr": " HUDA City Centre",
+            "text_with_pp_sr_hybrid": " HUDA City Centre",
+            "text_without_pp": " HUDA City Centre",
+            "time_with_pp": 0.512460470199585,
+            "time_with_pp_sr": 7.674290418624878,
+            "time_with_pp_sr_hybrid": 8.186750888824463,
+            "time_without_pp": 0.5097343921661377
+          }
+        ]
+      },
+      {
+        "image_name": "/home/ubuntu/tesseract_ulca_v2/doc/data/hindi/7",
+        "source": [
+          {
+            "text_with_pp": " PREET N",
+            "text_with_pp_sr": " PREET MANDIR",
+            "text_with_pp_sr_hybrid": " PREET MANDIR",
+            "text_without_pp": " PREET N",
+            "time_with_pp": 0.4704163074493408,
+            "time_with_pp_sr": 5.049775838851929,
+            "time_with_pp_sr_hybrid": 5.5201921463012695,
+            "time_without_pp": 0.46782517433166504
+          },
+          {
+            "text_with_pp": " (HOME FOR ABANDONED CHILDREN)",
+            "text_with_pp_sr": " (HOME FOR ABANDONED CHILDREN)",
+            "text_with_pp_sr_hybrid": " (HOME FOR ABANDONED CHILDREN)",
+            "text_without_pp": " (HOME FOR ABANDONED CHILDREN)",
+            "time_with_pp": 0.5527615547180176,
+            "time_with_pp_sr": 3.086390495300293,
+            "time_with_pp_sr_hybrid": 3.6391520500183105,
+            "time_without_pp": 0.5499839782714844
+          },
+          {
+            "text_with_pp": " प्रित मंदीर",
+            "text_with_pp_sr": " प्रित मंदीर",
+            "text_with_pp_sr_hybrid": " प्रित मंदीर",
+            "text_without_pp": " प्रित मंदीर",
+            "time_with_pp": 0.46459221839904785,
+            "time_with_pp_sr": 3.370697021484375,
+            "time_with_pp_sr_hybrid": 3.835289239883423,
+            "time_without_pp": 0.4620022773742676
+          },
+          {
+            "text_with_pp": " 1A WAND FOUND, TION,18,De. COYAJI ROAD, PNET",
+            "text_with_pp_sr": " A WAND FOUND TION, 18,De. COYAN ROAD PNET",
+            "text_with_pp_sr_hybrid": " A WAND FOUND TION, 18,De. COYAN ROAD PNET",
+            "text_without_pp": " 1A WAND FOUND, TION,18,De. COYAJI ROAD, PNET",
+            "time_with_pp": 0.6179671287536621,
+            "time_with_pp_sr": 2.9443821907043457,
+            "time_with_pp_sr_hybrid": 3.562349319458008,
+            "time_without_pp": 0.6149072647094727
+          },
+          {
+            "text_with_pp": " TEL.26361027, 26360081",
+            "text_with_pp_sr": " TEL.26361027, 26360081",
+            "text_with_pp_sr_hybrid": " TEL.26361027, 26360081",
+            "text_without_pp": " TEL.26361027, 26360081",
+            "time_with_pp": 0.5527942180633545,
+            "time_with_pp_sr": 3.848907232284546,
+            "time_with_pp_sr_hybrid": 4.4017014503479,
+            "time_without_pp": 0.5499446392059326
+          }
+        ]
+      },
+      {
+        "image_name": "/home/ubuntu/tesseract_ulca_v2/doc/data/hindi/58",
+        "source": [
+          {
+            "text_with_pp": " शिमला",
+            "text_with_pp_sr": " शिमला",
+            "text_with_pp_sr_hybrid": " शिमला",
+            "text_without_pp": "",
+            "time_with_pp": 1.0158138275146484,
+            "time_with_pp_sr": 9.089235305786133,
+            "time_with_pp_sr_hybrid": 10.105049133300781,
+            "time_without_pp": 0.4560682773590088
+          }
+        ]
+      },
+      {
+        "image_name": "/home/ubuntu/tesseract_ulca_v2/doc/data/hindi/14",
+        "source": [
+          {
+            "text_with_pp": " RISHIKESH",
+            "text_with_pp_sr": " RISHIKESH",
+            "text_with_pp_sr_hybrid": " RISHIKESH",
+            "text_without_pp": " RISHIKESH",
+            "time_with_pp": 0.4986565113067627,
+            "time_with_pp_sr": 2.8866186141967773,
+            "time_with_pp_sr_hybrid": 3.38527512550354,
+            "time_without_pp": 0.4960465431213379
+          },
+          {
+            "text_with_pp": " ऋषिकेश",
+            "text_with_pp_sr": " ऋषिकेश",
+            "text_with_pp_sr_hybrid": " ऋषिकेश",
+            "text_without_pp": " ऋषिकेश",
+            "time_with_pp": 0.5072357654571533,
+            "time_with_pp_sr": 3.1652684211730957,
+            "time_with_pp_sr_hybrid": 3.672504186630249,
+            "time_without_pp": 0.5045208930969238
+          },
+          {
+            "text_with_pp": " TEHRI",
+            "text_with_pp_sr": " TERRI",
+            "text_with_pp_sr_hybrid": " TERRI",
+            "text_without_pp": " TEHRI",
+            "time_with_pp": 2.90429949760437,
+            "time_with_pp_sr": 2.3149821758270264,
+            "time_with_pp_sr_hybrid": 5.2192816734313965,
+            "time_without_pp": 0.46767759323120117
+          },
+          {
+            "text_with_pp": " टिहरी,",
+            "text_with_pp_sr": " टिहरी",
+            "text_with_pp_sr_hybrid": " टिहरी,",
+            "text_without_pp": "",
+            "time_with_pp": 2.3135452270507812,
+            "time_with_pp_sr": 4.635969400405884,
+            "time_with_pp_sr_hybrid": 6.949514627456665,
+            "time_without_pp": 0.4353504180908203
+          },
+          {
+            "text_with_pp": " 166६0t",
+            "text_with_pp_sr": " GRC",
+            "text_with_pp_sr_hybrid": " GRC",
+            "text_without_pp": " 166६0t",
+            "time_with_pp": 2.815361976623535,
+            "time_with_pp_sr": 3.068145751953125,
+            "time_with_pp_sr_hybrid": 5.88350772857666,
+            "time_without_pp": 0.4670860767364502
+          },
+          {
+            "text_with_pp": " | 2ITF",
+            "text_with_pp_sr": " |i",
+            "text_with_pp_sr_hybrid": " | 2ITF",
+            "text_without_pp": " | 2ITF",
+            "time_with_pp": 0.47608184814453125,
+            "time_with_pp_sr": 3.138205051422119,
+            "time_with_pp_sr_hybrid": 3.6142868995666504,
+            "time_without_pp": 0.47358274459838867
+          }
+        ]
+      },
+      {
+        "image_name": "/home/ubuntu/tesseract_ulca_v2/doc/data/hindi/23",
+        "source": [
+          {
+            "text_with_pp": " i 4",
+            "text_with_pp_sr": " रिय श्रेणी",
+            "text_with_pp_sr_hybrid": " रिय श्रेणी",
+            "text_without_pp": " i 4",
+            "time_with_pp": 0.5205345153808594,
+            "time_with_pp_sr": 7.080411911010742,
+            "time_with_pp_sr_hybrid": 7.600946426391602,
+            "time_without_pp": 0.5179932117462158
+          }
+        ]
+      },
+      {
+        "image_name": "/home/ubuntu/tesseract_ulca_v2/doc/data/hindi/19",
+        "source": [
+          {
+            "text_with_pp": " कष्ण",
+            "text_with_pp_sr": " कष्ण",
+            "text_with_pp_sr_hybrid": " कष्ण",
+            "text_without_pp": " कष्ण",
+            "time_with_pp": 0.5235447883605957,
+            "time_with_pp_sr": 12.055649518966675,
+            "time_with_pp_sr_hybrid": 12.57919430732727,
+            "time_without_pp": 0.520869255065918
+          }
+        ]
+      },
+      {
+        "image_name": "/home/ubuntu/tesseract_ulca_v2/doc/data/hindi/40",
+        "source": [
+          {
+            "text_with_pp": " हल्ली विकास प्राधिकरण",
+            "text_with_pp_sr": " =] I",
+            "text_with_pp_sr_hybrid": " हल्ली विकास प्राधिकरण",
+            "text_without_pp": "",
+            "time_with_pp": 1.0400104522705078,
+            "time_with_pp_sr": 6.569350481033325,
+            "time_with_pp_sr_hybrid": 7.609360933303833,
+            "time_without_pp": 0.4484086036682129
+          }
+        ]
+      },
+      {
+        "image_name": "/home/ubuntu/tesseract_ulca_v2/doc/data/hindi/37",
+        "source": [
+          {
+            "text_with_pp": " अलवर ALWAR",
+            "text_with_pp_sr": " अलवर ALWAR",
+            "text_with_pp_sr_hybrid": " अलवर ALWAR",
+            "text_without_pp": " अलवर ALWAR",
+            "time_with_pp": 0.5211751461029053,
+            "time_with_pp_sr": 0.897226095199585,
+            "time_with_pp_sr_hybrid": 1.4184012413024902,
+            "time_without_pp": 0.5185906887054443
+          },
+          {
+            "text_with_pp": " 76.0",
+            "text_with_pp_sr": " 76.0",
+            "text_with_pp_sr_hybrid": " 76.0",
+            "text_without_pp": " LL",
+            "time_with_pp": 0.9390037059783936,
+            "time_with_pp_sr": 0.61285400390625,
+            "time_with_pp_sr_hybrid": 1.5518577098846436,
+            "time_without_pp": 0.46122097969055176
+          },
+          {
+            "text_with_pp": " हरिद्वार",
+            "text_with_pp_sr": " Ld",
+            "text_with_pp_sr_hybrid": " हरिद्वार",
+            "text_without_pp": " हरिद्वार",
+            "time_with_pp": 0.4990956783294678,
+            "time_with_pp_sr": 3.252133846282959,
+            "time_with_pp_sr_hybrid": 3.7512295246124268,
+            "time_without_pp": 0.4963688850402832
+          },
+          {
+            "text_with_pp": " दौसा",
+            "text_with_pp_sr": " Cin",
+            "text_with_pp_sr_hybrid": " दौसा",
+            "text_without_pp": " दौसा",
+            "time_with_pp": 0.4547550678253174,
+            "time_with_pp_sr": 3.119746446609497,
+            "time_with_pp_sr_hybrid": 3.5745015144348145,
+            "time_without_pp": 0.4520878791809082
+          },
+          {
+            "text_with_pp": " DAUSA",
+            "text_with_pp_sr": " DAUSA",
+            "text_with_pp_sr_hybrid": " DAUSA",
+            "text_without_pp": " DAUSA",
+            "time_with_pp": 0.46106791496276855,
+            "time_with_pp_sr": 0.6837365627288818,
+            "time_with_pp_sr_hybrid": 1.1448044776916504,
+            "time_without_pp": 0.4584074020385742
+          },
+          {
+            "text_with_pp": " 72.0",
+            "text_with_pp_sr": " 72.0",
+            "text_with_pp_sr_hybrid": " 72.0",
+            "text_without_pp": " 72.0",
+            "time_with_pp": 0.46909022331237793,
+            "time_with_pp_sr": 0.5887625217437744,
+            "time_with_pp_sr_hybrid": 1.0578527450561523,
+            "time_without_pp": 0.4664285182952881
+          },
+          {
+            "text_with_pp": " मथुरा",
+            "text_with_pp_sr": " Li",
+            "text_with_pp_sr_hybrid": " मथुरा",
+            "text_without_pp": " मथुरा",
+            "time_with_pp": 0.45790767669677734,
+            "time_with_pp_sr": 3.1069319248199463,
+            "time_with_pp_sr_hybrid": 3.5648396015167236,
+            "time_without_pp": 0.45525574684143066
+          },
+          {
+            "text_with_pp": " 'गंगापुर GANGAPUR 42",
+            "text_with_pp_sr": " गंगापुर GANGAPUR 42",
+            "text_with_pp_sr_hybrid": " 'गंगापुर GANGAPUR 42",
+            "text_without_pp": " 'गंगापुर GANGAPUR 42",
+            "time_with_pp": 0.5739760398864746,
+            "time_with_pp_sr": 1.0881435871124268,
+            "time_with_pp_sr_hybrid": 1.6621196269989014,
+            "time_without_pp": 0.5712475776672363
+          },
+          {
+            "text_with_pp": " जयपुर",
+            "text_with_pp_sr": " जयपुर",
+            "text_with_pp_sr_hybrid": " जयपुर",
+            "text_without_pp": " जयपुर",
+            "time_with_pp": 0.4802737236022949,
+            "time_with_pp_sr": 0.6663413047790527,
+            "time_with_pp_sr_hybrid": 1.1466150283813477,
+            "time_without_pp": 0.4776158332824707
+          }
+        ]
+      },
+      {
+        "image_name": "/home/ubuntu/tesseract_ulca_v2/doc/data/hindi/41",
+        "source": [
+          {
+            "text_with_pp": " SN Oh",
+            "text_with_pp_sr": " । जलबजक्ठाल",
+            "text_with_pp_sr_hybrid": " । जलबजक्ठाल",
+            "text_without_pp": " SN Oh",
+            "time_with_pp": 0.7142469882965088,
+            "time_with_pp_sr": 23.064594745635986,
+            "time_with_pp_sr_hybrid": 23.778841733932495,
+            "time_without_pp": 0.7115991115570068
+          },
+          {
+            "text_with_pp": " जलंबज, JALAMB JN.",
+            "text_with_pp_sr": " JALAMB uN.",
+            "text_with_pp_sr_hybrid": " जलंबज, JALAMB JN.",
+            "text_without_pp": " जलंबज, JALAMB JN.",
+            "time_with_pp": 0.6385133266448975,
+            "time_with_pp_sr": 13.589589595794678,
+            "time_with_pp_sr_hybrid": 14.228102922439575,
+            "time_without_pp": 0.6357297897338867
+          }
+        ]
+      },
+      {
+        "image_name": "/home/ubuntu/tesseract_ulca_v2/doc/data/hindi/6",
+        "source": [
+          {
+            "text_with_pp": " नजरवधाप",
+            "text_with_pp_sr": " नजरवधप",
+            "text_with_pp_sr_hybrid": " नजरवधाप",
+            "text_without_pp": " नजरवधाप",
+            "time_with_pp": 0.5094203948974609,
+            "time_with_pp_sr": 2.698110580444336,
+            "time_with_pp_sr_hybrid": 3.207530975341797,
+            "time_without_pp": 0.5067250728607178
+          },
+          {
+            "text_with_pp": " के चर्शमे",
+            "text_with_pp_sr": " के चशमे",
+            "text_with_pp_sr_hybrid": " के चशमे",
+            "text_without_pp": " के चर्शमे",
+            "time_with_pp": 0.5076513290405273,
+            "time_with_pp_sr": 2.171372890472412,
+            "time_with_pp_sr_hybrid": 2.6790242195129395,
+            "time_without_pp": 0.50502610206604
+          }
+        ]
+      },
+      {
+        "image_name": "/home/ubuntu/tesseract_ulca_v2/doc/data/hindi/43",
+        "source": [
+          {
+            "text_with_pp": " नई दिल्ली",
+            "text_with_pp_sr": " नई दिल्ली",
+            "text_with_pp_sr_hybrid": " नई दिल्ली",
+            "text_without_pp": " नई दिल्ली",
+            "time_with_pp": 0.6102850437164307,
+            "time_with_pp_sr": 8.441469669342041,
+            "time_with_pp_sr_hybrid": 9.051754713058472,
+            "time_without_pp": 0.6073331832885742
+          },
+          {
+            "text_with_pp": " [Se",
+            "text_with_pp_sr": " [",
+            "text_with_pp_sr_hybrid": " [Se",
+            "text_without_pp": " [Se",
+            "time_with_pp": 2.9624314308166504,
+            "time_with_pp_sr": 3.3179006576538086,
+            "time_with_pp_sr_hybrid": 6.280332088470459,
+            "time_without_pp": 0.48099398612976074
+          },
+          {
+            "text_with_pp": " New Delhi",
+            "text_with_pp_sr": " New Delhi",
+            "text_with_pp_sr_hybrid": " New Delhi",
+            "text_without_pp": " New Delhi",
+            "time_with_pp": 0.5265135765075684,
+            "time_with_pp_sr": 7.932825565338135,
+            "time_with_pp_sr_hybrid": 8.459339141845703,
+            "time_without_pp": 0.5238080024719238
+          }
+        ]
+      },
+      {
+        "image_name": "/home/ubuntu/tesseract_ulca_v2/doc/data/hindi/34",
+        "source": [
+          {
+            "text_with_pp": " doc",
+            "text_with_pp_sr": " [a",
+            "text_with_pp_sr_hybrid": " doc",
+            "text_without_pp": " doc",
+            "time_with_pp": 0.4871382713317871,
+            "time_with_pp_sr": 5.797131061553955,
+            "time_with_pp_sr_hybrid": 6.284269332885742,
+            "time_without_pp": 0.48435187339782715
+          },
+          {
+            "text_with_pp": " कान्ापर सेन्द्रुल",
+            "text_with_pp_sr": " ं | ं r -- ला |",
+            "text_with_pp_sr_hybrid": " ं | ं r -- ला |",
+            "text_without_pp": "",
+            "time_with_pp": 1.0970184803009033,
+            "time_with_pp_sr": 10.039628505706787,
+            "time_with_pp_sr_hybrid": 11.13664698600769,
+            "time_without_pp": 0.4723789691925049
+          }
+        ]
+      },
+      {
+        "image_name": "/home/ubuntu/tesseract_ulca_v2/doc/data/hindi/55",
+        "source": [
+          {
+            "text_with_pp": " नई दिल्ली",
+            "text_with_pp_sr": " नई दिल्ली",
+            "text_with_pp_sr_hybrid": " नई दिल्ली",
+            "text_without_pp": "",
+            "time_with_pp": 1.1573753356933594,
+            "time_with_pp_sr": 16.94001531600952,
+            "time_with_pp_sr_hybrid": 18.09739065170288,
+            "time_without_pp": 0.5172312259674072
+          }
+        ]
+      },
+      {
+        "image_name": "/home/ubuntu/tesseract_ulca_v2/doc/data/hindi/64",
+        "source": [
+          {
+            "text_with_pp": " TTT Tre Tere",
+            "text_with_pp_sr": " MTT Tre Teer",
+            "text_with_pp_sr_hybrid": " TTT Tre Tere",
+            "text_without_pp": "",
+            "time_with_pp": 1.0913152694702148,
+            "time_with_pp_sr": 2.3887877464294434,
+            "time_with_pp_sr_hybrid": 3.480103015899658,
+            "time_without_pp": 0.4531362056732178
+          },
+          {
+            "text_with_pp": " फुल्न तोड़ना स्यण्टत मनला है",
+            "text_with_pp_sr": " फूत्न तोड़ना स्वस्त मनला है",
+            "text_with_pp_sr_hybrid": " फूत्न तोड़ना स्वस्त मनला है",
+            "text_without_pp": " फुल्न तोड़ना स्यण्टत मनला है",
+            "time_with_pp": 0.6789212226867676,
+            "time_with_pp_sr": 10.198027849197388,
+            "time_with_pp_sr_hybrid": 10.876949071884155,
+            "time_without_pp": 0.6760563850402832
+          }
+        ]
+      },
+      {
+        "image_name": "/home/ubuntu/tesseract_ulca_v2/doc/data/hindi/46",
+        "source": [
+          {
+            "text_with_pp": " नोतेश टरेडिणा कं.",
+            "text_with_pp_sr": " =",
+            "text_with_pp_sr_hybrid": " नोतेश टरेडिणा कं.",
+            "text_without_pp": " नोतेश टरेडिणा कं.",
+            "time_with_pp": 0.5995006561279297,
+            "time_with_pp_sr": 6.050656080245972,
+            "time_with_pp_sr_hybrid": 6.650156736373901,
+            "time_without_pp": 0.5967891216278076
+          },
+          {
+            "text_with_pp": " फैसीसादियांकम्बल॒शाल लोई केथोक विक्रेता। |",
+            "text_with_pp_sr": " फैन्सीसादियां कम्बलशाल लोई केथोक विक्रेता। |",
+            "text_with_pp_sr_hybrid": " फैन्सीसादियां कम्बलशाल लोई केथोक विक्रेता। |",
+            "text_without_pp": " फैसीसादियांकम्बल॒शाल लोई केथोक विक्रेता। |",
+            "time_with_pp": 0.6480894088745117,
+            "time_with_pp_sr": 4.360670804977417,
+            "time_with_pp_sr_hybrid": 5.008760213851929,
+            "time_without_pp": 0.6451683044433594
+          }
+        ]
+      },
+      {
+        "image_name": "/home/ubuntu/tesseract_ulca_v2/doc/data/hindi/21",
+        "source": [
+          {
+            "text_with_pp": " श्री गंगा जी की आरती में पधारे सभी पूज्य संतों, आदरणीय अतियियों का हार्दिक अभिनन्दन व अभिवादन",
+            "text_with_pp_sr": " श्री गंगा जी की आरती में पघारे सभी पूज्य संतों, आदरणीय अतियियों का हार्दिक अभिनन्दन व अभिवादन अभिनन्दन व अभिवादन",
+            "text_with_pp_sr_hybrid": " श्री गंगा जी की आरती में पघारे सभी पूज्य संतों, आदरणीय अतियियों का हार्दिक अभिनन्दन व अभिवादन अभिनन्दन व अभिवादन",
+            "text_without_pp": " श्री गंगा जी की आरती में पधारे सभी पूज्य संतों, आदरणीय अतियियों का हार्दिक अभिनन्दन व अभिवादन",
+            "time_with_pp": 0.751622200012207,
+            "time_with_pp_sr": 3.9790456295013428,
+            "time_with_pp_sr_hybrid": 4.73066782951355,
+            "time_without_pp": 0.7476158142089844
+          },
+          {
+            "text_with_pp": " Tr",
+            "text_with_pp_sr": "",
+            "text_with_pp_sr_hybrid": " Tr",
+            "text_without_pp": " Tr",
+            "time_with_pp": 3.0625650882720947,
+            "time_with_pp_sr": 6.032004117965698,
+            "time_with_pp_sr_hybrid": 9.094569206237793,
+            "time_without_pp": 0.4974081516265869
+          },
+          {
+            "text_with_pp": " i - 4 \"",
+            "text_with_pp_sr": " i .",
+            "text_with_pp_sr_hybrid": " i .",
+            "text_without_pp": " i - 4 \"",
+            "time_with_pp": 0.5278782844543457,
+            "time_with_pp_sr": 3.286003828048706,
+            "time_with_pp_sr_hybrid": 3.8138821125030518,
+            "time_without_pp": 0.525061845779419
+          }
+        ]
+      },
+      {
+        "image_name": "/home/ubuntu/tesseract_ulca_v2/doc/data/hindi/66",
+        "source": [
+          {
+            "text_with_pp": " Gr Up)",
+            "text_with_pp_sr": " पुणे इन्फोटेकपार्क (हिंजवडी)",
+            "text_with_pp_sr_hybrid": " पुणे इन्फोटेकपार्क (हिंजवडी)",
+            "text_without_pp": " Gr Up)",
+            "time_with_pp": 0.5669679641723633,
+            "time_with_pp_sr": 2.9549484252929688,
+            "time_with_pp_sr_hybrid": 3.521916389465332,
+            "time_without_pp": 0.564326286315918
+          },
+          {
+            "text_with_pp": " PUNE INFOTECH PARK (HINSIVADI)",
+            "text_with_pp_sr": " PUNE INFOTECH ar rey)",
+            "text_with_pp_sr_hybrid": " PUNE INFOTECH PARK (HINSIVADI)",
+            "text_without_pp": " PUNE INFOTECH PARK (HINSIVADI)",
+            "time_with_pp": 0.6015346050262451,
+            "time_with_pp_sr": 2.0069894790649414,
+            "time_with_pp_sr_hybrid": 2.6085240840911865,
+            "time_without_pp": 0.5987555980682373
+          },
+          {
+            "text_with_pp": " CCM EN",
+            "text_with_pp_sr": " CCE TEU",
+            "text_with_pp_sr_hybrid": " CCM EN",
+            "text_without_pp": " CCM EN",
+            "time_with_pp": 0.556567907333374,
+            "time_with_pp_sr": 1.3612098693847656,
+            "time_with_pp_sr_hybrid": 1.9177777767181396,
+            "time_without_pp": 0.5539195537567139
+          }
+        ]
+      },
+      {
+        "image_name": "/home/ubuntu/tesseract_ulca_v2/doc/data/hindi/45",
+        "source": [
+          {
+            "text_with_pp": " महिलाओं के लिए",
+            "text_with_pp_sr": " महिलाओं के लिए",
+            "text_with_pp_sr_hybrid": " महिलाओं के लिए",
+            "text_without_pp": " महिलाओं के लिए",
+            "time_with_pp": 0.5551269054412842,
+            "time_with_pp_sr": 3.437161922454834,
+            "time_with_pp_sr_hybrid": 3.992288827896118,
+            "time_without_pp": 0.552410364151001
+          }
+        ]
+      },
+      {
+        "image_name": "/home/ubuntu/tesseract_ulca_v2/doc/data/hindi/74",
+        "source": [
+          {
+            "text_with_pp": " सक्छ रखे RAC",
+            "text_with_pp_sr": " मारक को स्वच्छ रखने",
+            "text_with_pp_sr_hybrid": " मारक को स्वच्छ रखने",
+            "text_without_pp": " १",
+            "time_with_pp": 3.420207977294922,
+            "time_with_pp_sr": 10.93819284439087,
+            "time_with_pp_sr_hybrid": 14.358400821685791,
+            "time_without_pp": 0.5379552841186523
+          },
+          {
+            "text_with_pp": " THANEY0UPORKEEPINGTHB",
+            "text_with_pp_sr": " THANK YOU FOR KEEPING THE",
+            "text_with_pp_sr_hybrid": " THANK YOU FOR KEEPING THE",
+            "text_without_pp": " THANEY0UPORKEEPINGTHB",
+            "time_with_pp": 0.6004855632781982,
+            "time_with_pp_sr": 2.476353645324707,
+            "time_with_pp_sr_hybrid": 3.0768392086029053,
+            "time_without_pp": 0.5978231430053711
+          },
+          {
+            "text_with_pp": " DYNO RS ND",
+            "text_with_pp_sr": " MONUMENT CLEAN:",
+            "text_with_pp_sr_hybrid": " MONUMENT CLEAN:",
+            "text_without_pp": " DYNO RS ND",
+            "time_with_pp": 0.5716536045074463,
+            "time_with_pp_sr": 1.7478306293487549,
+            "time_with_pp_sr_hybrid": 2.319484233856201,
+            "time_without_pp": 0.5689160823822021
+          },
+          {
+            "text_with_pp": " (ARCHAEOLOGICAL SURVEY OF INDIA)",
+            "text_with_pp_sr": " PMS ND Op",
+            "text_with_pp_sr_hybrid": " (ARCHAEOLOGICAL SURVEY OF INDIA)",
+            "text_without_pp": " (ARCHAEOLOGICAL SURVEY OF INDIA)",
+            "time_with_pp": 0.653315544128418,
+            "time_with_pp_sr": 3.1403355598449707,
+            "time_with_pp_sr_hybrid": 3.7936511039733887,
+            "time_without_pp": 0.6505293846130371
+          }
+        ]
+      },
+      {
+        "image_name": "/home/ubuntu/tesseract_ulca_v2/doc/data/hindi/26",
+        "source": [
+          {
+            "text_with_pp": " fu LOLA as",
+            "text_with_pp_sr": " i ul HDFC BAN K",
+            "text_with_pp_sr_hybrid": " i ul HDFC BAN K",
+            "text_without_pp": " fu LOLA as",
+            "time_with_pp": 0.5486197471618652,
+            "time_with_pp_sr": 1.53977632522583,
+            "time_with_pp_sr_hybrid": 2.0883960723876953,
+            "time_without_pp": 0.545966386795044
+          },
+          {
+            "text_with_pp": " एचडीएफसी बैंक",
+            "text_with_pp_sr": "",
+            "text_with_pp_sr_hybrid": " एचडीएफसी बैंक",
+            "text_without_pp": " एचडीएफसी बैंक",
+            "time_with_pp": 0.4896063804626465,
+            "time_with_pp_sr": 3.803509473800659,
+            "time_with_pp_sr_hybrid": 4.293115854263306,
+            "time_without_pp": 0.4868779182434082
+          },
+          {
+            "text_with_pp": " I NE",
+            "text_with_pp_sr": "",
+            "text_with_pp_sr_hybrid": " I NE",
+            "text_without_pp": " I NE",
+            "time_with_pp": 0.5189023017883301,
+            "time_with_pp_sr": 4.704035758972168,
+            "time_with_pp_sr_hybrid": 5.222938060760498,
+            "time_without_pp": 0.5163283348083496
+          },
+          {
+            "text_with_pp": " mn",
+            "text_with_pp_sr": " mn",
+            "text_with_pp_sr_hybrid": " mn",
+            "text_without_pp": " mn",
+            "time_with_pp": 3.150442361831665,
+            "time_with_pp_sr": 3.8928334712982178,
+            "time_with_pp_sr_hybrid": 7.043275833129883,
+            "time_without_pp": 0.5070462226867676
+          }
+        ]
+      },
+      {
+        "image_name": "/home/ubuntu/tesseract_ulca_v2/doc/data/hindi/76",
+        "source": [
+          {
+            "text_with_pp": " J : )",
+            "text_with_pp_sr": " । दिल्ली",
+            "text_with_pp_sr_hybrid": " । दिल्ली",
+            "text_without_pp": " J : )",
+            "time_with_pp": 0.5598134994506836,
+            "time_with_pp_sr": 26.222033500671387,
+            "time_with_pp_sr_hybrid": 26.78184700012207,
+            "time_without_pp": 0.5571317672729492
+          }
+        ]
+      },
+      {
+        "image_name": "/home/ubuntu/tesseract_ulca_v2/doc/data/hindi/42",
+        "source": [
+          {
+            "text_with_pp": " 12.0",
+            "text_with_pp_sr": " 12.0",
+            "text_with_pp_sr_hybrid": " 12.0",
+            "text_without_pp": " 12.0",
+            "time_with_pp": 0.503014326095581,
+            "time_with_pp_sr": 5.4017534255981445,
+            "time_with_pp_sr_hybrid": 5.904767751693726,
+            "time_without_pp": 0.5003218650817871
+          },
+          {
+            "text_with_pp": " लपालगज",
+            "text_with_pp_sr": " लपालगज",
+            "text_with_pp_sr_hybrid": " लपालगज",
+            "text_without_pp": " लपालगज",
+            "time_with_pp": 0.5507512092590332,
+            "time_with_pp_sr": 6.301056861877441,
+            "time_with_pp_sr_hybrid": 6.851808071136475,
+            "time_without_pp": 0.5480990409851074
+          },
+          {
+            "text_with_pp": " १K..",
+            "text_with_pp_sr": " 2K.M",
+            "text_with_pp_sr_hybrid": " 2K.M",
+            "text_without_pp": " १K..",
+            "time_with_pp": 0.5270943641662598,
+            "time_with_pp_sr": 6.274326324462891,
+            "time_with_pp_sr_hybrid": 6.80142068862915,
+            "time_without_pp": 0.5244309902191162
+          },
+          {
+            "text_with_pp": " काहलपुर",
+            "text_with_pp_sr": " काहलपुर",
+            "text_with_pp_sr_hybrid": " काहलपुर",
+            "text_without_pp": " काहलपुर",
+            "time_with_pp": 0.5365326404571533,
+            "time_with_pp_sr": 5.48192024230957,
+            "time_with_pp_sr_hybrid": 6.018452882766724,
+            "time_without_pp": 0.5338037014007568
+          },
+          {
+            "text_with_pp": " 2VKM.",
+            "text_with_pp_sr": " 2१9KM.",
+            "text_with_pp_sr_hybrid": " 2१9KM.",
+            "text_without_pp": " 2VKM.",
+            "time_with_pp": 3.3441760540008545,
+            "time_with_pp_sr": 9.741607666015625,
+            "time_with_pp_sr_hybrid": 13.08578372001648,
+            "time_without_pp": 0.574749231338501
+          }
+        ]
+      }
+    ]
+  }
