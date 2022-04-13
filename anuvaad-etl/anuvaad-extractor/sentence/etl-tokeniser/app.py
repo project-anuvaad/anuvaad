@@ -19,8 +19,10 @@ def start_kafka():
     except Exception as e:
         log_error("multithread : Error while running custom threads" + str(e), None, e)
 
+
 if config.ENABLE_CORS:
     cors    = CORS(tok_app, resources={r"/api/*": {"origins": "*"}})
+
 
 for blueprint in vars(routes).values():
     if isinstance(blueprint, Blueprint):

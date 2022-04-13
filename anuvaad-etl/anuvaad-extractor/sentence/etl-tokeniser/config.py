@@ -14,7 +14,6 @@ redis_server_port = os.environ.get('REDIS_PORT', 6379)
 redis_key_prefix = 'TK-'
 redis_db = os.environ.get('ANUVAAD_TK_REDIS_DB', 5)
 
-
 # kafka
 consumer_grp_default = 'anuvaad-etl-tokeniser-consumer-group'
 consumer_grp_identifier = 'KAFKA_ANUVAAD_ETL_TOKENISER_CONSUMER_GRP'
