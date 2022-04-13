@@ -1,10 +1,9 @@
 const refactorSourceJSONnew = (sourceJson) => {
     // console.log('sourceJson', sourceJson)
-    let index = -1
+    // let index = -1
     let refactoredOutput = []
     // sourceJson.pages.forEach((src, i) => {
         // console.log('src ============>', src)
-        // console.log('i =================>', i)
         // src.text_blocks && src.text_blocks.forEach(val => {
         //     if ((val.attrib !== null && val.attrib.indexOf('TABLE') === -1) || val.attrib === null) {
         //         index = -1
@@ -49,10 +48,10 @@ const generateTableArray = (data) => {
             cell.regions.forEach( txt => {
                 celltext.push(txt.text)
             })
-            tgt = celltext.join('')
+            tgt = celltext.join(' ')
         } else if(cell.regions.length === 1 ) {
-            tgt = cell.regions[0].txt
-        } else  {
+            tgt = cell.regions[0].text
+        } else {
             tgt = ''
         }
 

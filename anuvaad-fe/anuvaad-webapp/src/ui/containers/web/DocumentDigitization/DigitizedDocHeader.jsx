@@ -144,27 +144,28 @@ class DigitizedDocHeader extends React.Component {
           headers: apiObj.getHeaders().headers,
           body: JSON.stringify(apiObj.getBody()),
         }).then((res) => {
-          if (res.ok) {
-            res.blob().then((data) => {
-              let url = URL.createObjectURL(data);
-              const link = document.createElement("a");
-              link.href = url;
-              jobName = jobName.substr(0, jobName.lastIndexOf("."));
-              link.setAttribute(
-                "download",
-                `${jobName}_${fname.substr(0, fname.lastIndexOf("|"))}.docx`
-              );
-              document.body.appendChild(link);
-              link.click();
-              link.parentNode.removeChild(link);
-            });
-          } else {
-            this.setState({
-              anchorEl: null,
-              showStatus: true,
-              message: "Downloading failed...",
-            });
-          }
+            if (res.ok) {
+                res.blob().then((data) => {
+                //   const url = window.URL.createObjectURL(new Blob([res.data]));
+                  let url = URL.createObjectURL(data);
+                  const link = document.createElement("a");
+                  link.href = url;
+                  jobName = jobName.substr(0, jobName.lastIndexOf("."));
+                  link.setAttribute(
+                    "download",
+                    `${fname}`
+                  );
+                  document.body.appendChild(link);
+                  link.click();
+                  link.parentNode.removeChild(link);
+                });
+              } else {
+                this.setState({
+                  anchorEl: null,
+                  showStatus: true,
+                  message: "Downloading failed...",
+                });
+              }
         });
         setTimeout(() => {
           this.setState({ showStatus: false });
@@ -226,12 +227,12 @@ class DigitizedDocHeader extends React.Component {
                     >
                         As PDF
                     </MenuItem>
-                    {/* <MenuItem
+                    <MenuItem
                         style={{ borderTop: "1px solid #D6D6D6" }}
                         onClick={this.fetchDocxFile}
                     >
                         As DOCX
-                    </MenuItem> */}
+                    </MenuItem>
                 </StyledMenu>
                 <Button variant="outlined" color="primary" style={{ marginLeft: "10px" }} onClick={this.props.togglebtnstatus}>
                     {this.props.status ? "Hide Image" : "Show Image"}

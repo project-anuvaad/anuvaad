@@ -29,32 +29,17 @@ const generateDocxNew = (jobName,fname, height, width) => {
     let parsedSource = JSON.parse(sourceJson)
 
     parsedSource.forEach((pages, p) => {
-        // pages.regions.forEach((tokens, i) => {
-        //     tokens.top = tokens.boundingBox.vertices[0].y - tokens.boundingBox.vertices[0].x
-        // })
-        // pages.regions = sortData(pages.regions)
-
         pages.regions.forEach((tokens, i) => {
-
-            const is_bold = (tokens.class !== null && tokens.class.indexOf('BOLD') !== -1) ? true : false;
-            // const is_para = tokens.class === 'PARA' ? true : false
-            // const is_line = tokens.class === 'LINE' ? true : false
-            // const is_table = tokens.class === 'TABLE' ? true : false
-            // const is_image = tokens.class === 'BGIMAGE' ? true : false
-            const { font_color, text_left, font_family } = tokens
+            // const is_bold = (tokens.class !== null && tokens.class.indexOf('BOLD') !== -1) ? true : false;
+            // const { font_color, text_left, font_family } = tokens
             let pObj = docx.createP();
             if (tokens.class === 'PARA') {
-                const fs = tokens.avg_size * 0.20
+                // const fs = tokens.avg_size * 0.20
                 tokens.tokenized_sentences && tokens.tokenized_sentences.forEach(token => {
-                    pObj.addText(token.src, {
-                        font_size: fs + 'px',
-                        color: font_color,
-                        font_face: font_family,
-                        bold: is_bold,
-                    })
-                    pObj.options.indentLeft = `${text_left}`;
+                    pObj.addText(token.src)
+                    // pObj.options.indentLeft = `${text_left}`;
                 })
-            }  else if (tokens.class === 'TABLE') {
+            } else if (tokens.class === 'TABLE') {
                 let tableArray = generateTableArray(tokens);
 
                 const tableStyle = {
@@ -64,12 +49,6 @@ const generateDocxNew = (jobName,fname, height, width) => {
                     tableFontFamily: 'Arial Unicode MS',
                 }
                 docx.createTable(tableArray, tableStyle);
-            } else if (tokens.class === 'BGIMAGE') {
-                // console.log('is image', tokens)
-                // fs.writeFileSync(tokens.data, '', 'base64')
-                // pObj.addImage(tokens.data)
-                // fs.writeFileSync(`./upload/${tokens.block_identifier}.png`, tokens.base64, 'base64')
-                // pObj.addImage(`./upload/${tokens.block_identifier}.png`, { cx: tokens.text_width, cy: tokens.text_height })
             }
         })
     })
