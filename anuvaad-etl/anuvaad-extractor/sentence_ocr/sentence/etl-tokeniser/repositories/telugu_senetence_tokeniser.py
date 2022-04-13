@@ -2,18 +2,17 @@ import re
 from nltk.tokenize.punkt import PunktSentenceTokenizer, PunktParameters, PunktTrainer, PunktLanguageVars
 from nltk.tokenize import sent_tokenize
 
-
-class AnuvaadMalayalamTokenizer(object):
+class AnuvaadTeluguTokenizer(object):
 
     """
     abbrevations
     """
-    _abbrevations_with_space_pattern = r'((\s)(([\u0D05-\u0D3A,\u0D60-\u0D61])([\u0D00-\u0D04,\u0D3B-\u0D4D,\u0D62-\u0D63])?([\u0D05-\u0D3A,\u0D60-\u0D61])?([\u0D00-\u0D04,\u0D3B-\u0D4D,\u0D62-\u0D63])?(\u002e)(\s)?){1,})'
-    _abbrevations_without_space_pattern = r'(^(([\u0D05-\u0D3A,\u0D60-\u0D61])([\u0D00-\u0D04,\u0D3B-\u0D4D,\u0D62-\u0D63])?([\u0D05-\u0D3A,\u0D60-\u0D61])?([\u0D00-\u0D04,\u0D3B-\u0D4D,\u0D62-\u0D63])?(\u002e)(\s)?){1,})'
-    #_text_colon_abbreviations_pattern = 
+    _abbrevations_with_non_generalize_pattern = [r'రూ[ ][.]',r'నెం[ ][.]',r'శ్రీమతి[.]',r'రూ[.]',r'నెం[.]',r'ఎక్స్[.]',r'EX[.]',r'Ex[.]',r'డబ్ల్యూ[.]',r'No[.]',r'[ ]ది[.]',r'క్రైమ్[.]',r'బి[ ][.]',r'[ ]ది[.]']
+    _abbrevations_with_non_generalize = ['రూ .','నెం .','శ్రీమతి.','రూ.','నెం.','ఎక్స్.','EX.','Ex.','డబ్ల్యూ.','No.',' ది .','క్రైమ్.','బి .',' ది.']
+    _abbrevations_with_space_pattern = r'((\s)(([\u0C05-\u0C39,\u0C58-\u0C61])([\u0C00-\u0C04,\u0C3E-\u0C56,\u0C62-\u0C63,\u0C77])?([\u0C05-\u0C39,\u0C58-\u0C61])?([\u0C00-\u0C04,\u0C3E-\u0C56,\u0C62-\u0C63,\u0C77])?(\u002e)(\s)?){1,})'
+    _abbrevations_without_space_pattern = r'(^(([\u0C05-\u0C39,\u0C58-\u0C61])([\u0C00-\u0C04,\u0C3E-\u0C56,\u0C62-\u0C63,\u0C77])?([\u0C05-\u0C39,\u0C58-\u0C61])?([\u0C00-\u0C04,\u0C3E-\u0C56,\u0C62-\u0C63,\u0C77])?(\u002e)(\s)?){1,})'
     _abbrevations_with_space = []
     _abbrevations_without_space = []
-    _text_colon_abbreviations = []
     _tokenizer = None
     _regex_search_texts = []
     _date_abbrevations  = []
@@ -47,7 +46,7 @@ class AnuvaadMalayalamTokenizer(object):
         self._tokenizer = PunktSentenceTokenizer(lang_vars=SentenceEndLangVars())
 
     def tokenize(self, text):
-        print('--------------Process ml started-------------')
+        print('--------------Process te started-------------')
         text = self.serialize_with_abbrevations(text)
         # text = self.serialize_colon_abbreviations(text)
         text = self.serialize_dates(text)
@@ -56,7 +55,6 @@ class AnuvaadMalayalamTokenizer(object):
         text = self.serialize_url(text)
         text = self.serialize_pattern(text)
         text = self.serialize_dots(text)
-        test = self.serialize_end(text)
         text = self.serialize_brackets(text)
         text = self.serialize_dot_with_number(text)
         text = self.serialize_dot_with_number_beginning(text)
@@ -64,6 +62,7 @@ class AnuvaadMalayalamTokenizer(object):
         text = self.serialize_bullet_points(text)
         text = self.serialize_decimal(text)
         text = self.add_space_after_sentence_end(text)
+        text = self.serialize_end(text)
         sentences = self._tokenizer.tokenize(text)
         output = []
         for se in sentences:
@@ -72,16 +71,16 @@ class AnuvaadMalayalamTokenizer(object):
             se = self.deserialize_pattern(se)
             se = self.deserialize_url(se)
             se = self.deserialize_dots(se)
-            se = self.deserialize_end(se)
             se = self.deserialize_decimal(se)
             se = self.deserialize_brackets(se)
             se = self.deserialize_dot_with_number(se)
             se = self.deserialize_dot_with_number_beginning(se)
             se = self.deserialize_quotes_with_number(se)
             se = self.deserialize_with_abbrevations(se)
-            # se = self.deserialize_colon_abbreviations(se)
+            #se = self.deserialize_colon_abbreviations(se)
             se = self.deserialize_bullet_points(se)
             se = self.deserialize_table_points(se)
+            se = self.deserialize_end(se)
             if se != '':
                 output.append(se.strip())
         print('--------------Process finished-------------')
@@ -151,27 +150,19 @@ class AnuvaadMalayalamTokenizer(object):
         return text
 
     def serialize_bullet_points(self, text):
-        pattern1 = re.compile(r'(?!^)[•]')
-        text = pattern1.sub('TT__TT UU_0_UU', text)
-        pattern2 = re.compile(r'(?!^)[▪]')
-        text = pattern2.sub('TT__TT UU_1_UU', text)
-        pattern3 = re.compile(r'(?!^)[●]')
-        text = pattern3.sub('TT__TT UU_2_UU', text)
+        pattern = re.compile(r'(?!^)[•]')
+        text = pattern.sub('TT__TT UU__UU', text)
         return text
 
     def deserialize_bullet_points(self, text):
         pattern = re.compile(re.escape('TT__TT'), re.IGNORECASE)
         text = pattern.sub('', text)
-        pattern = re.compile(re.escape('UU_0_UU'), re.IGNORECASE)
+        pattern = re.compile(re.escape('UU__UU'), re.IGNORECASE)
         text = pattern.sub('•', text)
-        pattern = re.compile(re.escape('UU_1_UU'), re.IGNORECASE)
-        text = pattern.sub('▪', text)
-        pattern = re.compile(re.escape('UU_2_UU'), re.IGNORECASE)
-        text = pattern.sub('●', text)
         return text
 
     def serialize_table_points(self, text):
-        patterns = re.findall(r'(?:(?:(?:[ ][(]?(?:(?:[0,9]|[i]|[x]|[v]){1,3}|[a-zA-Z\u0D00-\u0D7F]{1,1})[)])|(?:[ ](?:(?:[0-9]|[i]|[x]|[v]){1,3}|[a-zA-Z\u0D00-\u0D7F]{1,1})[.][ ])))',text)
+        patterns = re.findall(r'(?:(?:(?:[ ][(]?(?:(?:[0,9]|[i]|[x]|[v]){1,3}|[a-zA-Z\u0C00-\u0C7F]{1,1})[)])|(?:[ ](?:(?:[0-9]|[i]|[x]|[v]){1,3}|[a-zA-Z\u0C00-\u0C7F]{1,1})[.][ ])))',text)
         index = 0
         if patterns is not None and isinstance(patterns, list):
             for pattern in patterns:
@@ -191,7 +182,7 @@ class AnuvaadMalayalamTokenizer(object):
         return text
 
     def serialize_brackets(self, text):
-        patterns = re.findall(r'(?:[(](?:[0-9\u0C80-\u0CF2a-zA-Z][.]?|[ ]){1,}[)]?).',text)
+        patterns = re.findall(r'(?:[(](?:[0-9\u0C00-\u0C7Fa-zA-Z][.]?|[ ]){1,}[)]?).',text)
         index = 0
         if patterns is not None and isinstance(patterns, list):
             for pattern in patterns:
@@ -252,7 +243,7 @@ class AnuvaadMalayalamTokenizer(object):
     
 
     def serialize_quotes_with_number(self, text):
-        patterns = re.findall(r'([ ][“][0-9a-zA-Z\u0D00-\u0D7F]{1,}[.])',text)
+        patterns = re.findall(r'([ ][“][0-9a-zA-Z\u0C00-\u0C7F]{1,}[.])',text)
         index = 0
         if patterns is not None and isinstance(patterns, list):
             for pattern in patterns:
@@ -322,7 +313,7 @@ class AnuvaadMalayalamTokenizer(object):
         return text
 
     def serialize_pattern(self, text):
-        patterns = re.findall(r'([\u0D00-\u0D7F][.]){2,}',text)
+        patterns = re.findall(r'([\u0C00-\u0C7F][.]){2,}',text)
         index = 0
         if patterns is not None and isinstance(patterns, list):
             for pattern in patterns:
@@ -342,8 +333,13 @@ class AnuvaadMalayalamTokenizer(object):
         return text
            
     def serialize_with_abbrevations(self, text):
-        index = 0
+        index_for_with_space = 0
         index_for_without_space = 0
+        index_no_gen = 0
+        for abbrev in self._abbrevations_with_non_generalize_pattern:
+            pattern_non_gen = re.compile(abbrev, re.IGNORECASE)
+            text = pattern_non_gen.sub('#N' + str(index_no_gen) + 'G##', text)
+            index_no_gen += 1
         patterns_wos = re.findall(self._abbrevations_without_space_pattern, text)
         patterns_wos = [tuple(j for j in pattern if j)[0] for pattern in patterns_wos]
         patterns_wos = list(sorted(patterns_wos, key = len))
@@ -352,7 +348,7 @@ class AnuvaadMalayalamTokenizer(object):
             for pattern in patterns_wos:
                 pattern_obj = re.compile(re.escape(pattern))
                 self._abbrevations_without_space.append(pattern)
-                text = pattern_obj.sub('#WO'+str(index)+'S##', text)
+                text = pattern_obj.sub('#WO'+str(index_for_without_space)+'S##', text)
                 index_for_without_space+=1
 
         patterns = re.findall(self._abbrevations_with_space_pattern, text)
@@ -363,47 +359,51 @@ class AnuvaadMalayalamTokenizer(object):
             for pattern in patterns:
                 pattern_obj = re.compile(re.escape(pattern))
                 self._abbrevations_with_space.append(pattern)
-                text = pattern_obj.sub('##'+str(index)+'##', text)
-                index+=1
+                text = pattern_obj.sub('##'+str(index_for_with_space)+'##', text)
+                index_for_with_space+=1
         return text
 
     def deserialize_with_abbrevations(self, text):
-        index = 0
+        index_for_with_space= 0
         index_for_without_space = 0
+        index_no_gen = 0
+        for abbrev in self._abbrevations_with_non_generalize:
+            pattern = re.compile(re.escape('#N'+str(index_no_gen)+'G##'), re.IGNORECASE)
+            text = pattern.sub(abbrev, text)
+            index_no_gen += 1
         if self._abbrevations_without_space is not None and isinstance(self._abbrevations_without_space, list):
             for pattern in self._abbrevations_without_space:
-                pattern_obj = re.compile(re.escape('#WO'+str(index)+'S##'), re.IGNORECASE)
+                pattern_obj = re.compile(re.escape('#WO'+str(index_for_without_space)+'S##'), re.IGNORECASE)
                 text = pattern_obj.sub(pattern, text)
                 index_for_without_space+=1
         if self._abbrevations_with_space is not None and isinstance(self._abbrevations_with_space, list):
             for pattern in self._abbrevations_with_space:
-                pattern_obj = re.compile(re.escape('##'+str(index)+'##'), re.IGNORECASE)
+                pattern_obj = re.compile(re.escape('##'+str(index_for_with_space)+'##'), re.IGNORECASE)
                 text = pattern_obj.sub(pattern, text)
-                index+=1
+                index_for_with_space+=1
         return text
+    # def serialize_colon_abbreviations(self, text):
+    #     index = 0
+    #     patterns = re.findall(self._text_colon_abbreviations_pattern, text)
+    #     patterns = [tuple(j for j in pattern if j)[0] for pattern in patterns]
+    #     patterns = list(sorted(patterns, key = len))
+    #     patterns = patterns[::-1]
+    #     if patterns is not None and isinstance(patterns, list):
+    #         for pattern in patterns:
+    #             pattern_obj = re.compile(re.escape(pattern))
+    #             self._text_colon_abbreviations.append(pattern)
+    #             text = pattern_obj.sub('#C'+str(index)+'C#', text)
+    #             index+=1
+    #     return text
 
-    def serialize_colon_abbreviations(self, text):
-        index = 0
-        patterns = re.findall(self._text_colon_abbreviations_pattern, text)
-        patterns = [tuple(j for j in pattern if j)[0] for pattern in patterns]
-        patterns = list(sorted(patterns, key = len))
-        patterns = patterns[::-1]
-        if patterns is not None and isinstance(patterns, list):
-            for pattern in patterns:
-                pattern_obj = re.compile(re.escape(pattern))
-                self._text_colon_abbreviations.append(pattern)
-                text = pattern_obj.sub('#C'+str(index)+'C#', text)
-                index+=1
-        return text
-
-    def deserialize_colon_abbreviations(self, text):
-        index = 0
-        if self._text_colon_abbreviations is not None and isinstance(self._text_colon_abbreviations, list):
-            for pattern in self._text_colon_abbreviations:
-                pattern_obj = re.compile(re.escape('#C'+str(index)+'C#'), re.IGNORECASE)
-                text = pattern_obj.sub(pattern, text)
-                index+=1
-        return text
+    # def deserialize_colon_abbreviations(self, text):
+    #     index = 0
+    #     if self._text_colon_abbreviations is not None and isinstance(self._text_colon_abbreviations, list):
+    #         for pattern in self._text_colon_abbreviations:
+    #             pattern_obj = re.compile(re.escape('#C'+str(index)+'C#'), re.IGNORECASE)
+    #             text = pattern_obj.sub(pattern, text)
+    #             index+=1
+    #     return text
 
 class SentenceEndLangVars(PunktLanguageVars):
     text = []

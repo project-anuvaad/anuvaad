@@ -2,7 +2,6 @@ import re
 from nltk.tokenize.punkt import PunktSentenceTokenizer, PunktParameters, PunktTrainer, PunktLanguageVars
 from nltk.tokenize import sent_tokenize
 
-
 class AnuvaadMalayalamTokenizer(object):
 
     """
@@ -151,23 +150,15 @@ class AnuvaadMalayalamTokenizer(object):
         return text
 
     def serialize_bullet_points(self, text):
-        pattern1 = re.compile(r'(?!^)[•]')
-        text = pattern1.sub('TT__TT UU_0_UU', text)
-        pattern2 = re.compile(r'(?!^)[▪]')
-        text = pattern2.sub('TT__TT UU_1_UU', text)
-        pattern3 = re.compile(r'(?!^)[●]')
-        text = pattern3.sub('TT__TT UU_2_UU', text)
+        pattern = re.compile(r'(?!^)[•]')
+        text = pattern.sub('TT__TT UU__UU', text)
         return text
 
     def deserialize_bullet_points(self, text):
         pattern = re.compile(re.escape('TT__TT'), re.IGNORECASE)
         text = pattern.sub('', text)
-        pattern = re.compile(re.escape('UU_0_UU'), re.IGNORECASE)
+        pattern = re.compile(re.escape('UU__UU'), re.IGNORECASE)
         text = pattern.sub('•', text)
-        pattern = re.compile(re.escape('UU_1_UU'), re.IGNORECASE)
-        text = pattern.sub('▪', text)
-        pattern = re.compile(re.escape('UU_2_UU'), re.IGNORECASE)
-        text = pattern.sub('●', text)
         return text
 
     def serialize_table_points(self, text):

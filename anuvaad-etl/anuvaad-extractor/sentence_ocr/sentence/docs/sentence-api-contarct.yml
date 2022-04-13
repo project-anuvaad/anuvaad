@@ -1,0 +1,572 @@
+swagger: "2.0"
+info:
+  version: 1.0.0
+  title: Anuvaad Sentence Tokeniser - API Contract
+  description: A python based microservice to trigger and orchestrate the sentence tokenisation part of anuvaad-extractor. This service will expose REST APIs for tokenisation activity on the other hand will also be plugged into the system as a consumer that picks records posted onto the Kafka Queue in order to perform tokenisation activity.
+  contact:
+    name: Kumar Deepak
+    email: kumar.deepak@tarento.com
+
+schemes:
+  - https
+basePath: '/anuvaad-etl/anuvaad-extractor/sentence/etl-tokeniser'
+
+
+
+
+paths: 
+  /v0/tokenisation-wf:
+    post:
+      summary: REST API to extract sentences from paragraphs of txt or json file (sentence-tokenisation).
+      description: This API accepts list of text files of paragraphs or json files of pdf documents, containg text of that pdf, and tokenise sentences from paragraphs. This is an async process.
+      parameters:
+        - name: request
+          in: body
+          required: true
+          description: Request format accepted by this API.
+          schema:
+            $ref: '#/definitions/TokenisationFileRequest'
+            
+      tags:
+      - tokenisation
+
+      responses:
+        202:
+          description: On successful completion of the job.
+          schema:
+            $ref: '#/definitions/TokenisationFileResponse'
+        400:
+          description: On input errors causing a failure in the job.
+          schema:
+            $ref: '#/definitions/Error_wf'
+    
+  /v0/tokenisation-wf/:
+    post:
+      summary: REST API to extract sentences from paragraph (sentence-tokenisation).
+      description: This API accepts list of paragraphs and tokenise sentences from paragraphs. This is an async process.
+      parameters:
+        - name: request
+          in: body
+          required: true
+          description: Request format accepted by this API.
+          schema:
+            $ref: '#/definitions/TokenisationParagraphRequest'
+            
+      tags:
+      - tokenisation
+
+      responses:
+        202:
+          description: On successful completion of the job.
+          schema:
+            $ref: '#/definitions/TokenisationParagraphResponse'
+        400:
+          description: On input errors causing a failure in the job.
+          schema:
+            $ref: '#/definitions/Error_wf'
+      
+  /v0/blocks-tokenisation-wf:
+    post:
+      summary: REST API to extract sentences from given text (sentence-tokenisation).
+      description: This API accepts list of text blocks and tokenise text feild of blocks. This is an async process.
+      parameters:
+        - name: request
+          in: body
+          required: true
+          description: Request format accepted by this API.
+          schema:
+            $ref: '#/definitions/TokenisationBlockRequest'
+            
+      tags:
+      - tokenisation
+
+      responses:
+        202:
+          description: On successful completion of the job.
+          schema:
+            $ref: '#/definitions/TokenisationBlockResponse'
+        400:
+          description: On input errors causing a failure in the job.
+          schema:
+            $ref: '#/definitions/Error_wf'
+
+  
+  /v0/tokenisation:
+    post:
+      summary: REST API to trigger a tokenisation job.
+      description: This API accepts txt file of paragraphs and tokenise sentences from paragraphs.
+      parameters:
+        - name: request
+          in: body
+          required: true
+          description: Request format accepted by this API.
+          schema:
+            $ref: '#/definitions/TokenisationFileRequest/properties/input'
+            
+      tags:
+      - tokenisation
+
+      responses:
+        202:
+          description: On successful completion of the job.
+          schema:
+            $ref: '#/definitions/TokenisationFileResponse/properties/output'
+        400:
+          description: On input errors causing a failure in the job.
+          schema:
+            $ref: '#/definitions/Error'
+  
+  
+  /v0/tokenisation/:
+    post:
+      summary: REST API to trigger a tokenisation job.
+      description: This API accepts list of paragraphs and tokenise sentences from paragraphs.
+      parameters:
+        - name: request
+          in: body
+          required: true
+          description: Request format accepted by this API.
+          schema:
+            $ref: '#/definitions/TokenisationParagraphRequest/properties/input'
+            
+      tags:
+      - tokenisation
+
+      responses:
+        202:
+          description: On successful completion of the job.
+          schema:
+            $ref: '#/definitions/TokenisationParagraphResponse/properties/output'
+        400:
+          description: On input errors causing a failure in the job.
+          schema:
+            $ref: '#/definitions/Error'
+
+
+definitions:
+
+        
+  TokenisationFileRequest:
+    type: object
+    properties:
+      input:
+        description: Details of the input files of which tokenised sentences has to be generated
+        type: object
+        properties:
+          files:
+            type: array
+            items:
+              type: object
+              properties:
+                locale:
+                  type: string
+                  description: Language of the uploaded file. For instance, 'en' for English, 'hi' for Hindi etc. Currently, we are following "ISO 639-1 codes".
+                path:
+                  type: string
+                  description: This will be obtained in the output of the file upload API exposed by the anuvaad system.
+                type:
+                  type: string
+                  description: type of the file. "txt file" contain only paragraph text. "json file" contains all the information of pdf document like text positioning and text etc.
+                  enum:
+                    - json
+                    - txt
+      jobID:   
+        type: string
+        description: A unique job ID generated for complete workflow. i.e.received from previous operation.  
+      state:
+        type: string
+        description: current state of workflow received from previous operation.
+        enum:
+          - INITIATED
+      status:
+        type: string
+        description: current status of workflow received from previous operation.
+        enum:
+          - STARTED
+      workflowCode:
+        type: string
+        description: Received from previous operation. Code of the workflow that has to be picked to process this input. 
+                      These workflows are configured at the application level.
+      tool:
+        type: string
+        description: Current tool name.
+        enum:
+          - TOKENISER
+      stepOrder:
+        type: integer
+        description: Current steporder of workflow received from previous operation.
+      metadata:
+        type: object
+        properties:
+          module:
+            type: string
+            description: Module name
+          receivedAt:
+            type: integer
+            description: epoch time, when request received by this module
+          sessionID:
+            type: string
+            description: unique session id for unique user.
+          userID:
+            type: string
+            description: unique user id for each user.
+            
+
+        
+  TokenisationFileResponse:
+    type: object
+    properties:        
+      jobID:
+        type: string
+        description: A unique job ID generated for the complete workflow.
+      taskID:
+        type: string
+        description: A unique task ID generated for the current on-going task of the tokeniser.
+      status:
+        type: string
+        description: Current status of the tokenisation part of workflow.
+        enum:
+          - SUCCESS
+          - FAILED
+      state:
+        type: string
+        description: Current state of the tokenisation part of workflow.
+        enum:
+          - SENTENCE-TOKENISED
+      output:
+        type: object
+        description: Final output of this process.
+        properties:
+          files:
+            type: array
+            items:
+              type: object
+              properties:
+                inputFile:
+                  type: string
+                  description: This will be obtained in the output of the file upload API exposed by the anuvaad system.
+                outputFile:
+                  type: string
+                  description: This will be generated by 13 digit epoch time. It wil be a txt file.
+                type:
+                  type: string
+                  description: type of the file.
+                  enum:
+                    - json
+                    - txt
+                locale:
+                  type: string
+                  description: The locale of the file. Meaning, in which language is the uploaded file. For instance, 'en' for English, 'hi' for Hindi etc. Currently, we are following "ISO 639-1 codes".
+                  format: varchar
+      workflowCode:
+        type: string
+        description: Received from previous operation. Code of the workflow that has to be picked to process this input. 
+                      These workflows are configured at the application level.
+      tool:
+        type: string
+        description: Current tool name.
+        enum:
+          - TOKENISER
+      stepOrder:
+        type: integer
+        description: Current steporder of workflow received from previous operation.
+      startTime:
+        type: number
+        description: 13 digit epoch of the start time.
+      endTime:
+        type: number
+        description: 13 digit epoch of the end time.
+
+  TokenisationParagraphRequest:
+    type: object
+    properties:
+      input:
+        description: List of text paragraphs with their language.
+        type: array
+        items:
+          type: object
+          properties:
+            text:
+              type: array
+              items:
+                type: string
+                description: text paragraphs that has to be tokenised.
+            locale:
+              type: string
+              description: The locale of the text. For instance, 'en' for English, 'hi' for Hindi etc. Currently, we are following "ISO 639-1 codes".
+      jobID:   
+        type: string
+        description: A unique job ID generated for complete workflow. i.e.received from previous operation.  
+      state:
+        type: string
+        description: current state of workflow received from previous operation.
+        enum:
+          - INITIATED
+      status:
+        type: string
+        description: current status of workflow received from previous operation.
+        enum:
+          - STARTED
+      workflowCode:
+        type: string
+        description: Received from previous operation. Code of the workflow that has to be picked to process this input. 
+                      These workflows are configured at the application level.
+      tool:
+        type: string
+        description: Current tool name.
+        enum:
+          - TOKENISER
+      stepOrder:
+        type: integer
+        description: Current steporder of workflow received from previous operation.
+      metadata:
+        type: object
+        properties:
+          module:
+            type: string
+            description: Module name
+          receivedAt:
+            type: integer
+            description: epoch time, when request received by this module
+          sessionID:
+            type: string
+            description: unique session id for unique user.
+          userID:
+            type: string
+            description: unique user id for each user.
+            
+  TokenisationParagraphResponse:
+    type: object
+    properties:        
+      jobID:
+        type: string
+        description: A unique job ID generated for the complete workflow.
+      taskID:
+        type: string
+        description: A unique task ID generated for the current on-going task of the tokeniser.
+      status:
+        type: string
+        description: Current status of the tokenisation part of workflow.
+        enum:
+          - SUCCESS
+          - FAILED
+      state:
+        type: string
+        description: Current state of the tokenisation part of workflow.
+        enum:
+          - SENTENCE-TOKENISED
+      output:
+        description: Final output of this process.
+        type: array
+        items:
+          type: object
+          properties:
+            locale:
+              type: string
+            tokenisedText:
+              type: array
+              items:
+                type: object
+                properties:
+                  inputText:
+                    type: string
+                    description: input text from the provided text list.
+                  tokenisedSentences:
+                    description: list of tokenised sentences for this paragraph.
+                    type: array
+                    items:
+                      type: string
+                      description: tokenised sentence
+      workflowCode:
+        type: string
+        description: Received from previous operation. Code of the workflow that has to be picked to process this input. 
+                      These workflows are configured at the application level.
+      tool:
+        type: string
+        description: Current tool name.
+        enum:
+          - TOKENISER
+      stepOrder:
+        type: integer
+        description: Current steporder of workflow received from previous operation.
+      startTime:
+        type: number
+        description: 13 digit epoch of the start time.
+      endTime:
+        type: number
+        description: 13 digit epoch of the end time.
+        
+  Error_wf:
+    type: object
+    properties:
+      jobID:
+        type: string
+        description: ID of the job within which the error occured.
+      errorID:
+        type: string
+        description: unique id for this error.
+      errorType: 
+        type: string
+        description: type of the error declared by workflow.
+      taskID:
+        type: string
+        description: ID of the task within which the error occured.
+      state:
+        type: string
+        description: Processing state of the job just before the error.
+      code:
+        type: string
+        description: This is the cause of the error.
+      message:
+        type: string
+        description: User understandable message.
+      '@timestamp':
+        type: string
+        description: 13 digit epoch converted into normal date time format.
+      timeStamp:
+        type: number
+        description: 13 digit epoch of the error time.
+        
+  TokenisationBlockRequest:
+    type: object
+    properties:
+      input:
+        description: Details of the input files of which tokenised sentences has to be generated
+        type: object
+        properties:
+          record_id:
+            type: string
+            description: record id of this request generated by workflow.
+          model_id:
+            type: integer
+            description: id of tranlation models for respective language pair.
+          locale:
+            type: string
+            description: The locale of the text block. Meaning, in which language is the uploaded file. For instance, 'en' for English, 'hi' for Hindi etc. Currently, we are following "ISO 639-1 codes".
+          text_blocks:
+            description: list of text blocks.
+            type: array
+            items:
+              type: object
+              description: each block contain text, text positioning and text style information. 
+      jobID:   
+        type: string
+        description: A unique job ID generated for complete workflow. i.e.received from previous operation.  
+      state:
+        type: string
+        description: current state of workflow received from previous operation.
+        enum:
+          - INITIATED
+      status:
+        type: string
+        description: current status of workflow received from previous operation.
+        enum:
+          - STARTED
+      workflowCode:
+        type: string
+        description: Received from previous operation. Code of the workflow that has to be picked to process this input. 
+                      These workflows are configured at the application level.
+      tool:
+        type: string
+        description: Current tool name.
+        enum:
+          - TOKENISER
+      stepOrder:
+        type: integer
+        description: Current steporder of workflow received from previous operation.
+      metadata:
+        type: object
+        properties:
+          module:
+            type: string
+            description: Module name
+          receivedAt:
+            type: integer
+            description: epoch time, when request received by this module
+          sessionID:
+            type: string
+            description: unique session id for unique user.
+          userID:
+            type: string
+            description: unique user id for each user.
+            
+            
+  TokenisationBlockResponse:
+    type: object
+    properties:        
+      jobID:
+        type: string
+        description: A unique job ID generated for the complete workflow.
+      taskID:
+        type: string
+        description: A unique task ID generated for the current on-going task of the tokeniser.
+      status:
+        type: string
+        description: Current status of the tokenisation part of workflow.
+        enum:
+          - SUCCESS
+          - FAILED
+      state:
+        type: string
+        description: Current state of the tokenisation part of workflow.
+        enum:
+          - SENTENCE-TOKENISED
+      output:
+        description: Final output of this process.
+        type: object
+        properties:
+          record_id:
+            type: string
+            description: record id received in request.
+          model_id:
+            type: integer
+            description: id of tranlation models for respective language pair received in request.
+          locale:
+            type: string
+            description: The locale of the text block. Meaning, in which language is the uploaded file. For instance, 'en' for English, 'hi' for Hindi etc. Currently, we are following "ISO 639-1 codes".
+          text_blocks:
+            description: list of text blocks as received in the request with addition of tokenised sentences key, which is a list containg objects.
+            type: array
+            items:
+              type: object
+              description: each block contain text, text positioning and text style information and in addition to that tokenised sentences. 
+              properties:
+                tokenized_sentences:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      s_id:
+                        type: string
+                        description: unique sentence id
+                      src:
+                        type: string
+                        description: tokenised sentence.
+      workflowCode:
+        type: string
+        description: Received from previous operation. Code of the workflow that has to be picked to process this input. 
+                      These workflows are configured at the application level.
+      tool:
+        type: string
+        description: Current tool name.
+        enum:
+          - TOKENISER
+      stepOrder:
+        type: integer
+        description: Current steporder of workflow received from previous operation.
+      startTime:
+        type: number
+        description: 13 digit epoch of the start time.
+      endTime:
+        type: number
+        description: 13 digit epoch of the end time.
+        
+  Error:
+    type: object
+    properties:
+      code:
+        type: string
+        description: This is the cause of the error
+      message:
+        type: string
+        description: User understandable message.
