@@ -549,7 +549,7 @@ class InteractiveDocHeader extends React.Component {
             }}
           ></div>
 
-          <Typography variant="h5" color="inherit" className={classes.flex}>
+          <Typography variant="h5" color="inherit" className={classes.flex} style={{ overflow: "hidden", maxWidth: "30%", textOverflow: "ellipsis" }}>
             {this.props.match.params.filename}
           </Typography>
           <div style={{ position: "absolute", right: "30px" }}>
