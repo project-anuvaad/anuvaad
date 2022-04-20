@@ -275,7 +275,7 @@ class DigitizedDocHeader extends React.Component {
 
                     <div style={{ borderLeft: "1px solid #D6D6D6", height: "40px", marginRight: "10px" }}></div>
 
-                    <Typography variant="h5" color="inherit" className={classes.flex}>
+                    <Typography variant="h5" color="inherit" className={classes.flex} style={{ overflow: "hidden", maxWidth: "30%", textOverflow: "ellipsis" }}>
                         {this.props.match.params.og_fname}
                     </Typography>
                     <div style={{ position: 'absolute', right: '30px' }}>
