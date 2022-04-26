@@ -133,8 +133,8 @@ def tmx_get_all_keys():
         return jsonify(response), 400
 
 
-@translatorapp.route(context_path + '/v1/suggested-translations/create', methods=["POST"])
-def glossary_create():
+@translatorapp.route(context_path + '/v1/suggested-tmx/create', methods=["POST"])
+def suggestion_tmx_box_create():
     service = TMXService()
     data = request.get_json()
     data["userID"] = request.headers["x-user-id"]
@@ -145,8 +145,8 @@ def glossary_create():
         return jsonify(response), 200
 
 
-@translatorapp.route(context_path + '/v1/suggested-translations/delete', methods=["POST"])
-def glossary_delete():
+@translatorapp.route(context_path + '/v1/suggested-tmx/delete', methods=["POST"])
+def suggestion_tmx_box_delete():
     service = TMXService()
     data = request.get_json()
     response = service.suggestion_box_delete(data)
@@ -156,8 +156,8 @@ def glossary_delete():
         return jsonify(response), 200
 
 
-@translatorapp.route(context_path + '/v1/suggested-translations/get', methods=["POST"])
-def glossary_get():
+@translatorapp.route(context_path + '/v1/suggested-tmx/get', methods=["POST"])
+def suggestion_tmx_box_get():
     service = TMXService()
     data = request.get_json()
     response = service.suggestion_box_get(data)
