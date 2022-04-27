@@ -49,7 +49,6 @@ export const get_pages_children_information = (data, active_page, active_next_pa
 
         if (element['images']) {
             element['images'].forEach(image => {
-                if(image.attrib === 'BGIMAGE')
                 page['images'].push(image);
             })
         }

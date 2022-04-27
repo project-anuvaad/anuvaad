@@ -113,7 +113,7 @@ class TmxUpload extends Component {
   };
 
   handleBack = () => {
-    history.push(`${process.env.PUBLIC_URL}/user-details`)
+    history.push(`${process.env.PUBLIC_URL}/user-details/0`)
   }
 
   // getSnapshotBeforeUpdate(prevProps, prevState) {

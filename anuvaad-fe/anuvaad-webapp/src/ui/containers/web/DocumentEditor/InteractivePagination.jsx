@@ -9,32 +9,11 @@ import Typography from "@material-ui/core/Typography";
 import Pagination from "@material-ui/lab/Pagination";
 import TextField from '@material-ui/core/TextField'
 import SENTENCE_ACTION from "./SentenceActions";
-import Slider from '@material-ui/core/Slider';
-import Tooltip from '@material-ui/core/Tooltip';
-import PropTypes from 'prop-types';
+
 import { currentPageUpdate } from "../../../../flux/actions/apis/document_translate/pagiantion_update";
 import { clearHighlighBlock } from '../../../../flux/actions/users/translator_actions';
-import fetchpercent from '../../../../flux/actions/apis/view_digitized_document/fetch_slider_percent';
-import fetchfontpixel from '../../../../flux/actions/apis/view_digitized_document/fetch_slider_pixel';
 
 const PAGE_OPS = require("../../../../utils/page.operations");
-
-
-function ValueLabelComponent(props) {
-  const { children, open, value } = props;
-
-  return (
-    <Tooltip open={open} enterTouchDelay={0} placement="top" title={value}>
-      {children}
-    </Tooltip>
-  );
-}
-
-ValueLabelComponent.propTypes = {
-  children: PropTypes.element.isRequired,
-  open: PropTypes.bool.isRequired,
-  value: PropTypes.number.isRequired,
-};
 
 class InteractivePagination extends React.Component {
   constructor(props) {
@@ -127,19 +106,7 @@ class InteractivePagination extends React.Component {
   };
 
   handleTextValueChange = (event) => {
-    if (event.target.value <= this.props.count) {
-      this.setState({ gotoValue: event.target.value })
-    } else if (event.target.value > this.props.count) {
-      this.setState({ gotoValue: this.props.count })
-    }
-  }
-
-  setConfPercentage = (event) => {
-    console.log(event.target.value)
-  }
-
-  adjustFontPixel = (event, pixel) => {
-    this.props.fetchfontpixel(pixel)
+    this.setState({ gotoValue: event.target.value })
   }
 
   footer = () => {
@@ -162,109 +129,80 @@ class InteractivePagination extends React.Component {
               {this.renderMergeModeButtons()}
             </div>
           ) : (
-            <>
-              {this.props.processZoom()}
-              <Pagination
-                count={this.props.count}
-                page={this.state.offset}
-                onChange={this.handleClick}
-                color="primary"
-                size={"large"}
-                style={{ marginLeft: "-8.5%" }}
-              />
-              <TextField
-                type="number"
-                style={{ width: "40px" }}
-                InputProps={{
+              <>
+                {this.props.processZoom()}
+                <Pagination
+                  count={this.props.count}
+                  page={this.state.offset}
+                  onChange={this.handleClick}
+                  color="primary"
+                  size={"large"}
+                  style={{ marginLeft: "-8.5%" }}
+                />
+                <TextField
+                  type="number"
+                  style={{ width: "40px" }}
+                  InputProps={{
 
-                  inputProps: {
-                    style: { textAlign: "center" },
-                    max: this.props.count, min: 1
-                  }
-                }}
-                onChange={(event) => { this.handleTextValueChange(event) }}
-                value={this.state.gotoValue}
-              />
-              <Button
-                onClick={this.handlePageClick}
-                style={{ marginLeft: '6px' }}
-                variant="outlined"
-                color="primary"
-                disabled={(this.state.offset === Number(this.state.gotoValue) || !this.state.gotoValue) ? true : false}
-              >
-                GO
-              </Button>
-              {(!this.props.show_pdf && !this.props.hideMergeBtn) &&
-                <>
-                  {this.sentenceCount() && (
-                    <div style={{ position: "absolute", marginLeft: "62%" }}>
+                    inputProps: {
+                      style: { textAlign: "center" },
+                      max: this.props.count, min: 1
+                    }
+                  }}
+                  onChange={(event) => { this.handleTextValueChange(event) }}
+                  value={this.state.gotoValue}
+                />
+                <Button
+                  onClick={this.handlePageClick}
+                  style={{ marginLeft: '6px' }}
+                  variant="outlined"
+                  color="primary"
+                  disabled={this.state.offset === Number(this.state.gotoValue) && true}
+                >
+                  GO
+        </Button>
+                {!this.props.show_pdf &&
+                  <>
+                    {this.sentenceCount() && (
+                      <div style={{ position: "absolute", marginLeft: "62%" }}>
+                        <Typography variant="subtitle1" component="h2">
+                          Page Sentences
+                  </Typography>
+
+                        <div style={{ textAlign: "center" }}>
+                          {this.sentenceCount()}
+                        </div>
+                      </div>
+                    )}
+
+                    {this.props.job_status && this.props.job_status.word_status && <div style={{ position: "absolute", marginLeft: "70%" }}>
                       <Typography variant="subtitle1" component="h2">
-                        Page Sentences
-                      </Typography>
+                        Total Word Count
+                  </Typography>
 
                       <div style={{ textAlign: "center" }}>
-                        {this.sentenceCount()}
+                        {this.props.job_status.word_status && this.props.job_status.word_status}
                       </div>
-                    </div>
-                  )}
+                    </div>}
 
-                  {this.props.job_status && this.props.job_status.word_status && <div style={{ position: "absolute", marginLeft: "70%" }}>
-                    <Typography variant="subtitle1" component="h2">
-                      Total Word Count
-                    </Typography>
-
-                    <div style={{ textAlign: "center" }}>
-                      {this.props.job_status.word_status && this.props.job_status.word_status}
-                    </div>
-                  </div>}
-
-                  {this.props.job_status && this.props.job_status.status &&
-                    <div style={{ position: "absolute", marginLeft: "79%" }}>
+                    {this.props.job_status&& this.props.job_status.status && <div style={{ position: "absolute", marginLeft: "79%" }}>
                       <Typography variant="subtitle1" component="h2">
                         Total Sentences
-                      </Typography>
+                  </Typography>
 
                       <div style={{ textAlign: "center" }}>
                         {this.props.job_status.status && this.props.job_status.status}
                       </div>
                     </div>}
 
-                  <div style={{ position: "absolute", right: "30px" }}>
-                    {this.renderNormaModeButtons()}
-                  </div>
-                </>
-              }
-              {/* {
-                  this.props.showConfSlider &&
-                  <div style={{ display: 'grid', marginTop: '1%', width: '20%', gridTemplateColumns: 'repeat(1,40% 80%)' }}>
-                    <Typography style={{ marginLeft: '15%', color: 'black' }} id="discrete-slider-always" gutterBottom>
-                      Confidence Score
-                    </Typography>
-                    <Slider
-                      ValueLabelComponent={ValueLabelComponent}
-                      aria-label="custom thumb label"
-                      defaultValue={80}
-                      onChange={this.handleSliderChange}
-                    />
-                  </div>
-                } */}
-              {
-                this.props.showFontAdjuster &&
-                <div style={{ display: 'grid', marginTop: '1%', width: '20%', gridTemplateColumns: 'repeat(1,40% 80%)' }}>
-                  <Typography style={{ marginLeft: '15%', color: 'black' }} id="discrete-slider-always" gutterBottom>
-                    Adjust Font
-                  </Typography>
-                  <Slider
-                    ValueLabelComponent={ValueLabelComponent}
-                    aria-label="custom thumb label"
-                    defaultValue={this.props.fontSize}
-                    onChange={this.adjustFontPixel}
-                  />
-                </div>
-              }
+                    <div style={{ position: "absolute", right: "30px" }}>
+                      {this.renderNormaModeButtons()}
+                    </div>
+                  </>}
+              </>
+            )}
 
-            </>
-          )}
+          {/* {this.wordCount()} */}
         </Toolbar>
       </AppBar>
     )
@@ -282,17 +220,14 @@ const mapStateToProps = (state) => ({
   document_editor_mode: state.document_editor_mode,
   job_details: state.job_details,
   show_pdf: state.show_pdf.open,
-  job_status: state.job_status,
-  fontSize: state.fetch_slider_pixel.percent
+  job_status: state.job_status
 });
 
 const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
       currentPageUpdate,
-      clearHighlighBlock,
-      fetchpercent,
-      fetchfontpixel,
+      clearHighlighBlock
     },
     dispatch
   );

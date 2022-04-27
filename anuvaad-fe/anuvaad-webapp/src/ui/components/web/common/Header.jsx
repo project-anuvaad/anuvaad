@@ -19,8 +19,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 
 import CloseIcon from '@material-ui/icons/Close';
 import IconButton from '@material-ui/core/IconButton';
-import logo from '../../../../assets/logo.png';
-import anuvaadLogo from '../../../../assets/AnuvaadLogo.svg';
+// import logo from '../../../../../public/inner-logo.png'
 import { translate } from '../../../../../src/assets/localisation';
 import themeAnuvaad from "../../../theme/web/theme-anuvaad";
 
@@ -126,13 +125,13 @@ class Header extends React.Component {
 
   render() {
     const { classes, title, forDemo, dontShowHeader, currentMenu, open_sidebar } = this.props;
+
     var role = [localStorage.getItem("roles")];
     var useRole = [];
     role.map((item, value) => {
       useRole.push(item); value !== role.length - 1 && useRole.push(", ")
       return true;
     });
-    // let orgID = JSON.parse(localStorage.getItem("userProfile")).orgID
     const ToolbarComp = this.props.toolBarComp; // eslint-disable-line
 
     return (
@@ -151,7 +150,7 @@ class Header extends React.Component {
                 </IconButton>
               }
               <div style={{ borderLeft: "1px solid #D6D6D6", height: "40px", marginRight: "10px" }}></div>
-              {forDemo &&
+              {/* {forDemo &&
                 <img src={logo}
                   alt=""
                   style={{
@@ -159,7 +158,7 @@ class Header extends React.Component {
                     display: 'block',
                     marginLeft: '1%'
                   }} />
-              }
+              } */}
 
               <Typography variant="h5" color="inherit" className={forDemo ? classes.felxDemo : classes.flex}>
                 {title}
@@ -191,91 +190,18 @@ class Header extends React.Component {
                 }}
               >
                 <List>
-                  <ListItem>
+                <ListItem>
                     <ListItemText
                       disableTypography
-                      style={{ textAlign: "left", marginLeft: "6%" }}
+                      style={{ textAlign: "left", marginLeft: "1%",marginTop:'-1%',marginBottom:'-6%' }}
                       primary={
-                        <img src={anuvaadLogo}
-                          width={100}
+                        <img src={"inner-logo.png"}
+                          width={160}
                           alt="" />
                       }
                     />
                   </ListItem>
-                  <div>
-                    <Divider className={classes.divider} />
 
-                    <ListItem
-                      id="profile"
-                      style={{ paddingTop: "8%", paddingBottom: "8%", backgroundColor: currentMenu === "profile" && themeAnuvaad.palette.primary.main }}
-                      button
-                      onClick={() => {
-                        this.handleDrawerClose(false);
-                        history.push(`${process.env.PUBLIC_URL}/profile`);
-                      }}
-                    >
-
-                      <ListItemText
-                        disableTypography
-                        primary={
-                          <Typography type="body2" style={{ color: currentMenu === "profile" ? "#FFFFFF" : "#000000", marginLeft: '6%' }}>
-                            {translate('header.page.heading.MyProfile')}
-                          </Typography>
-                        }
-                      />
-                    </ListItem>
-                  </div>
-                  {JSON.parse(localStorage.getItem("userProfile")).orgID !== 'NONMT' && role && Array.isArray(role) && !role.includes("ADMIN") &&
-                    <> {role && Array.isArray(role) && !(role.includes("ANNOTATOR")) &&
-                      <div>
-                        <Divider className={classes.divider} />
-                        <ListItem
-                          id="my-glossary"
-                          style={{ paddingTop: "8%", paddingBottom: "8%", backgroundColor: currentMenu === "my-glossary" && themeAnuvaad.palette.primary.main }}
-                          button
-                          onClick={() => {
-                            this.handleDrawerClose(false);
-                            history.push(`${process.env.PUBLIC_URL}/my-glossary`);
-                          }}
-                        >
-
-                          <ListItemText
-                            disableTypography
-                            primary={
-                              <Typography type="body2" style={{ color: currentMenu === "my-glossary" ? "#FFFFFF" : "#000000", marginLeft: '6%' }}>
-                                My Glossary
-                              </Typography>
-                            }
-                          />
-                        </ListItem>
-                      </div>
-                    }</>
-                  }
-                  {role && Array.isArray(role) && (role.includes("ADMIN") || role.includes("TRANSLATOR")) && (
-                    <div>
-                      <Divider className={classes.divider} />
-
-                      <ListItem
-                        id="assign-nmt-model"
-                        style={{ paddingTop: "8%", paddingBottom: "8%", backgroundColor: currentMenu === "assign-nmt-model" && themeAnuvaad.palette.primary.main }}
-                        button
-                        onClick={() => {
-                          this.handleDrawerClose(false);
-                          history.push(`${process.env.PUBLIC_URL}/assign-nmt-model`);
-                        }}
-                      >
-
-                        <ListItemText
-                          disableTypography
-                          primary={
-                            <Typography type="body2" style={{ color: currentMenu === "assign-nmt-model" ? "#FFFFFF" : "#000000", marginLeft: '6%' }}>
-                              Assign nmt models
-                            </Typography>
-                          }
-                        />
-                      </ListItem>
-                    </div>
-                  )}
                   {role && Array.isArray(role) && !role.includes("ADMIN") && (
                     <div>
                       <Divider className={classes.divider} />
@@ -312,7 +238,7 @@ class Header extends React.Component {
                         button
                         onClick={() => {
                           this.handleDrawerClose(false);
-                          history.push(`${process.env.PUBLIC_URL}/user-details`);
+                          history.push(`${process.env.PUBLIC_URL}/user-details/0`);
                         }}
                       >
 
@@ -320,7 +246,7 @@ class Header extends React.Component {
                           disableTypography
                           primary={
                             <Typography type="body2" style={{ color: currentMenu === "user-details" ? "#FFFFFF" : "#000000", marginLeft: '6%' }}>
-                              User Details
+                              User details
                             </Typography>
                           }
                         />
@@ -328,7 +254,7 @@ class Header extends React.Component {
                     </div>
                   )}
 
-                  {role && Array.isArray(role) && role.includes("ADMIN") && (
+{role && Array.isArray(role) && role.includes("ADMIN") && (
                     <div>
                       <Divider className={classes.divider} />
 
@@ -354,7 +280,7 @@ class Header extends React.Component {
                     </div>
                   )}
 
-                  {role && Array.isArray(role) && role.includes("ADMIN") && (
+{role && Array.isArray(role) && role.includes("ADMIN") && (
                     <div>
                       <Divider className={classes.divider} />
 
@@ -379,25 +305,25 @@ class Header extends React.Component {
                       </ListItem>
                     </div>
                   )}
-                  {role && Array.isArray(role) && role.includes("ADMIN") && (
+
+                  {role && Array.isArray(role) && (role.includes("TRANSLATOR")) && (
                     <div>
                       <Divider className={classes.divider} />
-
                       <ListItem
-                        id="view-scheduled-jobs"
-                        style={{ paddingTop: "8%", paddingBottom: "8%", backgroundColor: currentMenu === "view-scheduled-jobs" && themeAnuvaad.palette.primary.main }}
+                        id="view-document"
+                        style={{ paddingTop: "8%", paddingBottom: "8%", backgroundColor: currentMenu === "view-document" && themeAnuvaad.palette.primary.main }}
                         button
                         onClick={() => {
                           this.handleDrawerClose(false);
-                          history.push(`${process.env.PUBLIC_URL}/view-scheduled-jobs`);
+                          history.push(`${process.env.PUBLIC_URL}/view-document`);
                         }}
                       >
 
                         <ListItemText
                           disableTypography
                           primary={
-                            <Typography type="body2" style={{ color: currentMenu === "view-scheduled-jobs" ? "#FFFFFF" : "#000000", marginLeft: '6%' }}>
-                              View Jobs
+                            <Typography type="body2" style={{ color: currentMenu === "view-document" ? "#FFFFFF" : "#000000", marginLeft: '6%' }}>
+                              Translate document
                             </Typography>
                           }
                         />
@@ -405,78 +331,29 @@ class Header extends React.Component {
                     </div>
                   )}
 
-
-                  {role && Array.isArray(role) && (role.includes("TRANSLATOR") || (role.includes("ANNOTATOR"))) && (
-                    <>
-                      <div>
-                        <Divider className={classes.divider} />
-                        <ListItem
-                          id="view-document"
-                          style={{ paddingTop: "8%", paddingBottom: "8%", backgroundColor: currentMenu === "view-document" && themeAnuvaad.palette.primary.main }}
-                          button
-                          onClick={() => {
-                            this.handleDrawerClose(false);
-                            history.push(`${process.env.PUBLIC_URL}/view-document`);
-                          }}
-                        >
-
-                          <ListItemText
-                            disableTypography
-                            primary={
-                              <Typography type="body2" style={{ color: currentMenu === "view-document" ? "#FFFFFF" : "#000000", marginLeft: '6%' }}>
-                                Translate document
-                              </Typography>
-                            }
-                          />
-                        </ListItem>
-                      </div>
-                      {
-                        (process.env.REACT_APP_APIGW_BASE_URL === 'https://jud-auth.anuvaad.org' || process.env.REACT_APP_APIGW_BASE_URL === 'https://auth.anuvaad.org') &&
-                        <div>
-                        <Divider className={classes.divider} />
-                        <ListItem
-                          id="document-digitization"
-                          style={{ paddingTop: "8%", paddingBottom: "8%", backgroundColor: currentMenu === "document-digitization" && themeAnuvaad.palette.primary.main }}
-                          button
-                          onClick={() => {
-                            this.handleDrawerClose(false);
-                            history.push(`${process.env.PUBLIC_URL}/document-digitization`);
-                          }}
-                        >
-
-                          <ListItemText
-                            disableTypography
-                            primary={
-                              <Typography type="body2" style={{ color: currentMenu === "document-digitization" ? "#FFFFFF" : "#000000", marginLeft: '6%' }}>
-                                Digitize Document
-                              </Typography>
-                            }
-                          />
-                        </ListItem>
-                      </div>}
-                    </>)}
-                  {JSON.parse(localStorage.getItem("userProfile")).orgID !== 'NONMT' && role && Array.isArray(role) && (role.includes("ANNOTATOR")) && (<div>
+                  <div>
                     <Divider className={classes.divider} />
+
                     <ListItem
-                      id="view-annotation-job"
-                      style={{ paddingTop: "8%", paddingBottom: "8%", backgroundColor: currentMenu === "view-annotation-job" && themeAnuvaad.palette.primary.main }}
+                      id="profile"
+                      style={{ paddingTop: "8%", paddingBottom: "8%", backgroundColor: currentMenu === "profile" && themeAnuvaad.palette.primary.main }}
                       button
                       onClick={() => {
                         this.handleDrawerClose(false);
-                        history.push(`${process.env.PUBLIC_URL}/view-annotation-job`);
+                        history.push(`${process.env.PUBLIC_URL}/profile`);
                       }}
                     >
 
                       <ListItemText
                         disableTypography
                         primary={
-                          <Typography type="body2" style={{ color: currentMenu === "view-annotation-job" ? "#FFFFFF" : "#000000", marginLeft: '6%' }}>
-                            View Annotation Job
+                          <Typography type="body2" style={{ color: currentMenu === "profile" ? "#FFFFFF" : "#000000", marginLeft: '6%' }}>
+                            {translate('header.page.heading.MyProfile')}
                           </Typography>
                         }
                       />
                     </ListItem>
-                  </div>)}
+                  </div>
 
                   <div>
                     <Divider className={classes.divider} />

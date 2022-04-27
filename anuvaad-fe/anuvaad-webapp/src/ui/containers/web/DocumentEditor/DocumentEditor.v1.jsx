@@ -37,17 +37,12 @@ import { Button } from "@material-ui/core";
 // import html2canvas from "html2canvas"
 // import { jsPDF } from "jspdf";
 import ReactToPrint, { PrintContextConsumer } from 'react-to-print';
-import PageCardHtml from './PageCardHtml';
-import Split from 'react-split';
-import '../../../styles/web/InteractiveEditor.css';
+
 import Loader from "../../../components/web/common/CircularLoader";
-const LANG_MODEL = require('../../../../utils/language.model')
 const PAGE_OPS = require("../../../../utils/page.operations");
 const BLOCK_OPS = require("../../../../utils/block.operations");
 const TELEMETRY = require('../../../../utils/TelemetryManager')
 var jp = require('jsonpath')
-
-
 
 class DocumentEditor extends React.Component {
   constructor(props) {
@@ -96,7 +91,7 @@ class DocumentEditor extends React.Component {
       const apiModel = new FetchModel();
       this.props.APITransport(apiModel);
     } else {
-      let model = LANG_MODEL.fetchModel(parseInt(this.props.match.params.modelId), this.props.fetch_models)
+      let model = this.fetchModel(parseInt(this.props.match.params.modelId))
       if (model && model.hasOwnProperty('source_language_name') && model.hasOwnProperty('target_language_name')) {
         TELEMETRY.startTranslatorFlow(model.source_language_name, model.target_language_name, this.props.match.params.inputfileid, jobId)
       }
@@ -129,7 +124,7 @@ class DocumentEditor extends React.Component {
           this.fetchPages(this.state.paginationIndex, this.state.currentIndex + 1)
         } else {
           this.setState({ download: true, loaderValue: 0, paginationIndex: 1, currentIndex: 0, totalLoaderValue: 0 })
-
+         
         }
       }
     }
@@ -149,7 +144,7 @@ class DocumentEditor extends React.Component {
 
     if (prevProps.fetch_models !== this.props.fetch_models) {
       let jobId = this.props.match.params.jobid ? this.props.match.params.jobid.split("|")[0] : ""
-      let model = LANG_MODEL.fetchModel(parseInt(this.props.match.params.modelId), this.props.fetch_models)
+      let model = this.fetchModel(parseInt(this.props.match.params.modelId))
       if (model && model.hasOwnProperty('source_language_name') && model.hasOwnProperty('target_language_name')) {
         TELEMETRY.startTranslatorFlow(model.source_language_name, model.target_language_name, this.props.match.params.inputfileid, jobId)
       }
@@ -242,7 +237,7 @@ class DocumentEditor extends React.Component {
     let initial_sentences = sentences.map(sentence => sentence.src);
     let final_sentence = updated_blocks['blocks'][0].tokenized_sentences[0].src;
     TELEMETRY.mergeSentencesEvent(initial_sentences, final_sentence)
-    let model = LANG_MODEL.fetchModel(parseInt(this.props.match.params.modelId), this.props.fetch_models)
+    let model = this.fetchModel(parseInt(this.props.match.params.modelId))
     this.informUserProgress(translate('common.page.label.SENTENCE_MERGED'))
     let apiObj = new WorkFlowAPI("WF_S_TR", updated_blocks.blocks, this.props.match.params.jobid, model.source_language_code,
       '', '', model, sentence_ids)
@@ -274,12 +269,12 @@ class DocumentEditor extends React.Component {
     });
   }
 
-  async makeAPICallSaveSentence(sentence, pageNumber, score, eventArray) {
+  async makeAPICallSaveSentence(sentence, pageNumber) {
 
     this.informUserProgress(translate('common.page.label.SENTENCE_SAVED'))
-    let model = LANG_MODEL.fetchModel(parseInt(this.props.match.params.modelId), this.props.fetch_models)
+    let model = this.fetchModel(parseInt(this.props.match.params.modelId))
     sentence["src_lang"] = model.source_language_code
-    sentence['tgt_lang'] = model.target_language_code
+    sentence['tgt_lang']  = model.target_language_code
     let apiObj = new SaveSentenceAPI(sentence)
     const apiReq = fetch(apiObj.apiEndPoint(), {
       method: 'post',
@@ -301,7 +296,6 @@ class DocumentEditor extends React.Component {
         this.props.contentUpdateStarted()
         this.props.update_sentences(pageNumber, rsp_data.data);
         this.informUserStatus(translate('common.page.label.SENTENCE_SAVED_SUCCESS'), true)
-        TELEMETRY.sentenceChanged(sentence.s0_tgt, sentence.tgt, sentence.s_id, "translation", sentence.s0_src, sentence.bleu_score, sentence.time_spent_ms, score, eventArray)
         this.makeAPICallDocumentsTranslationProgress();
       }
     }).catch((error) => {
@@ -309,52 +303,11 @@ class DocumentEditor extends React.Component {
     });
   }
 
-  makeAPICallReTranslateSentence = (sentences, pageNumber) => {
-    let sentence_ids = sentences.s_id
-    let updated_blocks = BLOCK_OPS.do_sentence_retranslation(this.props.document_contents.pages, sentence_ids);
-    /**
-     * telemetry information.
-     */
-    // let initial_sentences = sentences.map(sentence => sentence.src);
-    // let final_sentence = updated_blocks['blocks'][0].tokenized_sentences[0].src;
-    // TELEMETRY.mergeSentencesEvent(initial_sentences, final_sentence)
-    let model = LANG_MODEL.fetchModel(parseInt(this.props.match.params.modelId), this.props.fetch_models)
-    this.informUserProgress(translate('common.page.label.RETRANSLATE_SENTENCE'))
-    let apiObj = new WorkFlowAPI("WF_S_TR", updated_blocks, this.props.match.params.jobid, model.source_language_code,
-      '', '', model, [sentence_ids], "", "", [], "", true)
-    const apiReq = fetch(apiObj.apiEndPoint(), {
-      method: 'post',
-      body: JSON.stringify(apiObj.getBody()),
-      headers: apiObj.getHeaders().headers
-    }).then(async response => {
-      const rsp_data = await response.json();
-      if (!response.ok) {
-        // TELEMETRY.log("merge", JSON.stringify(rsp_data))
-        if (Number(response.status) === 401) {
-          this.handleRedirect()
-        }
-        else {
-          this.informUserStatus(translate('common.page.label.RETRANSLATE_SENTENCE_FAILED'), false)
-        }
-        return Promise.reject('');
-      } else {
-        this.props.contentUpdateStarted();
-        this.props.update_blocks(pageNumber, rsp_data.output.textBlocks);
-        this.processEndMergeMode(pageNumber)
-        this.informUserStatus(translate('common.page.label.RETRANSLATE_SENTENCE_SUCCESS'), true)
-        this.makeAPICallDocumentsTranslationProgress();
-      }
-    }).catch((error) => {
-      this.informUserStatus(translate('common.page.label.RETRANSLATE_SENTENCE_FAILED'), false)
-      this.processEndMergeMode(pageNumber)
-    });
-  }
-
   async makeAPICallSplitSentence(sentence, pageNumber, startIndex, endIndex) {
 
     let updated_blocks = BLOCK_OPS.do_sentence_splitting_v1(this.props.document_contents.pages, sentence.block_identifier, sentence, startIndex, endIndex);
     TELEMETRY.splitSentencesEvent(sentence.src, updated_blocks.splitted_sentences)
-    let model = LANG_MODEL.fetchModel(parseInt(this.props.match.params.modelId), this.props.fetch_models)
+    let model = this.fetchModel(parseInt(this.props.match.params.modelId))
     this.informUserProgress(translate('common.page.label.SENTENCE_SPLITTED'))
     let apiObj = new WorkFlowAPI("WF_S_TR", updated_blocks.blocks, this.props.match.params.jobid, model.source_language_code,
       '', '', model, updated_blocks.selected_sentence_ids)
@@ -387,7 +340,7 @@ class DocumentEditor extends React.Component {
 
   async makeAPICallSourceSaveSentence(sentence, pageNumber) {
     this.informUserProgress(translate('common.page.label.SOURCE_SENTENCE_SAVED'))
-    let model = LANG_MODEL.fetchModel(parseInt(this.props.match.params.modelId), this.props.fetch_models)
+    let model = this.fetchModel(parseInt(this.props.match.params.modelId))
 
     let apiObj = new WorkFlowAPI("WF_S_TKTR", sentence, this.props.match.params.jobid, model.source_language_code,
       '', '', model)
@@ -453,10 +406,11 @@ class DocumentEditor extends React.Component {
     setTimeout(() => { this.props.editorModeClear() }, 50)
   }
 
-  processSentenceAction = (action, pageNumber, sentences, startIndex, endIndex, score, eventArray) => {
+  processSentenceAction = (action, pageNumber, sentences, startIndex, endIndex) => {
+
     switch (action) {
       case SENTENCE_ACTION.SENTENCE_SAVED: {
-        this.makeAPICallSaveSentence(sentences[0], pageNumber, score, eventArray)
+        this.makeAPICallSaveSentence(sentences[0], pageNumber)
         return;
       }
 
@@ -504,11 +458,6 @@ class DocumentEditor extends React.Component {
       }
       case SENTENCE_ACTION.REMOVE_SENTENCE_FOR_MERGE: {
         this.forMergeSentences = this.forMergeSentences.filter(sent => sent.s_id !== sentences[0].s_id)
-        return;
-      }
-
-      case SENTENCE_ACTION.RETRANSLATE_SENTENCE: {
-        this.makeAPICallReTranslateSentence(...sentences, pageNumber);
         return;
       }
       default:
@@ -678,27 +627,24 @@ class DocumentEditor extends React.Component {
    */
   renderDocumentPages = () => {
     let pages = this.getPages();
-    let { workflow } = this.props.match.params
+
     if (pages.length < 1) {
       return (
         <div></div>
       )
     }
     return (
-      <InfiniteScroll height={window.innerHeight - 141} style={{
-        maxHeight: window.innerHeight - 141,
-        overflowY: "auto",
-      }}
-        dataLength={pages.length}
-      >
-        {
-          workflow !== 'WF_A_FTTKTR'
-            ?
-            pages.map((page, index) => <PageCard zoomPercent={this.state.zoomPercent} key={index} page={page} onAction={this.processSentenceAction} />)
-            :
-            <PageCardHtml zoomPercent={this.state.zoomPercent} onAction={this.processSentenceAction} />
-        }
-      </InfiniteScroll>
+      <Grid item xs={12} sm={6} lg={6} xl={6} style={{ marginRight: "5px" }}>
+
+        <InfiniteScroll height={window.innerHeight - 141} style={{
+          maxHeight: window.innerHeight - 141,
+          overflowY: "auto",
+        }}
+          dataLength={pages.length}
+        >
+          {pages.map((page, index) => <PageCard zoomPercent={this.state.zoomPercent} key={index} page={page} onAction={this.processSentenceAction} />)}
+        </InfiniteScroll>
+      </Grid>
     )
   }
   processZoomIn = () => {
@@ -741,28 +687,31 @@ class DocumentEditor extends React.Component {
     let recordId = this.props.match.params.jobid;
     let jobId = recordId ? recordId.split("|")[0] : ""
     return (
-      <InfiniteScroll height={window.innerHeight - 141} style={{
-        maxHeight: window.innerHeight - 141,
-        overflowY: "auto",
-      }}
-        hasMore={(this.props.document_contents.count > this.props.document_contents.pages.length) ? true : false}
-        dataLength={pages.length}
-      >
-        {
-          pages.map(page => page['translated_texts'].map((sentence, index) => {
-            sentence.src = sentence.src.replace(/\s{2,}/g, ' ').trim()
-            return < div key={sentence.s_id} ref={sentence.s_id} > <SentenceCard key={sentence.s_id}
-              pageNumber={page.page_no}
-              recordId={this.props.match.params.jobid}
-              model={LANG_MODEL.fetchModel(parseInt(this.props.match.params.modelId), this.props.fetch_models)}
-              jobId={jobId}
-              sentence={sentence}
-              onAction={this.processSentenceAction} />
-            </div>
-          })
-          )
-        }
-      </InfiniteScroll>
+      <Grid item xs={12} sm={12} lg={12} xl={12} style={{ marginLeft: "5px" }}>
+
+        <InfiniteScroll height={window.innerHeight - 141} style={{
+          maxHeight: window.innerHeight - 141,
+          overflowY: "auto",
+        }}
+          hasMore={(this.props.document_contents.count > this.props.document_contents.pages.length) ? true : false}
+          dataLength={pages.length}
+        >
+          {
+            pages.map(page => page['translated_texts'].map((sentence, index) => {
+              sentence.src = sentence.src.replace(/\s{2,}/g, ' ').trim()
+              return < div key={sentence.s_id} ref={sentence.s_id} > <SentenceCard key={sentence.s_id}
+                pageNumber={page.page_no}
+                model={this.fetchModel(parseInt(this.props.match.params.modelId))}
+                jobId={jobId}
+                sentence={sentence}
+                onAction={this.processSentenceAction} />
+              </div>
+            })
+            )
+          }
+        </InfiniteScroll>
+      </Grid >
+
     )
   }
 
@@ -778,7 +727,7 @@ class DocumentEditor extends React.Component {
           onClick={this.processZoomIn}
           disabled={this.state.zoomInDisabled} >
           +
-        </Button>
+          </Button>
         <input
           style={{
             backgroundColor: 'white',
@@ -798,7 +747,7 @@ class DocumentEditor extends React.Component {
           disabled={this.state.zoomOutDisabled}
         >
           -
-        </Button>
+          </Button>
       </div >);
   }
   render() {
@@ -806,22 +755,22 @@ class DocumentEditor extends React.Component {
       <div style={{ height: window.innerHeight }}>
         <div style={{ height: "50px", marginBottom: "13px" }}> <InteractiveDocToolBar docView={this.state.docView} onAction={this.handleDocumentView} onShowPreview={this.showPreview} preview={this.state.preview} /></div>
 
-        {!this.state.preview ?
-          <>
-            <Split className='split'>
-              <div>{!this.state.docView && this.renderDocumentPages()}</div>
-              <div>{!this.props.show_pdf ? this.renderSentences() : this.renderPDFDocument()}</div>
-            </Split>
-            <div style={{ height: "65px", marginTop: "13px", bottom: "0px", position: "absolute", width: "100%" }}>
-              <InteractivePagination count={this.props.document_contents.count}
-                data={this.props.document_contents.pages}
-                zoomPercent={this.state.zoomPercent}
-                processZoom={this.processZoom}
-                zoomInDisabled={this.state.zoomInDisabled}
-                zoomOutDisabled={this.state.zoomOutDisabled}
-                onAction={this.processSentenceAction} />
-            </div>
-          </>
+        { !this.state.preview ?
+        <>
+          <div style={{ height: window.innerHeight - 141, maxHeight: window.innerHeight - 141, overflow: "hidden", padding: "0px 24px 0px 24px", display: "flex", flexDirection: "row" }}>
+            {!this.state.docView && this.renderDocumentPages()}
+            {!this.props.show_pdf ? this.renderSentences() : this.renderPDFDocument()}
+          </div>
+          <div style={{ height: "65px", marginTop: "13px", bottom: "0px", position: "absolute", width: "100%" }}>
+          <InteractivePagination count={this.props.document_contents.count}
+             data={this.props.document_contents.pages}
+             zoomPercent={this.state.zoomPercent}
+             processZoom={this.processZoom}
+             zoomInDisabled={this.state.zoomInDisabled}
+             zoomOutDisabled={this.state.zoomOutDisabled}
+             onAction={this.processSentenceAction} />
+         </div>
+         </>
           :
           <div style={{ height: window.innerHeight - 80, maxHeight: window.innerHeight - 80, overflow: "hidden", padding: "0px 24px 0px 24px", display: "flex", flexDirection: "row" }}>
             {this.renderTranslatedDocument()}
@@ -830,7 +779,7 @@ class DocumentEditor extends React.Component {
         {this.state.apiInProgress ? this.renderProgressInformation() : <div />}
         {this.state.showStatus ? this.renderStatusInformation() : <div />}
         {this.state.apiFetchStatus && <Spinner />}
-        {!this.state.download && this.state.preview && <Loader value={this.state.loaderValue}></Loader>}
+        { !this.state.download && this.state.preview && <Loader value={this.state.loaderValue}></Loader>}
       </div>
     )
   }

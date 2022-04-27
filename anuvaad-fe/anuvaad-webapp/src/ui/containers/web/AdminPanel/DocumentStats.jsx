@@ -34,6 +34,11 @@ class DocumentStats extends React.Component {
           padding: '3px 10px 3px',
         },
       },
+      MUIDataTableHeadCell: {
+        fixedHeader: {
+          paddingLeft: '1.2%'
+        }
+      }
     }
   })
 
@@ -88,14 +93,7 @@ class DocumentStats extends React.Component {
           filter: false,
           sort: false,
         }
-      }, {
-        name: "rating_score",
-        label: "Rating",
-        options: {
-          filter: false,
-          sort: false,
-        }
-      }
+      },
     ];
 
 

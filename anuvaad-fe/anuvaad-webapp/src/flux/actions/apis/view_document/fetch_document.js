@@ -31,9 +31,6 @@ export default class BulkSearchAPI extends API {
   processResponse(res) {
     super.processResponse(res);
     if (res) {
-      if(res.jobs && res.jobs.length > 0) {
-        res.jobs = res.jobs.filter( (ele, ind) => ind === res.jobs.findIndex( elem => elem.jobID === ele.jobID))
-      }
       this.sentences = res;
     }
   }
@@ -48,7 +45,7 @@ export default class BulkSearchAPI extends API {
       "limit": this.limit,
       "jobIDs": this.jobIds,
       "taskDetails": true,
-      "workflowCodes": ["DP_WFLOW_FBT", "WF_A_FCBMTKTR", "DP_WFLOW_FBTTR","WF_A_FTTKTR"],
+      "workflowCodes": ["DP_WFLOW_FBT", "WF_A_FCBMTKTR", "DP_WFLOW_FBTTR"],
       "userIDs": this.userId
     }
   }

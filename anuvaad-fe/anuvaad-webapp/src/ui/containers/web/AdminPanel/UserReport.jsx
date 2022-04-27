@@ -18,10 +18,6 @@ import { clearJobEntry } from "../../../../flux/actions/users/async_job_manageme
 import Tooltip from "@material-ui/core/Tooltip";
 import IconButton from "@material-ui/core/IconButton";
 import AssessmentOutlinedIcon from '@material-ui/icons/AssessmentOutlined';
-import CloudDownloadIcon from "@material-ui/icons/CloudDownload";
-import DownloadFile from "../../../../flux/actions/apis/download/download_file";
-import EventIcon from '@material-ui/icons/Event';
-import clearEvent from '../../../../flux/actions/apis/admin/clear_user_event_report';
 
 
 const TELEMETRY = require("../../../../utils/TelemetryManager");
@@ -33,7 +29,7 @@ class UserReport extends React.Component {
             role: localStorage.getItem("roles"),
             showInfo: false,
             offset: 0,
-            limit: 0,
+            limit: 10,
             currentPageIndex: 0,
             dialogMessage: null,
             timeOut: 3000,
@@ -48,7 +44,6 @@ class UserReport extends React.Component {
      */
     componentDidMount() {
         TELEMETRY.pageLoadStarted("user-report");
-        this.props.clearEvent();
         if (this.props.job_details.documents.length < 1) {
             this.setState({ showLoader: true });
             this.makeAPICallJobsBulkSearch(
@@ -117,14 +112,10 @@ class UserReport extends React.Component {
             this.setState({ showLoader: false });
         }
         else if (this.props.fetch_document.result.count !== prevProps.fetch_document.result.count) {
-            this.makeAPICallDocumentsTranslationProgress();
             this.setState({ showLoader: false });
         }
         else if (this.props.fetch_document.result.jobIDs !== undefined &&
             this.props.fetch_document.result.jobIDs.length !== prevProps.fetch_document.result.jobIDs.length) {
-            this.setState({ showLoader: false });
-        }
-        else if (this.props.job_details.progress_updated !== prevProps.job_details.progress_updated && this.props.job_details.count === prevProps.job_details.count) {
             this.setState({ showLoader: false });
         }
     }
@@ -167,13 +158,8 @@ class UserReport extends React.Component {
         APITransport(apiObj);
     }
 
-    makeAPICallDocumentsTranslationProgress(limit) {
-        if (limit) {
-            var recordIds = this.getRecordIds(limit);
-        } else {
-            var recordIds = this.getRecordIds();
-        }
-       
+    makeAPICallDocumentsTranslationProgress(jobIds) {
+        var recordIds = this.getRecordIds();
         if (recordIds.length > 0) {
             const { APITransport } = this.props;
             const apiObj = new JobStatus(recordIds, true);
@@ -196,28 +182,18 @@ class UserReport extends React.Component {
     };
 
     getJobsAsPerPageAndLimit = (page, limit) => {
-        if(limit === 0) {  
-            this.setState({ limit: 10 });
-        }
         return this.getJobsSortedByTimestamp().slice(
             page * limit,
             page * limit + limit
         );
     };
 
-    getRecordIds = (limit) => {
+    getRecordIds = () => {
         let recordids = [];
-        if (limit) {
-            this.getJobsAsPerPageAndLimit(
-                this.state.currentPageIndex,
-                limit
-            ).map((job) => job.recordId && recordids.push(job.recordId));
-        } else {
-            this.getJobsAsPerPageAndLimit(
-                this.state.currentPageIndex,
-                this.state.limit
-            ).map((job) => job.recordId && recordids.push(job.recordId));
-        }
+        this.getJobsAsPerPageAndLimit(
+            this.state.currentPageIndex,
+            this.state.limit
+        ).map((job) => job.recordId && recordids.push(job.recordId));
         return recordids;
     };
 
@@ -331,100 +307,6 @@ class UserReport extends React.Component {
 
         }
     };
-
-    processDocumentDownload = (jobId) => {
-        return <Tooltip title="Download input file" placement="left">
-            <IconButton
-                style={{ color: "#233466", padding: "5px" }}
-                component="a"
-                onClick={() =>
-                    this.processDownloadInputFileClick(jobId)
-                }
-            >
-                <CloudDownloadIcon />
-            </IconButton>
-        </Tooltip>
-    }
-
-    processDownloadInputFileClick = (jobId) => {
-        this.setState({
-            dialogMessage: "Downloading file...",
-            timeOut: null,
-            variant: "info",
-        });
-        let job = this.getJobIdDetail(jobId);
-        let user_profile = JSON.parse(localStorage.getItem("userProfile"));
-        let obj = new DownloadFile(job.converted_filename, this.props.match.params.id);
-
-        const apiReq1 = fetch(obj.apiEndPoint(), {
-            method: "get",
-            headers: obj.getHeaders().headers,
-        })
-            .then(async (response) => {
-                if (!response.ok) {
-                    this.setState({
-                        dialogMessage: "Failed to download file...",
-                        timeOut: 3000,
-                        variant: "info",
-                    });
-                    console.log("api failed");
-                } else {
-                    const buffer = new Uint8Array(await response.arrayBuffer());
-                    let res = Buffer.from(buffer).toString("base64");
-
-                    fetch("data:image/jpeg;base64," + res)
-                        .then((res) => res.blob())
-                        .then((blob) => {
-                            let a = document.createElement("a");
-                            let url = URL.createObjectURL(blob);
-                            a.href = url;
-                            a.download = job.converted_filename;
-                            this.setState({ dialogMessage: null });
-                            a.click();
-                        });
-                }
-            })
-            .catch((error) => {
-                this.setState({
-                    dialogMessage: "Failed to download file...",
-                    timeOut: 3000,
-                    variant: "info",
-                });
-                console.log("api failed because of server or network", error);
-            });
-    };
-
-    processEventView = (jobId, status, sentenceCount) => {
-        return <Tooltip title="View Events" placement="right">
-            <IconButton
-                style={{ color: "#233466", padding: "5px" }}
-                component="a"
-                onClick={() =>
-                    this.handleEventView(jobId, status, sentenceCount)
-                }
-            >
-                <EventIcon />
-            </IconButton>
-        </Tooltip>
-    }
-    handleEventView = (fid, status, sentenceCount) => {
-        if (status === 'COMPLETED' && sentenceCount[0] !== '.' && sentenceCount[0] !== '0') {
-            history.push(`${process.env.PUBLIC_URL}/user-event-view/${fid}/${this.state.userID}`)
-        } else {
-            if (status === 'FAILED') {
-                this.setState({ dialogMessage: 'Document translation is failed' })
-            }
-            else if (status === 'INPROGRESS') {
-                this.setState({ dialogMessage: 'Document still in progress' })
-
-            } else {
-                this.setState({ dialogMessage: 'No sentences are saved' })
-            }
-        }
-        setTimeout(() => {
-            this.setState({ dialogMessage: "" })
-        }, 3000)
-    }
 
     render() {
         const columns = [
@@ -566,8 +448,6 @@ class UserReport extends React.Component {
                             return (
                                 <div>
                                     {this.processDocumentView(tableMeta.rowData[1], tableMeta.rowData[0], tableMeta.rowData[5], tableMeta.rowData[6])}
-                                    {this.processDocumentDownload(tableMeta.rowData[1])}
-                                    {this.processEventView(tableMeta.rowData[1], tableMeta.rowData[5], tableMeta.rowData[6])}
                                 </div>
                             );
                         }
@@ -580,7 +460,11 @@ class UserReport extends React.Component {
             textLabels: {
                 body: {
                     noMatch:
-                        this.props.fetch_document.state,
+                        this.props.job_details.count > 0 &&
+                            this.props.job_details.count >
+                            this.props.job_details.documents.length
+                            ? "Loading...."
+                            : translate("gradeReport.page.muiNoTitle.sorryRecordNotFound"),
                 },
                 toolbar: {
                     search: translate("graderReport.page.muiTable.search"),
@@ -600,10 +484,6 @@ class UserReport extends React.Component {
                             tableState.sortOrder
                         );
                         break;
-                    case "changeRowsPerPage":
-                        this.makeAPICallDocumentsTranslationProgress(tableState.rowsPerPage);
-                        this.setState({ showLoader: true })
-                        break;
                     default:
                 }
             },
@@ -621,23 +501,22 @@ class UserReport extends React.Component {
             page: this.state.currentPageIndex,
         };
         return (
-            <div style={{ minHeight: window.innerHeight - 2 }}>
-                <div style={{ margin: "0% 3% 3% 3%", paddingTop: "7%", paddingBottom: "1%" }}>
+            <div style={{ height: window.innerHeight }}>
+                <div style={{ margin: "0% 3% 3% 3%", paddingTop: "7%" }}>
                     <UserReportHeader />
-                    {/* {!this.state.showLoader && ( */}
-                    <MuiThemeProvider theme={this.getMuiTheme()}>
-                        <MUIDataTable
-                            title={`${this.props.match.params.name}'s Detail`}
-                            data={this.getJobsSortedByTimestamp()}
-                            columns={columns}
-                            options={options}
-                        />
-                    </MuiThemeProvider>
-                    {/* )} */}
-                    {/* {
+                    {!this.state.showLoader && (
+                        <MuiThemeProvider theme={this.getMuiTheme()}>
+                            <MUIDataTable
+                                title={`${this.props.match.params.name}'s Detail`}
+                                data={this.getJobsSortedByTimestamp()}
+                                columns={columns}
+                                options={options}
+                            />
+                        </MuiThemeProvider>
+                    )}{
                         this.state.showLoader &&
                         <Spinner />
-                    } */}
+                    }
                 </div>
                 {this.state.dialogMessage && this.snackBarMessage()}
             </div>
@@ -657,8 +536,7 @@ const mapDispatchToProps = (dispatch) =>
             clearJobEntry,
             APITransport,
             CreateCorpus: APITransport,
-            FetchDocument,
-            clearEvent
+            FetchDocument
         },
         dispatch
     );

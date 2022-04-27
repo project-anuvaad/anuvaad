@@ -10,7 +10,7 @@ import { withStyles, Typography } from "@material-ui/core";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Grid from '@material-ui/core/Grid';
 import Link from '@material-ui/core/Link';
-
+import Hidden from '@material-ui/core/Hidden';
 import ThemeDefault from "../../../theme/web/theme-default";
 import LoginStyles from "../../../styles/web/LoginStyles";
 import history from "../../../../web.history";
@@ -30,13 +30,12 @@ class Login extends React.Component {
       email: "",
       password: "",
       error: false,
-      loading: false,
-      errMessage: ""
+      loading: false
     };
   }
 
   getSnapshotBeforeUpdate(prevProps, prevState) {
-    // TELEMETRY.pageLoadStarted('login')
+    TELEMETRY.pageLoadStarted('login')
     /**
     * getSnapshotBeforeUpdate() must return null
     */
@@ -80,14 +79,14 @@ class Login extends React.Component {
     }).then(async response => {
       const rsp_data = await response.json();
       if (!response.ok) {
-        return Promise.reject(rsp_data.message);
+        return Promise.reject('');
       } else {
         let resData = rsp_data && rsp_data.data
         localStorage.setItem("token", resData.token)
         this.fetchUserProfileDetails(resData.token)
       }
     }).catch((error) => {
-      this.setState({ error: true, loading: false, errMessage:error })
+      this.setState({ error: true, loading: false })
     });
   };
 
@@ -116,13 +115,10 @@ class Login extends React.Component {
         localStorage.setItem("roles", roles)
         localStorage.setItem("lang", "en")
         localStorage.setItem("userProfile", JSON.stringify(resData));
-        if (roles.includes('ADMIN')) {
-          history.push(`${process.env.PUBLIC_URL}/user-details`);
+        if (roles.includes('ADMIN')){
+          history.push(`${process.env.PUBLIC_URL}/user-details/0`);
           // history.push(`${process.env.PUBLIC_URL}/create-user`)
-        } else if (roles.includes('TRANSLATOR')) {
-          history.push(`${process.env.PUBLIC_URL}/view-document`);
-        }
-        else {
+        }else{
           history.push(`${process.env.PUBLIC_URL}/view-document`);
         }
         // history.push(`${process.env.PUBLIC_URL}/create-user`)
@@ -138,13 +134,15 @@ class Login extends React.Component {
     return (
       <MuiThemeProvider theme={ThemeDefault} >
 
-        <div style={{ height: window.innerHeight, overflow: 'hidden' }}>
-          <Grid container spacing={8}>
-            <Grid item xs={12} sm={4} lg={5} xl={5} style={{ paddingRight: "0px" }}>
-              <img src="Anuvaad.png" width="100%" height="81%" alt="" style={{ backgroundRepeat: 'repeat-y' }} />
+        <div style={{ height: "100vh", overflow: 'hidden' }}>
+          <Grid container spacing={8}style={{ height: "108vh" }}>
+            <Grid item xs={false} sm={5} lg={5} xl={5} style={{ paddingRight: "0px" }}>
+            <Hidden only="xs">
+              <img src="bg-page-logo.png" width="100%" height="100%" style={{paddingLeft:'0%'}} alt="" style={{ backgroundRepeat: 'repeat-y',marginLeft:'0%', marginTop:'0%' }} />
+            </Hidden>
             </Grid>
-            <Grid item xs={12} sm={8} lg={7} xl={7} className={classes.signUpPaper} >
-              <Typography align='center' variant='h4' className={classes.typographyHeader} style={{ marginTop: '240px' }}>Sign In</Typography>
+            <Grid item xs={12} sm={7} lg={7} xl={7} className={classes.signUpPaper} >
+              <Typography align='center' variant='h4' className={classes.typographyHeader} style={{ marginTop: '240px', fontSize:'45px' }}>আমার ভাষা</Typography>
 
               <FormControl align='center' fullWidth >
                 <TextField value={this.state.email} id="email" type="email-username" placeholder={translate('common.page.placeholder.emailUsername')}
@@ -156,7 +154,7 @@ class Login extends React.Component {
 
                 <div className={classes.wrapper}>
                   <Button
-                    id="signin-btn"
+                  id="signin-btn"
                     variant="contained" aria-label="edit" style={{
                       width: '50%', marginBottom: '2%', marginTop: '2%', borderRadius: '20px', height: '45px', textTransform: 'initial', fontWeight: '20px',
                       backgroundColor: this.state.loading ? 'grey' : '#1ca9c9', color: 'white',
@@ -169,10 +167,10 @@ class Login extends React.Component {
 
               </FormControl>
 
-              <Typography>
+              {/* <Typography>
                 <Link id="forgotpassword" style={{ cursor: 'pointer', color: '#0C8AA9', marginLeft: '25%', float: 'left' }} href="#" onClick={() => { history.push(`${process.env.PUBLIC_URL}/forgot-password`); }}> {translate('updatePassword.page.label.forgotPassword')}</Link>
-                <Link id="signup" style={{ cursor: 'pointer', color: '#0C8AA9', marginRight: '25%', float: 'right' }} href="#" onClick={() => { history.push(`${process.env.PUBLIC_URL}/signup`); }}> {translate('singUp.page.label.signUp')}</Link>
-              </Typography>
+                <Link id= "signup" style={{ cursor: 'pointer', color: '#0C8AA9', marginRight: '25%', float: 'right' }} href="#" onClick={() =>{ history.push(`${process.env.PUBLIC_URL}/signup`); }}> {translate('singUp.page.label.signUp')}</Link>
+              </Typography> */}
             </Grid>
           </Grid>
           <div className={classes.buttonsDiv} />
@@ -183,7 +181,7 @@ class Login extends React.Component {
               autoHideDuration={4000}
               onClose={this.handleClose}
               variant="error"
-              message={this.state.errMessage}
+              message={"Invalid Username/Password"}
             />
           )}
         </div>

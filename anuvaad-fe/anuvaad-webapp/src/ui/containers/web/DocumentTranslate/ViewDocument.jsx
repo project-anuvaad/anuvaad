@@ -27,7 +27,6 @@ import MarkInactive from "../../../../flux/actions/apis/view_document/markinacti
 import JobStatus from "../../../../flux/actions/apis/view_document/translation.progress";
 import { clearJobEntry } from "../../../../flux/actions/users/async_job_management";
 import DownloadFile from "../../../../flux/actions/apis/download/download_file";
-import fetchpageno from '../../../../flux/actions/apis/view_document/fetch_page_no';
 
 const TELEMETRY = require("../../../../utils/TelemetryManager");
 
@@ -40,7 +39,7 @@ class ViewDocument extends React.Component {
       offset: 0,
       limit: 10,
       currentPageIndex: 0,
-      maxPageNum: 0,
+      maxPageNum:0,
       dialogMessage: null,
       timeOut: 3000,
       variant: "info",
@@ -123,7 +122,7 @@ class ViewDocument extends React.Component {
         MUIDataTableBodyCell: {
           root: {
             padding: "3px 10px 3px",
-            overflow: "auto"
+            overflow:"auto"
           },
         },
       },
@@ -275,22 +274,18 @@ class ViewDocument extends React.Component {
     this.makeAPICallJobDelete(jobId);
   }
 
-  processDeleteJobClick = (fileName, jobId, recordId) => {
-    this.setState({ showInfo: true, message: "Do you want to delete a file " + fileName + " ?", dialogTitle: "Delete " + fileName, value: jobId })
+  processDeleteJobClick = (fileName,jobId, recordId) => {
+    this.setState({ showInfo: true, message: "Do you want to delete a file " + fileName + " ?", dialogTitle: "Delete "+ fileName, value: jobId })
     // this.makeAPICallJobDelete(jobId);
   };
 
-  processViewDocumentClick = (jobId, recordId, status, workflowCode) => {
-    let role = localStorage.getItem("roles")
+  processViewDocumentClick = (jobId, recordId, status) => {
     let job = this.getJobIdDetail(jobId);
     if (status === "COMPLETED") {
-
       history.push(
-        `${process.env.PUBLIC_URL}/interactive-document/${job.recordId}/${job.converted_filename}/${job.model_id}/${job.filename}/${workflowCode}`,
+        `${process.env.PUBLIC_URL}/interactive-document/${job.recordId}/${job.converted_filename}/${job.model_id}/${job.filename}`,
         this.state
       );
-
-
     } else if (status === "INPROGRESS") {
       this.setState({
         dialogMessage: "Please wait process is Inprogress!",
@@ -336,7 +331,7 @@ class ViewDocument extends React.Component {
     });
     let job = this.getJobIdDetail(jobId);
     let user_profile = JSON.parse(localStorage.getItem("userProfile"));
-    console.log(job.converted_filename,user_profile.userID)
+
     let obj = new DownloadFile(job.converted_filename, user_profile.userID);
 
     const apiReq1 = fetch(obj.apiEndPoint(), {
@@ -387,11 +382,10 @@ class ViewDocument extends React.Component {
   }
 
   processTableClickedNextOrPrevious = (page, sortOrder) => {
-    if (this.props.page_no < page) {
+    if (this.state.maxPageNum < page) {
       /**
        * user wanted to load next set of records
        */
-      this.props.fetchpageno()
       this.makeAPICallJobsBulkSearch(
         this.state.offset + this.state.limit,
         this.state.limit,
@@ -400,10 +394,12 @@ class ViewDocument extends React.Component {
         true
       );
       this.setState({
-        currentPageIndex: page,
+        maxPageNum:page,
         offset: this.state.offset + this.state.limit,
       });
     }
+    this.setState({
+      currentPageIndex: page})
   };
 
   render() {
@@ -447,16 +443,8 @@ class ViewDocument extends React.Component {
         },
       },
       {
-        name: "model_name",
-        label: "Translation Model",
-        options: {
-          filter: false,
-          sort: false,
-        },
-      },
-      {
         name: "status",
-        label: "Translation Status",
+        label: translate("common.page.table.status"),
         options: {
           filter: true,
           sort: false,
@@ -481,14 +469,14 @@ class ViewDocument extends React.Component {
           empty: true,
         },
       },
-      {
-        name: "description",
-        label: "Description",
-        options: {
-          display: 'false',
-          sort: false
-        }
-      },
+      //  {
+      //   name: "bleu_score",
+      //   label: "Average Bleu",
+      //   options: {
+      //     hint: "Total bleu score / Total saved sentence",
+      //     sort: false
+      //   }
+      // }, 
       {
         name: "spent_time",
         label: "Time Spent",
@@ -505,7 +493,7 @@ class ViewDocument extends React.Component {
       },
       {
         name: "Time Taken",
-        label: "Translation Time",
+        label: "Job Time",
         options: {
           filter: true,
           sort: true,
@@ -513,10 +501,10 @@ class ViewDocument extends React.Component {
             if (tableMeta.rowData) {
               return (
                 <div>
-                  {tableMeta.rowData[6] === "COMPLETED" &&
+                  {tableMeta.rowData[5] === "COMPLETED" &&
                     this.getDateTimeDifference(
-                      tableMeta.rowData[11],
-                      tableMeta.rowData[13]
+                      tableMeta.rowData[9],
+                      tableMeta.rowData[11]
                     )}
                 </div>
               );
@@ -526,7 +514,7 @@ class ViewDocument extends React.Component {
       },
       {
         name: "created_on",
-        label: "Translation Start Time",
+        label: translate("common.page.label.timeStamp"),
         options: {
           filter: true,
           sort: true,
@@ -534,18 +522,11 @@ class ViewDocument extends React.Component {
             if (tableMeta.rowData) {
               return (
                 <div>
-                  {this.getDateTimeFromTimestamp(tableMeta.rowData[13])}
+                  {this.getDateTimeFromTimestamp(tableMeta.rowData[11])}
                 </div>
               );
             }
           },
-        },
-      },
-      {
-        name: "workflowCode",
-        label: "Workflow Code",
-        options: {
-          display: "excluded",
         },
       },
       {
@@ -582,8 +563,7 @@ class ViewDocument extends React.Component {
                         this.processViewDocumentClick(
                           tableMeta.rowData[1],
                           tableMeta.rowData[2],
-                          tableMeta.rowData[6],
-                          tableMeta.rowData[14]
+                          tableMeta.rowData[5]
                         )
                       }
                     >
@@ -648,16 +628,17 @@ class ViewDocument extends React.Component {
         },
         options: { sortDirection: "desc" },
       },
-      onChangeRowsPerPage: (limit) => {
+      onChangeRowsPerPage: (limit) =>{
         let diffValue = limit - this.state.limit;
-        if (diffValue > 0) {
-          this.makeAPICallJobsBulkSearch(this.state.offset + diffValue, limit - this.state.limit, false, false, true)
+        if(diffValue>0)
+        {
+          this.makeAPICallJobsBulkSearch(this.state.offset + diffValue , limit - this.state.limit, false, false, true)
         }
-
-        this.setState({ limit })
-
+        
+        this.setState({limit})
+        
       },
-      rowsPerPageOptions: [10],
+      rowsPerPageOptions:[10],
 
       onTableChange: (action, tableState) => {
         switch (action) {
@@ -722,7 +703,6 @@ const mapStateToProps = (state) => ({
   apistatus: state.apistatus,
   job_details: state.job_details,
   async_job_status: state.async_job_status,
-  page_no: state.document_pageno.pageno
 });
 
 const mapDispatchToProps = (dispatch) =>
@@ -731,7 +711,6 @@ const mapDispatchToProps = (dispatch) =>
       clearJobEntry,
       APITransport,
       CreateCorpus: APITransport,
-      fetchpageno
     },
     dispatch
   );

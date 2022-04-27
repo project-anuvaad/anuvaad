@@ -39,8 +39,7 @@ class Dashboard extends React.Component {
       target_languages: [],
       showStatus: false,
       message: null,
-      dialogMessage: null,
-      modelName: ''
+      dialogMessage: null
     };
     this.processTranslateButtonPressed = this.processTranslateButtonPressed.bind(this);
     this.processClearButtonPressed = this.processClearButtonPressed.bind(this);
@@ -60,8 +59,8 @@ class Dashboard extends React.Component {
   componentDidUpdate(prevProps) {
     if (prevProps.fetch_models.models != this.props.fetch_models.models) {
       this.setState({
-        source_languages: LANG_MODEL.get_supported_languages(this.props.fetch_models.models, true),
-        target_languages: LANG_MODEL.get_supported_languages(this.props.fetch_models.models, true)
+        source_languages: LANG_MODEL.get_supported_languages(this.props.fetch_models.models),
+        target_languages: LANG_MODEL.get_supported_languages(this.props.fetch_models.models)
       })
     }
   }
@@ -115,17 +114,16 @@ class Dashboard extends React.Component {
   }
 
   processTranslateButtonPressed() {
-    this.setState({ showStatus: true, message: "Fetching translation..." })
-    let userModel = JSON.parse(localStorage.getItem("userProfile"))
-    let modelId = LANG_MODEL.get_model_details(this.props.fetch_models.models, this.state.source_language_code, this.state.target_language_code, userModel.models)
+      this.setState({ showStatus: true, message: "Fetching translation..." })
+      let modelId = LANG_MODEL.get_model_details(this.props.fetch_models.models, this.state.source_language_code, this.state.target_language_code)
 
-    this.makeAPICallInteractiveTranslation(this.state.text, modelId)
-    // this.makeAPICallAutoML(this.state.text, this.state.source_language_code, this.state.target_language_code)
+      this.makeAPICallInteractiveTranslation(this.state.text, modelId.model_id)
+      // this.makeAPICallAutoML(this.state.text, this.state.source_language_code, this.state.target_language_code)
   }
 
   processSourceLanguageSelected = (event) => {
     this.setState({ source_language_code: event.target.value })
-    const languages = LANG_MODEL.get_counterpart_languages(this.props.fetch_models.models, event.target.value, true)
+    const languages = LANG_MODEL.get_counterpart_languages(this.props.fetch_models.models, event.target.value)
     this.setState({
       target_languages: languages
     })
@@ -162,9 +160,10 @@ class Dashboard extends React.Component {
   }
 
   async makeAPICallInteractiveTranslation(text, modelId) {
-    let apiObj = new InstantTranslateAPI(v4(), '', text, "", false, text, "", modelId, this.state.source_language_code, this.state.target_language_code);
+    let apiObj = new InstantTranslateAPI(v4(), '', text, "", false, text, "", modelId);
 
     this.setState({ anuvaadAPIInProgress: true })
+
     const apiReq = fetch(apiObj.apiEndPoint(), {
       method: 'post',
       body: JSON.stringify(apiObj.getBody()),
@@ -175,19 +174,22 @@ class Dashboard extends React.Component {
         this.setState({ anuvaadAPIInProgress: false, showStatus: false, message: null, dialogMessage: "Unable to fetch translation..." })
         return Promise.reject('');
       } else {
-        let filteredTexts = rsp_data && rsp_data.output && rsp_data.output.translations[0] && rsp_data.output.translations[0].tgt ? rsp_data.output.translations[0].tgt : ""
+        let filteredTexts = rsp_data && rsp_data.response_body && rsp_data.response_body[0] && rsp_data.response_body[0].tgt ? rsp_data.response_body[0].tgt : ""
+
         if (filteredTexts) {
           this.setState({})
           this.setState({
             anuvaadText: filteredTexts,
             anuvaadAPIInProgress: false,
             showStatus: false,
-            message: null,
-            modelName: modelId.model_name
+            message: null
           })
         } else {
           this.setState({ showStatus: false, message: null, dialogMessage: "No translation available..." })
         }
+
+
+
       }
     }).catch((error) => {
       this.setState({ anuvaadAPIInProgress: false, showStatus: false, message: null, dialogMessage: "Unable to fetch translation..." })
@@ -199,7 +201,7 @@ class Dashboard extends React.Component {
       <Grid item xs={12} sm={12} lg={12} xl={12} className={this.props.classes.rowData} style={{ marginTop: "0%" }}>
         <Grid item xs={6} sm={6} lg={8} xl={8} className={this.props.classes.label}>
           <Typography value="" variant="h5">
-            {translate("common.page.label.sourceLang")}&nbsp;<span style={{ color: "red" }}>*</span>
+            {translate("common.page.label.sourceLang")}&nbsp;<span style={{color: "red"}}>*</span>
           </Typography>
         </Grid>
 
@@ -231,7 +233,7 @@ class Dashboard extends React.Component {
       <Grid item xs={12} sm={12} lg={12} xl={12} className={this.props.classes.rowData} style={{ paddingTop: "20px" }}>
         <Grid item xs={6} sm={6} lg={8} xl={8} className={this.props.classes.label}>
           <Typography value="" variant="h5">
-            {translate("common.page.label.targetLang")}&nbsp;<span style={{ color: "red" }}>*</span>
+            {translate("common.page.label.targetLang")}&nbsp;<span style={{color: "red"}}>*</span>
           </Typography>
         </Grid>
         <Grid item xs={6} sm={6} lg={4} xl={4}>
@@ -316,7 +318,7 @@ class Dashboard extends React.Component {
 
             {this.state.anuvaadText && (
               <Grid item xs={12} sm={12} lg={12} xl={12} className={classes.grid}>
-                <Typography variant="h4" gutterBottom style={{ color: '#000000', marginLeft: "40px", textAlign: 'left' }} >{this.state.modelName}</Typography>
+                <Typography variant="h4" gutterBottom style={{ color: '#000000', marginLeft: "40px", textAlign: 'left' }} >{translate("dashbord.page.title.anuvaadModel")}</Typography>
                 <Typography variant="h6" gutterBottom style={{ color: '#000000', marginLeft: "40px", textAlign: 'left' }} >{this.state.anuvaadText}</Typography>
               </Grid>
             )}
