@@ -108,14 +108,14 @@ class AppRoutes extends React.Component {
             <Route exact path={`${process.env.PUBLIC_URL}/`} component={Login} />
             {/* <Route exact path={`${process.env.PUBLIC_URL}/callback`} component={Callback} /> */}
             <Route exact path={`${process.env.PUBLIC_URL}/logout`} component={Logout} />
-            <Route
-              exact
+            {/* <Route
+            exact
               path={`${process.env.PUBLIC_URL}/signup`}
               title="Sign up"
               component={Signup}
               dontShowHeader={true}
               currentMenu="signup"
-            />
+            /> */}
 
             <PrivateRoute
               path={`${process.env.PUBLIC_URL}/profile`}
@@ -175,8 +175,8 @@ class AppRoutes extends React.Component {
               dontShowHeader={true}
             />
 
-
-            <PrivateRoute
+          
+            {/* <PrivateRoute
               path={`${process.env.PUBLIC_URL}/forgot-password`}
               title="Forgot Password"
               authenticate={() => true}
@@ -184,8 +184,7 @@ class AppRoutes extends React.Component {
               drawer
               dontShowHeader={true}
               currentMenu="forgot-password"
-            />
-
+            /> */}
 
             <PrivateRoute
               path={`${process.env.PUBLIC_URL}/glossary-upload`}
