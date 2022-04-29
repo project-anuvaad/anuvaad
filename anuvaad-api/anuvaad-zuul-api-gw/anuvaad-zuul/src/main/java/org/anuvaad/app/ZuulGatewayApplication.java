@@ -49,25 +49,33 @@ public class ZuulGatewayApplication {
     @Value(value = "${redis.ratelimit.db}")
     private Integer ratelimitDb;
 
+    @Value(value = "${zuul.ratelimit.enabledl}")
+    private Boolean ratelimitEnabled;
+
     @Bean
     public JedisConnectionFactory connectionFactory() {
-        RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration();
-        logger.info("host: {}, port: {}, pass: {}", host, port, pass);
-        configuration.setHostName(host);
-        configuration.setPort(Integer.parseInt(port));
-        configuration.setPassword(pass);
-        configuration.setDatabase(ratelimitDb);
-        return new JedisConnectionFactory(configuration);
+        if (ratelimitEnabled) {
+            RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration();
+            logger.info("host: {}, port: {}, pass: {}", host, port, pass);
+            configuration.setHostName(host);
+            configuration.setPort(Integer.parseInt(port));
+            configuration.setPassword(pass);
+            configuration.setDatabase(ratelimitDb);
+            return new JedisConnectionFactory(configuration);
+        }
+        return new JedisConnectionFactory();
     }
 
     @Bean
     public RedisTemplate<String, Object> redisTemplate() {
         final RedisTemplate<String, Object> redisTemplate = new RedisTemplate<String, Object>();
-        redisTemplate.setConnectionFactory(connectionFactory());
-        redisTemplate.setKeySerializer( new StringRedisSerializer() );
-        redisTemplate.setValueSerializer(new StringRedisSerializer() );
-        redisTemplate.setHashKeySerializer(new StringRedisSerializer());
-        redisTemplate.setHashValueSerializer( new StringRedisSerializer() );
+        if (ratelimitEnabled) {
+            redisTemplate.setConnectionFactory(connectionFactory());
+            redisTemplate.setKeySerializer(new StringRedisSerializer());
+            redisTemplate.setValueSerializer(new StringRedisSerializer());
+            redisTemplate.setHashKeySerializer(new StringRedisSerializer());
+            redisTemplate.setHashValueSerializer(new StringRedisSerializer());
+        }
         return redisTemplate;
     }
 
@@ -146,5 +154,13 @@ public class ZuulGatewayApplication {
 
     public void setRatelimitDb(Integer ratelimitDb) {
         this.ratelimitDb = ratelimitDb;
+    }
+
+    public Boolean getRatelimitEnabled() {
+        return ratelimitEnabled;
+    }
+
+    public void setRatelimitEnabled(Boolean ratelimitEnabled) {
+        this.ratelimitEnabled = ratelimitEnabled;
     }
 }
