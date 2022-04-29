@@ -450,7 +450,7 @@ class InteractiveDocHeader extends React.Component {
           </>
           {/* } */}
 
-          {!this.props.preview && workflow !== 'WF_A_FTTKTR' && <MenuItem
+          {/* {!this.props.preview && workflow !== 'WF_A_FTTKTR' && <MenuItem
                         style={{ borderTop: "1px solid #D6D6D6" }}
                         onClick={() => {
                             this.setState({ anchorEl: null })
@@ -458,7 +458,7 @@ class InteractiveDocHeader extends React.Component {
                         }}
                     >
                         As PDF
-                    </MenuItem>}
+                    </MenuItem>} */}
           {workflow !== "WF_A_FTTKTR" ? (
             <MenuItem
               style={{ borderTop: "1px solid #D6D6D6" }}
