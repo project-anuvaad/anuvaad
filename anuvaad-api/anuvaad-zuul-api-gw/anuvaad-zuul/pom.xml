@@ -18,7 +18,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <lombok.version>1.18.8</lombok.version>
         <log4j2.version>2.16.0</log4j2.version>
-       <!-- <springframework.version>5.3.18</springframework.version>-->
+        <springframework.version>5.3.18</springframework.version>
+        <spring-cloud.version>2020.0.3</spring-cloud.version>
     </properties>
     <dependencies>
         <dependency>
