@@ -11,11 +11,9 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
-import org.springframework.stereotype.Service;
 
 import java.util.*;
 
-@Service
 public class ZuulConfigCache implements ApplicationRunner {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 

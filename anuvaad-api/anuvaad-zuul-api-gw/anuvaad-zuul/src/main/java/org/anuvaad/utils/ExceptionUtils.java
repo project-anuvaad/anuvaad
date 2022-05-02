@@ -10,14 +10,12 @@ import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
-@Component
 public class ExceptionUtils {
     private static final Logger logger = LoggerFactory.getLogger(ExceptionUtils.class);
     private static final String SEND_ERROR_FILTER_RAN = "sendErrorFilter.ran";

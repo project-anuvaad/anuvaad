@@ -1,8 +1,5 @@
 package org.anuvaad.constants;
 
-import org.springframework.stereotype.Component;
-
-@Component
 public class RequestContextConstants {
     public static final String AUTH_BOOLEAN_FLAG_NAME = "shouldDoAuth";
     public static final String AUTH_TOKEN_KEY = "authToken";
