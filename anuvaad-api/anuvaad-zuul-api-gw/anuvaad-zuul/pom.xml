@@ -18,14 +18,14 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <lombok.version>1.18.8</lombok.version>
         <log4j2.version>2.16.0</log4j2.version>
-        <springframework.version>5.3.18</springframework.version>
-        <spring-cloud.version>2020.0.3</spring-cloud.version>
+       <!-- <springframework.version>5.3.19</springframework.version>
+        <spring-cloud.version>2020.0.3</spring-cloud.version>-->
     </properties>
     <dependencies>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-framework-bom</artifactId>
-            <version>5.3.18</version>
+            <version>5.3.19</version>
             <type>pom</type>
         </dependency>
         <dependency>
@@ -37,11 +37,6 @@
             <groupId>com.netflix.netflix-commons</groupId>
             <artifactId>netflix-commons-util</artifactId>
             <version>0.3.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.jayway.jsonpath</groupId>
