@@ -20,15 +20,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
-import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.web.client.RestTemplate;
 
-
 @EnableZuulProxy
-@EnableCaching
 @SpringBootApplication
 public class ZuulGatewayApplication {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -52,7 +48,6 @@ public class ZuulGatewayApplication {
     @Value(value = "${zuul.ratelimit.enabledl}")
     private Boolean ratelimitEnabled;
 
-    @Bean
     public JedisConnectionFactory connectionFactory() {
         if (ratelimitEnabled) {
             RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration();
@@ -66,7 +61,6 @@ public class ZuulGatewayApplication {
         return new JedisConnectionFactory();
     }
 
-    @Bean
     public RedisTemplate<String, Object> redisTemplate() {
         final RedisTemplate<String, Object> redisTemplate = new RedisTemplate<String, Object>();
         if (ratelimitEnabled) {
@@ -85,39 +79,30 @@ public class ZuulGatewayApplication {
     @Autowired
     public RestTemplate restTemplate;
 
-    @Bean
     public RestTemplate restTemplate() {return new RestTemplate();}
 
-    @Bean
     public UserUtils userUtils() {return new UserUtils(restTemplate);}
 
-    @Bean
     public ZuulConfigCache zuulConfigCache() {return new ZuulConfigCache(resourceLoader); }
 
-    @Bean
     public CorrelationFilter correlationFilter(){
         return new CorrelationFilter();
     }
 
-    @Bean
     public AuthFilter authFilter(){
         return new AuthFilter();
     }
 
-    @Bean
     public RbacFilter rbacFilter(){
         return new RbacFilter(resourceLoader);
     }
 
-    @Bean
     public ErrorFilterFilter errorFilterFilter(){
         return new ErrorFilterFilter();
     }
 
-    @Bean
     public ResponseFilter responseFilter() {return new ResponseFilter();}
 
-    @Bean
     RedisClient redisClient() {
         logger.info("host: {}, port: {}, pass: {}", this.host, this.port, this.pass);
         RedisURI uri = RedisURI.Builder.redis(this.host, Integer.parseInt(this.port))

@@ -8,10 +8,10 @@
         <version>2.6.6</version>
     </parent>
     <groupId>com.example</groupId>
-    <artifactId>anuvaad-zuul</artifactId>
+    <artifactId>ulca-zuul-gw</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>anuvaad-zuul</name>
-    <description>Api gateway for egov</description>
+    <description>Api gateway for Anuvaad</description>
     <properties>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>11</java.version>
@@ -20,6 +20,16 @@
         <log4j2.version>2.16.0</log4j2.version>
     </properties>
     <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <version>2.6.6</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>5.3.1</version>
+        </dependency>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-zuul</artifactId>
@@ -51,11 +61,7 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
-            <version>5.2.5.RELEASE</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
+            <version>5.3.18</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
