@@ -8,7 +8,7 @@
         <version>2.6.6</version>
     </parent>
     <groupId>com.anuvaad</groupId>
-    <artifactId>anuvaad-zuul-gw</artifactId>
+    <artifactId>anuvaad-zuul</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>anuvaad-zuul</name>
     <description>Api gateway for Anuvaad</description>
