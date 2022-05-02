@@ -48,6 +48,7 @@ public class ZuulGatewayApplication {
     @Value(value = "${zuul.ratelimit.enabledl}")
     private Boolean ratelimitEnabled;
 
+
     public JedisConnectionFactory connectionFactory() {
         if (ratelimitEnabled) {
             RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration();
