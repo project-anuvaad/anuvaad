@@ -63,7 +63,7 @@ public class ZuulGatewayApplication {
             configuration.setDatabase(ratelimitDb);
             return new JedisConnectionFactory(configuration);
         }
-        return new JedisConnectionFactory();
+        return null;
     }
 
     @Bean
@@ -75,8 +75,9 @@ public class ZuulGatewayApplication {
             redisTemplate.setValueSerializer(new StringRedisSerializer());
             redisTemplate.setHashKeySerializer(new StringRedisSerializer());
             redisTemplate.setHashValueSerializer(new StringRedisSerializer());
+            return redisTemplate;
         }
-        return redisTemplate;
+        return null;
     }
 
     @Autowired

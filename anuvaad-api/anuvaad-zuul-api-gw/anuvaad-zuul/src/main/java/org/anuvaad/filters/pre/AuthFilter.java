@@ -17,7 +17,7 @@ import org.springframework.http.HttpStatus;
 import java.util.*;
 
 import static org.anuvaad.constants.RequestContextConstants.*;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 /**
  * 2nd filter to execute in the request flow.
@@ -26,7 +26,7 @@ import org.springframework.stereotype.Service;
  * Performs authentication level checks on the request.
  *
  */
-@Service
+@Component
 public class AuthFilter extends ZuulFilter {
 
     @Autowired
