@@ -48,7 +48,7 @@ public class ZuulGatewayApplication {
     @Value(value = "${redis.ratelimit.db}")
     private Integer ratelimitDb;
 
-    @Value(value = "${zuul.ratelimit.enabledl}")
+    @Value(value = "${zuul.ratelimit.enabled}")
     private Boolean ratelimitEnabled;
 
 
