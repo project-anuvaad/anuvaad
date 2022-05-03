@@ -71,8 +71,8 @@ public class ZuulGatewayApplication {
     @Bean
     public RedisTemplate<String, Object> redisTemplate() {
         final RedisTemplate<String, Object> redisTemplate = new RedisTemplate<String, Object>();
+        redisTemplate.setConnectionFactory(connectionFactory());
         if (ratelimitEnabled) {
-            redisTemplate.setConnectionFactory(connectionFactory());
             redisTemplate.setKeySerializer(new StringRedisSerializer());
             redisTemplate.setValueSerializer(new StringRedisSerializer());
             redisTemplate.setHashKeySerializer(new StringRedisSerializer());
