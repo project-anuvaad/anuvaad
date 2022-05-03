@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -28,6 +28,7 @@ import static org.anuvaad.constants.RequestContextConstants.*;
  * Performs authorisation level checks on the request.
  *
  */
+@Service
 public class RbacFilter extends ZuulFilter {
 
     private ObjectMapper objectMapper;

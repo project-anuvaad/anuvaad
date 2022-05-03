@@ -9,6 +9,7 @@ import org.slf4j.MDC;
 import java.util.UUID;
 
 import static org.anuvaad.constants.RequestContextConstants.*;
+import org.springframework.stereotype.Service;
 
 /**
  * 1st filter to execute in the request flow.
@@ -16,6 +17,7 @@ import static org.anuvaad.constants.RequestContextConstants.*;
  * This can be treated as a unique request id per request for request tracing purposes.
  *
  */
+@Service
 public class CorrelationFilter extends ZuulFilter {
 
     private static final String RECEIVED_REQUEST_MESSAGE = "Received request for: {}";

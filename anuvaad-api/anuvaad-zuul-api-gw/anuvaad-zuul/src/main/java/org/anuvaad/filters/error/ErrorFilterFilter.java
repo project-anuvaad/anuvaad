@@ -5,7 +5,9 @@ import com.netflix.zuul.context.RequestContext;
 import org.anuvaad.utils.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
+@Service
 public class ErrorFilterFilter extends ZuulFilter {
 
     private static final String ERROR_STATUS_CODE = "error.status_code";

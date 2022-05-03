@@ -13,10 +13,12 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.springframework.stereotype.Service;
 
 import static org.anuvaad.constants.RequestContextConstants.CORRELATION_ID_HEADER_NAME;
 import static org.anuvaad.constants.RequestContextConstants.CORRELATION_ID_KEY;
 
+@Service
 public class UserUtils {
 
     @Value("${anuvaad.ums.host}")
