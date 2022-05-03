@@ -3,6 +3,7 @@ package org.anuvaad.app;
 
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.RedisURI;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
@@ -59,7 +60,8 @@ public class ZuulGatewayApplication {
             logger.info("host: {}, port: {}, pass: {}", host, port, pass);
             configuration.setHostName(host);
             configuration.setPort(Integer.parseInt(port));
-            configuration.setPassword(pass);
+            if (!StringUtils.isEmpty(pass))
+                configuration.setPassword(pass);
             configuration.setDatabase(ratelimitDb);
             return new JedisConnectionFactory(configuration);
         }
@@ -120,11 +122,13 @@ public class ZuulGatewayApplication {
 
     @Bean
     RedisClient redisClient() {
-        logger.info("host: {}, port: {}, pass: {}", this.host, this.port, this.pass);
-        RedisURI uri = RedisURI.Builder.redis(this.host, Integer.parseInt(this.port))
-                .withPassword(this.pass)
-                .build();
-        return RedisClient.create(uri);
+        if (ratelimitEnabled) {
+            logger.info("host: {}, port: {}, pass: {}", this.host, this.port, this.pass);
+            RedisURI uri = RedisURI.Builder.redis(this.host, Integer.parseInt(this.port))
+                    .build();
+            return RedisClient.create(uri);
+        }
+        return null;
     }
 
     public String getHost() {
