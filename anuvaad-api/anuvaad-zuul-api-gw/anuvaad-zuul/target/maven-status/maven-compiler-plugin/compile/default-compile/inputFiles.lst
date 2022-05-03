@@ -3,8 +3,8 @@
 /Users/mahulivishal/Desktop/anuvaad-zuul/anuvaad/anuvaad-api/anuvaad-zuul-api-gw/anuvaad-zuul/src/main/java/org/anuvaad/constants/RequestContextConstants.java
 /Users/mahulivishal/Desktop/anuvaad-zuul/anuvaad/anuvaad-api/anuvaad-zuul-api-gw/anuvaad-zuul/src/main/java/org/anuvaad/cache/ZuulConfigCache.java
 /Users/mahulivishal/Desktop/anuvaad-zuul/anuvaad/anuvaad-api/anuvaad-zuul-api-gw/anuvaad-zuul/src/main/java/org/anuvaad/models/Role.java
-/Users/mahulivishal/Desktop/anuvaad-zuul/anuvaad/anuvaad-api/anuvaad-zuul-api-gw/anuvaad-zuul/src/main/java/org/anuvaad/config/ZuulConfig.java
 /Users/mahulivishal/Desktop/anuvaad-zuul/anuvaad/anuvaad-api/anuvaad-zuul-api-gw/anuvaad-zuul/src/main/java/org/anuvaad/models/UMSResponse.java
+/Users/mahulivishal/Desktop/anuvaad-zuul/anuvaad/anuvaad-api/anuvaad-zuul-api-gw/anuvaad-zuul/src/main/java/org/anuvaad/config/ZuulConfiguration.java
 /Users/mahulivishal/Desktop/anuvaad-zuul/anuvaad/anuvaad-api/anuvaad-zuul-api-gw/anuvaad-zuul/src/main/java/org/anuvaad/filters/pre/AuthFilter.java
 /Users/mahulivishal/Desktop/anuvaad-zuul/anuvaad/anuvaad-api/anuvaad-zuul-api-gw/anuvaad-zuul/src/main/java/org/anuvaad/exceptions/CustomException.java
 /Users/mahulivishal/Desktop/anuvaad-zuul/anuvaad/anuvaad-api/anuvaad-zuul-api-gw/anuvaad-zuul/src/main/java/org/anuvaad/utils/UserUtils.java
