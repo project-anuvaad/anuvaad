@@ -1,0 +1,301 @@
+swagger: "2.0"
+info:
+  version: 1.0.0
+  title: Anuvaad Page Layout Tesseract
+  description: A python based microservice to trigger and orchestrate document layout information present in the given file
+  contact:
+    name: Naresh & Dhiraj, dhiraj.daga@tarento.com
+    email: naresh.kumar@tarento.com
+
+schemes:
+  - https
+basePath: '/api'
+
+paths:
+
+  /v0/page-layout/tesseract:
+    post:
+      summary: API to extract layout information from given files
+      parameters:
+        - name: inputs
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/PageLayoutRequest'
+      tags:
+      - Page Layout Tesseract
+      responses:
+        200:
+          description: On successful completion of the job.
+          schema:
+            $ref: '#/definitions/PageLayoutResponse'
+        400:
+          description: On input errors causing a failure in the job.
+          schema:
+            $ref: '#/definitions/Error'
+
+definitions:
+  PageLayoutRequest:
+    type : object
+    properties:
+      input :
+        type : object
+        properties:
+          files:
+            type: array
+            description : a list of objets having file, file_config and pages
+            items:
+              type: object
+              properties:
+                file:
+                  type: object
+                  $ref : '#/definitions/File'
+                file_config:
+                  type: object
+                  $ref : '#/definitions/FileConfig'
+
+                pages :
+                  type : array
+                  description: page level word and line coordinates
+                  items :
+                    $ref: '#/definitions/PageInput'
+
+  PageLayoutResponse:
+    type : object
+    properties:
+      output :
+        type : object
+        properties:
+          files:
+            type: array
+            description : a list of objets having file, file_config and pages
+            items:
+              type: object
+              properties:
+                file:
+                  type: object
+                  $ref : '#/definitions/File'
+                file_config:
+                  type: object
+                  $ref : '#/definitions/FileConfig'
+
+                pages :
+                  type : array
+                  description: page level word and line coordinates
+                  items :
+                    $ref: '#/definitions/PageOutput'
+
+  File:
+    type: object
+    properties :
+      name :
+        type: string
+        description: name of input file
+      type :
+        type: string
+        description: type of input file
+      identifier:
+        type: string
+        description: unique identifier for a file
+
+
+  FileConfig:
+    type: object
+    properties:
+      language :
+        type : string
+        description: 'ISO 639-1  language code'
+      ocr_config:
+        type: object
+        description: configuration for tuning speed and accuracy of ocr mdoule
+        $ref: '#/definitions/OcrConfig'
+
+
+
+
+  PageInput:
+    type: object
+    properties:
+      identifier:
+        type: string
+        description: unique page identifier
+      width:
+        type: integer
+        description:  page width
+      height:
+        type: integer
+        description:  page height
+      path:
+        type: string
+        description:  page image name
+      words :
+        type : array
+        description: coordinates of extracted words
+        items:
+          $ref: '#/definitions/Word'
+      lines :
+        type : array
+        description: coordinates and attributes extracted lines
+        items:
+          $ref: '#/definitions/Line'
+
+
+
+  PageOutput:
+    type: object
+    properties:
+      identifier:
+        type: string
+        description: unique page identifier
+      width:
+        type: integer
+        description:  page width
+      height:
+        type: integer
+        description:  page height
+      path:
+        type: string
+        description:  page image name
+      words :
+        type : array
+        description: coordinates of extracted words
+        items:
+          $ref: '#/definitions/Word'
+      lines :
+        type : array
+        description: coordinates and attributes extracted lines
+        items:
+          $ref: '#/definitions/Line'
+
+      layout :
+        type: array
+        description: class and coordinates of layout units
+        items:
+          $ref: '#/definitions/Layout'
+
+
+
+  Layout:
+    type: object
+    properties:
+      coordinates:
+          type: object
+          description:  coordinates and confidence extracted by layout unit
+          $ref: '#/definitions/Coordinates'
+      class:
+          description: category of detected layout unit
+          type: string
+          enum : ['TEXT', 'IMAGE', 'TABLE', 'SEPARATOR', 'MATHEMATICAL_FORMULA', 'OTHER']
+      identifier:
+        type: string
+        description: unique identifier
+
+
+  Word:
+    type: object
+    properties:
+      identifier:
+        type: string
+        description: unique identifier for word
+      text:
+        type: string
+        description:   extracted text
+      ocr_confidence:
+        type : number
+        description: confidence of OCR tool
+
+      font_size:
+        type: integer
+        description: font size
+      font_family:
+        type: string
+        description: font family of extracted text
+      attributes:
+        type: array
+        items:
+          type: string
+          enum: ['BOLD','ITALIC','UNDERLINE']
+
+      coordinates:
+        type: object
+        description: word coordinates extracted by craft
+        $ref: '#/definitions/Coordinates'
+
+  Line:
+    type: object
+    properties:
+      coordinates:
+        type: object
+        description: line coordinates extracted by craft
+        $ref: '#/definitions/Coordinates'
+      text:
+        type: string
+        description:   extracted text
+
+      font_size:
+        type: integer
+        description: font size
+      font_family:
+        type: string
+        description: font family of extracted text
+
+      identifier:
+        type: string
+        description: unique identifier for line
+      attribute:
+        type: string
+        enum: ['HEADER', 'FOOTER', 'NONE']
+
+  Coordinates:
+    type: object
+    properties:
+      top:
+        type: integer
+        description: y co-ordinate of the bounding box
+      left:
+        type: integer
+        description: x co-ordinate of the bounding box
+      width:
+        type: integer
+        description: width of the bounding box
+      height:
+        type: integer
+        description: height of bounding box
+      confidence:
+        type: number
+        description: detection confidence
+
+
+  
+  OcrConfig:
+    type: object
+    description: configuration for tuning speed and accuracy of ocr mdoule
+    properties:
+      level:
+        type: string
+        enum: ['PAGE','LINE','BLOCK' ]
+      mode:
+        type: string
+        enum: ['ACCURRATE','FAST']  
+  
+  HttpOutput:
+    type: object
+    properties:
+      status:
+        type: number
+        description: Status code. 
+  
+  Error:
+    type: object
+    properties:        
+      ok:
+        type: boolean
+        description: request successful indicator.
+      why:
+        type: string
+        description: Response message.
+      http:
+        type: object
+        description: Final output of this process.
+        $ref: '#/definitions/HttpOutput'
+        

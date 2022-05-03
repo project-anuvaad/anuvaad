@@ -1,0 +1,12 @@
+Flask-Cors==3.0.9
+anuvaad-auditor==0.1.4
+Flask-RESTful==0.3.8
+six==1.15.0
+Flask==1.1.2
+python-dateutil==2.7.3
+dateutils==0.6.12
+google-cloud-translate==3.0.2
+google-cloud==0.34.0
+google-cloud-core==1.6.0
+protobuf==3.15.6
+uuid==1.30

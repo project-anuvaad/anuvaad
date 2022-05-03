@@ -1,0 +1,549 @@
+swagger: "2.0"
+info:
+  version: 1.0.0
+  title: Anuvaad Content Handler - API Contract
+  description: A python based microservice to trigger and orchestrate the content handler part of anuvaad-extractor.
+  contact:
+    name: Kumar Deepak
+    email: kumar.deepak@tarento.com
+
+schemes:
+  - https
+basePath: '/anuvaad/content-handler'
+
+
+paths: 
+  /v0/save-content:
+    post:
+      summary: REST API to save file content.
+      description: This api takes file data as json and save it in db, it's an sync api.
+      parameters:
+        - name: request
+          in: body
+          required: true
+          description: Request format accepted by this API.
+          schema:
+            $ref: '#/definitions/Request'
+        - name: userid
+          in: header
+          type: string
+          required: true
+            
+      tags:
+      - Content Handler
+
+      responses:
+        200:
+          description: On successful completion of the job.
+          schema:
+            $ref: '#/definitions/Response'
+        400:
+          description: On input errors causing a failure in the job.
+          schema:
+            $ref: '#/definitions/Error'
+    
+  /v0/fetch-content:
+    get:
+      summary: REST API to retreive file content.
+      description: This api takes process identifier and sends the content corresponding to that process, it's an sync api.
+      parameters:
+        - in: query
+          name: job_id
+          type: string
+          description: The job_id for the content
+        - in: query
+          name: record_id
+          type: string
+          description: The record_id for the content
+        - in: query
+          name: start_page
+          type: number
+          description: The start page for the content
+        - in: query
+          name: end_page
+          type: number
+          description: The end page for the content
+            
+      tags:
+      - Content Handler
+
+      responses:
+        200:
+          description: On successful completion of the job.
+          schema:
+            $ref: '#/definitions/ContentResponse'
+        400:
+          description: On input errors causing a failure in the job.
+          schema:
+            $ref: '#/definitions/Error'
+  
+  /v0/update-content:
+    post:
+      summary: REST API to update file content.
+      description: This api takes array of blocks(which can be of any type,i.e. text-block, images, tables) and update it in db, it's an sync api.
+      parameters:
+        - name: request
+          in: body
+          required: true
+          description: Request format accepted by this API.
+          schema:
+            $ref: '#/definitions/UpdateBlocks'
+            
+      tags:
+      - Content Handler
+
+      responses:
+        200:
+          description: On successful completion of the job.
+          schema:
+            $ref: '#/definitions/UpdateBlocks'
+        400:
+          description: On input errors causing a failure in the job.
+          schema:
+            $ref: '#/definitions/Error'
+  
+  /v0/fetch-content-sentence:
+    post:
+      summary: API to get sentence
+      parameters:
+        - name: request
+          in: body
+          required: true
+          description: Request format accepted by this API.
+          schema:
+            $ref: '#/definitions/SentencesSearch'
+        - name: userid
+          in: header
+          type: string
+          required: true
+      tags:
+      - Content Handler
+      responses:
+        200:
+          description: On successful completion of the job.
+          schema:
+            $ref: '#/definitions/SentenceResponse'
+        400:
+          description: On input errors causing a failure in the job.
+          schema:
+            $ref: '#/definitions/Error'
+            
+  /v0/save-content-sentence:
+    post:
+      summary: API to update a sentence or array of sentence object
+      parameters:
+        - name: userid
+          in: header
+          type: string
+          required: true
+        - name: request
+          in: body
+          required: true
+          description: Request format accepted by this API.
+          schema:
+            $ref: '#/definitions/UpdateSentences'
+      tags:
+      - Content Handler
+      responses:
+        200:
+          description: On successful completion of the job.
+          schema:
+            $ref: '#/definitions/SentenceResponse'
+        400:
+          description: On input errors causing a failure in the job.
+          schema:
+            $ref: '#/definitions/Error'
+  
+  /v0/dictionary/update:
+    post:
+      summary: API to update or save words in dictionary
+      parameters:
+        - name: words
+          in: body
+          required: true
+          description: array of words
+          schema:
+            $ref: '#/definitions/Words'
+      tags:
+      - Dictionary
+      responses:
+        200:
+          description: On successful completion of the job.
+          schema:
+            $ref: '#/definitions/WordResponse'
+        400:
+          description: On input errors causing a failure in the job.
+          schema:
+            $ref: '#/definitions/Error'
+            
+  /v0/dictionary/search:
+    post:
+      summary: API to fetch word(s) meaning
+      parameters:
+        - name: words
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/DictionarySearchRequest'
+      tags:
+      - Dictionary
+      responses:
+        200:
+          description: On successful completion of the job.
+          schema:
+            $ref: '#/definitions/WordResponse'
+        400:
+          description: On input errors causing a failure in the job.
+          schema:
+            $ref: '#/definitions/Error'
+
+  /v0/records/search:
+    post:
+      summary: API to fetch word(s) meaning
+      parameters:
+        - name: words
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/RecordsSearch'
+      tags:
+      - Content Handler
+      responses:
+        200:
+          description: On successful completion of the job.
+          schema:
+            $ref: '#/definitions/RecordsSearchResponse'
+        400:
+          description: On input errors causing a failure in the job.
+          schema:
+            $ref: '#/definitions/Error'
+            
+definitions:
+
+  Sentence:
+    type: object
+    properties:
+      n_id:
+        type: string
+        description: NMT identifier
+      s_id:
+        type: string
+        description: sentence identifier, once defined this cannot be updated
+      src:
+        type: string
+        description: source sentence
+      tgt:
+        type: string
+        description: translated sentence
+      s0_src:
+        type: string
+        description: baseline source sentence, cannot be updated
+      s0_tgt:
+        type: string
+        description: baseline translated sentence, cannot be updated
+      save:
+        type: boolean
+        description: save flag true or false
+
+  UpdateSentences:
+    type: object
+    properties:
+      sentences:
+        type: array
+        items:
+            $ref: '#/definitions/Sentence'
+      workflowCode:
+        type: string
+        description: workflow code to identify update type
+
+  Sentences:
+    type: object
+    properties:
+      sentences:
+        type: array
+        items:
+            $ref: '#/definitions/Sentence'
+            
+  SentencesSearch:
+    type: object
+    properties:
+      sentences:
+        type: array
+        description: array of s_id string
+        items:
+          type: string
+        
+  SentenceResponse:
+    type: object
+    properties:        
+      data:
+        type: object
+        description: "Sentence object"
+        $ref: '#/definitions/Sentences'
+      ok:
+        type: boolean
+        description: request successful indicator.
+      why:
+        type: string
+        description: Response message.
+      count:
+        type: number
+        description: Total Available pages
+      http:
+        type: object
+        description: Final output of this process.
+        $ref: '#/definitions/HttpOutput'
+  
+  RecordsSearch:
+    type: object
+    properties:
+      record_ids:
+        type: array
+        description: array of record_id string
+        items:
+          type: string
+          
+  RecordSearchResponse:
+    type: object
+    properties:
+      total_count:
+        type: integer
+        description: count of total sentences present under that record_id
+      record_id:
+        type: string
+        description: record_id
+      completed_count:
+        type: integer
+        description: count of saved sentences present under that record_id
+  
+  RecordsSearchResponse:
+    type: object
+    properties:
+      data:
+        type: array
+        description: array of s_id string
+        items:
+          $ref: '#/definitions/RecordSearchResponse'
+      ok:
+        type: boolean
+        description: request successful indicator.
+      why:
+        type: string
+        description: Response message.
+      count:
+        type: number
+        description: Total Available pages
+      http:
+        type: object
+        description: Final output of this process.
+        $ref: '#/definitions/HttpOutput'
+  
+  HttpOutput:
+    type: object
+    properties:
+      status:
+        type: number
+        description: Status code. 
+  
+  Obj:
+    type: object
+    
+  Result:
+    type: object
+    properties:
+      page_no:
+        type: number
+      page_width:
+        type: number
+      page_height:
+        type: number
+      lines:
+        type: array
+        items:
+          $ref: '#/definitions/Obj'
+      tables:
+        type: array
+        items:
+          $ref: '#/definitions/Obj'
+      images:
+        type: array
+        items:
+          $ref: '#/definitions/Obj'
+      text_blocks:
+        type: array
+        items:
+          $ref: '#/definitions/Obj'
+      
+  Request:
+    type: object
+    properties:
+      record_id:
+        type: string
+        description: Record id for the file to be converted.
+      file_locale:
+        type: string
+        description: File locale for the file to be converted.
+      src_lang:
+        type: string
+        description: source language code, e.g. en,hi etc
+      tgt_lang:
+        type: string
+        description: target langugage code
+      pages:
+        type: array
+        description: File id for the file to be converted.
+        items:
+          $ref: '#/definitions/Result'
+  
+  UpdateBlocks:
+    type: object
+    properties:
+        modifiedSentences:
+          type: array
+          description: list of modified sentence identifier
+          items:
+            type: string
+            format: uuidv4
+        blocks:
+          type: array
+          description: list of blocks to be updated under a given workflow code
+          items:
+              $ref: '#/definitions/Block'
+        workflowCode:
+          type: string
+          description: workflow code to identify update type
+
+  Blocks:
+    type: object
+    properties:
+      blocks:
+        type: array
+        items:
+            $ref: '#/definitions/Block'
+        
+  Block:
+    type: object
+  
+  DictionarySearchRequest:
+    type: object
+    properties:
+      word:
+        type: string
+        description: word of interest
+      word_locale:
+        type: string
+        description: possible language code, https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes
+      target_locale:
+        type: string
+        description: language code in word meaning is sought. https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes
+      
+  Word:
+    type: object
+    properties:
+      name:
+        type: string
+        description: dictionary word
+      locale:
+        type: string
+        description: This value should be 'en' otherwise request will be rejected
+      pos:
+        type: array
+        description: Part-of-speech of the word in the given locale
+        items: 
+          type: string
+      examples:
+        type: array
+        description: usage of word in the sentence
+        items:
+          type: string
+      parallel_words:
+        type: array
+        description: parallel word that exists in other language for the given word
+        items:
+          $ref: '#/definitions/Word'
+    
+  Words:
+    type: object
+    properties:
+      words:
+        type: array
+        minItems: 1
+        items:
+            $ref: '#/definitions/Word'
+            
+  WordResponse:
+    type: object
+    properties:        
+      data:
+        type: object
+        description: "response object"
+        properties:
+          words:
+            type: array
+            items:
+              $ref: '#/definitions/Word'
+      ok:
+        type: boolean
+        description: request successful indicator.
+      why:
+        type: string
+        description: Response message.
+      count:
+        type: number
+        description: Total Available pages
+      http:
+        type: object
+        description: Final output of this process.
+        $ref: '#/definitions/HttpOutput'
+      
+  Response:
+    type: object
+    properties:        
+      data:
+        type: string
+      ok:
+        type: boolean
+        description: request successful indicator.
+      why:
+        type: string
+        description: Response message.
+      http:
+        type: object
+        description: Final output of this process.
+        $ref: '#/definitions/HttpOutput'
+        
+  ContentResponse:
+    type: object
+    properties:        
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/Result'
+      ok:
+        type: boolean
+        description: request successful indicator.
+      why:
+        type: string
+        description: Response message.
+      count:
+        type: number
+        description: Total Available pages
+      http:
+        type: object
+        description: Final output of this process.
+        $ref: '#/definitions/HttpOutput'
+      
+  Error:
+    type: object
+    properties:        
+      ok:
+        type: boolean
+        description: request successful indicator.
+      why:
+        type: string
+        description: Response message.
+      http:
+        type: object
+        description: Final output of this process.
+        $ref: '#/definitions/HttpOutput'
+        

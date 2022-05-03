@@ -175,8 +175,10 @@ class UserReport extends React.Component {
         }
        
         if (recordIds.length > 0) {
+            const uniqueIDs = recordIds.filter((val,id,array) => array.indexOf(val) == id);
             const { APITransport } = this.props;
-            const apiObj = new JobStatus(recordIds, true);
+            const apiObj = new JobStatus(uniqueIDs, true);
+            // const apiObj = new JobStatus(recordIds, true);
             APITransport(apiObj);
             this.setState({ showProgress: true, searchToken: false });
         }
@@ -196,7 +198,8 @@ class UserReport extends React.Component {
     };
 
     getJobsAsPerPageAndLimit = (page, limit) => {
-        if(limit === 0) {  
+        if(limit === 0) {
+            // limit = 10  
             this.setState({ limit: 10 });
         }
         return this.getJobsSortedByTimestamp().slice(
@@ -308,7 +311,7 @@ class UserReport extends React.Component {
         return date.toISOString().substr(11, 8);
     }
 
-    processTableClickedNextOrPrevious = (page, sortOrder) => {
+    processTableClickedNextOrPrevious = (page) => {
         if (this.state.currentPageIndex < page) {
             /**
              * user wanted to load next set of records
@@ -320,6 +323,7 @@ class UserReport extends React.Component {
                 false,
                 this.state.userID,
             );
+            // this.makeAPICallDocumentsTranslationProgress();
             this.setState({
                 currentPageIndex: page,
                 offset: this.state.offset + this.state.limit,
@@ -497,6 +501,7 @@ class UserReport extends React.Component {
                 name: "bleu_score",
                 label: "Average Bleu",
                 options: {
+                    hint: "Total bleu score / Total saved sentence",
                     sort: false
                 }
             }, {
@@ -596,13 +601,13 @@ class UserReport extends React.Component {
                 switch (action) {
                     case "changePage":
                         this.processTableClickedNextOrPrevious(
-                            tableState.page,
-                            tableState.sortOrder
+                            tableState.page
                         );
+                        this.setState({ showLoader: true, limit: tableState.rowsPerPage })
                         break;
                     case "changeRowsPerPage":
+                        this.setState({ showLoader: true, limit: tableState.rowsPerPage, currentPageIndex: tableState.page  })
                         this.makeAPICallDocumentsTranslationProgress(tableState.rowsPerPage);
-                        this.setState({ showLoader: true })
                         break;
                     default:
                 }

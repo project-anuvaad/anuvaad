@@ -303,7 +303,7 @@ class StartDigitizationUpload extends React.Component {
     render() {
         const { classes } = this.props
         return (
-            <div style={{ height: window.innerHeight - 141 }}>
+            <div style={{ height: window.innerHeight - 150 }}>
                 <Header />
 
                 <div className={classes.div}>

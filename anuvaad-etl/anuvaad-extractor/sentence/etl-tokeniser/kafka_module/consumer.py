@@ -5,12 +5,12 @@ from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
 import config
 
+
 # Kafka consumer class
 class Consumer(object):
     def __init__(self,topic_name, server_address):
         self.topic_name = topic_name
         self.server_address = server_address
-
     # Consumer initialisation to consume message from queue
     def consumer_instantiate(self):
         try:

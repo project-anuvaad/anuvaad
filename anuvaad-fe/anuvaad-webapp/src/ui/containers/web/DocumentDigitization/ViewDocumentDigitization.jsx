@@ -388,6 +388,12 @@ class ViewDocumentDigitization extends React.Component {
                 options: {
                     filter: false,
                     sort: false,
+                    setCellProps: () => ({
+                        style: {
+                            wordBreak: "break-word",
+                            maxWidth: "300px"
+                        }
+                    }),
                 },
             },
             {
