@@ -210,27 +210,27 @@
         },
         {
             "id":"c5e9002e-4784-453d-b5dc-3dbafb09bc1c",
-            "uri":"/anuvaad-etl/translator/v1/glossary/create",
+            "uri":"/anuvaad-etl/translator/v1/suggested-tmx/create",
             "module":"ANUVAAD-TRANSLATOR",
             "active":true,
             "whiteList":false,
-            "description":"API to create glossary"
+            "description":"API to create TMX suggestion box entries"
         },
         {
             "id":"36a3d56e-34b4-4d66-90cd-dea526f70f0b",
-            "uri":"/anuvaad-etl/translator/v1/glossary/delete",
+            "uri":"/anuvaad-etl/translator/v1/suggested-tmx/delete",
             "module":"ANUVAAD-TRANSLATOR",
             "active":true,
             "whiteList":false,
-            "description":"API to delete glossary"
+            "description":"API to delete TMX suggestion box entries"
         },
         {
             "id":"588efe49-4f9d-4101-b274-aa9755717b52",
-            "uri":"/anuvaad-etl/translator/v1/glossary/get",
+            "uri":"/anuvaad-etl/translator/v1/suggested-tmx/get",
             "module":"ANUVAAD-TRANSLATOR",
             "active":true,
             "whiteList":false,
-            "description":"API to fetch glossary data"
+            "description":"API to fetch TMX suggestion box entries"
         },
         {
             "id":"e5d0b999-a2bb-41af-a267-2494b15fb6a5",
