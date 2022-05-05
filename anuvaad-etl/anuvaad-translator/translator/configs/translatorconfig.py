@@ -85,7 +85,6 @@ anu_translator_nonmt_topic = os.environ.get('KAFKA_ANUVAAD_TRANSLATOR_NONMT_TOPI
 anu_translator_consumer_grp = os.environ.get('KAFKA_ANUVAAD_ETL_TRANSLATOR_CONSUMER_GRP', 'anuvaad-etl-translator-consumer-group')
 translator_cons_no_of_partitions = 1
 translator_nmt_cons_no_of_partitions = 1
-#total_no_of_partitions = os.environ.get('KAFKA_PARTITIONS_PER_TOPIC', 6)
 total_no_of_partitions = 6
 
 
@@ -95,7 +94,7 @@ mongo_translator_collection = os.environ.get('MONGO_TRANSLATOR_CONTENT_COL', 'an
 mongo_trans_pages_collection = os.environ.get('MONGO_TRANSLATOR_PAGES_COL', 'anuvaad-etl-translator-pages-collection')
 mongo_trans_batch_collection = os.environ.get('MONGO_TRANSLATOR_BATCH_COL', 'anuvaad-etl-translator-batch-collection')
 mongo_tmx_collection = os.environ.get('MONGO_TMX_COL', 'anuvaad-tmx-collection')
-mongo_glossary_collection = os.environ.get('MONGO_GLOS_COL', 'anuvaad-glossary-collection')
+mongo_suggestion_box_collection = os.environ.get('MONGO_SUGGESTION_COL', 'anuvaad-tmx-suggestion-collection')
 
 #module-configs
 context_path = os.environ.get('ANUVAAD_ETL_TRANSLATOR_CONTEXT_PATH', '/anuvaad-etl/translator')

@@ -9,11 +9,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.springframework.stereotype.Service;
 
 import static org.anuvaad.constants.RequestContextConstants.CORRELATION_ID_HEADER_NAME;
 import static org.anuvaad.constants.RequestContextConstants.CORRELATION_ID_KEY;

@@ -6,7 +6,6 @@ import com.netflix.zuul.exception.ZuulException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.netflix.zuul.util.ZuulRuntimeException;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 
 public class RateLimitExceededException extends ZuulRuntimeException {
@@ -16,7 +15,6 @@ public class RateLimitExceededException extends ZuulRuntimeException {
         super(new ZuulException(HttpStatus.TOO_MANY_REQUESTS.toString(), HttpStatus.TOO_MANY_REQUESTS.value(), "Too Many Requests"));
     }
 
-    @Bean
     public RateLimiterErrorHandler rateLimitErrorHandler() {
         return new DefaultRateLimiterErrorHandler() {
             @Override
