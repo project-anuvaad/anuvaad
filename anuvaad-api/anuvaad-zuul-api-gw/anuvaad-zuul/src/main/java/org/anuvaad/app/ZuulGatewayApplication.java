@@ -3,6 +3,7 @@ package org.anuvaad.app;
 
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.RedisURI;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
@@ -20,12 +21,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
-import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.web.client.RestTemplate;
-
+import org.springframework.context.annotation.Bean;
+import org.springframework.cache.annotation.EnableCaching;
 
 @EnableZuulProxy
 @EnableCaching
@@ -49,25 +49,35 @@ public class ZuulGatewayApplication {
     @Value(value = "${redis.ratelimit.db}")
     private Integer ratelimitDb;
 
+    @Value(value = "${zuul.ratelimit.enabled}")
+    private Boolean ratelimitEnabled;
+
+
     @Bean
     public JedisConnectionFactory connectionFactory() {
-        RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration();
-        logger.info("host: {}, port: {}, pass: {}", host, port, pass);
-        configuration.setHostName(host);
-        configuration.setPort(Integer.parseInt(port));
-        configuration.setPassword(pass);
-        configuration.setDatabase(ratelimitDb);
-        return new JedisConnectionFactory(configuration);
+        if (ratelimitEnabled) {
+            RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration();
+            logger.info("host: {}, port: {}, pass: {}", host, port, pass);
+            configuration.setHostName(host);
+            configuration.setPort(Integer.parseInt(port));
+            if (!StringUtils.isEmpty(pass))
+                configuration.setPassword(pass);
+            configuration.setDatabase(ratelimitDb);
+            return new JedisConnectionFactory(configuration);
+        }
+        return new JedisConnectionFactory();
     }
 
     @Bean
     public RedisTemplate<String, Object> redisTemplate() {
         final RedisTemplate<String, Object> redisTemplate = new RedisTemplate<String, Object>();
         redisTemplate.setConnectionFactory(connectionFactory());
-        redisTemplate.setKeySerializer( new StringRedisSerializer() );
-        redisTemplate.setValueSerializer(new StringRedisSerializer() );
-        redisTemplate.setHashKeySerializer(new StringRedisSerializer());
-        redisTemplate.setHashValueSerializer( new StringRedisSerializer() );
+        if (ratelimitEnabled) {
+            redisTemplate.setKeySerializer(new StringRedisSerializer());
+            redisTemplate.setValueSerializer(new StringRedisSerializer());
+            redisTemplate.setHashKeySerializer(new StringRedisSerializer());
+            redisTemplate.setHashValueSerializer(new StringRedisSerializer());
+        }
         return redisTemplate;
     }
 
@@ -111,11 +121,13 @@ public class ZuulGatewayApplication {
 
     @Bean
     RedisClient redisClient() {
-        logger.info("host: {}, port: {}, pass: {}", this.host, this.port, this.pass);
-        RedisURI uri = RedisURI.Builder.redis(this.host, Integer.parseInt(this.port))
-                .withPassword(this.pass)
-                .build();
-        return RedisClient.create(uri);
+        if (ratelimitEnabled) {
+            logger.info("host: {}, port: {}, pass: {}", this.host, this.port, this.pass);
+            RedisURI uri = RedisURI.Builder.redis(this.host, Integer.parseInt(this.port))
+                    .build();
+            return RedisClient.create(uri);
+        }
+        return RedisClient.create();
     }
 
     public String getHost() {
@@ -146,5 +158,13 @@ public class ZuulGatewayApplication {
 
     public void setRatelimitDb(Integer ratelimitDb) {
         this.ratelimitDb = ratelimitDb;
+    }
+
+    public Boolean getRatelimitEnabled() {
+        return ratelimitEnabled;
+    }
+
+    public void setRatelimitEnabled(Boolean ratelimitEnabled) {
+        this.ratelimitEnabled = ratelimitEnabled;
     }
 }

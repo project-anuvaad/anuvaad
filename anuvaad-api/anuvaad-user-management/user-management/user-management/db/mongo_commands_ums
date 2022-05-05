@@ -1,0 +1,5 @@
+use usermanagement
+db.sample.createIndex({"userName":1})
+db.exusers.createIndex({"userID":1})
+db.organization.createIndex( {"code": 1},{ unique: true })
+db.usertemptoken.createIndex( { "start_time": 1 }, { expireAfterSeconds: 600 } )

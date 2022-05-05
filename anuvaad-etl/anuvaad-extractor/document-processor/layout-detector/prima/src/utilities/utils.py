@@ -119,3 +119,4 @@ def sort_regions(regions,check_rows_cols=False,col_count=0,sorted_region=[]):
     if len(next_region) > 0:
         sort_regions(next_region,check_rows_cols, col_count,sorted_region)
     return sorted_region,col_count
+

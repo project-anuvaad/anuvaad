@@ -1,0 +1,96 @@
+swagger: "2.0"
+info:
+  version: 1.0.0
+  title: Anuvaad File Converter - API Contract
+  description: A python based microservice to trigger and orchestrate the file converter part of anuvaad-extractor.
+  contact:
+    name: Kumar Deepak
+    email: kumar.deepak@tarento.com
+
+schemes:
+  - https
+basePath: '/api'
+
+
+
+
+paths: 
+  /v0/convert-pdf:
+    post:
+      summary: REST API to convert files to pdf.
+      description: This api takes file name and convert it to pdf, it's an sync api.
+      parameters:
+        - name: request
+          in: body
+          required: true
+          description: Request format accepted by this API.
+          schema:
+            $ref: '#/definitions/FileConverterRequest'
+            
+      tags:
+      - File Converter
+
+      responses:
+        200:
+          description: On successful completion of the job.
+          schema:
+            $ref: '#/definitions/FileConverterResponse'
+        400:
+          description: On input errors causing a failure in the job.
+          schema:
+            $ref: '#/definitions/Error'
+
+
+
+
+definitions:
+        
+  HttpOutput:
+    type: object
+    properties:
+      status:
+        type: number
+        description: Status code.       
+        
+      
+  FileConverterRequest:
+    type: object
+    properties:
+      filename:
+        type: string
+        description: File id for the file to be converted.
+
+        
+  FileConverterResponse:
+    type: object
+    properties:        
+      data:
+        type: string
+        description: Output file id generated.
+      ok:
+        type: boolean
+        description: request successful indicator.
+      why:
+        type: string
+        description: Response message.
+      http:
+        type: object
+        description: Final output of this process.
+        $ref: '#/definitions/HttpOutput'
+      
+
+        
+        
+  Error:
+    type: object
+    properties:        
+      ok:
+        type: boolean
+        description: request successful indicator.
+      why:
+        type: string
+        description: Response message.
+      http:
+        type: object
+        description: Final output of this process.
+        $ref: '#/definitions/HttpOutput'

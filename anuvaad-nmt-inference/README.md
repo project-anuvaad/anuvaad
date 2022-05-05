@@ -2,22 +2,16 @@
 
 This module provides the NMT based translation service for various Indic language pairs. Currently the NMT models are trained 
 using OpenNMT-py framework version 1 and the model binaries are generated using ctranslate2 module provided for OpenNMT-py and
-the same is used to generate model predictions. This service currently supports 9 indic languages: 
-
-| <!-- -->  | <!-- --> | <!-- --> | <!-- --> |
-| ------------- | ------------- | ------------- | ------------- |
-| Hindi (hi) | Marathi (mr) | Tamil (ta)|
-| Bengali (bn) | Kannada (kn)|  Telugu (te)|
-| Gujarati (gu) | Malayalam (ml) | Punjabi (pa) |
+the same is used to generate model predictions.
 
 ## Prerequisites
-- python 3.6 +
-- ubuntu 16.04 +
+- python 3.6
+- ubuntu 16.04
 
 Install various python libraries as mentioned in requirements.txt file
 
 ```bash
-pip install -r src/requirements.txt
+pip install -r requirements.txt
 ```
 
 ## APIs and Documentation

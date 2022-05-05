@@ -2,13 +2,11 @@
 import json
 
 import redis
-from anuvaad_auditor.loghandler import log_exception
-from configs.translatorconfig import redis_server_host
-from configs.translatorconfig import redis_server_port
-
 import pymongo
+from anuvaad_auditor.loghandler import log_exception
+from configs.translatorconfig import redis_server_host, redis_server_port
 from configs.translatorconfig import mongo_server_host, mongo_translator_db, mongo_tmx_collection
-from configs.translatorconfig import mongo_glossary_collection, tmx_org_enabled, tmx_user_enabled, tmx_redis_db
+from configs.translatorconfig import mongo_suggestion_box_collection, tmx_org_enabled, tmx_user_enabled, tmx_redis_db
 
 redis_client = None
 mongo_client = None
@@ -36,10 +34,12 @@ class TMXRepository:
     def instantiate(self, collection):
         client = pymongo.MongoClient(mongo_server_host)
         db = client[mongo_translator_db]
+        global mongo_client
         mongo_client = db[collection]
         return mongo_client
 
     def get_mongo_instance(self, collection):
+        global mongo_client
         if not mongo_client:
             return self.instantiate(collection)
         else:
@@ -82,8 +82,8 @@ class TMXRepository:
             result = []
             if not key_list:
                 key_list = client.keys('*')
-            for key in key_list:
-                val = client.get(key)
+            db_values = client.mget(key_list)
+            for val in db_values:
                 if val:
                     result.append(json.loads(val))
             return result
@@ -120,17 +120,16 @@ class TMXRepository:
                 return "ORG"
         return None
 
-    def glossary_create(self, object_in):
-        col = self.get_mongo_instance(mongo_glossary_collection)
-        col.insert_one(object_in)
-        del object_in["_id"]
+    def suggestion_box_create(self, object_in):
+        col = self.get_mongo_instance(mongo_suggestion_box_collection)
+        col.insert_many(object_in)
 
-    def glossary_delete(self, query):
-        col = self.get_mongo_instance(mongo_glossary_collection)
+    def suggestion_box_delete(self, query):
+        col = self.get_mongo_instance(mongo_suggestion_box_collection)
         col.remove(query)
 
-    def glossary_search(self, query, exclude):
-        col = self.get_mongo_instance(mongo_glossary_collection)
+    def suggestion_box_search(self, query, exclude):
+        col = self.get_mongo_instance(mongo_suggestion_box_collection)
         res = col.find(query, exclude)
         result = []
         for record in res:
