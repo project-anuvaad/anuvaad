@@ -3,6 +3,6 @@ const HOSTNAME = process.env.CONTENT_HANDLER_SERVER_URL
       ":5001/",
       ""
     )
-  : "auth.anuvaad.org";
+  : process.env.NODE_HOSTNAME;
 
 module.exports = { HOSTNAME };
