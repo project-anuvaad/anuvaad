@@ -426,8 +426,9 @@ class TMXService:
             hash_dict["ORG"] = hashlib.sha256(org_hash.encode('utf-16')).hexdigest()
         return hash_dict
 
-    # API to create glossary in the system.
-    def glossary_create(self, object_in):
+    # Method creates entry to the suggestion box, admin pulls these suggestions once in a while and selects which
+    # must go to ORG level TMX.
+    def suggestion_box_create(self, object_in):
         try:
             if 'org' not in object_in.keys():
                 return post_error("ORG_NOT_FOUND", "org is mandatory", None)
@@ -447,24 +448,27 @@ class TMXService:
                                 return post_error("TGT_NOT_FOUND", "tgt is mandatory for every translation", None)
                             if 'locale' not in translation.keys():
                                 return post_error("LOCALE_NOT_FOUND", "locale is mandatory for every translation", None)
+            suggested_translations = []
             for translation in object_in["translations"]:
                 translation["id"] = uuid.uuid4()
                 translation["org"] = object_in["org"]
                 translation["uploaded_by"] = object_in["userID"]
                 translation["created_on"] = eval(str(time.time()).replace('.', '')[0:13])
-                repo.glossary_create(translation)
-            return {"message": "Glossary created successfully", "status": "SUCCESS"}
+                suggested_translations.append(translation)
+            if suggested_translations:
+                repo.suggestion_box_create(suggested_translations)
+            return {"message": "Suggestions accepted successfully", "status": "SUCCESS"}
         except Exception as e:
-            return post_error("GLOSSARY_CREATION_FAILED",
-                              "Glossary creation failed due to exception: {}".format(str(e)), None)
+            return post_error("SUGGESTION_BOX_CREATION_FAILED",
+                              "Suggestions creation failed due to exception: {}".format(str(e)), None)
 
-    # Method to delete glossary from the db
-    def glossary_delete(self, delete_req):
+    # Method to delete suggestions from the db
+    def suggestion_box_delete(self, delete_req):
         query = {}
         if 'deleteAll' in delete_req:
             if delete_req["deleteAll"] is True:
-                repo.glossary_delete(query)
-                return {"message": "Glossary DB cleared successfully", "status": "SUCCESS"}
+                repo.suggestion_box_delete(query)
+                return {"message": "Suggestion Box DB cleared successfully", "status": "SUCCESS"}
         if 'ids' in delete_req:
             if delete_req["ids"]:
                 query = {"id": {"$in": delete_req["ids"]}}
@@ -475,15 +479,15 @@ class TMXService:
             query["created_on"] = {"$gte": delete_req["startDate"]}
         if 'endDate' in delete_req:
             query["created_on"] = {"$lte": delete_req["endDate"]}
-        repo.glossary_delete(query)
-        return {"message": "Glossary deleted successfully", "status": "SUCCESS"}
+        repo.suggestion_box_delete(query)
+        return {"message": "Suggestions deleted successfully", "status": "SUCCESS"}
 
-    # Method to search glossary from the glossay db.
-    def glossary_get(self, searc_req):
+    # Method to search suggestions from the suggestions db.
+    def suggestion_box_get(self, searc_req):
         query, exclude = {}, {'_id': False}
         if 'fetchAll' in searc_req:
             if searc_req["fetchAll"] is True:
-                return repo.glossary_search(query, exclude)
+                return repo.suggestion_box_search(query, exclude)
         if 'ids' in searc_req:
             if searc_req["ids"]:
                 query = {"id": {"$in": searc_req["ids"]}}
@@ -506,4 +510,4 @@ class TMXService:
             query["created_on"] = {"$gte": searc_req["startDate"]}
         if 'endDate' in searc_req:
             query["created_on"] = {"$lte": searc_req["endDate"]}
-        return repo.glossary_search(query, exclude)
+        return repo.suggestion_box_search(query, exclude)

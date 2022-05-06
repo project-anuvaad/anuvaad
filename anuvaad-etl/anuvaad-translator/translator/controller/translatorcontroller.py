@@ -61,6 +61,7 @@ def interactive_translate():
         log_exception("Something went wrong: " + str(e), None, e)
         return {"status": "FAILED", "message": "Something went wrong"}, 400
 
+
 # REST endpoint to initiate the workflow.
 @translatorapp.route(context_path + '/v1/sentences/workflow/translate', methods=["POST"])
 def sentence_translate():
@@ -103,6 +104,7 @@ def tmx_create():
     else:
         return jsonify(response), 200
 
+
 @translatorapp.route(context_path + '/v1/tmx/delete', methods=["POST"])
 def tmx_delete():
     service = TMXService()
@@ -118,6 +120,7 @@ def tmx_delete():
         response = {"message": "Something went wrong.", "status": "FAILED"}
         return jsonify(response), 400
 
+
 @translatorapp.route(context_path + '/v1/tmx/get-all-keys', methods=["POST"])
 def tmx_get_all_keys():
     service = TMXService()
@@ -129,34 +132,36 @@ def tmx_get_all_keys():
         response = {"message": "Something went wrong.", "status": "FAILED"}
         return jsonify(response), 400
 
-@translatorapp.route(context_path + '/v1/glossary/create', methods=["POST"])
-def glossary_create():
+
+@translatorapp.route(context_path + '/v1/suggested-tmx/create', methods=["POST"])
+def suggestion_tmx_box_create():
     service = TMXService()
     data = request.get_json()
     data["userID"] = request.headers["x-user-id"]
-    response = service.glossary_create(data)
+    response = service.suggestion_box_create(data)
     if "errorID" in response.keys():
         return jsonify(response), 400
     else:
         return jsonify(response), 200
 
-@translatorapp.route(context_path + '/v1/glossary/delete', methods=["POST"])
-def glossary_delete():
+
+@translatorapp.route(context_path + '/v1/suggested-tmx/delete', methods=["POST"])
+def suggestion_tmx_box_delete():
     service = TMXService()
     data = request.get_json()
-    response = service.glossary_delete(data)
+    response = service.suggestion_box_delete(data)
     if "errorID" in response.keys():
         return jsonify(response), 400
     else:
         return jsonify(response), 200
 
-@translatorapp.route(context_path + '/v1/glossary/get', methods=["POST"])
-def glossary_get():
+
+@translatorapp.route(context_path + '/v1/suggested-tmx/get', methods=["POST"])
+def suggestion_tmx_box_get():
     service = TMXService()
     data = request.get_json()
-    response = service.glossary_get(data)
+    response = service.suggestion_box_get(data)
     return jsonify(response), 200
-
 
 
 # Fetches required headers from the request and adds it to the body.

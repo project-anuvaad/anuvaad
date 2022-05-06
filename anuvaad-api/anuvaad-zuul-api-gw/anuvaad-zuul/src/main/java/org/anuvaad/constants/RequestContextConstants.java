@@ -1,5 +1,4 @@
 package org.anuvaad.constants;
-
 import org.springframework.stereotype.Component;
 
 @Component
