@@ -30,7 +30,7 @@ app.post(
     console.log(jobName);
     let data = "";
     var options = {
-      hostname: "auth.anuvaad.org",
+      hostname: HOSTNAME,
       path: `/anuvaad/content-handler/v0/fetch-content?record_id=${jobId}&start_page=0&end_page=0`,
       method: "GET",
       headers: {
@@ -124,7 +124,7 @@ app.post(
     const job = `${jobId}|${jobName}`;
     let data = "";
     var options = {
-      hostname: "auth.anuvaad.org",
+      hostname: HOSTNAME,
       path: `/anuvaad/ocr-content-handler/v0/ocr/fetch-document?recordID=${encodeURI(
         job
       )}&start_page=0&end_page=0`,
