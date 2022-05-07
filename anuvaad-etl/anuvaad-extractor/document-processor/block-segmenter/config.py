@@ -19,33 +19,12 @@ ENABLE_CORS = False
 
 # kafka dev 
 
-# input_topic_default = 'anuvaad-dp-tools-block-segmenter-input-v1'
-# input_topic_identifier = 'KAFKA_ANUVAAD_DP_TOOLS_BLOCK_SEGMENTER_INPUT'
-# input_topic = os.environ.get(input_topic_identifier, input_topic_default)
-
-# output_topic_default = 'anuvaad-dp-tools-block-segmenter-output-v1'
-# output_topic_identifier = 'KAFKA_ANUVAAD_DP_TOOLS_BLOCK_SEGMENTER_OUTPUT'
-# output_topic = os.environ.get(output_topic_identifier, output_topic_default)
-
-# kf_local_server     = 'localhost:9092'
-# kafka_ip_host       = 'KAFKA_BOOTSTRAP_SERVER_HOST'
-# bootstrap_server    = os.environ.get(kafka_ip_host, kf_local_server)
-
-
-# CONSUMER_GROUP_default       = 'anuvaad-etl-bs-consumer-group'
-# CONSUMER_GROUP_identifier    = 'ANUVAAD_ETL_BS_CONSUMER_GROUP_V1'
-# CONSUMER_GROUP               = os.environ.get(CONSUMER_GROUP_identifier,CONSUMER_GROUP_default)
-
-
-
-# kafka stage 
-
-input_topic_default = 'anuvaad-dp-tools-block-segmenter-input-satge'
-input_topic_identifier = 'KAFKA_ANUVAAD_DP_TOOLS_BLOCK_SEGMENTER_INPUT_STAGE'
+input_topic_default = 'anuvaad-dp-tools-block-segmenter-input-v1'
+input_topic_identifier = 'KAFKA_ANUVAAD_DP_TOOLS_BLOCK_SEGMENTER_INPUT'
 input_topic = os.environ.get(input_topic_identifier, input_topic_default)
 
-output_topic_default = 'anuvaad-dp-tools-block-segmenter-output-stage'
-output_topic_identifier = 'KAFKA_ANUVAAD_DP_TOOLS_BLOCK_SEGMENTER_OUTPUT_STAGE'
+output_topic_default = 'anuvaad-dp-tools-block-segmenter-output-v1'
+output_topic_identifier = 'KAFKA_ANUVAAD_DP_TOOLS_BLOCK_SEGMENTER_OUTPUT'
 output_topic = os.environ.get(output_topic_identifier, output_topic_default)
 
 kf_local_server     = 'localhost:9092'
@@ -53,9 +32,30 @@ kafka_ip_host       = 'KAFKA_BOOTSTRAP_SERVER_HOST'
 bootstrap_server    = os.environ.get(kafka_ip_host, kf_local_server)
 
 
-CONSUMER_GROUP_default       = 'anuvaad-etl-bs-consumer-group-stage'
-CONSUMER_GROUP_identifier    = 'ANUVAAD_ETL_BS_CONSUMER_GROUP_STAGE'
+CONSUMER_GROUP_default       = 'anuvaad-etl-bs-consumer-group'
+CONSUMER_GROUP_identifier    = 'ANUVAAD_ETL_BS_CONSUMER_GROUP_V1'
 CONSUMER_GROUP               = os.environ.get(CONSUMER_GROUP_identifier,CONSUMER_GROUP_default)
+
+
+
+# kafka stage 
+
+# input_topic_default = 'anuvaad-dp-tools-block-segmenter-input-satge'
+# input_topic_identifier = 'KAFKA_ANUVAAD_DP_TOOLS_BLOCK_SEGMENTER_INPUT_STAGE'
+# input_topic = os.environ.get(input_topic_identifier, input_topic_default)
+
+# output_topic_default = 'anuvaad-dp-tools-block-segmenter-output-stage'
+# output_topic_identifier = 'KAFKA_ANUVAAD_DP_TOOLS_BLOCK_SEGMENTER_OUTPUT_STAGE'
+# output_topic = os.environ.get(output_topic_identifier, output_topic_default)
+
+# kf_local_server     = 'localhost:9092'
+# kafka_ip_host       = 'KAFKA_BOOTSTRAP_SERVER_HOST'
+# bootstrap_server    = os.environ.get(kafka_ip_host, kf_local_server)
+
+
+# CONSUMER_GROUP_default       = 'anuvaad-etl-bs-consumer-group-stage'
+# CONSUMER_GROUP_identifier    = 'ANUVAAD_ETL_BS_CONSUMER_GROUP_STAGE'
+# CONSUMER_GROUP               = os.environ.get(CONSUMER_GROUP_identifier,CONSUMER_GROUP_default)
 
 
 
