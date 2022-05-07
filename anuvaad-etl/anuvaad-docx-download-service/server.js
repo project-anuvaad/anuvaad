@@ -10,8 +10,15 @@ const { refactorSourceJSON } = require("./generate-docx/utils");
 const { refactorSourceJSONnew } = require("./generate-docx/utilsnew");
 const bodyParser = require("body-parser");
 const path = require("path");
-const { HOSTNAME } = require("./config/end-point-config");
+// const { HOSTNAME } = require("./config/end-point-config");
+const HOSTNAME = process.env.NODE_HOSTNAME || "anuvad"
 // const  cors = require("cors")
+
+
+if(HOSTNAME === 'anuvad') {
+  console.log("Node hostname is not found");
+}
+
 console.log("server.js called");
 app.use(bodyParser.json());
 
@@ -30,7 +37,7 @@ app.post(
     console.log(jobName);
     let data = "";
     var options = {
-      hostname: "auth.anuvaad.org",
+      hostname: HOSTNAME,
       path: `/anuvaad/content-handler/v0/fetch-content?record_id=${jobId}&start_page=0&end_page=0`,
       method: "GET",
       headers: {
@@ -124,7 +131,7 @@ app.post(
     const job = `${jobId}|${jobName}`;
     let data = "";
     var options = {
-      hostname: "auth.anuvaad.org",
+      hostname: HOSTNAME,
       path: `/anuvaad/ocr-content-handler/v0/ocr/fetch-document?recordID=${encodeURI(
         job
       )}&start_page=0&end_page=0`,
@@ -135,7 +142,7 @@ app.post(
       },
       // port: "5001",
     };
-
+    console.log('options', options)
     var req = https.request(options, (res) => {
       if (res.statusCode === 200) {
         res.on("data", (d) => {
