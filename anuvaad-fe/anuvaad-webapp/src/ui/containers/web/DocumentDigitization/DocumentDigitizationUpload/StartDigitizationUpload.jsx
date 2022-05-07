@@ -56,6 +56,7 @@ const theme = createMuiTheme({
 const LANG_MODEL = require('../../../../../utils/language.model')
 const TELEMETRY = require('../../../../../utils/TelemetryManager')
 
+
 class StartDigitizationUpload extends React.Component {
     constructor() {
         super();
