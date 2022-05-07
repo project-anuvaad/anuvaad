@@ -79,7 +79,7 @@ def write_to_csv_user(data_list,filename):
     else:
         try: 
             #/opt/jud_stats.csv
-            fieldnames = [ "_id","orgID","userName","name","is_active","userId","doc_sent_count","avg_sent_bleu_score","total_time_spent","saved_sent_count"]
+            fieldnames = [ "_id","created_on","src_lang","tgt_lang","orgID","userName","name","is_active","userId","doc_sent_count","avg_sent_bleu_score","total_time_spent","saved_sent_count"]
             if not os.path.exists(filename ):
                 f_output = open(filename ,'w')
                 dict_writer = csv.DictWriter(f_output, fieldnames=fieldnames)
@@ -115,7 +115,7 @@ def org_level_csv_user(file_save,file1,file2):
         sub_df2 =  df2[(df2["userName"] == org )]
         stats["userName"] = org
         stats["Org/HC"] = sub_df1["orgID"].sum()
-        stats["is_active"] = sub_df1["is_active"].sum()
+        stats["is_active"] = sub_df1["is_active"]
         stats["Total Sentences Translated"]=sub_df1["doc_sent_count"].sum()
         stats["Total Time Spent (millisecond)"]=sub_df1["total_time_spent"].sum()
         stats["Total Time Spent (minutes)"] = (stats["Total Time Spent (millisecond)"]/(1000*60))%60
