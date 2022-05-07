@@ -10,8 +10,15 @@ const { refactorSourceJSON } = require("./generate-docx/utils");
 const { refactorSourceJSONnew } = require("./generate-docx/utilsnew");
 const bodyParser = require("body-parser");
 const path = require("path");
-const { HOSTNAME } = require("./config/end-point-config");
+// const { HOSTNAME } = require("./config/end-point-config");
+const HOSTNAME = process.env.NODE_HOSTNAME || "anuvad123"
 // const  cors = require("cors")
+
+
+if(HOSTNAME === 'anuvad123') {
+  console.log("hostname is not found");
+}
+
 console.log("server.js called");
 app.use(bodyParser.json());
 
