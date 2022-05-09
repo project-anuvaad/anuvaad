@@ -12,8 +12,16 @@ const bodyParser = require("body-parser");
 const path = require("path");
 // const { HOSTNAME } = require("./config/end-point-config");
 const HOSTNAME = process.env.NODE_HOSTNAME || "anuvad"
-// const  cors = require("cors")
-
+const  cors = require("cors")
+const axios = require('axios')
+app.use(cors());
+app.use(function(req, res, next) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Credentials', true);
+  next();
+});
 
 if(HOSTNAME === 'anuvad') {
   console.log("Node hostname is not found");
@@ -131,11 +139,12 @@ app.post(
     const job = `${jobId}|${jobName}`;
     let data = "";
     var options = {
-      host: HOSTNAME,
+      // http://172.31.44.87:5009
+      host: "172.31.44.87",
       path: `/anuvaad/ocr-content-handler/v0/ocr/fetch-document?recordID=${encodeURI(
         job
       )}&start_page=0&end_page=0`,
-      // method: "GET",
+      method: "GET",
       headers: {
         "Content-Type": "application/json",
         "auth-token": authToken,
@@ -143,9 +152,10 @@ app.post(
       port: "5009",
     };
     console.log('options', options)
-    var req = http.get(options, (res) => {
+    var req = http.request(options, (res) => {
       console.log("res.statusCode", res.statusCode);
       if (res.statusCode === 200) {
+        // console.log(res)
         res.on("data", (d) => {
           data = data + d.toString();
         });
