@@ -14,7 +14,7 @@ export default class API {
     this.auth = auth;
     this.baseUrl = CONFIGS.BASE_URL;
     this.baseUrlAuto = CONFIGS.BASE_URL_AUTO;
-    this.nodebaseUrlAuto = CONFIGS.NODE_HOSTNAME;
+    // this.nodebaseUrlAuto = CONFIGS.NODE_HOSTNAME;
   }
 
   toString() {
@@ -33,9 +33,9 @@ export default class API {
     return this.baseUrlAuto;
   }
 
-  apiNodeEndPointAuto() {
-    return this.nodebaseUrlAuto;
-  }
+  // apiNodeEndPointAuto() {
+  //   return this.nodebaseUrlAuto;
+  // }
 
   processResponse(res) {
     this.code = res.code;
