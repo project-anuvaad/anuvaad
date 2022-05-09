@@ -131,7 +131,7 @@ app.post(
     const job = `${jobId}|${jobName}`;
     let data = "";
     var options = {
-      hostname: '172.31.44.87',
+      host: '172.31.44.87',
       path: `/anuvaad/ocr-content-handler/v0/ocr/fetch-document?recordID=${encodeURI(
         job
       )}&start_page=0&end_page=0`,
