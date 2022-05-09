@@ -1,6 +1,6 @@
 // const HOSTNAME = process.env.NODE_HOSTNAME;
 const OCR_CH = process.env.OCR_CONTENT_HANDLER_SERVER_URL.replace("http://", "").replace(
-        ":5009/",
+        ":5009",
         ""
       )
       
