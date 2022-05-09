@@ -131,7 +131,7 @@ app.post(
     const job = `${jobId}|${jobName}`;
     let data = "";
     var options = {
-      hostname: 'http://gateway_anuvaad-ocr-content-handler:5001',
+      hostname: process.env.OCR_CONTENT_HANDLER_SERVER_URL,
       path: `/anuvaad/ocr-content-handler/v0/ocr/fetch-document?recordID=${encodeURI(
         job
       )}&start_page=0&end_page=0`,
