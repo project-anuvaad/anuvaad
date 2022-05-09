@@ -13,7 +13,7 @@ const path = require("path");
 // const { HOSTNAME } = require("./config/end-point-config");
 const HOSTNAME = process.env.NODE_HOSTNAME || "anuvad"
 const  cors = require("cors")
-const axios = require('axios')
+// const axios = require('axios')
 app.use(cors());
 app.use(function(req, res, next) {
   res.setHeader('Access-Control-Allow-Origin', '*');
