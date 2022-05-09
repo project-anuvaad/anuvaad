@@ -140,7 +140,7 @@ app.post(
     let data = "";
     var options = {
       // http://172.31.44.87:5009
-      host: OCR_CH,
+      hostname: OCR_CH,
       path: `/anuvaad/ocr-content-handler/v0/ocr/fetch-document?recordID=${encodeURI(
         job
       )}&start_page=0&end_page=0`,
