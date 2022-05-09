@@ -131,11 +131,11 @@ app.post(
     const job = `${jobId}|${jobName}`;
     let data = "";
     var options = {
-      hostname: process.env.OCR_CONTENT_HANDLER_SERVER_URL,
+      host: HOSTNAME,
       path: `/anuvaad/ocr-content-handler/v0/ocr/fetch-document?recordID=${encodeURI(
         job
       )}&start_page=0&end_page=0`,
-      method: "GET",
+      // method: "GET",
       headers: {
         "Content-Type": "application/json",
         "auth-token": authToken,
@@ -143,7 +143,7 @@ app.post(
       // port: "5001",
     };
     console.log('options', options)
-    var req = http.request(options, (res) => {
+    var req = http.get(options, (res) => {
       console.log("res.statusCode", res.statusCode);
       if (res.statusCode === 200) {
         res.on("data", (d) => {
