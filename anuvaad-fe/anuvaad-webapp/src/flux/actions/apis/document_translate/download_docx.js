@@ -14,7 +14,7 @@ export default class DownloadDOCX extends API {
       this.endpoint = `${super.apiEndPointAuto()}${ENDPOINTS.downloadDocxFile}`;
     } else {
       // this.endpoint = `http://localhost:5001${ENDPOINTS.downloadOcrDocxFile}`;
-      this.endpoint = `${super.apiEndPointAuto()}${ENDPOINTS.downloadOcrDocxFile}`;
+      this.endpoint = `${super.apiNodeEndPointAuto()}${ENDPOINTS.downloadOcrDocxFile}`;
     }
   }
 
