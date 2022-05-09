@@ -10,9 +10,9 @@ const { refactorSourceJSON } = require("./generate-docx/utils");
 const { refactorSourceJSONnew } = require("./generate-docx/utilsnew");
 const bodyParser = require("body-parser");
 const path = require("path");
-// const { HOSTNAME } = require("./config/end-point-config");
-const HOSTNAME = process.env.NODE_HOSTNAME || "anuvad"
-const  cors = require("cors")
+const { CH,OCR_CH } = require("./config/end-point-config");
+// const HOSTNAME = process.env.NODE_HOSTNAME || "anuvad"
+// const  cors = require("cors")
 // const axios = require('axios')
 // app.use(cors());
 // app.use(function(req, res, next) {
@@ -23,9 +23,9 @@ const  cors = require("cors")
 //   next();
 // });
 
-if(HOSTNAME === 'anuvad') {
-  console.log("Node hostname is not found");
-}
+// if(HOSTNAME === 'anuvad') {
+//   console.log("Node hostname is not found");
+// }
 
 console.log("server.js called");
 app.use(bodyParser.json());
@@ -45,7 +45,7 @@ app.post(
     console.log(jobName);
     let data = "";
     var options = {
-      hostname: HOSTNAME,
+      hostname: CH,
       path: `/anuvaad/content-handler/v0/fetch-content?record_id=${jobId}&start_page=0&end_page=0`,
       method: "GET",
       headers: {
@@ -140,7 +140,7 @@ app.post(
     let data = "";
     var options = {
       // http://172.31.44.87:5009
-      host: "172.31.44.87",
+      host: OCR_CH,
       path: `/anuvaad/ocr-content-handler/v0/ocr/fetch-document?recordID=${encodeURI(
         job
       )}&start_page=0&end_page=0`,
