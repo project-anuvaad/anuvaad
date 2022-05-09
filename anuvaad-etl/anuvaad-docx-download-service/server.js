@@ -131,7 +131,7 @@ app.post(
     const job = `${jobId}|${jobName}`;
     let data = "";
     var options = {
-      hostname: HOSTNAME,
+      host: 'http://gateway_anuvaad-ocr-content-handler',
       path: `/anuvaad/ocr-content-handler/v0/ocr/fetch-document?recordID=${encodeURI(
         job
       )}&start_page=0&end_page=0`,
@@ -140,10 +140,11 @@ app.post(
         "Content-Type": "application/json",
         "auth-token": authToken,
       },
-      // port: "5001",
+      port: "5001",
     };
     console.log('options', options)
     var req = http.request(options, (res) => {
+      console.log("res.statusCode", res.statusCode);
       if (res.statusCode === 200) {
         res.on("data", (d) => {
           data = data + d.toString();
