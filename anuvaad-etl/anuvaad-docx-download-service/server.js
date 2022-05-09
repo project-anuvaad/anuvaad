@@ -131,7 +131,7 @@ app.post(
     const job = `${jobId}|${jobName}`;
     let data = "";
     var options = {
-      host: 'http://gateway_anuvaad-ocr-content-handler',
+      hostname: 'http://gateway_anuvaad-ocr-content-handler:5001',
       path: `/anuvaad/ocr-content-handler/v0/ocr/fetch-document?recordID=${encodeURI(
         job
       )}&start_page=0&end_page=0`,
@@ -140,7 +140,7 @@ app.post(
         "Content-Type": "application/json",
         "auth-token": authToken,
       },
-      port: "5001",
+      // port: "5001",
     };
     console.log('options', options)
     var req = http.request(options, (res) => {
