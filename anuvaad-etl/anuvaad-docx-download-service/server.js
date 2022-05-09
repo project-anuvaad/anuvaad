@@ -49,7 +49,7 @@ app.post(
     console.log("calling content-handler");
     console.log("options", options);
 
-    var req = https.request(options, (res) => {
+    var req = http.request(options, (res) => {
       console.log("res", res, options);
       if (res.statusCode === 200) {
         console.log("inside Status code 200", res.statusCode);
@@ -143,7 +143,7 @@ app.post(
       // port: "5001",
     };
     console.log('options', options)
-    var req = https.request(options, (res) => {
+    var req = http.request(options, (res) => {
       if (res.statusCode === 200) {
         res.on("data", (d) => {
           data = data + d.toString();
