@@ -260,31 +260,39 @@ def FetchJudgementCount_user_wise():
         try:
             for doc in user_docs:
                 log_info(f'fetching details for {doc} userID',MODULE_CONTEXT)
-                ch_docs       = ch_collection.aggregate([{ '$match': {'$and': [{"created_by": doc['userID']}, {'data_type':'text_blocks'}]} },
+                ch_docs       = ch_collection.aggregate([{ '$match': {'$and': [{"created_by": str(doc['userID'])}, {'data_type':'text_blocks'}]} },
                             { '$unwind': "$data.tokenized_sentences" },
                              { "$group": {
                                 "_id": "$job_id",
-                                "orgID":{"$addToSet":doc.get('orgID')},
-                                "userName":{"$addToSet":doc['userName']},
-                                "name":{"$addToSet":doc['name']},
-                                "is_active":{"$addToSet":doc['is_active']},
-                                "userId":{"$addToSet":doc['userID']},
+                                "created_on":{"$first":"$created_on"},
+                                "src_lang":{"$first":"$src_lang"},
+                                "tgt_lang":{"$first":"$tgt_lang"},
                                 "doc_sent_count": { "$sum": 1 },
-                                "total_time_spent":{"$sum": "$data.tokenized_sentences.time_spent_ms"}}}])
+                                "total_time_spent":{"$sum": "$data.tokenized_sentences.time_spent_ms"}}},
+                               {"$addFields":{"orgID":str(doc.get('orgID')),
+                                "userName":str(doc['userName']),
+                                "name":str(doc['name']),
+                                "is_active":str(doc['is_active']),
+                                "userId":str(doc['userID'])}}])
 
-                saved_docs       = ch_collection.aggregate([{ '$match': {'$and': [{"created_by": doc['userID']}, {'data_type':'text_blocks'}]} },
+                saved_docs       = ch_collection.aggregate([{ '$match': {'$and': [{"created_by": str(doc['userID'])}, {'data_type':'text_blocks'}]} },
                             { '$unwind': "$data.tokenized_sentences" },
                             { '$match': {"data.tokenized_sentences.save":True}},
                              { "$group": {
                                 "_id": "$job_id",
-                                "orgID":{"$addToSet":doc.get('orgID')},
-                                "userName":{"$addToSet":doc['userName']},
-                                "name":{"$addToSet":doc['name']},
-                                "is_active":{"$addToSet":doc['is_active']},
-                                "userId":{"$addToSet":doc['userID']},
-                                "saved_sent_count": { "$sum": 1 },
+                                "created_on":{"$first":"$created_on"},
+                                "src_lang":{"$first":"$src_lang"},
+                                "tgt_lang":{"$first":"$tgt_lang"},
+                                # "doc_sent_count": { "$sum": 1 },
                                 "total_time_spent":{"$sum": "$data.tokenized_sentences.time_spent_ms"},
-                                "avg_sent_bleu_score":{"$avg": "$data.tokenized_sentences.bleu_score"}}}])
+                                "avg_sent_bleu_score":{"$avg": "$data.tokenized_sentences.bleu_score"},
+                                "saved_sent_count": { "$sum": 1 }}},
+                                {"$addFields":{"orgID":str(doc.get('orgID')),
+                                "userName":str(doc['userName']),
+                                "name":str(doc['name']),
+                                "is_active":str(doc['is_active']),
+                                "userId":str(doc['userID']),
+                                }}])
 
                 log_info(f'Details collected for for userID : {doc} ',MODULE_CONTEXT)
                 ch_docs =[x for x in ch_docs]
@@ -297,13 +305,13 @@ def FetchJudgementCount_user_wise():
                 users = [email]
 
             if os.path.exists(config.DOWNLOAD_FOLDER+'/'+(file_name1 and  file_name2)):
-                org_level_csv_user(config.DOWNLOAD_FOLDER+"/"+file_save,(config.DOWNLOAD_FOLDER+'/'+file_name1),(config.DOWNLOAD_FOLDER+'/'+file_name2))
+                # org_level_csv_user(config.DOWNLOAD_FOLDER+"/"+file_save,(config.DOWNLOAD_FOLDER+'/'+file_name1),(config.DOWNLOAD_FOLDER+'/'+file_name2))
                 out = CustomResponse(Status.SUCCESS.value, {"files":[file_name1,file_name2]})
                 with app.app_context():
                     file_name1 = config.DOWNLOAD_FOLDER+'/'+file_name1
                     file_name2 = config.DOWNLOAD_FOLDER+'/'+file_name2
-                    file_save = config.DOWNLOAD_FOLDER+'/'+file_save
-                    files = [file_name1,file_name2,file_save ]   
+                    # file_save = config.DOWNLOAD_FOLDER+'/'+file_save
+                    files = [file_name1,file_name2 ]   
                     log_info("Generating email notification for found data !!!!",MODULE_CONTEXT)
                     tdy_date    =   datetime.now(IST).strftime('%Y:%m:%d %H:%M:%S')
                     

@@ -13,8 +13,8 @@ curl -L -o /usr/share/tesseract-ocr/4.00/tessdata/Gujarati.traineddata https://g
 curl -L -o /usr/share/tesseract-ocr/4.00/tessdata/Oriya.traineddata https://github.com/tesseract-ocr/tessdata_best/blob/main/script/Oriya.traineddata?raw=true
 
 tam_modelpath='/usr/share/tesseract-ocr/4.00/tessdata/anuvaad_tam.traineddata'
-url_tam='https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvaad_tam.traineddata?AWSAccessKeyId=AKIAXX2AMEIRJY2GNYVZ&Signature=X6%2BwKdeOyOUFlOFs%2B7eRmzhziZ0%3D&Expires=1693557258'
-
+#url_tam='https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvaad_tam.traineddata?AWSAccessKeyId=AKIAXX2AMEIRJY2GNYVZ&Signature=X6%2BwKdeOyOUFlOFs%2B7eRmzhziZ0%3D&Expires=1693557258'
+url_tam='https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvad_tam_scene_text_real.traineddata?AWSAccessKeyId=AKIAXX2AMEIRJY2GNYVZ&Signature=J1NEp22bhsW7dO3kd8iN1VX7XtI%3D&Expires=1711538482'
 hin_modelpath='/usr/share/tesseract-ocr/4.00/tessdata/anuvaad_hin.traineddata'
 #url_hin='https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvaad_hin.traineddata?AWSAccessKeyId=AKIAXX2AMEIRJY2GNYVZ&Signature=2l%2F0OwWQrD%2FIvogfijATPufjMLA%3D&Expires=1693557740'
 url_hin='https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvad_hin_scene_text_real.traineddata?AWSAccessKeyId=AKIAXX2AMEIRJY2GNYVZ&Signature=FZ6Whiiv8uTYDkPGUvMzqoOKPOI%3D&Expires=1709212126'
@@ -38,6 +38,8 @@ url_scene_text_line_detection_modelpath='https://anuvaad-pubnet-weights.s3.amazo
 
 scene_text_east_angle_detection_modelpath='./src/utilities/east/east-model.ckpt-49491.data-00000-of-00001'
 url_scene_text_east_angle_detection_modelpath='https://anuvaad-pubnet-weights.s3.amazonaws.com/east-model.ckpt-49491.data-00000-of-00001?AWSAccessKeyId=AKIAXX2AMEIRJY2GNYVZ&Signature=XbR8OnEhYISllPYYuYkzFhmovUY%3D&Expires=1707278033'
+
+
 
 if ! [ -f $scene_text_line_detection_modelpath ]; then
   curl -o $scene_text_line_detection_modelpath $url_scene_text_line_detection_modelpath
