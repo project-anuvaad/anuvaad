@@ -10,14 +10,22 @@ const { refactorSourceJSON } = require("./generate-docx/utils");
 const { refactorSourceJSONnew } = require("./generate-docx/utilsnew");
 const bodyParser = require("body-parser");
 const path = require("path");
-// const { HOSTNAME } = require("./config/end-point-config");
-const HOSTNAME = process.env.NODE_HOSTNAME || "anuvad"
+const { CH,OCR_CH } = require("./config/end-point-config");
+// const HOSTNAME = process.env.NODE_HOSTNAME || "anuvad"
 // const  cors = require("cors")
+// const axios = require('axios')
+// app.use(cors());
+// app.use(function(req, res, next) {
+//   res.setHeader('Access-Control-Allow-Origin', '*');
+//   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+//   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+//   res.setHeader('Access-Control-Allow-Credentials', true);
+//   next();
+// });
 
-
-if(HOSTNAME === 'anuvad') {
-  console.log("Node hostname is not found");
-}
+// if(HOSTNAME === 'anuvad') {
+//   console.log("Node hostname is not found");
+// }
 
 console.log("server.js called");
 app.use(bodyParser.json());
@@ -37,14 +45,14 @@ app.post(
     console.log(jobName);
     let data = "";
     var options = {
-      hostname: HOSTNAME,
+      host: CH,
       path: `/anuvaad/content-handler/v0/fetch-content?record_id=${jobId}&start_page=0&end_page=0`,
       method: "GET",
       headers: {
         "Content-Type": "application/json",
         "auth-token": authToken,
       },
-      // port: "5001",
+      port: "5001",
     };
     console.log("calling content-handler");
     console.log("options", options);
@@ -131,7 +139,8 @@ app.post(
     const job = `${jobId}|${jobName}`;
     let data = "";
     var options = {
-      host: 'http://gateway_anuvaad-ocr-content-handler',
+      // http://172.31.44.87:5009
+      hostname: OCR_CH,
       path: `/anuvaad/ocr-content-handler/v0/ocr/fetch-document?recordID=${encodeURI(
         job
       )}&start_page=0&end_page=0`,
@@ -140,12 +149,13 @@ app.post(
         "Content-Type": "application/json",
         "auth-token": authToken,
       },
-      port: "5001",
+      port: "5009",
     };
     console.log('options', options)
     var req = http.request(options, (res) => {
       console.log("res.statusCode", res.statusCode);
       if (res.statusCode === 200) {
+        // console.log(res)
         res.on("data", (d) => {
           data = data + d.toString();
         });
