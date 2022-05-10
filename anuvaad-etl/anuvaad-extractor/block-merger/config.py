@@ -2,6 +2,7 @@ import logging
 import os
 import time
 
+
 DEBUG = False
 API_URL_PREFIX = "/anuvaad-etl/block-merger"
 HOST = '0.0.0.0'
