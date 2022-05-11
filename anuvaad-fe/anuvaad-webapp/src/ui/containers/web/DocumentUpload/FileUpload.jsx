@@ -486,7 +486,7 @@ class PdfUpload extends Component {
   render() {
     const { classes } = this.props;
     return (
-      <div style={{ height: window.innerHeight }}>
+      <div style={{  }}>
         <Toolbar />
 
         <div className={classes.div}>
