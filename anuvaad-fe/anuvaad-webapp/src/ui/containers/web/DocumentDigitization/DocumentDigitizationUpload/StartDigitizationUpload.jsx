@@ -325,7 +325,7 @@ class StartDigitizationUpload extends React.Component {
                                         onChange={this.handleChange.bind(this)}
                                         filesLimit={1}
                                         maxFileSize={200000000000}
-                                        dropzoneText={translate("common.page.label.addDropDocument")}
+                                        dropzoneText={translate("digitize_upload.page.label.addDropDocument")}
                                         onDelete={this.handleDelete.bind(this)}
                                     />
                                 </MuiThemeProvider>
