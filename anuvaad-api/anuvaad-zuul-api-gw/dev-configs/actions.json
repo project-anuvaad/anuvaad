@@ -233,86 +233,6 @@
             "description":"API to fetch TMX suggestion box entries"
         },
         {
-            "id":"e5d0b999-a2bb-41af-a267-2494b15fb6a5",
-            "uri":"/nmt-inference/v1/fetch-models/*",
-            "module":"ANUVAAD-NMT",
-            "active":true,
-            "whiteList":false,
-            "description":"API to fetch NMT models"
-        },
-        {
-            "id":"f08cb87c-9e10-4b23-9de5-52c6ff70d405",
-            "uri":"/nmt-inference/v3/translate-anuvaad",
-            "module":"ANUVAAD-NMT",
-            "active":true,
-            "whiteList":true,
-            "description":"API for doc translation"
-        },
-        {
-            "id":"75a424ae-ae00-44da-86f8-3809dd9a6458",
-            "uri":"/nmt-inference/v2/interactive-translation",
-            "module":"ANUVAAD-NMT",
-            "active":true,
-            "whiteList":false,
-            "description":"API for interactive translation"
-        },
-        {
-            "id":"400772fd-15c1-4c89-9ab2-ad6b577916c4",
-            "uri":"/nmt-inference/v1/create-models",
-            "module":"ANUVAAD-NMT",
-            "active":true,
-            "whiteList":false,
-            "description":"API to create NMT models"
-        },
-        {
-            "id":"cdbd4630-a2cd-4f32-a167-ebc734e43421",
-            "uri":"/nmt-inference/v1/update-models/*",
-            "module":"ANUVAAD-NMT",
-            "active":true,
-            "whiteList":false,
-            "description":"API to update NMT models"
-        },
-        {
-            "id":"ecda9694-e636-4211-aa85-4b146a9a543c",
-            "uri":"/nmt-inference/v1/delete-models/*",
-            "module":"ANUVAAD-NMT",
-            "active":true,
-            "whiteList":false,
-            "description":"API to delete NMT models"
-        },
-        {
-            "id":"5b5ca44a-ddd8-4576-88d5-e370a48c368e",
-            "uri":"/nmt-inference/v2/fetch-models/*",
-            "module":"ANUVAAD-NMT",
-            "active":true,
-            "whiteList":false,
-            "description":"API to fetch NMT models"
-        },
-        {
-            "id":"433f58d2-de6f-4027-8689-43eee482c3ec",
-            "uri":"/nmt-inference/v4/translate",
-            "module":"ANUVAAD-NMT",
-            "active":true,
-            "whiteList":false,
-            "description":"API for machine translation"
-        },
-        {
-            "id":"fe0decb2-78de-4f53-8ca7-c073ab2b1396",
-            "uri":"/nmt-inference/v3/interactive-translation",
-            "module":"ANUVAAD-NMT",
-            "active":true,
-            "whiteList":false,
-            "description":"API for interactive translation"
-        },
-        {
-            "id":"752bff69-e7ed-44bd-9218-ee65f4febb8c",
-            "uri":"/nmt-inference/v1/labse-aligner",
-            "module":"ANUVAAD-NMT",
-            "active":true,
-            "whiteList":false,
-            "description":"API for LABSE alignment"
-        },
-        {
             "id":"b0c793d1-215c-4de6-8d88-714f8394e75a",
             "uri":"/anuvaad-api/file-uploader/v0/upload-file",
             "module":"FILE-UPLOADER",
@@ -665,22 +585,6 @@
             "description":"ANUVAAD-CH-S3 URL FETCH"
         },
         {
-            "id":"c4cf7a7f-4749-4abd-9f15-8bbbfcc74dcf",
-            "uri":"/nmt-inference/health",
-            "module":"ANUVAAD-NMT",
-            "active":true,
-            "whiteList":true,
-            "description":"NMT GPU health API"
-        },
-        {
-            "id":"48e4d402-34e4-41ef-9f84-1f5e8a27b657",
-            "uri":"/nmt-inference/v0/translate",
-            "module":"ANUVAAD-NMT",
-            "active":true,
-            "whiteList":true,
-            "description":"API for ANUVAAD NMT translate"
-        },
-        {
             "id":"51ccb837-e34d-4fd4-843d-96291107c178",
             "uri":"/anuvaad/ocr/v0/ulca-ocr",
             "module":"ANUVAAD-ULCA-OCR",
@@ -711,6 +615,38 @@
             "active": true,
             "whiteList": false,
             "description": "API to update NMT models"
+        },
+        {
+            "id":"56a5003c-38f4-4885-acc5-04920a379609",
+            "uri":"/aai4b-nmt-inference/v2/fetch-models",
+            "module":"AIB-NMT",
+            "active":true,
+            "whiteList":true,
+            "description":"API for AIB NMT fetch models POST"
+        },
+        {
+            "id":"a090659f-c79d-4507-9cb7-afaff6ac6e8f",
+            "uri":"/aai4b-nmt-inference//v1/create-models",
+            "module":"AIB-NMT",
+            "active":true,
+            "whiteList":true,
+            "description":"API for AIB NMT create model"
+        },
+        {
+            "id":"5b603b31-ecfe-4cf8-b199-c979ad46302e",
+            "uri":"/aai4b-nmt-inference//v1/update-models/*",
+            "module":"AIB-NMT",
+            "active":true,
+            "whiteList":false,
+            "description":"API for AIB NMT update models"
+        },
+        {
+            "id":"43c6bb3a-2e58-4fe7-b9df-bd1a1d02660a",
+            "uri":"/aai4b-nmt-inference/v1/delete-models/*",
+            "module":"AIB-NMT",
+            "active":true,
+            "whiteList":false,
+            "description":"API for AIB NMT delete models"
         }
     ]
 }
