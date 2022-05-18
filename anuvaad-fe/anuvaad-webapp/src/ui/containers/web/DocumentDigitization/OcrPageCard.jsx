@@ -113,11 +113,12 @@ class OcrPageCard extends React.Component {
     }
 
     renderTable = (word, line, region) => {
+        console.log("printing the word", word);
         return (
             <div
                 style={{
                     position: "absolute",
-                    fontSize: word.font && `min(max(${word.font.size}px),${this.props.fontSize}px)`,
+                    fontSize: word.font ? `min(max(${word.font.size}px),${this.props.fontSize}px)` : `min(max(${this.props.fontSize}px),${this.props.fontSize/1.7}px)`,
                     top: word.boundingBox.vertices[0].y - line.boundingBox.vertices[0].y + 'px',
                     left: word.boundingBox.vertices[0].x - line.boundingBox.vertices[0].x + 'px',
                     maxWidth: word.boundingBox.vertices[1].x - word.boundingBox.vertices[0].x + 'px',
