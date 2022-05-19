@@ -634,7 +634,7 @@
         },
         {
             "id":"5b603b31-ecfe-4cf8-b199-c979ad46302e",
-            "uri":"/aai4b-nmt-inference//v1/update-models/*",
+            "uri":"/aai4b-nmt-inference/v1/update-models/*",
             "module":"AIB-NMT",
             "active":true,
             "whiteList":false,

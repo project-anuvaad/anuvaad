@@ -284,7 +284,7 @@ class PageCardHtml extends React.Component {
             <Paper
               elevation={0}
               id="paper"
-              style={{ background: "none", padding: "2%" }}
+              style={{ background: "none", padding: "10%" }}
             ></Paper>
           </span>
         ) : (
@@ -295,7 +295,7 @@ class PageCardHtml extends React.Component {
               <Paper
                 elevation={0}
                 id="paper"
-                style={{ background: "none", padding: "2%" }}
+                style={{ background: "none", padding: "10%" }}
               ></Paper>
             )}
           </span>
