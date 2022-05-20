@@ -626,7 +626,7 @@
         },
         {
             "id":"a090659f-c79d-4507-9cb7-afaff6ac6e8f",
-            "uri":"/aai4b-nmt-inference//v1/create-models",
+            "uri":"/aai4b-nmt-inference/v1/create-models",
             "module":"AIB-NMT",
             "active":true,
             "whiteList":true,
