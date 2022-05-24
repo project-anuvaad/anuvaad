@@ -671,6 +671,6 @@
             "active":true,
             "whiteList":true,
             "description":"API for AIB NMT health endpoint"
-        },
+        }
     ]
 }
