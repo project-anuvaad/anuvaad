@@ -618,11 +618,11 @@
         },
         {
             "id":"56a5003c-38f4-4885-acc5-04920a379609",
-            "uri":"/aai4b-nmt-inference/v2/fetch-models",
+            "uri":"/aai4b-nmt-inference/v2/fetch-models/*",
             "module":"AIB-NMT",
             "active":true,
             "whiteList":true,
-            "description":"API for AIB NMT fetch models POST"
+            "description":"API for AIB NMT fetch models GET"
         },
         {
             "id":"a090659f-c79d-4507-9cb7-afaff6ac6e8f",
@@ -647,6 +647,30 @@
             "active":true,
             "whiteList":false,
             "description":"API for AIB NMT delete models"
-        }
+        },
+        {
+            "id":"cad20323-2d89-41c8-a20c-aee6df03830e",
+            "uri":"/aai4b-nmt-inference/v3/fetch-models",
+            "module":"AIB-NMT",
+            "active":true,
+            "whiteList":true,
+            "description":"API for AIB NMT fetch models POST"
+        },
+        {
+            "id":"b060c86c-8ab0-449a-a915-ab6e9c4ad544",
+            "uri":"/aai4b-nmt-inference/v1/labse-aligner",
+            "module":"AIB-NMT",
+            "active":true,
+            "whiteList":true,
+            "description":"API for getting labse alignments"
+        },
+        {
+            "id":"fd5b5fb6-fe99-4384-8de2-25f9dfe1d27e",
+            "uri":"/aai4b-nmt-inference/health",
+            "module":"AIB-NMT",
+            "active":true,
+            "whiteList":true,
+            "description":"API for AIB NMT health endpoint"
+        },
     ]
 }
