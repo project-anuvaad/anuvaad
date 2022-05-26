@@ -318,7 +318,7 @@ class DocumentEditor extends React.Component {
     // let initial_sentences = sentences.map(sentence => sentence.src);
     // let final_sentence = updated_blocks['blocks'][0].tokenized_sentences[0].src;
     // TELEMETRY.mergeSentencesEvent(initial_sentences, final_sentence)
-    let model = LANG_MODEL.fetchModel(parseInt(this.props.match.params.modelId), this.props.fetch_models)
+    let model = LANG_MODEL.fetchModel(parseInt(this.props.match.params.modelId), this.props.fetch_models, this.props.match.params.source_language_code, this.props.match.params.target_language_code)
     this.informUserProgress(translate('common.page.label.RETRANSLATE_SENTENCE'))
     let apiObj = new WorkFlowAPI("WF_S_TR", updated_blocks, this.props.match.params.jobid, model.source_language_code,
       '', '', model, [sentence_ids], "", "", [], "", true)
