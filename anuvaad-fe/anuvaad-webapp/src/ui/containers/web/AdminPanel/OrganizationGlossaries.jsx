@@ -12,19 +12,18 @@ import IconButton from '@material-ui/core/IconButton';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import Spinner from "../../../components/web/common/Spinner";
 import { clearJobEntry } from '../../../../flux/actions/users/async_job_management';
-import ToolBar from "../AdminPanel/OrganizationHeader"
+import ToolBar from "../AdminPanel/OrganizationGlossariesHeader"
 import FetchOrganizationList from "../../../../flux/actions/apis/organization/organization-list";
 import Snackbar from '@material-ui/core/Snackbar';
 import Alert from '@material-ui/lab/Alert';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import AddOrg from "../../../../flux/actions/apis/organization/addOrganization";
 import Visibility from "@material-ui/icons/Visibility";
-import history from "../../../../web.history";
 
 
 const TELEMETRY = require('../../../../utils/TelemetryManager')
 
-class OrganizationList extends React.Component {
+class OrganizationGlossaries extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -117,7 +116,7 @@ class OrganizationList extends React.Component {
 };
 
 onViewGlossariesClick = (orgId) => {
-  history.push(`${process.env.PUBLIC_URL}/organization-glossaries/${orgId}`);
+  alert(orgId)
 }
 
 renderProgressInformation = () => {
@@ -279,7 +278,7 @@ renderStatusInformation = () => {
 
         <div style={{ margin: '0% 3% 3% 3%', paddingTop: "7%" }}>
           <ToolBar/>
-          {
+          {/* {
             (!this.state.showLoader || this.props.count) &&
             <MuiThemeProvider theme={this.getMuiTheme()}>
               <MUIDataTable title={translate("common.page.title.orgList")}
@@ -288,7 +287,7 @@ renderStatusInformation = () => {
           }
           {(this.state.showLoader) && <Spinner />}
           {this.state.apiInProgress ? this.renderProgressInformation() : <div />}
-        {this.state.showStatus ? this.renderStatusInformation() : <div />}
+        {this.state.showStatus ? this.renderStatusInformation() : <div />} */}
         </div>
       </div >
     );
@@ -313,4 +312,4 @@ const mapDispatchToProps = dispatch =>
     dispatch
   );
 
-export default withRouter(withStyles(NewCorpusStyle)(connect(mapStateToProps, mapDispatchToProps)(OrganizationList)));
+export default withRouter(withStyles(NewCorpusStyle)(connect(mapStateToProps, mapDispatchToProps)(OrganizationGlossaries)));
