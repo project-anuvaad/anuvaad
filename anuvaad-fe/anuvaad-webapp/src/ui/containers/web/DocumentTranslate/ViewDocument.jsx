@@ -203,6 +203,7 @@ class ViewDocument extends React.Component {
    * helper methods
    */
   getJobsSortedByTimestamp = () => {
+    console.log("this.props.job_details.documents ======== ", this.props.job_details.documents);
     let jobs = this.props.job_details.documents.sort((a, b) => {
       if (a.created_on < b.created_on) {
         return 1;
@@ -284,9 +285,8 @@ class ViewDocument extends React.Component {
     let role = localStorage.getItem("roles")
     let job = this.getJobIdDetail(jobId);
     if (status === "COMPLETED") {
-
       history.push(
-        `${process.env.PUBLIC_URL}/interactive-document/${job.recordId}/${job.converted_filename}/${job.model_id}/${job.filename}/${workflowCode}`,
+        `${process.env.PUBLIC_URL}/interactive-document/${job.recordId}/${job.converted_filename}/${job.model_id}/${job.filename}/${workflowCode}/${job.source_language_code}/${job.target_language_code}`,
         this.state
       );
 

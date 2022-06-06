@@ -146,6 +146,8 @@ class SentenceCard extends React.Component {
         if (this.props.sentence && this.props.sentence.hasOwnProperty("rating_score") && this.props.sentence.rating_score) {
             this.setState({ score: this.props.sentence.rating_score })
         }
+
+        console.log("this.props in setence card component -------- ", this.props);
     }
 
     componentWillUpdate(nextProps, nextState) {
@@ -696,7 +698,7 @@ class SentenceCard extends React.Component {
                         }}
                         renderInput={params => (
                             <TextField {...params} label="Enter translated sentence"
-                                helperText={this.props.model.status === "ACTIVE" && this.props.model.interactive_translation && orgID !== 'NONMT' ? "Ctrl+m to move text, TAB key to move suggested words, Ctrl+s to save" : "Ctrl+m to move text, Ctrl+s to save"}
+                                helperText={this.props.model && this.props.model.status === "ACTIVE" && this.props.model.interactive_translation && orgID !== 'NONMT' ? "Ctrl+m to move text, TAB key to move suggested words, Ctrl+s to save" : "Ctrl+m to move text, Ctrl+s to save"}
                                 type="text"
                                 name={this.props.sentence.s_id}
                                 value={this.state.value}
@@ -1048,10 +1050,10 @@ class SentenceCard extends React.Component {
         if (this.cardCompare()) {
             this.setState({ cardInFocus: false, eventArray: [] })
             this.props.clearHighlighBlock()
-            TELEMETRY.endSentenceTranslation(this.props.model.source_language_name, this.props.model.target_language_name, this.props.jobId, this.props.sentence.s_id)
+            TELEMETRY.endSentenceTranslation(this.props.model && this.props.model.source_language_name, this.props.model && this.props.model.target_language_name, this.props.jobId, this.props.sentence.s_id)
         } else {
             if (this.props.block_highlight && this.props.block_highlight.current_sid) {
-                TELEMETRY.endSentenceTranslation(this.props.model.source_language_name, this.props.model.target_language_name, this.props.jobId, this.props.block_highlight.current_sid)
+                TELEMETRY.endSentenceTranslation(this.props.model && this.props.model.source_language_name, this.props.model && this.props.model.target_language_name, this.props.jobId, this.props.block_highlight.current_sid)
             }
             this.setState({ cardInFocus: true })
             this.props.highlightBlock(this.props.sentence, this.props.pageNumber)
@@ -1060,7 +1062,7 @@ class SentenceCard extends React.Component {
              * For highlighting textarea on card expand
              */
             this.textInput && this.textInput.current && this.textInput.current.focus();
-            TELEMETRY.startSentenceTranslation(this.props.model.source_language_name, this.props.model.target_language_name, this.props.jobId, this.props.sentence.s_id)
+            TELEMETRY.startSentenceTranslation(this.props.model && this.props.model.source_language_name, this.props.model && this.props.model.target_language_name, this.props.jobId, this.props.sentence.s_id)
         }
 
     }
