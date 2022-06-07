@@ -7,11 +7,13 @@ import xlrd
 from anuvaad_auditor.loghandler import log_exception, log_info
 import requests
 from .tmxrepo import TMXRepository
+from utilities.translatorutils import TranslatorUtils
 from configs.translatorconfig import nmt_labse_align_url, download_folder, tmx_global_enabled, tmx_org_enabled, \
     tmx_user_enabled, tmx_word_length
 from anuvaad_auditor.errorhandler import post_error
 
 repo = TMXRepository()
+utils = TranslatorUtils()
 
 
 class TMXService:
@@ -113,14 +115,16 @@ class TMXService:
     def push_tmx_metadata(self, tmx_record, file_path):
         locale, length = tmx_record["sentences"][0]["locale"], len(tmx_record["sentences"])
         db_record = tmx_record
-        db_record["sentences"], db_record["file"], db_record["timeStamp"] = length, file_path, eval(str(time.time()).replace('.', '')[0:13])
+        db_record["sentences"], db_record["file"], db_record["timeStamp"] = length, file_path, eval(
+            str(time.time()).replace('.', '')[0:13])
         db_record["locale"], db_record["id"] = locale, str(uuid.uuid4())
         repo.tmx_create(db_record)
         db_record_reverse = tmx_record
         reverse_locale_array = str(locale).split("|")
         reverse_locale = str(reverse_locale_array[1]) + "|" + str(reverse_locale_array[0])
         db_record_reverse["sentences"], db_record_reverse["file"], = length, file_path
-        db_record_reverse["timeStamp"], db_record_reverse["locale"], db_record["id"] = eval(str(time.time()).replace('.', '')[0:13]), reverse_locale, str(uuid.uuid4())
+        db_record_reverse["timeStamp"], db_record_reverse["locale"], db_record["id"] = eval(
+            str(time.time()).replace('.', '')[0:13]), reverse_locale, str(uuid.uuid4())
         repo.tmx_create(db_record_reverse)
 
     # Method to delete records from TMX store.
@@ -257,6 +261,7 @@ class TMXService:
     def replace_nmt_tgt_with_user_tgt(self, tmx_phrases, tgt, ctx):
         tmx_without_nmt_phrases, tmx_tgt, tmx_replacement = [], None, []
         try:
+            tmx_replace_dict = {}
             for tmx_phrase in tmx_phrases:
                 if tmx_phrase["nmt_tgt"]:
                     found = False
@@ -264,13 +269,15 @@ class TMXService:
                         if nmt_tgt_phrase in tgt:
                             tmx_replacement.append({"src_phrase": tmx_phrase["src"], "tmx_tgt": tmx_phrase["user_tgt"],
                                                     "tgt": str(nmt_tgt_phrase), "type": "NMT"})
-                            tgt = tgt.replace(nmt_tgt_phrase, tmx_phrase["user_tgt"])
+                            tmx_replace_dict[nmt_tgt_phrase] = tmx_phrase["user_tgt"]
                             found = True
                             break
                     if not found:
                         tmx_without_nmt_phrases.append(tmx_phrase)
                 else:
                     tmx_without_nmt_phrases.append(tmx_phrase)
+            if tmx_replace_dict:
+                tgt = utils.multiple_replace(tgt, tmx_replace_dict)
             tmx_tgt = tgt
             if tmx_without_nmt_phrases:
                 log_info("Phrases to LaBSE: {} | Total: {}".format(len(tmx_without_nmt_phrases), len(tmx_phrases)), ctx)
@@ -286,7 +293,7 @@ class TMXService:
 
     # Replaces phrases in tgt with user tgts using labse alignments and updates nmt_tgt in TMX
     def replace_with_labse_alignments(self, tmx_phrases, tgt, tmx_replacement, ctx):
-        tmx_phrase_dict = {}
+        tmx_phrase_dict, tmx_replace_dict = {}, {}
         for tmx_phrase in tmx_phrases:
             tmx_phrase_dict[tmx_phrase["src"]] = tmx_phrase
         nmt_req = {"src_phrases": list(tmx_phrase_dict.keys()), "tgt": tgt}
@@ -307,11 +314,13 @@ class TMXService:
                             phrase = tmx_phrase_dict[aligned_phrase]
                             tmx_replacement.append({"src_phrase": phrase["src"], "tmx_tgt": phrase["user_tgt"],
                                                     "tgt": str(nmt_aligned_phrases[aligned_phrase]), "type": "LaBSE"})
-                            tgt = tgt.replace(nmt_aligned_phrases[aligned_phrase], phrase["user_tgt"])
+                            tmx_replace_dict[nmt_aligned_phrases[aligned_phrase]] = phrase["user_tgt"]
                             modified_nmt_tgt = phrase["nmt_tgt"]
                             modified_nmt_tgt.append(nmt_aligned_phrases[aligned_phrase])
                             phrase["nmt_tgt"] = modified_nmt_tgt
                             repo.upsert(phrase["hash"], phrase)
+                        if tmx_replace_dict:
+                            tgt = utils.multiple_replace(tgt, tmx_replace_dict)
                     else:
                         log_info("No LaBSE alignments found!", ctx)
                         log_info("LaBSE - " + str(nmt_req), ctx)

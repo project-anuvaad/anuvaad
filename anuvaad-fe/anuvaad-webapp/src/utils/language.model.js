@@ -108,14 +108,30 @@ export const get_selected_users = (userDetails, uuid) => {
     return result;
 }
 
-export const fetchModel = (modelId, docs) => {
+export const fetchModel = (modelId, docs, source_lang, targ_lang) => {
     let model = ""
     if (docs && docs.length > 0) {
         let condition = `$[?(@.model_id == '${modelId}')]`;
         model = jp.query(docs, condition)
-        if (model[0].status === "INACTIVE") {
-            let condition = `$[?(@.source_language_code == '${model[0].source_language_code}' && @.target_language_code =='${model[0].target_language_code}' && @.status === "INACTIVE" && @.is_primary === true)]`;
+        console.log("model list arr ----------- ", model);
+        if(!model){
+            let condition = `$[?(@.source_language_name == '${source_lang}' && @.target_language_name =='${targ_lang}' && @.status === "ACTIVE" && @.is_primary === true)]`;
             model = jp.query(docs, condition)
+            console.log("using the default model. UUID ======= ", model);
+        } else if (model[0].status === "INACTIVE") {
+            let getFilteredUserModels = JSON.parse(localStorage.getItem("userProfile")).models.filter(el => el.src_lang === model[0].source_language_code && el.tgt_lang === model[0].target_language_code)
+            let availableModelUuid = getFilteredUserModels.length > 0 ? getFilteredUserModels[0].uuid : null;
+            console.log("availableModelUuid ======= ", availableModelUuid);
+
+            if (availableModelUuid) {
+                let condition = `$[?(@.source_language_code == '${model[0].source_language_code}' && @.target_language_code =='${model[0].target_language_code}' && @.uuid == '${availableModelUuid}' && @.status === "ACTIVE")]`;
+                model = jp.query(docs, condition);
+                console.log("using the user assigned model. UUID ======= ", model);
+            } else {
+                let condition = `$[?(@.source_language_code == '${model[0].source_language_code}' && @.target_language_code =='${model[0].target_language_code}' && @.status === "ACTIVE" && @.is_primary === true)]`;
+                model = jp.query(docs, condition)
+                console.log("using the default model. UUID ======= ", model);
+            }
         }
     }
 
