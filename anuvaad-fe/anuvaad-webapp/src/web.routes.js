@@ -42,7 +42,7 @@ import NmtModelAssign from "./ui/containers/web/AdminPanel/NmtModelAssign";
 import ViewUserGlossary from './ui/containers/web/UserGlossary/ViewUserGlossary';
 import UserGlossaryUpload from './ui/containers/web/UserGlossary/UserGlossaryUpload';
 import UservEventView from './ui/containers/web/AdminPanel/UserEventView';
-import OrganizationGlossaries from "./ui/containers/web/AdminPanel/OrganizationGlossaries";
+import OrganizationGlossaries from "./ui/containers/web/AdminPanel/OrganizationGlossary";
 
 const PrivateRoute = ({ headerAttribute: headerAttribute, component: Component, userRoles, title, drawer, showLogo, forDemo, dontShowLoader, dontShowHeader, currentMenu, authenticate, ...rest }) => (
   <Route

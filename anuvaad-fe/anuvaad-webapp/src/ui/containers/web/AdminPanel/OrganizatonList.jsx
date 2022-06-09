@@ -215,7 +215,7 @@ renderStatusInformation = () => {
       },
       {
         name: "view-glossary",
-        label: "View",
+        label: "View Glossary",
         options: {
           filter: true,
           sort: true,

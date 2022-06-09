@@ -24,7 +24,7 @@ import GlobalStyles from "../../../styles/web/styles";
 import Theme from "../../../theme/web/theme-anuvaad";
 import classNames from "classnames";
 
-class OrganizationGlossariesHeader extends React.Component {
+class OrganizationGlossaryHeader extends React.Component {
 
     handleOnClick() {
         history.push(`${process.env.PUBLIC_URL}/add-organization`);
@@ -112,4 +112,4 @@ const mapDispatchToProps = dispatch => bindActionCreators(
 export default withRouter(connect(
     mapStateToProps,
     mapDispatchToProps
-)(withStyles(GlobalStyles(Theme), { withTheme: true })(OrganizationGlossariesHeader)));
+)(withStyles(GlobalStyles(Theme), { withTheme: true })(OrganizationGlossaryHeader)));
