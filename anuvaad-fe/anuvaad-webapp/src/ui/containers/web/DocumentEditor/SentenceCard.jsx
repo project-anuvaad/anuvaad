@@ -738,10 +738,12 @@ class SentenceCard extends React.Component {
 
 
     retranslateSentence = () => {
+        console.log("this.state.value", this.state.value)
         if (this.props.onAction) {
             let eventArray = this.handleTimeCalc("Retranslate", "", (this.state.value.length < 1 || this.state.value === '') ? this.props.sentence.s0_tgt : this.state.value)
             this.setState({ eventArray })
             this.setState({ value: '' })
+            console.log("eventArray", eventArray)
             this.props.onAction(SENTENCE_ACTION.RETRANSLATE_SENTENCE, this.props.pageNumber, [this.props.sentence])
         }
     }

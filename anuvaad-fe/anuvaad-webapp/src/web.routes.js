@@ -42,7 +42,6 @@ import NmtModelAssign from "./ui/containers/web/AdminPanel/NmtModelAssign";
 import ViewUserGlossary from './ui/containers/web/UserGlossary/ViewUserGlossary';
 import UserGlossaryUpload from './ui/containers/web/UserGlossary/UserGlossaryUpload';
 import UservEventView from './ui/containers/web/AdminPanel/UserEventView';
-import OrganizationGlossaries from "./ui/containers/web/AdminPanel/OrganizationGlossary";
 
 const PrivateRoute = ({ headerAttribute: headerAttribute, component: Component, userRoles, title, drawer, showLogo, forDemo, dontShowLoader, dontShowHeader, currentMenu, authenticate, ...rest }) => (
   <Route
@@ -145,7 +144,7 @@ class AppRoutes extends React.Component {
             />
 
             <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/interactive-document/:jobid/:inputfileid/:modelId/:filename/:workflow`}
+              path={`${process.env.PUBLIC_URL}/interactive-document/:jobid/:inputfileid/:modelId/:filename/:workflow/:source_language_code/:target_language_code`}
               userRoles={["TRANSLATOR", "ANNOTATOR"]}
               component={DocumentEditorV1}
               title="Translate file"
@@ -297,18 +296,6 @@ class AppRoutes extends React.Component {
               title={"Organization List"}
               userRoles={["ADMIN"]}
               component={OrganizationList}
-              authenticate={this.authenticateUser}
-              currentMenu="organization-list"
-              dontShowHeader={true}
-
-            />
-
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/organization-glossaries/:orgId`}
-              dontShowLoader
-              title={"Organization Glossaries"}
-              userRoles={["ADMIN"]}
-              component={OrganizationGlossaries}
               authenticate={this.authenticateUser}
               currentMenu="organization-list"
               dontShowHeader={true}
