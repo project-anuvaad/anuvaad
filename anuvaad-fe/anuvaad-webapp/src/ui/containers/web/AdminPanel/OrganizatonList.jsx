@@ -18,6 +18,8 @@ import Snackbar from '@material-ui/core/Snackbar';
 import Alert from '@material-ui/lab/Alert';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import AddOrg from "../../../../flux/actions/apis/organization/addOrganization";
+import Visibility from "@material-ui/icons/Visibility";
+import history from "../../../../web.history";
 
 
 const TELEMETRY = require('../../../../utils/TelemetryManager')
@@ -46,6 +48,16 @@ class OrganizationList extends React.Component {
         </IconButton>
       </Tooltip>
     );
+  }
+
+  viewOrgGlossaries = (orgId) => {
+    return(
+      <Tooltip title="View Org Glossaries" placement="right">
+        <IconButton style={{ color: '#233466', padding: '5px' }} component="a" onClick={()=>this.onViewGlossariesClick(orgId)}>
+          <Visibility />
+        </IconButton>
+      </Tooltip>
+    )
   }
 
     /**
@@ -103,6 +115,10 @@ class OrganizationList extends React.Component {
       }
     })
 };
+
+onViewGlossariesClick = (orgId) => {
+  history.push(`${process.env.PUBLIC_URL}/organization-glossaries/${orgId}`);
+}
 
 renderProgressInformation = () => {
   return (
@@ -195,6 +211,22 @@ renderStatusInformation = () => {
           sort: false,
           display: "exclude"
 
+        }
+      },
+      {
+        name: "view-glossary",
+        label: "View Glossary",
+        options: {
+          filter: true,
+          sort: true,
+          empty: true,
+          customBodyRender: (value, tableMeta, updateValue) => {
+            if (tableMeta.rowData) {
+              return (
+                this.viewOrgGlossaries(tableMeta.rowData[0]) //userId, userName, roleCodes, isactive
+              );
+            }
+          }
         }
       },
       {
