@@ -312,6 +312,7 @@ class DocumentEditor extends React.Component {
   makeAPICallReTranslateSentence = (sentences, pageNumber) => {
     let sentence_ids = sentences.s_id
     let updated_blocks = BLOCK_OPS.do_sentence_retranslation(this.props.document_contents.pages, sentence_ids);
+    console.log("updated_blocks", updated_blocks);
     /**
      * telemetry information.
      */
@@ -319,7 +320,8 @@ class DocumentEditor extends React.Component {
     // let final_sentence = updated_blocks['blocks'][0].tokenized_sentences[0].src;
     // TELEMETRY.mergeSentencesEvent(initial_sentences, final_sentence)
     let model = LANG_MODEL.fetchModel(parseInt(this.props.match.params.modelId), this.props.fetch_models, this.props.match.params.source_language_code, this.props.match.params.target_language_code, this.props.match.params.source_language_code, this.props.match.params.target_language_code)
-    this.informUserProgress(translate('common.page.label.RETRANSLATE_SENTENCE'))
+    this.informUserProgress(translate('common.page.label.RETRANSLATE_SENTENCE'));
+    console.log("model in retranslation === ", model);
     let apiObj = new WorkFlowAPI("WF_S_TR", updated_blocks, this.props.match.params.jobid, model.source_language_code,
       '', '', model, [sentence_ids], "", "", [], "", true)
     const apiReq = fetch(apiObj.apiEndPoint(), {
