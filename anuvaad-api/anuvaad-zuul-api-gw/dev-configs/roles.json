@@ -8,7 +8,7 @@
         {
             "code":"ADMIN",
             "active":true,
-            "description":"Has access to user management related resources"
+            "description":"Has access to user management related resources for a org"
         },
         {
             "code":"TRANSLATOR",
@@ -29,6 +29,11 @@
             "code":"EXTENSION",
             "active":true,
             "description":"has access to translate from extension"
+        },
+        {
+            "code":"SUPERADMIN",
+            "active":true,
+            "description":"Has access to user management related resources across all orgs"
         }
     ]
 }
