@@ -129,30 +129,27 @@ class TMXService:
 
     # Method to delete records from TMX store.
     def delete_from_tmx_store(self, tmx_input):
-        log_info("Deleting to TMX......", None)
-        user_roles = str(tmx_input["metadata"]["roles"]).split(",")
-        if "ADMIN" not in user_roles or "SUPERADMIN" not in user_roles:
-            if 'orgID' in tmx_input.keys():
-                return {"message": "Only an ADMIN or SUPERADMIN can delete ORG-level TMX", "status": "FAILED"}
+        log_info("Deleting to Glossary......", None)
         hashes = []
         if not tmx_input["sentences"]:
             try:
-                if 'orgID' in tmx_input.keys() and 'userID' in tmx_input.keys():
-                    return {"message": "Either user TMX or org TMX can be deleted at a time", "status": "FAILED"}
-                elif 'orgID' in tmx_input.keys():
-                    search_req = {"metadata": {"orgID": tmx_input["orgID"], "userID": "userID"}, "allUserKeys": True}
+                if 'orgID' in tmx_input.keys():
+                    search_req = {"orgID": tmx_input["orgID"], "userID": "userID", "allUserKeys": True}
                     tmx_to_be_deleted = self.get_tmx_data(search_req)
                 else:
-                    search_req = {"metadata": {"userID": tmx_input["userID"], "orgID": "orgID"}, "allUserKeys": True}
+                    search_req = {"userID": tmx_input["userID"], "orgID": "orgID", "allUserKeys": True}
                     tmx_to_be_deleted = self.get_tmx_data(search_req)
-                tmx_proc = lambda tmx_del: hashes.append(tmx_del["hash"])
-                tmx_proc(tmx_to_be_deleted)
-                repo.delete(hashes)
-                log_info("TMX deleted!", None)
-                return {"message": "TMX DELETED!", "status": "SUCCESS"}
+                if tmx_to_be_deleted:
+                    tmx_proc = lambda tmx_del: hashes.append(tmx_del["hash"])
+                    tmx_proc(tmx_to_be_deleted)
+                    repo.delete(hashes)
+                    log_info("Glossary deleted!", None)
+                    return {"message": "Glossary DELETED!", "status": "SUCCESS"}
+                else:
+                    return {"message": "No Glossary Available!", "status": "SUCCESS"}
             except Exception as e:
-                log_exception("Exception while deleting TMX by orgID/userID: " + str(e), None, e)
-                return {"message": "deletion of TMX by orgID/userID failed", "status": "FAILED"}
+                log_exception("Exception while deleting Glossary by orgID/userID: " + str(e), None, e)
+                return {"message": "deletion of Glossary by orgID/userID failed", "status": "FAILED"}
         else:
             try:
                 tmx_records = []
@@ -175,11 +172,11 @@ class TMXService:
                     hash_dict = self.get_hash_key(tmx_record)
                     hashes.extend(hash_dict.keys())
                 repo.delete(hashes)
-                log_info("TMX deleted!", None)
-                return {"message": "TMX DELETED!", "status": "SUCCESS"}
+                log_info("Glossary deleted!", None)
+                return {"message": "Glossary DELETED!", "status": "SUCCESS"}
             except Exception as e:
-                log_exception("Exception while deleting TMX one by one: " + str(e), None, e)
-                return {"message": "deletion of TMX one by one failed", "status": "FAILED"}
+                log_exception("Exception while deleting Glossary one by one: " + str(e), None, e)
+                return {"message": "deletion of Glossary one by one failed", "status": "FAILED"}
 
     # Method to fetch tmx phrases for a given src
     def get_tmx_phrases(self, user_id, org_id, context, locale, sentence, tmx_level, tmx_file_cache, ctx):
@@ -358,7 +355,6 @@ class TMXService:
 
     # Method to fetch all keys from the redis db
     def get_tmx_data(self, req):
-        user_roles = str(req["metadata"]["roles"]).split(",")
         if "keys" in req.keys():
             if req["keys"]:
                 return repo.get_all_records(req["keys"])
@@ -368,9 +364,7 @@ class TMXService:
         try:
             redis_records = repo.get_all_records([])
             log_info(f'No of tmx entries fetched: {len(redis_records)}', None)
-            user_id, org_id = req["metadata"]["userID"], req["metadata"]["orgID"]
-            if "SUPERADMIN" in user_roles:
-                org_id = req["orgID"]
+            user_id, org_id = req["userID"], req["orgID"]
             if redis_records:
                 filtered = filter(lambda record: self.filter_user_records(record, user_id, org_id), redis_records)
                 if filtered:

@@ -138,3 +138,43 @@ class TranslatorValidator:
                                 return post_error("SRC_LANG_NOT_FOUND", "Source language code is mandatory.", None)
                             if 'target_language_code' not in model.keys():
                                 return post_error("TGT_LANG_NOT_FOUND", "Target language code is mandatory.", None)
+
+    def validate_tmx_search(self, input_req):
+        user_roles = str(input_req["metadata"]["roles"]).split(",")
+        if 'SUPERADMIN' in user_roles:
+            if 'orgID' not in input_req.keys() or 'userID' not in input_req.keys() or 'keys' not in input_req.keys():
+                return post_error("MAND_IP_MISSING", "User ID or Org ID or Keys is mandatory for this search", None)
+        else:
+            if 'getAll' in input_req.keys():
+                input_req["getAll"] = None
+            if 'ADMIN' in user_roles:
+                if 'orgID' in input_req.keys():
+                    if input_req["orgID"] != input_req["metadata"]["orgID"]:
+                        return post_error("ORG_MISMATCH", "This user can only search Glossary from his/her Org.", None)
+                else:
+                    return post_error("ORG_MISSING", "Org ID is mandatory for this search", None)
+            if 'TRANSLATOR' in user_roles:
+                if 'orgID' in input_req.keys():
+                    if input_req["orgID"] != input_req["metadata"]["orgID"]:
+                        return post_error("ORG_MISMATCH", "This user can only search Glossary from his/her Org.", None)
+                else:
+                    return post_error("ORG_MISSING", "Org ID is mandatory for this search", None)
+                if 'userID' in input_req.keys():
+                    if input_req["userID"] != input_req["metadata"]["userID"]:
+                        return post_error("USER_MISMATCH", "This user can only search Glossary from his/her account.", None)
+                else:
+                    return post_error("USER_MISSING", "User ID is mandatory for this search", None)
+        return None
+
+    def validate_tmx_delete(self, input_req):
+        user_roles = str(input_req["metadata"]["roles"]).split(",")
+        if "ADMIN" not in user_roles and "SUPERADMIN" not in user_roles:
+            if 'orgID' in input_req.keys():
+                return {"message": "Only an ADMIN or SUPERADMIN can delete ORG-level TMX", "status": "FAILED"}
+        if 'orgID' in input_req.keys() and 'userID' in input_req.keys():
+            return {"message": "Either user TMX or org TMX can be deleted at a time", "status": "FAILED"}
+        return None
+
+
+
+
