@@ -143,6 +143,7 @@ class TMXService:
                     log_info(f"len of tmx_to_be_deleted: {len(tmx_to_be_deleted)}", None)
                     tmx_proc = lambda tmx_del: hashes.append(tmx_del["hash"])
                     tmx_proc(tmx_to_be_deleted)
+                    log_info(hashes, None)
                     repo.delete(hashes)
                     log_info("Glossary deleted!", None)
                     return {"message": "Glossary DELETED!", "status": "SUCCESS"}
@@ -156,29 +157,22 @@ class TMXService:
                 tmx_records = []
                 for sentence in tmx_input["sentences"]:
                     sentence_list = [sentence]
-                    locale = str(sentence["locale"]).split("|")
-                    log_info(f"locale: {locale}", None)
-                    rev_locale = f'{locale[1]}|{locale[0]}'
-                    log_info(f"rev locale: {rev_locale}", None)
+                    rev_locale = f'{str(sentence["locale"]).split("|")[1]}|{str(sentence["locale"]).split("|")[0]}'
                     rev_pair = {"src": sentence["tgt"], "tgt": sentence["src"], "locale": rev_locale}
                     sentence_list.append(rev_pair)
                     for tmx in sentence_list:
-                        log_info(f"tmx: {tmx}", None)
                         sentence_types = self.fetch_diff_flavors_of_sentence(tmx["src"])
                         for sent in sentence_types:
-                            tmx_record_pair = {"src": sent, "locale": sentence["locale"], "nmt_tgt": [],
-                                               "user_tgt": sentence["tgt"], "context": tmx_input["context"]}
+                            tmx_record_pair = {"src": sent, "locale": tmx["locale"], "nmt_tgt": [],
+                                               "user_tgt": tmx["tgt"], "context": tmx_input["context"]}
                             if 'userID' in tmx_input.keys():
                                 tmx_record_pair["userID"] = tmx_input["userID"]
                             if 'orgID' in tmx_input.keys():
                                 tmx_record_pair["orgID"] = tmx_input["orgID"]
                             tmx_records.append(tmx_record_pair)
-                log_info(f"len of tmx records: {len(tmx_records)}", None)
-                log_info(tmx_records, None)
                 for tmx_record in tmx_records:
                     hash_dict = self.get_hash_key(tmx_record)
-                    hashes.extend(hash_dict.keys())
-                log_info(f"len of hashes: {len(hashes)}", None)
+                    hashes.extend(hash_dict.values())
                 log_info(hashes, None)
                 repo.delete(hashes)
                 log_info("Glossary deleted!", None)
