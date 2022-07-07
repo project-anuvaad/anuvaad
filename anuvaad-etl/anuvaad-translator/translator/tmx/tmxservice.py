@@ -170,10 +170,12 @@ class TMXService:
                                 tmx_record_pair["orgID"] = tmx_input["orgID"]
                             tmx_records.append(tmx_record_pair)
                 log_info(f"len of tmx records: {len(tmx_records)}", None)
+                log_info(tmx_records, None)
                 for tmx_record in tmx_records:
                     hash_dict = self.get_hash_key(tmx_record)
+                    log_info(f"hash_dict: {hash_dict}", None)
                     hashes.extend(hash_dict.keys())
-                log_info(f"len of hashes: {len(tmx_records)}", None)
+                log_info(f"len of hashes: {len(hashes)}", None)
                 repo.delete(hashes)
                 log_info("Glossary deleted!", None)
                 return {"message": "Glossary DELETED!", "status": "SUCCESS"}
