@@ -107,15 +107,18 @@ def tmx_create():
 
 @translatorapp.route(context_path + '/v1/tmx/delete', methods=["POST"])
 def tmx_delete():
-    service = TMXService()
-    data = request.get_json()
+    service, data, validator = TMXService(), request.get_json(), TranslatorValidator()
     try:
         data = add_headers(data, request)
-        response = service.delete_from_tmx_store(data)
-        if response["status"] == "FAILED":
-            return jsonify(response), 400
+        validated = validator.validate_tmx_delete(data)
+        if not validated:
+            response = service.delete_from_tmx_store(data)
+            if response["status"] == "FAILED":
+                return jsonify(response), 400
+            else:
+                return jsonify(response), 200
         else:
-            return jsonify(response), 200
+            return jsonify(validated), 400
     except Exception as e:
         response = {"message": "Something went wrong.", "status": "FAILED"}
         return jsonify(response), 400
@@ -123,11 +126,14 @@ def tmx_delete():
 
 @translatorapp.route(context_path + '/v1/tmx/get-all-keys', methods=["POST"])
 def tmx_get_all_keys():
-    service = TMXService()
-    data = request.get_json()
+    service, data, validator = TMXService(), request.get_json(), TranslatorValidator()
     try:
         data = add_headers(data, request)
-        return jsonify(service.get_tmx_data(data)), 200
+        validated = validator.validate_tmx_search(data)
+        if not validated:
+            return jsonify(service.get_tmx_data(data)), 200
+        else:
+            return jsonify(validated), 400
     except Exception as e:
         response = {"message": "Something went wrong.", "status": "FAILED"}
         return jsonify(response), 400
