@@ -131,7 +131,7 @@ class TMXService:
     def delete_from_tmx_store(self, tmx_input):
         log_info("Deleting to Glossary......", None)
         hashes = []
-        if not tmx_input["sentences"]:
+        if "sentences" not in tmx_input.keys():
             try:
                 if 'orgID' in tmx_input.keys():
                     search_req = {"orgID": tmx_input["orgID"], "userID": "userID", "allUserKeys": True}
@@ -148,11 +148,15 @@ class TMXService:
                     log_info("Glossary deleted!", None)
                     return {"message": "Glossary DELETED!", "status": "SUCCESS"}
                 else:
+                    log_info("No Glossary Available!", None)
                     return {"message": "No Glossary Available!", "status": "SUCCESS"}
             except Exception as e:
                 log_exception("Exception while deleting Glossary by orgID/userID: " + str(e), None, e)
                 return {"message": "deletion of Glossary by orgID/userID failed", "status": "FAILED"}
         else:
+            if not tmx_input["sentences"]:
+                log_info("No sentences sent for deletion!", None)
+                return {"message": "No sentences sent for deletion!", "status": "SUCCESS"}
             try:
                 tmx_records = []
                 for sentence in tmx_input["sentences"]:
@@ -358,6 +362,7 @@ class TMXService:
 
     # Method to fetch all keys from the redis db
     def get_tmx_data(self, req):
+        log_info(f"Searching TMX for: {req}", None)
         if "keys" in req.keys():
             if req["keys"]:
                 return repo.get_all_records(req["keys"])
@@ -380,6 +385,7 @@ class TMXService:
                     if "allUserKeys" in req.keys():
                         if req["allUserKeys"]:
                             log_info(f'Returning all the keys...', None)
+                            log_info(f'Count of final TMX to be returned: {len(redis_records)}', None)
                             return redis_records
                     filtered = filter(lambda record: self.filter_original_keys(record), redis_records)
                     if filtered:
@@ -403,7 +409,6 @@ class TMXService:
             else:
                 return False
         except Exception as e:
-            log_exception(f'RECORD: {record}', None, None)
             log_exception(f'Exception while filtering on org and user: {e}', None, e)
             return False
 
