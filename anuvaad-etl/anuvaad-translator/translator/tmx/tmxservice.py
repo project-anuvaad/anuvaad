@@ -140,6 +140,7 @@ class TMXService:
                     search_req = {"userID": tmx_input["userID"], "orgID": "orgID", "allUserKeys": True}
                     tmx_to_be_deleted = self.get_tmx_data(search_req)
                 if tmx_to_be_deleted:
+                    log_info(f"len of tmx_to_be_deleted: {len(tmx_to_be_deleted)}", None)
                     tmx_proc = lambda tmx_del: hashes.append(tmx_del["hash"])
                     tmx_proc(tmx_to_be_deleted)
                     repo.delete(hashes)
@@ -168,9 +169,11 @@ class TMXService:
                             if 'orgID' in tmx_input.keys():
                                 tmx_record_pair["orgID"] = tmx_input["orgID"]
                             tmx_records.append(tmx_record_pair)
+                log_info(f"len of tmx records: {len(tmx_records)}", None)
                 for tmx_record in tmx_records:
                     hash_dict = self.get_hash_key(tmx_record)
                     hashes.extend(hash_dict.keys())
+                log_info(f"len of hashes: {len(tmx_records)}", None)
                 repo.delete(hashes)
                 log_info("Glossary deleted!", None)
                 return {"message": "Glossary DELETED!", "status": "SUCCESS"}
