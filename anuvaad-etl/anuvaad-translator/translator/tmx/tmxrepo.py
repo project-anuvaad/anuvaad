@@ -57,8 +57,7 @@ class TMXRepository:
     def delete(self, keys):
         try:
             client = self.get_redis_instance()
-            for key in keys:
-                client.delete(key)
+            client.delete(*keys)
             return 1
         except Exception as e:
             log_exception("Exception in TMXREPO: delete | Cause: " + str(e), None, e)

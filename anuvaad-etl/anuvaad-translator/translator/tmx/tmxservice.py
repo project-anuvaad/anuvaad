@@ -156,10 +156,14 @@ class TMXService:
                 tmx_records = []
                 for sentence in tmx_input["sentences"]:
                     sentence_list = [sentence]
-                    rev_locale = f'{sentence["locale"].split("|")[1]}|{sentence["locale"].split("|")[0]}'
+                    locale = str(sentence["locale"]).split("|")
+                    log_info(f"locale: {locale}", None)
+                    rev_locale = f'{locale[1]}|{locale[0]}'
+                    log_info(f"rev locale: {rev_locale}", None)
                     rev_pair = {"src": sentence["tgt"], "tgt": sentence["src"], "locale": rev_locale}
                     sentence_list.append(rev_pair)
                     for tmx in sentence_list:
+                        log_info(f"tmx: {tmx}", None)
                         sentence_types = self.fetch_diff_flavors_of_sentence(tmx["src"])
                         for sent in sentence_types:
                             tmx_record_pair = {"src": sent, "locale": sentence["locale"], "nmt_tgt": [],
@@ -173,9 +177,9 @@ class TMXService:
                 log_info(tmx_records, None)
                 for tmx_record in tmx_records:
                     hash_dict = self.get_hash_key(tmx_record)
-                    log_info(f"hash_dict: {hash_dict}", None)
                     hashes.extend(hash_dict.keys())
                 log_info(f"len of hashes: {len(hashes)}", None)
+                log_info(hashes, None)
                 repo.delete(hashes)
                 log_info("Glossary deleted!", None)
                 return {"message": "Glossary DELETED!", "status": "SUCCESS"}
