@@ -66,16 +66,16 @@ class OrganizationGlossaryHeader extends React.Component {
                                 <CloseIcon />
                             </IconButton> :
                             <div style={{display: "flex", flexDirection: "row"}}>
-                                <IconButton
+                                {/* <IconButton
                                     onClick={() => {
                                         history.push(`${process.env.PUBLIC_URL}/organization-list`);
                                     }}
                                     className={classes.menuButton} color="inherit" aria-label="Menu" style={{ margin: "0px 5px" }}
                                 >
                                     <BackIcon />
-                                </IconButton>
+                                </IconButton> */}
 
-                                <div style={{ borderLeft: "1px solid #D6D6D6", height: "40px", marginRight: "5px", marginTop: "5px" }} />
+                                {/* <div style={{ borderLeft: "1px solid #D6D6D6", height: "40px", marginRight: "5px", marginTop: "5px" }} /> */}
 
                                 <IconButton onClick={() => this.props.showSidebar(!open_sidebar)} className={classes.menuButton} color="inherit" aria-label="Menu" style={{ margin: "0px 5px 0px 3px" }}>
                                     <MenuIcon />
@@ -86,7 +86,7 @@ class OrganizationGlossaryHeader extends React.Component {
                     <div style={{ borderLeft: "1px solid #D6D6D6", height: "40px", marginRight: "10px" }}></div>
 
                     <Typography variant="h5" color="inherit" className={classes.flex}>
-                        Organization Glossaries
+                        Organization Glossary
                     </Typography>
                     {/* <div style={{ position: 'absolute', right: '3%' }}>
                         {this.renderOption()}

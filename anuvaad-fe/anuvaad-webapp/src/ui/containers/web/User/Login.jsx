@@ -116,7 +116,7 @@ class Login extends React.Component {
         localStorage.setItem("roles", roles)
         localStorage.setItem("lang", "en")
         localStorage.setItem("userProfile", JSON.stringify(resData));
-        if (roles.includes('ADMIN')) {
+        if (roles.includes('ADMIN') || roles.includes('SUPERUSER')) {
           history.push(`${process.env.PUBLIC_URL}/user-details`);
           // history.push(`${process.env.PUBLIC_URL}/create-user`)
         } else if (roles.includes('TRANSLATOR')) {

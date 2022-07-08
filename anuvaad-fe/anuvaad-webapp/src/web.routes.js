@@ -42,6 +42,7 @@ import NmtModelAssign from "./ui/containers/web/AdminPanel/NmtModelAssign";
 import ViewUserGlossary from './ui/containers/web/UserGlossary/ViewUserGlossary';
 import UserGlossaryUpload from './ui/containers/web/UserGlossary/UserGlossaryUpload';
 import UservEventView from './ui/containers/web/AdminPanel/UserEventView';
+import OrganizationGlossary from "./ui/containers/web/AdminPanel/OrganizationGlossary";
 
 const PrivateRoute = ({ headerAttribute: headerAttribute, component: Component, userRoles, title, drawer, showLogo, forDemo, dontShowLoader, dontShowHeader, currentMenu, authenticate, ...rest }) => (
   <Route
@@ -298,6 +299,30 @@ class AppRoutes extends React.Component {
               component={OrganizationList}
               authenticate={this.authenticateUser}
               currentMenu="organization-list"
+              dontShowHeader={true}
+
+            />
+
+            <PrivateRoute
+              path={`${process.env.PUBLIC_URL}/organization-glossary/:orgId`}
+              dontShowLoader
+              title={"Organization Glossary"}
+              userRoles={["ADMIN"]}
+              component={OrganizationGlossary}
+              authenticate={this.authenticateUser}
+              currentMenu="organization-glossary"
+              dontShowHeader={true}
+
+            />
+
+            <PrivateRoute
+              path={`${process.env.PUBLIC_URL}/suggestion-list/:orgId`}
+              dontShowLoader
+              title={"Suggestion List"}
+              userRoles={["ADMIN"]}
+              component={OrganizationGlossary}
+              authenticate={this.authenticateUser}
+              currentMenu="suggestion-list"
               dontShowHeader={true}
 
             />

@@ -86,6 +86,22 @@ class MenuClass extends React.Component {
                   </Button>
                 }</>
               }
+              {
+                orgID !== 'NONMT' &&
+                <>{role !== 'ANNOTATOR' &&
+                  <Button
+                    style={{
+                      textTransform: "none",
+                      width: "100%",
+                      justifyContent: "left",
+                    }}
+                    onClick={() => this.props.handleOperation(4)}
+                  >
+                    {" "}
+                    Suggest Glossary
+                  </Button>
+                }</>
+              }
               <br />
 
               <br />

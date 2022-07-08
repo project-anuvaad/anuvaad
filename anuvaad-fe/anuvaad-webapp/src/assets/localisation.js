@@ -93,7 +93,7 @@ const localization_EN_Data = {
   "common.page.label.timeStamp": "Timestamp",
   "commonCorpus.page.button.corpus": "Corpus",
   "common.page.title.document": "Documents",
-  "common.page.title.glossary": "Glossary Details",
+  "common.page.title.glossary": "Glossary List",
   "common.page.title.userdetails": "User Details",
   "viewCorpus.title.viewSentence": "View Sentence",
   "common.page.title.gradeSentence": "Grade Sentence",

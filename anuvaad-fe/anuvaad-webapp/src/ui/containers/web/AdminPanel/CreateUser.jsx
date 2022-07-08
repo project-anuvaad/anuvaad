@@ -46,7 +46,8 @@ class CreateUser extends React.Component {
       message: '',
       loading: false,
       showPassword: false,
-      orgName: ''
+      orgName: '',
+      orgDropDownDisabled : false
     };
   }
 
@@ -92,6 +93,19 @@ class CreateUser extends React.Component {
     // TELEMETRY.pageLoadCompleted('');
     this.setState({ showLoader: true })
     this.props.organizationList.length<1 && this.processFetchBulkOrganizationAPI()
+
+    let role = [localStorage.getItem("roles")];
+    let useRole = [];
+    role.map((item, value) => {
+      useRole.push(item); value !== role.length - 1 && useRole.push(", ")
+      return true;
+    });
+
+    if(role && Array.isArray(role) && role.includes("ADMIN")){
+      let orgID = JSON.parse(localStorage.getItem("userProfile")).orgID;
+      console.log("orgID", orgID);
+      this.setState({orgName : orgID, orgDropDownDisabled : true})
+    }
   }
 
   renderEmaiIdItems = () => {
@@ -229,6 +243,7 @@ class CreateUser extends React.Component {
               id="roles"
               onChange={this.handleOrg}
               value={this.state.orgName}
+              disabled={this.state.orgDropDownDisabled}
               style={{
                 fullWidth: true,
               }}
