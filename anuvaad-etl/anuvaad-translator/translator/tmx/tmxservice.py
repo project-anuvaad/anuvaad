@@ -129,31 +129,58 @@ class TMXService:
 
     # Method to delete records from TMX store.
     def delete_from_tmx_store(self, tmx_input):
-        log_info("Deleting to TMX......", None)
-        if "ADMIN" not in str(tmx_input["metadata"]["roles"]).split(","):
-            if 'orgID' in tmx_input.keys():
-                return {"message": "Only an ADMIN can delete ORG-level TMX", "status": "FAILED"}
-        try:
-            for sentence in tmx_input["sentences"]:
+        log_info("Deleting to Glossary......", None)
+        hashes = []
+        if "sentences" not in tmx_input.keys():
+            try:
+                if 'orgID' in tmx_input.keys():
+                    search_req = {"orgID": tmx_input["orgID"], "userID": "userID", "allUserKeys": True}
+                    tmx_to_be_deleted = self.get_tmx_data(search_req)
+                else:
+                    search_req = {"userID": tmx_input["userID"], "orgID": "orgID", "allUserKeys": True}
+                    tmx_to_be_deleted = self.get_tmx_data(search_req)
+                if tmx_to_be_deleted:
+                    for tmx_del in tmx_to_be_deleted:
+                        hashes.append(tmx_del["hash"])
+                    repo.delete(hashes)
+                    log_info("Glossary deleted!", None)
+                    return {"message": "Glossary DELETED!", "status": "SUCCESS"}
+                else:
+                    log_info("No Glossary Available!", None)
+                    return {"message": "No Glossary Available!", "status": "SUCCESS"}
+            except Exception as e:
+                log_exception("Exception while deleting Glossary by orgID/userID: " + str(e), None, e)
+                return {"message": "deletion of Glossary by orgID/userID failed", "status": "FAILED"}
+        else:
+            if not tmx_input["sentences"]:
+                log_info("No sentences sent for deletion!", None)
+                return {"message": "No sentences sent for deletion!", "status": "SUCCESS"}
+            try:
                 tmx_records = []
-                sentence_types = self.fetch_diff_flavors_of_sentence(sentence["src"])
-                for sent in sentence_types:
-                    tmx_record_pair = {"src": sent, "locale": sentence["locale"], "nmt_tgt": [],
-                                       "user_tgt": sentence["tgt"], "context": tmx_input["context"]}
-                    if 'userID' in tmx_input.keys():
-                        tmx_record_pair["userID"] = tmx_input["userID"]
-                    if 'orgID' in tmx_input.keys():
-                        tmx_record_pair["orgID"] = tmx_input["orgID"]
-                    tmx_records.append(tmx_record_pair)
+                for sentence in tmx_input["sentences"]:
+                    sentence_list = [sentence]
+                    rev_locale = f'{str(sentence["locale"]).split("|")[1]}|{str(sentence["locale"]).split("|")[0]}'
+                    rev_pair = {"src": sentence["tgt"], "tgt": sentence["src"], "locale": rev_locale}
+                    sentence_list.append(rev_pair)
+                    for tmx in sentence_list:
+                        sentence_types = self.fetch_diff_flavors_of_sentence(tmx["src"])
+                        for sent in sentence_types:
+                            tmx_record_pair = {"src": sent, "locale": tmx["locale"], "nmt_tgt": [],
+                                               "user_tgt": tmx["tgt"], "context": tmx_input["context"]}
+                            if 'userID' in tmx_input.keys():
+                                tmx_record_pair["userID"] = tmx_input["userID"]
+                            if 'orgID' in tmx_input.keys():
+                                tmx_record_pair["orgID"] = tmx_input["orgID"]
+                            tmx_records.append(tmx_record_pair)
                 for tmx_record in tmx_records:
                     hash_dict = self.get_hash_key(tmx_record)
-                    for hash_key in hash_dict.keys():
-                        repo.delete(hash_dict[hash_key])
-            log_info("TMX deleted!", None)
-            return {"message": "DELETED", "status": "SUCCESS"}
-        except Exception as e:
-            log_exception("Exception while deleting TMX: " + str(e), None, e)
-            return {"message": "deletion failed", "status": "FAILED"}
+                    hashes.extend(hash_dict.values())
+                repo.delete(hashes)
+                log_info("Glossary deleted!", None)
+                return {"message": "Glossary DELETED!", "status": "SUCCESS"}
+            except Exception as e:
+                log_exception("Exception while deleting Glossary one by one: " + str(e), None, e)
+                return {"message": "deletion of Glossary one by one failed", "status": "FAILED"}
 
     # Method to fetch tmx phrases for a given src
     def get_tmx_phrases(self, user_id, org_id, context, locale, sentence, tmx_level, tmx_file_cache, ctx):
@@ -332,6 +359,7 @@ class TMXService:
 
     # Method to fetch all keys from the redis db
     def get_tmx_data(self, req):
+        log_info(f"Searching TMX for: {req}", None)
         if "keys" in req.keys():
             if req["keys"]:
                 return repo.get_all_records(req["keys"])
@@ -341,7 +369,7 @@ class TMXService:
         try:
             redis_records = repo.get_all_records([])
             log_info(f'No of tmx entries fetched: {len(redis_records)}', None)
-            user_id, org_id = req["metadata"]["userID"], req["metadata"]["orgID"]
+            user_id, org_id = req["userID"], req["orgID"]
             if redis_records:
                 filtered = filter(lambda record: self.filter_user_records(record, user_id, org_id), redis_records)
                 if filtered:
@@ -354,6 +382,7 @@ class TMXService:
                     if "allUserKeys" in req.keys():
                         if req["allUserKeys"]:
                             log_info(f'Returning all the keys...', None)
+                            log_info(f'Count of final TMX to be returned: {len(redis_records)}', None)
                             return redis_records
                     filtered = filter(lambda record: self.filter_original_keys(record), redis_records)
                     if filtered:
@@ -377,7 +406,6 @@ class TMXService:
             else:
                 return False
         except Exception as e:
-            log_exception(f'RECORD: {record}', None, None)
             log_exception(f'Exception while filtering on org and user: {e}', None, e)
             return False
 
