@@ -489,7 +489,7 @@ class TMXService:
             for translation in object_in["translations"]:
                 translation["id"] = uuid.uuid4()
                 translation["org"] = object_in["org"]
-                translation["uploaded_by"] = object_in["userID"]
+                translation["uploaded_by"] = object_in["metadata"]["userID"]
                 translation["created_on"] = eval(str(time.time()).replace('.', '')[0:13])
                 suggested_translations.append(translation)
             if suggested_translations:
@@ -537,14 +537,17 @@ class TMXService:
         if 'locale' in searc_req:
             if searc_req["locale"]:
                 query["locale"] = {"$in": searc_req["locale"]}
-        if 'org' in searc_req:
-            if searc_req["org"]:
-                query["org"] = {"$in": searc_req["org"]}
-        if 'userID' in searc_req:
+        if 'orgIDs' in searc_req:
+            if searc_req["orgIDs"]:
+                query["org"] = {"$in": searc_req["orgIDs"]}
+        if 'userIDs' in searc_req:
             if searc_req["userIDs"]:
                 query["uploaded_by"] = {"$in": searc_req["userIDs"]}
         if 'startDate' in searc_req:
             query["created_on"] = {"$gte": searc_req["startDate"]}
         if 'endDate' in searc_req:
             query["created_on"] = {"$lte": searc_req["endDate"]}
-        return repo.suggestion_box_search(query, exclude)
+        if query:
+            return repo.suggestion_box_search(query, exclude)
+        else:
+            return []
