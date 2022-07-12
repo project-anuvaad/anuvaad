@@ -143,7 +143,7 @@ def tmx_get_all_keys():
 def suggestion_tmx_box_create():
     service = TMXService()
     data = request.get_json()
-    data["userID"] = request.headers["x-user-id"]
+    data = add_headers(data, request)
     response = service.suggestion_box_create(data)
     if "errorID" in response.keys():
         return jsonify(response), 400
@@ -155,6 +155,7 @@ def suggestion_tmx_box_create():
 def suggestion_tmx_box_delete():
     service = TMXService()
     data = request.get_json()
+    data = add_headers(data, request)
     response = service.suggestion_box_delete(data)
     if "errorID" in response.keys():
         return jsonify(response), 400
@@ -166,6 +167,7 @@ def suggestion_tmx_box_delete():
 def suggestion_tmx_box_get():
     service = TMXService()
     data = request.get_json()
+    data = add_headers(data, request)
     response = service.suggestion_box_get(data)
     return jsonify(response), 200
 
