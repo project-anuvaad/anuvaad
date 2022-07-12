@@ -42,6 +42,8 @@ import NmtModelAssign from "./ui/containers/web/AdminPanel/NmtModelAssign";
 import ViewUserGlossary from './ui/containers/web/UserGlossary/ViewUserGlossary';
 import UserGlossaryUpload from './ui/containers/web/UserGlossary/UserGlossaryUpload';
 import UservEventView from './ui/containers/web/AdminPanel/UserEventView';
+import OrganizationGlossary from "./ui/containers/web/AdminPanel/OrganizationGlossary";
+import SuggestedGlossaryList from "./ui/containers/web/AdminPanel/SuggestedGlossaryList";
 
 const PrivateRoute = ({ headerAttribute: headerAttribute, component: Component, userRoles, title, drawer, showLogo, forDemo, dontShowLoader, dontShowHeader, currentMenu, authenticate, ...rest }) => (
   <Route
@@ -191,7 +193,7 @@ class AppRoutes extends React.Component {
               path={`${process.env.PUBLIC_URL}/glossary-upload`}
               dontShowLoader
               title={"Glossary Upload"}
-              userRoles={["ADMIN"]}
+              userRoles={["ADMIN", "SUPERADMIN"]}
               component={TmxUpload}
               authenticate={this.authenticateUser}
               currentMenu="glossary-upload"
@@ -264,7 +266,7 @@ class AppRoutes extends React.Component {
               path={`${process.env.PUBLIC_URL}/create-user`}
               title={translate('create.user.page.heading.title')}
               component={CreateUser}
-              userRoles={["ADMIN"]}
+              userRoles={["ADMIN", "SUPERADMIN"]}
               authenticate={this.authenticateUser}
               currentMenu="create-user"
             />
@@ -273,7 +275,7 @@ class AppRoutes extends React.Component {
               path={`${process.env.PUBLIC_URL}/user-details`}
               dontShowLoader
               title={"User Details"}
-              userRoles={["ADMIN"]}
+              userRoles={["ADMIN", "SUPERADMIN"]}
               component={UserDetails}
               authenticate={this.authenticateUser}
               currentMenu="user-details"
@@ -285,7 +287,7 @@ class AppRoutes extends React.Component {
               path={`${process.env.PUBLIC_URL}/add-organization`}
               title={translate('Add Organization')}
               component={AddOrganization}
-              userRoles={["ADMIN"]}
+              userRoles={["ADMIN", "SUPERADMIN"]}
               authenticate={this.authenticateUser}
               currentMenu="add-organization"
             />
@@ -294,7 +296,7 @@ class AppRoutes extends React.Component {
               path={`${process.env.PUBLIC_URL}/organization-list`}
               dontShowLoader
               title={"Organization List"}
-              userRoles={["ADMIN"]}
+              userRoles={["ADMIN", "SUPERADMIN"]}
               component={OrganizationList}
               authenticate={this.authenticateUser}
               currentMenu="organization-list"
@@ -303,10 +305,34 @@ class AppRoutes extends React.Component {
             />
 
             <PrivateRoute
+              path={`${process.env.PUBLIC_URL}/organization-glossary/:orgId`}
+              dontShowLoader
+              title={"Organization Glossary"}
+              userRoles={["ADMIN", "SUPERADMIN"]}
+              component={OrganizationGlossary}
+              authenticate={this.authenticateUser}
+              currentMenu="organization-glossary"
+              dontShowHeader={true}
+
+            />
+
+            <PrivateRoute
+              path={`${process.env.PUBLIC_URL}/suggestion-list/:orgId`}
+              dontShowLoader
+              title={"Suggestion List"}
+              userRoles={["ADMIN", "SUPERADMIN"]}
+              component={SuggestedGlossaryList}
+              authenticate={this.authenticateUser}
+              currentMenu="suggestion-list"
+              dontShowHeader={true}
+
+            />
+
+            <PrivateRoute
               path={`${process.env.PUBLIC_URL}/user-report/:id/:name`}
               dontShowLoader
               title={"User Report"}
-              userRoles={["ADMIN"]}
+              userRoles={["ADMIN", "SUPERADMIN"]}
               component={UserReport}
               authenticate={this.authenticateUser}
               currentMenu="user-report"
@@ -316,7 +342,7 @@ class AppRoutes extends React.Component {
               path={`${process.env.PUBLIC_URL}/document-stats/:recordId/:fname`}
               dontShowLoader
               title={"Document Stats"}
-              userRoles={["ADMIN"]}
+              userRoles={["ADMIN", "SUPERADMIN"]}
               component={DocumentStats}
               authenticate={this.authenticateUser}
               currentMenu="document-stats"
@@ -327,7 +353,7 @@ class AppRoutes extends React.Component {
               path={`${process.env.PUBLIC_URL}/view-scheduled-jobs`}
               dontShowLoader
               title={"View Job"}
-              userRoles={["ADMIN"]}
+              userRoles={["ADMIN", "SUPERADMIN"]}
               component={ViewScheduledJobs}
               authenticate={this.authenticateUser}
               currentMenu="view-scheduled-jobs"
@@ -338,7 +364,7 @@ class AppRoutes extends React.Component {
               path={`${process.env.PUBLIC_URL}/schedule-annotation-job`}
               dontShowLoader
               title={"Create Annotation Job"}
-              userRoles={["ADMIN"]}
+              userRoles={["ADMIN", "SUPERADMIN"]}
               component={ScheduleJob}
               authenticate={this.authenticateUser}
               currentMenu="schedule-annotation-job"
@@ -370,7 +396,7 @@ class AppRoutes extends React.Component {
               path={`${process.env.PUBLIC_URL}/view-job-detail/:jobID`}
               dontShowLoader
               title={"View Annotation Job"}
-              userRoles={["ADMIN"]}
+              userRoles={["ADMIN", "SUPERADMIN"]}
               component={ViewJobDetail}
               authenticate={this.authenticateUser}
               currentMenu="view-job-detail"
@@ -381,7 +407,7 @@ class AppRoutes extends React.Component {
               path={`${process.env.PUBLIC_URL}/view-annotator-job/:taskId`}
               dontShowLoader
               title={"View Annotator Job"}
-              userRoles={["ADMIN"]}
+              userRoles={["ADMIN", "SUPERADMIN"]}
               component={ViewAnnotatorJob}
               authenticate={this.authenticateUser}
               currentMenu="view-job-detail"
@@ -413,7 +439,7 @@ class AppRoutes extends React.Component {
               path={`${process.env.PUBLIC_URL}/user-event-view/:jobId/:uid`}
               dontShowLoader
               title={"User Event View"}
-              userRoles={["ADMIN"]}
+              userRoles={["ADMIN", "SUPERADMIN"]}
               component={UservEventView}
               authenticate={this.authenticateUser}
               currentMenu="user-event-view"

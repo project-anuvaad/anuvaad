@@ -2,14 +2,17 @@ import API from "../api";
 import C from "../../constants";
 import ENDPOINTS from "../../../../configs/apiendpoints";
 
-export default class CreateGlossary extends API {
-    constructor(userID = "", orgID = "", timeout = 2000) {
+export default class DeleteSuggestedGlossary extends API {
+    constructor(userIDs = [], uuIds = [], deleteAll = false, startDate = 0, endDate = Date.now(), timeout = 2000) {
         super('POST', timeout, false);
-        this.type = C.VIEW_GLOSSARY;
-        this.userID = userID;
-        this.orgID = orgID;
+        this.type = C.DELETE_GLOSSARY_SUGGESTION;
+        this.userIDs = userIDs;
+        this.uuIds = uuIds;
+        this.deleteAll = deleteAll;
+        this.startDate = startDate;
+        this.endDate = endDate
         this.response = "";
-        this.endpoint = `${super.apiEndPointAuto()}${ENDPOINTS.view_user_glossary}`;
+        this.endpoint = `${super.apiEndPointAuto()}${ENDPOINTS.delete_glossary_suggestion}`;
     }
 
     toString() {
@@ -29,9 +32,11 @@ export default class CreateGlossary extends API {
 
     getBody() {
         return {
-            userID: this.userID,
-            orgID: this.orgID,
-            allUserKeys: false
+                uuids: this.uuIds,
+                userIDs: this.userIDs,
+                deletteAll: this.deleteAll,
+                startDate: this.startDate,
+                endDate: this.endDate
         };
     }
 

@@ -78,7 +78,8 @@ class Header extends React.Component {
     heading: translate('header.page.heading.translation'),
     name: localStorage.getItem("userDetails"),
     userName: "",
-    currentPage: 'dashboard'
+    currentPage: 'dashboard',
+    assignedOrgId: JSON.parse(localStorage.getItem("userProfile")).orgID
   };
 
   // componentDidUpdate() {
@@ -225,7 +226,7 @@ class Header extends React.Component {
                       />
                     </ListItem>
                   </div>
-                  {JSON.parse(localStorage.getItem("userProfile")).orgID !== 'NONMT' && role && Array.isArray(role) && !role.includes("ADMIN") &&
+                  {JSON.parse(localStorage.getItem("userProfile")).orgID !== 'NONMT' && role && Array.isArray(role) && !role.includes("ADMIN") && !role.includes("SUPERADMIN") &&
                     <> {role && Array.isArray(role) && !(role.includes("ANNOTATOR")) &&
                       <div>
                         <Divider className={classes.divider} />
@@ -276,7 +277,7 @@ class Header extends React.Component {
                       </ListItem>
                     </div>
                   )}
-                  {role && Array.isArray(role) && !role.includes("ADMIN") && (
+                  {role && Array.isArray(role) && !role.includes("ADMIN") && !role.includes("SUPERADMIN") && (
                     <div>
                       <Divider className={classes.divider} />
 
@@ -302,7 +303,7 @@ class Header extends React.Component {
                       </ListItem>
                     </div>
                   )}
-                  {role && Array.isArray(role) && role.includes("ADMIN") && (
+                  {role && Array.isArray(role) && (role.includes("ADMIN") || role.includes("SUPERADMIN")) && (
                     <div>
                       <Divider className={classes.divider} />
 
@@ -328,7 +329,7 @@ class Header extends React.Component {
                     </div>
                   )}
 
-                  {role && Array.isArray(role) && role.includes("ADMIN") && (
+                  {role && Array.isArray(role) && (role.includes("ADMIN") || role.includes("SUPERADMIN")) && (
                     <div>
                       <Divider className={classes.divider} />
 
@@ -354,7 +355,7 @@ class Header extends React.Component {
                     </div>
                   )}
 
-                  {role && Array.isArray(role) && role.includes("ADMIN") && (
+                  {role && Array.isArray(role) && role.includes("SUPERADMIN") && (
                     <div>
                       <Divider className={classes.divider} />
 
@@ -379,7 +380,57 @@ class Header extends React.Component {
                       </ListItem>
                     </div>
                   )}
-                  {role && Array.isArray(role) && role.includes("ADMIN") && (
+                  {this.state.assignedOrgId !== "NONMT" && role && Array.isArray(role) && (role.includes("ADMIN") || role.includes("SUPERADMIN")) && (
+                    <div>
+                      <Divider className={classes.divider} />
+
+                      <ListItem
+                        id="suggestion-list"
+                        style={{ paddingTop: "8%", paddingBottom: "8%", backgroundColor: currentMenu === "suggestion-list" && themeAnuvaad.palette.primary.main }}
+                        button
+                        onClick={() => {
+                          this.handleDrawerClose(false);
+                          history.push(`${process.env.PUBLIC_URL}/suggestion-list/${this.state.assignedOrgId}`);
+                        }}
+                      >
+
+                        <ListItemText
+                          disableTypography
+                          primary={
+                            <Typography type="body2" style={{ color: currentMenu === "suggestion-list" ? "#FFFFFF" : "#000000", marginLeft: '6%' }}>
+                              Suggestion List
+                            </Typography>
+                          }
+                        />
+                      </ListItem>
+                    </div>
+                  )}
+                  {this.state.assignedOrgId !== "NONMT" && role && Array.isArray(role) && role.includes("ADMIN") && (
+                    <div>
+                      <Divider className={classes.divider} />
+
+                      <ListItem
+                        id="organization-glossary"
+                        style={{ paddingTop: "8%", paddingBottom: "8%", backgroundColor: currentMenu === "organization-glossary" && themeAnuvaad.palette.primary.main }}
+                        button
+                        onClick={() => {
+                          this.handleDrawerClose(false);
+                          history.push(`${process.env.PUBLIC_URL}/organization-glossary/${this.state.assignedOrgId}`);
+                        }}
+                      >
+
+                        <ListItemText
+                          disableTypography
+                          primary={
+                            <Typography type="body2" style={{ color: currentMenu === "organization-glossary" ? "#FFFFFF" : "#000000", marginLeft: '6%' }}>
+                              Glossary List
+                            </Typography>
+                          }
+                        />
+                      </ListItem>
+                    </div>
+                  )}
+                  {role && Array.isArray(role) && (role.includes("ADMIN") || role.includes("SUPERADMIN")) && (
                     <div>
                       <Divider className={classes.divider} />
 

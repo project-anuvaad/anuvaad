@@ -24,7 +24,7 @@ import GlobalStyles from "../../../styles/web/styles";
 import Theme from "../../../theme/web/theme-anuvaad";
 import classNames from "classnames";
 
-class OrganizationGlossaryHeader extends React.Component {
+class SuggestedGlossaryListHeader extends React.Component {
 
     handleOnClick() {
         history.push(`${process.env.PUBLIC_URL}/add-organization`);
@@ -86,7 +86,7 @@ class OrganizationGlossaryHeader extends React.Component {
                     <div style={{ borderLeft: "1px solid #D6D6D6", height: "40px", marginRight: "10px" }}></div>
 
                     <Typography variant="h5" color="inherit" className={classes.flex}>
-                        Organization Glossary
+                        Glossary Suggestion
                     </Typography>
                     {/* <div style={{ position: 'absolute', right: '3%' }}>
                         {this.renderOption()}
@@ -112,4 +112,4 @@ const mapDispatchToProps = dispatch => bindActionCreators(
 export default withRouter(connect(
     mapStateToProps,
     mapDispatchToProps
-)(withStyles(GlobalStyles(Theme), { withTheme: true })(OrganizationGlossaryHeader)));
+)(withStyles(GlobalStyles(Theme), { withTheme: true })(SuggestedGlossaryListHeader)));

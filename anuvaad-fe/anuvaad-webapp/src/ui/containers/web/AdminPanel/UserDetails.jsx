@@ -55,7 +55,11 @@ class UserDetails extends React.Component {
 
   processFetchBulkUserDetailAPI = (offset, limit, updateExisiting = false, updateUserDetail = false, userIDs = [], userNames = [], roleCodes = []) => {
     const token = localStorage.getItem("token");
-    const userObj = new FetchUserDetails(offset, limit, token, updateExisiting, updateUserDetail, userIDs, userNames, roleCodes)
+    const orgID = JSON.parse(localStorage.getItem("userProfile")).orgID;
+    const orgCode = [];
+    const skipPagination = this.state.role === "SUPERADMIN" ? true : false;
+    orgID && orgCode.push(orgID);
+    const userObj = new FetchUserDetails(offset, limit, token, updateExisiting, updateUserDetail, userIDs, userNames, roleCodes, orgCode, skipPagination)
     this.props.APITransport(userObj)
   }
   /**

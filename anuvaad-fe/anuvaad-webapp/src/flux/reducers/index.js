@@ -63,6 +63,8 @@ import fetch_job_details from './view_scheduled_jobs/fetch_job_detail';
 import taskdetail from './view_scheduled_jobs/fetch_annotator_job';
 import fetchuserjob from './user/fetch_user_job';
 import fetchglossary from './user_glossary/fetch_user_glossary';
+import fetchOrgGlossary from './organization/fetch_organization_glossary';
+import fetchSuggestedGlossaryList from './organization/fetch_glossary_suggestions';
 import getUserReport from './admin/get_user_event_report';
 import getHtmlLink from './editor/getHtmlLink';
 import getViewOptions from './editor/getViewOptions';
@@ -134,5 +136,7 @@ export default {
     fetchglossary,
     getUserReport,
     getHtmlLink,
-    getViewOptions
+    getViewOptions,
+    fetchOrgGlossary,
+    fetchSuggestedGlossaryList
 };

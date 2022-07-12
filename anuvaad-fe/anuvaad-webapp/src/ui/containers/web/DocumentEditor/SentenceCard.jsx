@@ -38,6 +38,8 @@ import CreateGlossary from '../../../../flux/actions/apis/document_translate/cre
 import { Grid } from '@material-ui/core';
 import ViewGlossary from '../../../../flux/actions/apis/user_glossary/fetch_user_glossary';
 import APITransport from "../../../../flux/actions/apitransport/apitransport";
+import SuggestGlossaryModal from './SuggestGlossaryModal';
+import SuggestGlossary from '../../../../flux/actions/apis/document_translate/suggest_glossary';
 
 
 const TELEMETRY = require('../../../../utils/TelemetryManager')
@@ -130,6 +132,7 @@ class SentenceCard extends React.Component {
             hideSplit: false,
             score: "",
             openModal: false,
+            openSuggestGlossaryModal: false,
             eventArray: []
 
         };
@@ -862,6 +865,11 @@ class SentenceCard extends React.Component {
         this.setState({ openModal: true, eventArray })
     }
 
+    handleSuggestGlossary = () => {
+        let eventArray = this.handleTimeCalc("", "glossary", this.state.value)
+        this.setState({ openSuggestGlossaryModal: true, eventArray })
+    }
+
     handleOperation = (action) => {
         switch (action) {
             case 0: {
@@ -882,6 +890,11 @@ class SentenceCard extends React.Component {
             }
             case 3: {
                 this.handleAddToGlossary(this.state.startIndex, this.state.endIndex)
+                this.handleClose();
+                return;
+            }
+            case 4: {
+                this.handleSuggestGlossary(this.state.startIndex, this.state.endIndex)
                 this.handleClose();
                 return;
             }
@@ -1108,6 +1121,22 @@ class SentenceCard extends React.Component {
         )
     }
 
+    renderSuggestGlossaryModal = () => {
+        return (
+            <Modal
+                open={this.state.openSuggestGlossaryModal}
+                onClose={this.handleSuggestGlossaryModalClose}
+            >
+                <SuggestGlossaryModal
+                    handleClose={this.handleSuggestGlossaryModalClose}
+                    selectedWords={this.state.selectedSentence}
+                    makeCreateGlossaryAPICall={(tgt) => this.makeSuggestGlossaryAPICall(tgt)}
+                    loading={this.state.loading}
+                />
+            </Modal>
+        )
+    }
+
     makeCreateGlossaryAPICall = (tgt) => {
         let locale = `${this.props.model.source_language_code}|${this.props.model.target_language_code}`
         this.setState({ loading: true })
@@ -1120,7 +1149,7 @@ class SentenceCard extends React.Component {
         })
             .then(async res => {
                 if (res.ok) {
-                    let apiObj = new ViewGlossary(userProfile.userID);
+                    let apiObj = new ViewGlossary(userProfile.userID, userProfile.orgID);
                     let { APITransport } = this.props
                     APITransport(apiObj)
                     await this.processResponse(res, 'success')
@@ -1130,8 +1159,32 @@ class SentenceCard extends React.Component {
             })
     }
 
+    makeSuggestGlossaryAPICall = (tgt) => {
+        let locale = `${this.props.model.source_language_code}|${this.props.model.target_language_code}`
+        this.setState({ loading: true, openSuggestGlossaryModal: false })
+        let userProfile = JSON.parse(localStorage.getItem('userProfile'))
+        let apiObj = new SuggestGlossary(userProfile.userID, userProfile.orgID, this.state.selectedSentence, tgt, locale, 'JUDICIARY')
+        console.log("apiObj", apiObj);
+        fetch(apiObj.apiEndPoint(), {
+            method: 'post',
+            body: JSON.stringify(apiObj.getBody()),
+            headers: apiObj.getHeaders().headers
+        })
+            .then(async res => {
+                if (res.ok) {
+                    await this.processResponse(res, 'success')
+                } else {
+                    await this.processResponse(res, 'error')
+                }
+            })
+    }
+
     handleGlossaryModalClose = () => {
         this.setState({ openModal: false })
+    }
+
+    handleSuggestGlossaryModalClose = () => {
+        this.setState({openSuggestGlossaryModal : false})
     }
 
     processResponse = async (res, variant) => {
@@ -1155,6 +1208,7 @@ class SentenceCard extends React.Component {
                 {this.state.showProgressStatus && this.renderProgressInformation()}
                 {this.state.showStatus && this.snackBarMessage()}
                 {this.renderGlossaryModal()}
+                {this.renderSuggestGlossaryModal()}
             </div>
 
         )

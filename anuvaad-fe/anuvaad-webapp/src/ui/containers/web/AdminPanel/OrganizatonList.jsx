@@ -53,7 +53,7 @@ class OrganizationList extends React.Component {
   viewOrgGlossaries = (orgId) => {
     return(
       <Tooltip title="View Org Glossaries" placement="right">
-        <IconButton style={{ color: '#233466', padding: '5px' }} component="a" onClick={()=>this.onViewGlossariesClick(orgId)}>
+        <IconButton style={{ color: '#233466', padding: '5px' }} component="a" onClick={()=>this.onViewGlossaryClick(orgId)}>
           <Visibility />
         </IconButton>
       </Tooltip>
@@ -116,8 +116,8 @@ class OrganizationList extends React.Component {
     })
 };
 
-onViewGlossariesClick = (orgId) => {
-  history.push(`${process.env.PUBLIC_URL}/organization-glossaries/${orgId}`);
+onViewGlossaryClick = (orgId) => {
+  history.push(`${process.env.PUBLIC_URL}/organization-glossary/${orgId}`);
 }
 
 renderProgressInformation = () => {
