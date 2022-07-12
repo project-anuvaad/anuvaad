@@ -39,6 +39,7 @@ import { Grid } from '@material-ui/core';
 import ViewGlossary from '../../../../flux/actions/apis/user_glossary/fetch_user_glossary';
 import APITransport from "../../../../flux/actions/apitransport/apitransport";
 import SuggestGlossaryModal from './SuggestGlossaryModal';
+import SuggestGlossary from '../../../../flux/actions/apis/document_translate/suggest_glossary';
 
 
 const TELEMETRY = require('../../../../utils/TelemetryManager')
@@ -1159,7 +1160,23 @@ class SentenceCard extends React.Component {
     }
 
     makeSuggestGlossaryAPICall = (tgt) => {
-
+        let locale = `${this.props.model.source_language_code}|${this.props.model.target_language_code}`
+        this.setState({ loading: true, openSuggestGlossaryModal: false })
+        let userProfile = JSON.parse(localStorage.getItem('userProfile'))
+        let apiObj = new SuggestGlossary(userProfile.userID, userProfile.orgID, this.state.selectedSentence, tgt, locale, 'JUDICIARY')
+        console.log("apiObj", apiObj);
+        fetch(apiObj.apiEndPoint(), {
+            method: 'post',
+            body: JSON.stringify(apiObj.getBody()),
+            headers: apiObj.getHeaders().headers
+        })
+            .then(async res => {
+                if (res.ok) {
+                    await this.processResponse(res, 'success')
+                } else {
+                    await this.processResponse(res, 'error')
+                }
+            })
     }
 
     handleGlossaryModalClose = () => {

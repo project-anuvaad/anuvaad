@@ -2,20 +2,18 @@ import API from "../api";
 import C from "../../constants";
 import ENDPOINTS from "../../../../configs/apiendpoints";
 
-export default class DeleteOrgGlossary extends API {
-    constructor(orgID = "", src = "", tgt = "", locale = "", reversedLocale = "", context = "", bulkDelete = false, deletionArray = [], timeout = 2000) {
+export default class AcceptSuggestedGlossary extends API {
+    constructor(userID = "", orgID = "", src = "", tgt = "", locale = "", context = "", timeout = 2000) {
         super('POST', timeout, false);
-        this.type = C.DELETE_GLOSSARY;
+        this.type = C.CREATE_GLOSARY;
+        this.userID = userID;
         this.orgID = orgID;
-        this.src = src;
-        this.tgt = tgt;
+        this.src = src
+        this.tgt = tgt
         this.locale = locale;
         this.context = context;
-        this.reversedLocale = reversedLocale;
         this.response = "";
-        this.bulkDelete = bulkDelete;
-        this.deletionArray = deletionArray;
-        this.endpoint = `${super.apiEndPointAuto()}${ENDPOINTS.delete_user_glossary}`;
+        this.endpoint = `${super.apiEndPointAuto()}${ENDPOINTS.accept_glossary_suggestion}`;
     }
 
     toString() {
@@ -34,21 +32,14 @@ export default class DeleteOrgGlossary extends API {
     }
 
     getBody() {
-        if (this.bulkDelete) {
-            return {
-                context: this.context,
-                orgID: this.orgID,
-                sentences: this.deletionArray
-            }
-        }
         return {
+            org: this.orgID,
             context: this.context,
-            orgID: this.orgID,
-            sentences: [
+            translations: [
                 {
                     src: this.src,
-                    locale: this.locale,
-                    tgt: this.tgt
+                    tgt: this.tgt,
+                    locale: this.locale
                 }
             ]
         };

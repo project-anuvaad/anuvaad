@@ -226,7 +226,7 @@ class Header extends React.Component {
                       />
                     </ListItem>
                   </div>
-                  {JSON.parse(localStorage.getItem("userProfile")).orgID !== 'NONMT' && role && Array.isArray(role) && !role.includes("ADMIN") &&
+                  {JSON.parse(localStorage.getItem("userProfile")).orgID !== 'NONMT' && role && Array.isArray(role) && !role.includes("ADMIN") && !role.includes("SUPERADMIN") &&
                     <> {role && Array.isArray(role) && !(role.includes("ANNOTATOR")) &&
                       <div>
                         <Divider className={classes.divider} />
@@ -277,7 +277,7 @@ class Header extends React.Component {
                       </ListItem>
                     </div>
                   )}
-                  {role && Array.isArray(role) && !role.includes("ADMIN") && (
+                  {role && Array.isArray(role) && !role.includes("ADMIN") && !role.includes("SUPERADMIN") && (
                     <div>
                       <Divider className={classes.divider} />
 
@@ -303,7 +303,7 @@ class Header extends React.Component {
                       </ListItem>
                     </div>
                   )}
-                  {role && Array.isArray(role) && role.includes("ADMIN") && (
+                  {role && Array.isArray(role) && (role.includes("ADMIN") || role.includes("SUPERADMIN")) && (
                     <div>
                       <Divider className={classes.divider} />
 
@@ -329,7 +329,7 @@ class Header extends React.Component {
                     </div>
                   )}
 
-                  {role && Array.isArray(role) && role.includes("ADMIN") && (
+                  {role && Array.isArray(role) && (role.includes("ADMIN") || role.includes("SUPERADMIN")) && (
                     <div>
                       <Divider className={classes.divider} />
 
@@ -355,7 +355,7 @@ class Header extends React.Component {
                     </div>
                   )}
 
-                  {/* {role && Array.isArray(role) && role.includes("ADMIN") && (
+                  {role && Array.isArray(role) && role.includes("SUPERADMIN") && (
                     <div>
                       <Divider className={classes.divider} />
 
@@ -379,8 +379,8 @@ class Header extends React.Component {
                         />
                       </ListItem>
                     </div>
-                  )} */}
-                  {this.state.assignedOrgId !== "NONMT" && role && Array.isArray(role) && role.includes("ADMIN") && (
+                  )}
+                  {this.state.assignedOrgId !== "NONMT" && role && Array.isArray(role) && (role.includes("ADMIN") || role.includes("SUPERADMIN")) && (
                     <div>
                       <Divider className={classes.divider} />
 
@@ -430,7 +430,7 @@ class Header extends React.Component {
                       </ListItem>
                     </div>
                   )}
-                  {role && Array.isArray(role) && role.includes("ADMIN") && (
+                  {role && Array.isArray(role) && (role.includes("ADMIN") || role.includes("SUPERADMIN")) && (
                     <div>
                       <Divider className={classes.divider} />
 

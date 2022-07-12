@@ -31,6 +31,7 @@ const TELEMETRY = require("../../../../utils/TelemetryManager");
 
 const roles = ADMINCONFIG.roles;
 
+console.log("roles",roles);
 
 class CreateUser extends React.Component {
   constructor(props) {
