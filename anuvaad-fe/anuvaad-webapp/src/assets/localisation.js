@@ -95,6 +95,7 @@ const localization_EN_Data = {
   "common.page.title.document": "Documents",
   "common.page.title.glossary": "Glossary List",
   "common.page.title.userdetails": "User Details",
+  "common.page.title.suggestion": "Glossary Suggestions",
   "viewCorpus.title.viewSentence": "View Sentence",
   "common.page.title.gradeSentence": "Grade Sentence",
   "viewCorpus.title.editSentence": "Edit Sentence",

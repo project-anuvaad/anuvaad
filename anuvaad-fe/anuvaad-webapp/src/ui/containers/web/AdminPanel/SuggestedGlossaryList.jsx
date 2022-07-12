@@ -13,20 +13,11 @@ import Header from './SuggestedGlossaryListHeader';
 import APITransport from "../../../../flux/actions/apitransport/apitransport";
 import DeleteIcon from "@material-ui/icons/Delete";
 import CheckIcon from '@material-ui/icons/Check';
-import ViewGlossary from '../../../../flux/actions/apis/organization/fetch_organization_glossary';
 import Spinner from "../../../components/web/common/Spinner";
 import Snackbar from "../../../components/web/common/Snackbar";
-import DeleteOrgGlossary from "../../../../flux/actions/apis/organization/delete_org_glossary";
-import { Button } from "@material-ui/core";
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import DeleteTmx from "../../../../flux/actions/apis/tmx/tmxDelete";
 import FetchSuggestions from "../../../../flux/actions/apis/organization/fetch_glossary_suggestions";
-import CreateGlossary from "../../../../flux/actions/apis/document_translate/create_glossary";
 import DeleteSuggestedGlossary from "../../../../flux/actions/apis/organization/delete_glossary_suggestion";
+import CreateOrgGlossary from "../../../../flux/actions/apis/organization/create_org_glossary";
 
 var delete_glossary = require("../../../../utils/deleteGlossary.operation");
 
@@ -63,7 +54,7 @@ class SuggestedGlossaryList extends React.Component {
   getSuggestedGlossary = () => {
     const { APITransport } = this.props
 
-    let apiObj = new FetchSuggestions([], [], [this.orgID], [], false, 0, Date.now(), [], []);
+    let apiObj = new FetchSuggestions([], [], this.orgID ?  [this.orgID] : [], [], false, 0, Date.now(), [], []);
     APITransport(apiObj)
   }
   componentDidMount() {
@@ -85,9 +76,9 @@ class SuggestedGlossaryList extends React.Component {
     }
   }
 
-  makeCreateGlossaryAPICall = (userID, src, tgt, locale, uuId) => {
+  makeCreateGlossaryAPICall = (orgID, src, tgt, locale, uuId) => {
     this.setState({ open: true, variant: 'info', message:"Suggestion accepting...", loading: true })
-    let apiObj = new CreateGlossary(userID, src, tgt, locale, 'JUDICIARY')
+    let apiObj = new CreateOrgGlossary(orgID, src, tgt, locale, 'JUDICIARY')
     fetch(apiObj.apiEndPoint(), {
         method: 'post',
         body: JSON.stringify(apiObj.getBody()),
@@ -125,7 +116,8 @@ class SuggestedGlossaryList extends React.Component {
 
   handleAcceptSuggestion = (dataArray) => {
     console.log("dataArray", dataArray);
-    this.makeCreateGlossaryAPICall(dataArray[3], dataArray[0], dataArray[1], dataArray[4], dataArray[2]);
+
+    this.makeCreateGlossaryAPICall(dataArray[2], dataArray[0], dataArray[1], dataArray[4], dataArray[3]);
   }
 
   handleDeleteSuggestion = (dataArray) => {
@@ -298,7 +290,7 @@ class SuggestedGlossaryList extends React.Component {
             <MuiThemeProvider theme={getMuiTheme()}>
               {/* {this.renderDeleteAllGlossaryButton()} */}
               <MUIDataTable
-                title={translate("common.page.title.glossary")}
+                title={translate("common.page.title.suggestion")}
                 columns={columns}
                 options={options}
                 data={this.props.suggestedGlossaryData.result}
