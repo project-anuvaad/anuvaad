@@ -516,7 +516,8 @@ class TMXService:
             query["created_on"] = {"$gte": delete_req["startDate"]}
         if 'endDate' in delete_req:
             query["created_on"] = {"$lte": delete_req["endDate"]}
-        repo.suggestion_box_delete(query)
+        if query:
+            repo.suggestion_box_delete(query)
         return {"message": "Suggestions deleted successfully", "status": "SUCCESS"}
 
     # Method to search suggestions from the suggestions db.
