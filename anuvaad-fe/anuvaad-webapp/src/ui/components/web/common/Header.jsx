@@ -380,7 +380,7 @@ class Header extends React.Component {
                       </ListItem>
                     </div>
                   )}
-                  {this.state.assignedOrgId !== "NONMT" && role && Array.isArray(role) && (role.includes("ADMIN") || role.includes("SUPERADMIN")) && (
+                  {this.state.assignedOrgId !== "NONMT" && role && Array.isArray(role) && role.includes("ADMIN") && (
                     <div>
                       <Divider className={classes.divider} />
 
