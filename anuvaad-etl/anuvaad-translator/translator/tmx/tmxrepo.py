@@ -3,7 +3,7 @@ import json
 
 import redis
 import pymongo
-from anuvaad_auditor.loghandler import log_exception
+from anuvaad_auditor.loghandler import log_exception, log_info
 from configs.translatorconfig import redis_server_host, redis_server_port
 from configs.translatorconfig import mongo_server_host, mongo_translator_db, mongo_tmx_collection
 from configs.translatorconfig import mongo_suggestion_box_collection, tmx_org_enabled, tmx_user_enabled, tmx_redis_db
@@ -126,7 +126,10 @@ class TMXRepository:
 
     def suggestion_box_delete(self, query):
         col = self.get_mongo_instance(mongo_suggestion_box_collection)
-        col.delete_many(query)
+        records = self.suggestion_box_search(query, {'_id': False})
+        log_info(f'Search result: {records}', None)
+        deleted = col.delete_many(query)
+        return deleted.deleted_count
 
     def suggestion_box_search(self, query, exclude):
         col = self.get_mongo_instance(mongo_suggestion_box_collection)

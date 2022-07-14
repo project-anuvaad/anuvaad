@@ -518,10 +518,11 @@ class TMXService:
             query["created_on"] = {"$lte": delete_req["endDate"]}
         if query:
             log_info(f"Delete Query: {query}", None)
-            repo.suggestion_box_delete(query)
-            return {"message": "Suggestions deleted successfully", "status": "SUCCESS"}
-        else:
-            return {"message": "No Suggestions deleted", "status": "SUCCESS"}
+            del_count = repo.suggestion_box_delete(query)
+            log_info(f"del_count: {del_count}", None)
+            if del_count > 0:
+                return {"message": "Suggestions deleted successfully", "status": "SUCCESS"}
+        return {"message": "No Suggestions deleted", "status": "SUCCESS"}
 
     # Method to search suggestions from the suggestions db.
     def suggestion_box_get(self, search_req):
