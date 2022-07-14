@@ -9,7 +9,7 @@ import IconButton from "@material-ui/core/IconButton";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 import { translate } from "../../../../assets/localisation";
 import NewCorpusStyle from "../../../styles/web/Newcorpus";
-import Header from './SuggestedGlossaryListHeader';
+import Header from '../AdminPanel/SuggestedGlossaryListHeader';
 import APITransport from "../../../../flux/actions/apitransport/apitransport";
 import DeleteIcon from "@material-ui/icons/Delete";
 import CheckIcon from '@material-ui/icons/Check';
@@ -54,7 +54,7 @@ class SuggestedGlossaryList extends React.Component {
   getSuggestedGlossary = () => {
     const { APITransport } = this.props
 
-    let apiObj = new FetchSuggestions([], [], this.orgID ?  [this.orgID] : [], [], false, 0, 0, [], []);
+    let apiObj = new FetchSuggestions([this.userID], [], this.orgID ?  [this.orgID] : [], [], false, 0, 0, [], []);
     APITransport(apiObj)
   }
   componentDidMount() {
@@ -78,23 +78,6 @@ class SuggestedGlossaryList extends React.Component {
     }
   }
 
-  makeCreateGlossaryAPICall = (orgID, src, tgt, locale, uuId, createdOn) => {
-    this.setState({ open: true, variant: 'info', message:"Suggestion accepting...", loading: true })
-    let apiObj = new CreateOrgGlossary(orgID, src, tgt, locale, 'JUDICIARY')
-    fetch(apiObj.apiEndPoint(), {
-        method: 'post',
-        body: JSON.stringify(apiObj.getBody()),
-        headers: apiObj.getHeaders().headers
-    })
-        .then(async res => {
-            if (res.ok) {
-              this.makeDeleteSuggestionAPICall([], [uuId], false, [this.orgID]);
-              this.setState({ open: true, variant: 'success', message:"Suggestion accepted Successfully...", loading: false })
-            } else {
-              this.setState({ open: true, variant: 'error', message:"Error in accepting suggestion...", loading: false })
-            }
-        })
-}
 
   makeDeleteSuggestionAPICall = (userIds, uuIds, deleteAll, orgIds) => {
     this.setState({ open: true, message: 'Glossary deletion in progress...', variant: 'info', openConfirmDialog: false })
@@ -117,12 +100,6 @@ class SuggestedGlossaryList extends React.Component {
       })
   }
 
-  handleAcceptSuggestion = (dataArray) => {
-    console.log("dataArray", dataArray);
-    console.log("this.props.suggestedGlossaryData", this.props.suggestedGlossaryData)
-    this.makeCreateGlossaryAPICall(dataArray[2], dataArray[0], dataArray[1], dataArray[4], dataArray[3], dataArray[5]);
-  }
-
   handleDeleteSuggestion = (dataArray) => {
     console.log("dataArray", dataArray);
     let reverseLocale = dataArray[3].split("|").reverse().join("|");
@@ -131,17 +108,6 @@ class SuggestedGlossaryList extends React.Component {
 
   handleClose = () => {
     this.setState({ open: false })
-  }
-
-  deleteMultipleRows = () => {
-    // let isOrg = delete_glossary.isOrg(this.props.suggestedGlossaryData, this.state.rowsToDelete)
-    let rowsToBeDeleted = delete_glossary.getBulkDeletionArray(this.props.suggestedGlossaryData, this.state.rowsToDelete)
-    console.log("rowsToBeDeleted", rowsToBeDeleted);
-    let IdArrOfSelectedRows = rowsToBeDeleted?.map((el,index)=>{
-      return el.id
-    });
-
-    this.makeDeleteSuggestionAPICall([], IdArrOfSelectedRows, false, [this.orgID]);
   }
 
 
@@ -236,16 +202,6 @@ class SuggestedGlossaryList extends React.Component {
             if (tableMeta.rowData) {
               return (
                 <div>
-                  <Tooltip title="Accept Glossary" placement="left">
-                    <IconButton
-                      style={{ color: "#233466", padding: "5px" }}
-                      component="a"
-                      onClick={() => this.handleAcceptSuggestion(tableMeta.rowData)}
-                    // disabled={tableMeta.rowData[5] === "Organization"}
-                    >
-                      <CheckIcon />
-                    </IconButton>
-                  </Tooltip>
                   <Tooltip title="Delete Glossary" placement="left">
                     <IconButton
                       style={{ color: "#233466", padding: "5px" }}
@@ -281,6 +237,7 @@ class SuggestedGlossaryList extends React.Component {
       rowsPerPageOptions: [10],
       count: this.props.suggestedGlossaryData.count,
       filterType: "checkbox",
+      selectableRows: false,
       download: true,
       print: false,
       fixedHeader: true,
@@ -289,12 +246,12 @@ class SuggestedGlossaryList extends React.Component {
         name: "timestamp",
         direction: "desc",
       },
-      onRowSelectionChange: (currentSelectedRows, allRowsSelected, rowsSelected) => {
-        this.setState({ rowsToDelete: allRowsSelected })
-      },
-      onRowsDelete: () => {
-        this.deleteMultipleRows()
-      }
+    //   onRowSelectionChange: (currentSelectedRows, allRowsSelected, rowsSelected) => {
+    //     this.setState({ rowsToDelete: allRowsSelected })
+    //   },
+    //   onRowsDelete: () => {
+    //     this.deleteMultipleRows()
+    //   }
     };
     return (
       <div style={{ maxHeight: window.innerHeight, height: window.innerHeight, overflow: "auto" }}>

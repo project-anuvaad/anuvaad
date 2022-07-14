@@ -33,7 +33,7 @@ export default class SuggestGlossary extends API {
 
     getBody() {
         return {
-            org: this.orgID,
+            orgID: this.orgID,
             context: this.context,
             translations: [
                 {

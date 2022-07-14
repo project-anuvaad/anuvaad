@@ -44,6 +44,7 @@ import UserGlossaryUpload from './ui/containers/web/UserGlossary/UserGlossaryUpl
 import UservEventView from './ui/containers/web/AdminPanel/UserEventView';
 import OrganizationGlossary from "./ui/containers/web/AdminPanel/OrganizationGlossary";
 import SuggestedGlossaryList from "./ui/containers/web/AdminPanel/SuggestedGlossaryList";
+import MySuggestedGlossary from "./ui/containers/web/UserGlossary/MySuggestedGlossary";
 
 const PrivateRoute = ({ headerAttribute: headerAttribute, component: Component, userRoles, title, drawer, showLogo, forDemo, dontShowLoader, dontShowHeader, currentMenu, authenticate, ...rest }) => (
   <Route
@@ -324,6 +325,18 @@ class AppRoutes extends React.Component {
               component={SuggestedGlossaryList}
               authenticate={this.authenticateUser}
               currentMenu="suggestion-list"
+              dontShowHeader={true}
+
+            />
+
+            <PrivateRoute
+              path={`${process.env.PUBLIC_URL}/my-suggestions/:orgId`}
+              dontShowLoader
+              title={"My Suggestions"}
+              userRoles={["TRANSLATOR"]}
+              component={MySuggestedGlossary}
+              authenticate={this.authenticateUser}
+              currentMenu="my-suggestions"
               dontShowHeader={true}
 
             />

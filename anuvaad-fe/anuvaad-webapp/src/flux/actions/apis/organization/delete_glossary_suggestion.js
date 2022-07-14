@@ -3,14 +3,13 @@ import C from "../../constants";
 import ENDPOINTS from "../../../../configs/apiendpoints";
 
 export default class DeleteSuggestedGlossary extends API {
-    constructor(userIDs = [], uuIds = [], deleteAll = false, startDate = 0, endDate = Date.now(), timeout = 2000) {
+    constructor(userIDs = [], uuIds = [], deleteAll = false, orgIds = [], timeout = 2000) {
         super('POST', timeout, false);
         this.type = C.DELETE_GLOSSARY_SUGGESTION;
         this.userIDs = userIDs;
         this.uuIds = uuIds;
         this.deleteAll = deleteAll;
-        this.startDate = startDate;
-        this.endDate = endDate
+        this.orgIds = orgIds;
         this.response = "";
         this.endpoint = `${super.apiEndPointAuto()}${ENDPOINTS.delete_glossary_suggestion}`;
     }
@@ -32,11 +31,10 @@ export default class DeleteSuggestedGlossary extends API {
 
     getBody() {
         return {
-                uuids: this.uuIds,
+                ids: this.uuIds,
                 userIDs: this.userIDs,
                 deletteAll: this.deleteAll,
-                startDate: this.startDate,
-                endDate: this.endDate
+                orgIds: this.orgIds 
         };
     }
 

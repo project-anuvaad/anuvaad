@@ -36,15 +36,15 @@ export default class FetchSuggestions extends API {
 
     getBody() {
         return {
-            uuids: this.uuids,
+            ids: this.uuids,
             userIDs: this.userID,
             src: this.src,
             tgt: this.tgt,
             locale: this.locale,
             orgIDs:this.org,
             fetchAll: this.fetchAll,
-            startDate: this.startDate,
-            endDate: this.endDate
+            startDateX: this.startDate,
+            endDateX: this.endDate
         };
     }
 
