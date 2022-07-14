@@ -331,7 +331,17 @@
             "active":true
         },
         {
+            "role":"TRANSLATOR",
+            "actionID": "36a3d56e-34b4-4d66-90cd-dea526f70f0b",
+            "active":true
+        },
+        {
             "role":"SUPERADMIN",
+            "actionID": "588efe49-4f9d-4101-b274-aa9755717b52",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
             "actionID": "588efe49-4f9d-4101-b274-aa9755717b52",
             "active":true
         },
