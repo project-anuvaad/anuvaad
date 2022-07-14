@@ -126,7 +126,7 @@ class TMXRepository:
 
     def suggestion_box_delete(self, query):
         col = self.get_mongo_instance(mongo_suggestion_box_collection)
-        col.remove(query)
+        col.delete_many(query)
 
     def suggestion_box_search(self, query, exclude):
         col = self.get_mongo_instance(mongo_suggestion_box_collection)
