@@ -115,29 +115,15 @@ class UserManagementModel(object):
             collections = get_db()[USR_MONGO_COLLECTION]
             #fetching all verified users from db when skip_pgination = True
             if skip_pagination==True:
-                print("111111111")
                 log_info("Fetching all verified users from database", MODULE_CONTEXT)
                 out = collections.find({"is_verified":True},exclude)
                 record_count=out.count()
             #fetching users with pagination(skip & limit) when skip_pagination != True
             elif not user_ids and not user_names and not role_codes and not org_codes :
-                print("22222222222")
                 log_info("Fetching verified users from database with pagination property", MODULE_CONTEXT)
                 out = collections.find({"is_verified":True},exclude).sort([("_id",-1)]).skip(offset).limit(limit_value)
                 record_count=collections.find({"is_verified":True}).count()
-            # elif org_codes:
-            #     print("333333333333333")
-            #     log_info("Fetching verified users from database matching user properties", MODULE_CONTEXT)
-            #     out = collections.find(
-            #     {'$or': [
-            #         {'userID': {'$in': user_ids},'is_verified': True},
-            #         {'userName': {'$in': user_names},'is_verified': True},
-            #         {'roles.roleCode': {'$in': role_codes},'is_verified': True},
-            #         {'orgID': {'$in': org_codes},'is_verified': True}
-            #     ]}, exclude)
-            #     record_count=out.count()
             else:
-                print("333333333333333")
                 log_info("Fetching verified users from database matching user properties", MODULE_CONTEXT)
                 out = collections.find(
                 {'$or': [
@@ -195,7 +181,18 @@ class UserManagementModel(object):
             #connecting to mongo instance/collection
             collections = get_db()[USR_MONGO_COLLECTION]
             #inserting records on database
-            results = collections.insert(records)
+            if "ADMIN" == role_info["roleCode"]:
+                admin_check = collections.find_one({"orgID":users_data['orgID'],"roles":{"roleCode":"ADMIN","roleDesc":"Has access to user management related resources"}},{ "_id": 0, "orgID": 1, "roles": 1 })
+                print("ADMIN_CHECK",admin_check)
+                if admin_check == None:
+                    results = collections.insert(records)
+                    log_info("Count of users created : {}".format(len(results)), MODULE_CONTEXT)
+                else:
+                    return post_error("Database exception", "already an ADMIN present for the given org", None)
+            else :
+                results = collections.insert(records)
+                log_info("Count of users created : {}".format(len(results)), MODULE_CONTEXT)
+            # results = collections.insert(records)
             if len(records) != len(results):
                 return post_error("Database error", "some of the records were not inserted into db", None)
             log_info("Count of users onboared : {}".format(len(results)), MODULE_CONTEXT)

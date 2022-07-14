@@ -2,7 +2,7 @@ import os
 import time
 
 #CROSS_MODULE_COMMON_CONFIGS
-MONGO_SERVER_HOST   =   os.environ.get('MONGO_CLUSTER_URL', 'mongodb://localhost:27017')#,localhost:27018/?replicaSet=foo
+MONGO_SERVER_HOST   =   os.environ.get('MONGO_CLUSTER_URL', 'mongodb+srv://sriharimn:Harikane@cluster0.1frkl.mongodb.net/')#,localhost:27018/?replicaSet=foo
 
 
 #MODULE-SPECIFIC-CONFIGS
@@ -48,8 +48,8 @@ if isinstance(EXTENSION_EXPIRY, str):
     EXTENSION_EXPIRY  =  eval(EXTENSION_EXPIRY)
 EXTENSION_ORG           =   os.environ.get('EXTENSION_USR_ORG','ANUVAAD')
 #external file read configs
-ROLE_CODES_URL          =   os.environ.get('UMS_ROLE_CODES_URL','https://raw.githubusercontent.com/project-anuvaad/anuvaad/zuul_gateway/anuvaad-api/anuvaad-zuul-api-gw/dev-configs/roles.json')
-ROLE_CODES_DIR_PATH     =   os.environ.get('UMS_ROLE_DIR_PATH','/app/configs/') #'/home/jainy/Documents/Anuvaad_local_files/usrmgmt/'
+ROLE_CODES_URL          =   os.environ.get('UMS_ROLE_CODES_URL','https://raw.githubusercontent.com/project-anuvaad/anuvaad/master/anuvaad-api/anuvaad-zuul-api-gw/dev-configs/roles.json')
+ROLE_CODES_DIR_PATH     =   os.environ.get('UMS_ROLE_DIR_PATH','./configs/') #'/home/jainy/Documents/Anuvaad_local_files/usrmgmt/'
 ROLE_CODES_FILE_NAME    =   os.environ.get('UMS_FILE_NAME','roles.json')
 
 #gmail server configs
