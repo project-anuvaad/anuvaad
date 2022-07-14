@@ -502,52 +502,54 @@ class TMXService:
     # Method to delete suggestions from the db
     def suggestion_box_delete(self, delete_req):
         query = {}
-        if 'deleteAll' in delete_req:
+        if 'deleteAll' in delete_req.keys():
             if delete_req["deleteAll"] is True:
                 repo.suggestion_box_delete(query)
                 return {"message": "Suggestion Box DB cleared successfully", "status": "SUCCESS"}
-        if 'ids' in delete_req:
+        if 'ids' in delete_req.keys():
             if delete_req["ids"]:
                 query = {"id": {"$in": delete_req["ids"]}}
-        if 'userIDs' in delete_req:
+        if 'userIDs' in delete_req.keys():
             if delete_req["userIDs"]:
                 query = {"uploaded_by": {"$in": delete_req["userIDs"]}}
-        if 'startDate' in delete_req:
+        if 'startDate' in delete_req.keys():
             query["created_on"] = {"$gte": delete_req["startDate"]}
-        if 'endDate' in delete_req:
+        if 'endDate' in delete_req.keys():
             query["created_on"] = {"$lte": delete_req["endDate"]}
         if query:
             repo.suggestion_box_delete(query)
-        return {"message": "Suggestions deleted successfully", "status": "SUCCESS"}
+            return {"message": "Suggestions deleted successfully", "status": "SUCCESS"}
+        else:
+            return {"message": "No Suggestions deleted", "status": "SUCCESS"}
 
     # Method to search suggestions from the suggestions db.
-    def suggestion_box_get(self, searc_req):
+    def suggestion_box_get(self, search_req):
         query, exclude = {}, {'_id': False}
-        if 'fetchAll' in searc_req:
-            if searc_req["fetchAll"] is True:
+        if 'fetchAll' in search_req.keys():
+            if search_req["fetchAll"] is True:
                 return repo.suggestion_box_search(query, exclude)
-        if 'ids' in searc_req:
-            if searc_req["ids"]:
-                query = {"id": {"$in": searc_req["ids"]}}
-        if 'src' in searc_req:
-            if searc_req["src"]:
-                query["src"] = {"$in": searc_req["src"]}
-        if 'tgt' in searc_req:
-            if searc_req["tgt"]:
-                query["tgt"] = {"$in": searc_req["tgt"]}
-        if 'locale' in searc_req:
-            if searc_req["locale"]:
-                query["locale"] = {"$in": searc_req["locale"]}
-        if 'orgIDs' in searc_req:
-            if searc_req["orgIDs"]:
-                query["org"] = {"$in": searc_req["orgIDs"]}
-        if 'userIDs' in searc_req:
-            if searc_req["userIDs"]:
-                query["uploaded_by"] = {"$in": searc_req["userIDs"]}
-        if 'startDate' in searc_req:
-            query["created_on"] = {"$gte": searc_req["startDate"]}
-        if 'endDate' in searc_req:
-            query["created_on"] = {"$lte": searc_req["endDate"]}
+        if 'ids' in search_req.keys():
+            if search_req["ids"]:
+                query = {"id": {"$in": search_req["ids"]}}
+        if 'src' in search_req.keys():
+            if search_req["src"]:
+                query["src"] = {"$in": search_req["src"]}
+        if 'tgt' in search_req.keys():
+            if search_req["tgt"]:
+                query["tgt"] = {"$in": search_req["tgt"]}
+        if 'locale' in search_req.keys():
+            if search_req["locale"]:
+                query["locale"] = {"$in": search_req["locale"]}
+        if 'orgIDs' in search_req.keys():
+            if search_req["orgIDs"]:
+                query["org"] = {"$in": search_req["orgIDs"]}
+        if 'userIDs' in search_req.keys():
+            if search_req["userIDs"]:
+                query["uploaded_by"] = {"$in": search_req["userIDs"]}
+        if 'startDate' in search_req.keys():
+            query["created_on"] = {"$gte": search_req["startDate"]}
+        if 'endDate' in search_req.keys():
+            query["created_on"] = {"$lte": search_req["endDate"]}
         if query:
             return repo.suggestion_box_search(query, exclude)
         else:
