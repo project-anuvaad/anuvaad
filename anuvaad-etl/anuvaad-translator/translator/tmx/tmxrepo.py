@@ -126,8 +126,6 @@ class TMXRepository:
 
     def suggestion_box_delete(self, query):
         col = self.get_mongo_instance(mongo_suggestion_box_collection)
-        records = self.suggestion_box_search(query, {'_id': False})
-        log_info(f'Search result: {records}', None)
         deleted = col.delete_many(query)
         return deleted.deleted_count
 

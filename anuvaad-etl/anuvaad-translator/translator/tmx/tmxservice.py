@@ -467,7 +467,7 @@ class TMXService:
     # must go to ORG level TMX.
     def suggestion_box_create(self, object_in):
         try:
-            if 'org' not in object_in.keys():
+            if 'orgID' not in object_in.keys():
                 return post_error("ORG_NOT_FOUND", "org is mandatory", None)
             if 'context' not in object_in.keys():
                 return post_error("CONTEXT_NOT_FOUND", "context is mandatory", None)
@@ -487,8 +487,8 @@ class TMXService:
                                 return post_error("LOCALE_NOT_FOUND", "locale is mandatory for every translation", None)
             suggested_translations = []
             for translation in object_in["translations"]:
-                translation["id"] = uuid.uuid4()
-                translation["org"] = object_in["org"]
+                translation["id"] = str(uuid.uuid4())
+                translation["orgID"] = object_in["orgID"]
                 translation["uploaded_by"] = object_in["metadata"]["userID"]
                 translation["created_on"] = eval(str(time.time()).replace('.', '')[0:13])
                 suggested_translations.append(translation)
@@ -511,7 +511,10 @@ class TMXService:
                 query = {"id": {"$in": delete_req["ids"]}}
         if 'userIDs' in delete_req.keys():
             if delete_req["userIDs"]:
-                query = {"uploaded_by": {"$in": delete_req["userIDs"]}}
+                query["uploaded_by"] = {"$in": delete_req["userIDs"]}
+        if 'orgIDs' in delete_req.keys():
+            if delete_req["orgIDs"]:
+                query["orgID"] = {"$in": delete_req["orgIDs"]}
         if 'startDate' in delete_req.keys():
             query["created_on"] = {"$gte": delete_req["startDate"]}
         if 'endDate' in delete_req.keys():
@@ -519,7 +522,6 @@ class TMXService:
         if query:
             log_info(f"Delete Query: {query}", None)
             del_count = repo.suggestion_box_delete(query)
-            log_info(f"del_count: {del_count}", None)
             if del_count > 0:
                 return {"message": "Suggestions deleted successfully", "status": "SUCCESS"}
         return {"message": "No Suggestions deleted", "status": "SUCCESS"}
@@ -544,7 +546,7 @@ class TMXService:
                 query["locale"] = {"$in": search_req["locale"]}
         if 'orgIDs' in search_req.keys():
             if search_req["orgIDs"]:
-                query["org"] = {"$in": search_req["orgIDs"]}
+                query["orgID"] = {"$in": search_req["orgIDs"]}
         if 'userIDs' in search_req.keys():
             if search_req["userIDs"]:
                 query["uploaded_by"] = {"$in": search_req["userIDs"]}
