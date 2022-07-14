@@ -517,6 +517,7 @@ class TMXService:
         if 'endDate' in delete_req.keys():
             query["created_on"] = {"$lte": delete_req["endDate"]}
         if query:
+            log_info(f"Delete Query: {query}", None)
             repo.suggestion_box_delete(query)
             return {"message": "Suggestions deleted successfully", "status": "SUCCESS"}
         else:
@@ -551,6 +552,7 @@ class TMXService:
         if 'endDate' in search_req.keys():
             query["created_on"] = {"$lte": search_req["endDate"]}
         if query:
+            log_info(f"Search Query: {query}", None)
             return repo.suggestion_box_search(query, exclude)
         else:
             return []
