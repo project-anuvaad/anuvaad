@@ -142,7 +142,7 @@ class TranslatorValidator:
     def validate_tmx_search(self, input_req):
         user_roles = str(input_req["metadata"]["roles"]).split(",")
         if 'SUPERADMIN' in user_roles:
-            if 'orgID' not in input_req.keys() or 'userID' not in input_req.keys() or 'keys' not in input_req.keys():
+            if 'orgID' not in input_req.keys() and 'userID' not in input_req.keys() and 'keys' not in input_req.keys():
                 return post_error("MAND_IP_MISSING", "User ID or Org ID or Keys is mandatory for this search", None)
         else:
             if 'getAll' in input_req.keys():
