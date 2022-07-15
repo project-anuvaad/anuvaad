@@ -467,34 +467,17 @@ class TMXService:
     # must go to ORG level TMX.
     def suggestion_box_create(self, object_in):
         try:
-            if 'orgID' not in object_in.keys():
-                return post_error("ORG_NOT_FOUND", "org is mandatory", None)
-            if 'context' not in object_in.keys():
-                return post_error("CONTEXT_NOT_FOUND", "context is mandatory", None)
-            else:
-                if 'translations' not in object_in.keys():
-                    return post_error("TRANSLATIONS_NOT_FOUND", "Translations are mandatory", None)
-                else:
-                    if not object_in["translations"]:
-                        return post_error("TRANSLATIONS_EMPTY", "Translations cannot be empty", None)
-                    else:
-                        for translation in object_in["translations"]:
-                            if 'src' not in translation.keys():
-                                return post_error("SRC_NOT_FOUND", "src is mandatory for every translation", None)
-                            if 'tgt' not in translation.keys():
-                                return post_error("TGT_NOT_FOUND", "tgt is mandatory for every translation", None)
-                            if 'locale' not in translation.keys():
-                                return post_error("LOCALE_NOT_FOUND", "locale is mandatory for every translation", None)
             suggested_translations = []
             for translation in object_in["translations"]:
-                translation["id"] = str(uuid.uuid4())
-                translation["orgID"] = object_in["orgID"]
+                translation["id"], translation["orgID"] = str(uuid.uuid4()), object_in["orgID"]
                 translation["uploaded_by"] = object_in["metadata"]["userID"]
                 translation["created_on"] = eval(str(time.time()).replace('.', '')[0:13])
                 suggested_translations.append(translation)
             if suggested_translations:
-                repo.suggestion_box_create(suggested_translations)
-            return {"message": "Suggestions accepted successfully", "status": "SUCCESS"}
+                inserts = repo.suggestion_box_create(suggested_translations)
+                log_info(f"Insert IDS: {inserts}", None)
+                return {"message": "Suggestions accepted successfully", "status": "SUCCESS"}
+            return {"message": "No Suggestions created!", "status": "SUCCESS"}
         except Exception as e:
             return post_error("SUGGESTION_BOX_CREATION_FAILED",
                               "Suggestions creation failed due to exception: {}".format(str(e)), None)
