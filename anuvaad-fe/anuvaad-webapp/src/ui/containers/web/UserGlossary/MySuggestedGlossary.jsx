@@ -263,7 +263,7 @@ class SuggestedGlossaryList extends React.Component {
             <MuiThemeProvider theme={getMuiTheme()}>
               {/* {this.renderDeleteAllGlossaryButton()} */}
               <MUIDataTable
-                title={translate("common.page.title.suggestion")}
+                title={translate("common.page.title.mySuggestion")}
                 columns={columns}
                 options={options}
                 data={this.props.suggestedGlossaryData.result}

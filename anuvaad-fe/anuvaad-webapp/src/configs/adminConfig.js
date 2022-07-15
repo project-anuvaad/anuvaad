@@ -31,7 +31,7 @@ const superAdminConfig = {
         {
 
             "roleCode": "ADMIN",
-            "roleDesc": "Has access to manage the users"
+            "roleDesc": "Has access to user management related resources for a org"
 
         }
 
