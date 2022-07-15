@@ -47,7 +47,7 @@ class UserManagementModel(object):
             collections = get_db()[USR_MONGO_COLLECTION]
             #inserting user records on db
             if "ADMIN" == role_info["roleCode"]:
-                admin_check = collections.find_one({"orgID":users_data['orgID'],"roles":{"roleCode":"ADMIN","roleDesc":"Has access to user management related resources for a org"}},{ "_id": 0, "orgID": 1, "roles": 1 })
+                admin_check = collections.find_one({"orgID":users_data['orgID'],"roles.roleCode":"ADMIN"})
                 print("ADMIN_CHECK",admin_check)
                 if admin_check == None:
                     results = collections.insert(records)
@@ -182,7 +182,7 @@ class UserManagementModel(object):
             collections = get_db()[USR_MONGO_COLLECTION]
             #inserting records on database
             if "ADMIN" == role_info["roleCode"]:
-                admin_check = collections.find_one({"orgID":users_data['orgID'],"roles":{"roleCode":"ADMIN","roleDesc":"Has access to user management related resources for a org"}},{ "_id": 0, "orgID": 1, "roles": 1 })
+                admin_check = collections.find_one({"orgID":users_data['orgID'],"roles.roleCode":"ADMIN"})
                 print("ADMIN_CHECK",admin_check)
                 if admin_check == None:
                     results = collections.insert(records)
