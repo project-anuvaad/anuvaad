@@ -66,14 +66,14 @@ class SuggestedGlossaryListHeader extends React.Component {
                                 <CloseIcon />
                             </IconButton> :
                             <div style={{display: "flex", flexDirection: "row"}}>
-                                {/* <IconButton
+                                {localStorage.getItem("roles") === "SUPERADMIN" && <IconButton
                                     onClick={() => {
                                         history.push(`${process.env.PUBLIC_URL}/organization-list`);
                                     }}
                                     className={classes.menuButton} color="inherit" aria-label="Menu" style={{ margin: "0px 5px" }}
                                 >
                                     <BackIcon />
-                                </IconButton> */}
+                                </IconButton>}
 
                                 {/* <div style={{ borderLeft: "1px solid #D6D6D6", height: "40px", marginRight: "5px", marginTop: "5px" }} /> */}
 

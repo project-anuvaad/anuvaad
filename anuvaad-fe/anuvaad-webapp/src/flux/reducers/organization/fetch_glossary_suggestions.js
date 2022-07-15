@@ -7,14 +7,19 @@ const initialState = {
 
 const getSuggestedGlossaryData = (data) => {
     let result = data.map(val => {
-        return {
+        if(val.uploaded_by && val.created_on && val.id && val.orgID && !val.context){
+            return ({
             id: val.id,
             src: val.src,
             tgt: val.tgt,
             locale: val.locale,
             userID: val.uploaded_by,
-            orgID : val.org
+            orgID: val.orgID,
+            createdOn: val.created_on.toString(),
+            uuid : val.id
+        })
         }
+        
     })
     return result
 }

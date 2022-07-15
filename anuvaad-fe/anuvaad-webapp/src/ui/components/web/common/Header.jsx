@@ -405,6 +405,31 @@ class Header extends React.Component {
                       </ListItem>
                     </div>
                   )}
+                  {this.state.assignedOrgId !== "NONMT" && role && Array.isArray(role) && role.includes("TRANSLATOR") && (
+                    <div>
+                      <Divider className={classes.divider} />
+
+                      <ListItem
+                        id="my-suggestions"
+                        style={{ paddingTop: "8%", paddingBottom: "8%", backgroundColor: currentMenu === "my-suggestions" && themeAnuvaad.palette.primary.main }}
+                        button
+                        onClick={() => {
+                          this.handleDrawerClose(false);
+                          history.push(`${process.env.PUBLIC_URL}/my-suggestions/${this.state.assignedOrgId}`);
+                        }}
+                      >
+
+                        <ListItemText
+                          disableTypography
+                          primary={
+                            <Typography type="body2" style={{ color: currentMenu === "my-suggestions" ? "#FFFFFF" : "#000000", marginLeft: '6%' }}>
+                              My Glossary Suggestion
+                            </Typography>
+                          }
+                        />
+                      </ListItem>
+                    </div>
+                  )}
                   {this.state.assignedOrgId !== "NONMT" && role && Array.isArray(role) && role.includes("ADMIN") && (
                     <div>
                       <Divider className={classes.divider} />
