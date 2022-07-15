@@ -141,14 +141,15 @@ def tmx_get_all_keys():
 
 @translatorapp.route(context_path + '/v1/suggested-tmx/create', methods=["POST"])
 def suggestion_tmx_box_create():
-    service = TMXService()
-    data = request.get_json()
+    service, data, validator = TMXService(), request.get_json(), TranslatorValidator()
     data = add_headers(data, request)
+    error = validator.validate_suggestion_box_create(data)
+    if error:
+        return jsonify(error), 400
     response = service.suggestion_box_create(data)
     if "errorID" in response.keys():
         return jsonify(response), 400
-    else:
-        return jsonify(response), 200
+    return jsonify(response), 200
 
 
 @translatorapp.route(context_path + '/v1/suggested-tmx/delete', methods=["POST"])
