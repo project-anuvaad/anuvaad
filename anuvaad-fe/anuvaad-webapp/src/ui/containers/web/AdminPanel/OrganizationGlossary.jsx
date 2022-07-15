@@ -142,13 +142,13 @@ class OrganizationGlossary extends React.Component {
 
   deleteMultipleRows = () => {
     let isOrg = delete_glossary.isOrg(this.props.glossaryData, this.state.rowsToDelete)
-    if (!isOrg) {
+    // if (!isOrg) {
       let userId = JSON.parse(localStorage.getItem("userProfile")).userID
       let rowsToBeDeleted = delete_glossary.getBulkDeletionArray(this.props.glossaryData, this.state.rowsToDelete)
       this.makeDeleteGlossaryAPICall(this.orgID, "", "", "", "", "JUDICIARY", true, rowsToBeDeleted)
-    } else {
-      this.setState({ open: true, message: "Cannot delete glossary of type Organization..", variant: "error" })
-    }
+    // } else {
+    //   this.setState({ open: true, message: "Cannot delete glossary of type Organization..", variant: "error" })
+    // }
     setTimeout(() => {
       this.setState({ open: false, message: "", variant: "" })
     }, 2000)

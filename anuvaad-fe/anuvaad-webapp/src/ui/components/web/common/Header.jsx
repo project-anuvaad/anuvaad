@@ -79,7 +79,7 @@ class Header extends React.Component {
     name: localStorage.getItem("userDetails"),
     userName: "",
     currentPage: 'dashboard',
-    assignedOrgId: JSON.parse(localStorage.getItem("userProfile")).orgID
+    assignedOrgId: JSON.parse(localStorage.getItem("userProfile"))?.orgID
   };
 
   // componentDidUpdate() {
