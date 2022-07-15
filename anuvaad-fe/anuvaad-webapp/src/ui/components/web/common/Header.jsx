@@ -270,7 +270,7 @@ class Header extends React.Component {
                           disableTypography
                           primary={
                             <Typography type="body2" style={{ color: currentMenu === "assign-nmt-model" ? "#FFFFFF" : "#000000", marginLeft: '6%' }}>
-                              Assign nmt models
+                              Assign NMT models
                             </Typography>
                           }
                         />
@@ -423,7 +423,7 @@ class Header extends React.Component {
                           disableTypography
                           primary={
                             <Typography type="body2" style={{ color: currentMenu === "my-suggestions" ? "#FFFFFF" : "#000000", marginLeft: '6%' }}>
-                              My Glossary Suggestion
+                              My Glossary Suggestions
                             </Typography>
                           }
                         />
