@@ -57,3 +57,13 @@ KeyError: 'HTTP_X_USER_ID'
 [2021-04-08 14:45:33,801] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5001/ (Press CTRL+C to quit)
 [2021-04-08 14:45:34,104] {loghandler.py:21} MainThread INFO in loghandler: URI: http://172.30.0.234:5001/nmt-inference/v2/fetch-models
 [2021-04-08 14:45:34,105] {loghandler.py:21} MainThread INFO in loghandler: Translator-Core-(paoe) Running..........
+[2022-06-20 17:35:23,169] {loghandler.py:21} MainThread INFO in loghandler: URI: http://172.30.0.234:5001/nmt-inference/v2/fetch-models
+[2022-06-20 17:35:23,169] {loghandler.py:21} MainThread INFO in loghandler: BODY: 
+[2022-06-20 17:35:23,170] {loghandler.py:21} MainThread INFO in loghandler: None
+[2022-06-20 17:35:23,170] {loghandler.py:21} MainThread INFO in loghandler: Translator-Core-(YzoQ) Running..........
+[2022-06-20 17:35:27,232] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5001/ (Press CTRL+C to quit)
+[2022-07-04 16:43:53,545] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5001/ (Press CTRL+C to quit)
+[2022-07-04 16:43:53,984] {loghandler.py:21} MainThread INFO in loghandler: URI: http://172.30.0.234:5001/nmt-inference/v2/fetch-models
+[2022-07-04 16:43:53,984] {loghandler.py:21} MainThread INFO in loghandler: BODY: 
+[2022-07-04 16:43:53,984] {loghandler.py:21} MainThread INFO in loghandler: None
+[2022-07-04 16:43:53,986] {loghandler.py:21} MainThread INFO in loghandler: Translator-Core-(qLJW) Running..........

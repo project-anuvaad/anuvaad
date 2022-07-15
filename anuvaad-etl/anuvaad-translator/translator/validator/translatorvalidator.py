@@ -138,3 +138,65 @@ class TranslatorValidator:
                                 return post_error("SRC_LANG_NOT_FOUND", "Source language code is mandatory.", None)
                             if 'target_language_code' not in model.keys():
                                 return post_error("TGT_LANG_NOT_FOUND", "Target language code is mandatory.", None)
+
+    def validate_tmx_search(self, input_req):
+        user_roles = str(input_req["metadata"]["roles"]).split(",")
+        if 'SUPERADMIN' in user_roles:
+            if 'orgID' not in input_req.keys() and 'userID' not in input_req.keys() and 'keys' not in input_req.keys():
+                return post_error("MAND_IP_MISSING", "User ID or Org ID or Keys is mandatory for this search", None)
+        else:
+            if 'getAll' in input_req.keys():
+                input_req["getAll"] = None
+            if 'ADMIN' in user_roles:
+                if 'orgID' in input_req.keys():
+                    if input_req["orgID"] != input_req["metadata"]["orgID"]:
+                        return post_error("ORG_MISMATCH", "This user can only search Glossary from his/her Org.", None)
+                else:
+                    return post_error("ORG_MISSING", "Org ID is mandatory for this search", None)
+            if 'TRANSLATOR' in user_roles:
+                if 'orgID' in input_req.keys():
+                    if input_req["orgID"] != input_req["metadata"]["orgID"]:
+                        return post_error("ORG_MISMATCH", "This user can only search Glossary from his/her Org.", None)
+                else:
+                    return post_error("ORG_MISSING", "Org ID is mandatory for this search", None)
+                if 'userID' in input_req.keys():
+                    if input_req["userID"] != input_req["metadata"]["userID"]:
+                        return post_error("USER_MISMATCH", "This user can only search Glossary from his/her account.", None)
+                else:
+                    return post_error("USER_MISSING", "User ID is mandatory for this search", None)
+        return None
+
+    def validate_tmx_delete(self, input_req):
+        user_roles = str(input_req["metadata"]["roles"]).split(",")
+        if "ADMIN" not in user_roles and "SUPERADMIN" not in user_roles:
+            if 'orgID' in input_req.keys():
+                return {"message": "Only an ADMIN or SUPERADMIN can delete ORG-level TMX", "status": "FAILED"}
+        if 'orgID' in input_req.keys() and 'userID' in input_req.keys():
+            return {"message": "Either user TMX or org TMX can be deleted at a time", "status": "FAILED"}
+        return None
+
+    def validate_suggestion_box_create(self, input_req):
+        if 'orgID' not in input_req.keys():
+            return post_error("ORG_NOT_FOUND", "org is mandatory", None)
+        if 'context' not in input_req.keys():
+            return post_error("CONTEXT_NOT_FOUND", "context is mandatory", None)
+        else:
+            if 'translations' not in input_req.keys():
+                return post_error("TRANSLATIONS_NOT_FOUND", "Translations are mandatory", None)
+            else:
+                if not input_req["translations"]:
+                    return post_error("TRANSLATIONS_EMPTY", "Translations cannot be empty", None)
+                else:
+                    for translation in input_req["translations"]:
+                        if 'src' not in translation.keys():
+                            return post_error("SRC_NOT_FOUND", "src is mandatory for every translation", None)
+                        if 'tgt' not in translation.keys():
+                            return post_error("TGT_NOT_FOUND", "tgt is mandatory for every translation", None)
+                        if 'locale' not in translation.keys():
+                            return post_error("LOCALE_NOT_FOUND", "locale is mandatory for every translation", None)
+        return None
+
+
+
+
+

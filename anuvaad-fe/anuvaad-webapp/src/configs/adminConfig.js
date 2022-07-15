@@ -11,10 +11,27 @@ const adminConfig = {
             "roleDesc": "Access to evaluate our model"
 
         },
+    ],
+    orgID: ["ANUVAAD"]
+}
+
+const superAdminConfig = {
+    roles: [
+        {
+
+            "roleCode": "TRANSLATOR",
+            "roleDesc": "Has access to translation related resources"
+        },
+        {
+
+            "roleCode": "ANNOTATOR",
+            "roleDesc": "Access to evaluate our model"
+
+        },
         {
 
             "roleCode": "ADMIN",
-            "roleDesc": "Has access to manage the users"
+            "roleDesc": "Has access to user management related resources for a org"
 
         }
 
@@ -22,4 +39,6 @@ const adminConfig = {
     orgID: ["ANUVAAD"]
 }
 
-export default adminConfig;
+const ObjToExport = localStorage.getItem("roles") == "SUPERADMIN" ? superAdminConfig : adminConfig
+
+export default ObjToExport;

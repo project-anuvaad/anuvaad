@@ -68,6 +68,7 @@ class StartDigitizationUpload extends React.Component {
             modelLanguage: [],
             name: "",
             message: "File uplaoded successfully",
+            variant: "success",
             showComponent: false,
             workflow: localStorage.getItem("roles") === "TRANSLATOR" ? "WF_A_FCWDLDBSOD15GVOTK" : "",
             worflow_codes: [{
@@ -161,8 +162,8 @@ class StartDigitizationUpload extends React.Component {
 
     handleChange = files => {
         if (files.length > 0) {
-            let path = files[0].name.split('.')
-            let fileType = path[path.length - 1]
+            let path = files[0].name.split('.');
+            let fileType = path[path.length - 1];
             let fileName = path.splice(0, path.length - 1).join('.')
             this.setState({
                 files,
@@ -304,7 +305,7 @@ class StartDigitizationUpload extends React.Component {
     render() {
         const { classes } = this.props
         return (
-            <div style={{ }}>
+            <div style={{}}>
                 <Header />
 
                 <div className={classes.div}>
@@ -324,7 +325,7 @@ class StartDigitizationUpload extends React.Component {
                                         acceptedFiles={[".txt,audio/*,.ods,.pptx,image/*,.psd,.pdf,.xlsm,.xltx,.xltm,.xla,.xltm,.docx,.rtf", ".txt", ".pdf", ".doc", ".ppt", ".excel", ".xlsx", ".xls", ".log", ".xlsb"]}
                                         onChange={this.handleChange.bind(this)}
                                         filesLimit={1}
-                                        maxFileSize={200000000000}
+                                        maxFileSize={100000000}
                                         dropzoneText={translate("digitize_upload.page.label.addDropDocument")}
                                         onDelete={this.handleDelete.bind(this)}
                                     />
@@ -377,7 +378,7 @@ class StartDigitizationUpload extends React.Component {
                                 open={this.state.open}
                                 autoHideDuration={6000}
                                 onClose={this.handleClose}
-                                variant="success"
+                                variant={this.state.variant}
                                 message={this.state.message}
                             />
                         )}

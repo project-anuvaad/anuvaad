@@ -115,7 +115,7 @@ MIN_CONFIDENCE    = 0.5
 MARGIN_TOLLERANCE = 9
 EAST_WIDTH        = 1280
 EAST_HEIGHT       = 1280
-ALIGN = True
+ALIGN = False
 ALIGN_MODE = 'FAST'
 
 ###########################################################################

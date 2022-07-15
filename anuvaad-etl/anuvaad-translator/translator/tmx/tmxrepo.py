@@ -3,7 +3,7 @@ import json
 
 import redis
 import pymongo
-from anuvaad_auditor.loghandler import log_exception
+from anuvaad_auditor.loghandler import log_exception, log_info
 from configs.translatorconfig import redis_server_host, redis_server_port
 from configs.translatorconfig import mongo_server_host, mongo_translator_db, mongo_tmx_collection
 from configs.translatorconfig import mongo_suggestion_box_collection, tmx_org_enabled, tmx_user_enabled, tmx_redis_db
@@ -54,10 +54,10 @@ class TMXRepository:
             log_exception("Exception in TMXREPO: upsert | Cause: " + str(e), None, e)
             return None
 
-    def delete(self, key):
+    def delete(self, keys):
         try:
             client = self.get_redis_instance()
-            client.delete(key)
+            client.delete(*keys)
             return 1
         except Exception as e:
             log_exception("Exception in TMXREPO: delete | Cause: " + str(e), None, e)
@@ -122,11 +122,13 @@ class TMXRepository:
 
     def suggestion_box_create(self, object_in):
         col = self.get_mongo_instance(mongo_suggestion_box_collection)
-        col.insert_many(object_in)
+        inserts = col.insert_many(object_in)
+        return inserts.inserted_ids
 
     def suggestion_box_delete(self, query):
         col = self.get_mongo_instance(mongo_suggestion_box_collection)
-        col.remove(query)
+        deleted = col.delete_many(query)
+        return deleted.deleted_count
 
     def suggestion_box_search(self, query, exclude):
         col = self.get_mongo_instance(mongo_suggestion_box_collection)
