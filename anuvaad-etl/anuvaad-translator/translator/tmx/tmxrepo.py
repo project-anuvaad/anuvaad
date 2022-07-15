@@ -122,7 +122,8 @@ class TMXRepository:
 
     def suggestion_box_create(self, object_in):
         col = self.get_mongo_instance(mongo_suggestion_box_collection)
-        col.insert_many(object_in)
+        inserts = col.insert_many(object_in)
+        return inserts.inserted_ids
 
     def suggestion_box_delete(self, query):
         col = self.get_mongo_instance(mongo_suggestion_box_collection)

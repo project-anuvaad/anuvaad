@@ -175,6 +175,28 @@ class TranslatorValidator:
             return {"message": "Either user TMX or org TMX can be deleted at a time", "status": "FAILED"}
         return None
 
+    def validate_suggestion_box_create(self, input_req):
+        if 'orgID' not in input_req.keys():
+            return post_error("ORG_NOT_FOUND", "org is mandatory", None)
+        if 'context' not in input_req.keys():
+            return post_error("CONTEXT_NOT_FOUND", "context is mandatory", None)
+        else:
+            if 'translations' not in input_req.keys():
+                return post_error("TRANSLATIONS_NOT_FOUND", "Translations are mandatory", None)
+            else:
+                if not input_req["translations"]:
+                    return post_error("TRANSLATIONS_EMPTY", "Translations cannot be empty", None)
+                else:
+                    for translation in input_req["translations"]:
+                        if 'src' not in translation.keys():
+                            return post_error("SRC_NOT_FOUND", "src is mandatory for every translation", None)
+                        if 'tgt' not in translation.keys():
+                            return post_error("TGT_NOT_FOUND", "tgt is mandatory for every translation", None)
+                        if 'locale' not in translation.keys():
+                            return post_error("LOCALE_NOT_FOUND", "locale is mandatory for every translation", None)
+        return None
+
+
 
 
 
