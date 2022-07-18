@@ -6,9 +6,10 @@ const initialState = {
 }
 
 const getSuggestedGlossaryData = (data) => {
-    let result = data.map(val => {
-        if(val.uploaded_by && val.created_on && val.id && val.orgID && !val.context){
-            return ({
+    let result = [];
+    data.map(val => {
+        if(val.created_on && val.id && val.locale && val.orgID && val.src && val.tgt && val.uploaded_by){
+            result.push({
             id: val.id,
             src: val.src,
             tgt: val.tgt,
@@ -17,11 +18,11 @@ const getSuggestedGlossaryData = (data) => {
             orgID: val.orgID,
             createdOn: val.created_on.toString(),
             uuid : val.id
-        })
-        }
-        
+        });
+        } 
     })
-    return result
+    console.log("result", result);
+    return result;
 }
 export default (state = initialState, action) => {
     switch (action.type) {
