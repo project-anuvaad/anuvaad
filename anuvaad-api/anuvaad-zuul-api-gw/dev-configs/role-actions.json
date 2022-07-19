@@ -984,6 +984,21 @@
             "role":"SUPERADMIN",
             "actionID": "43c6bb3a-2e58-4fe7-b9df-bd1a1d02660a",
             "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "0cf59821-0258-4c5a-9c4e-6178c074764a",
+            "active":true
+        },
+        {
+            "role":"SUPERADMIN",
+            "actionID": "0cf59821-0258-4c5a-9c4e-6178c074764a",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "0cf59821-0258-4c5a-9c4e-6178c074764a",
+            "active":true
         }
     ]
 }
