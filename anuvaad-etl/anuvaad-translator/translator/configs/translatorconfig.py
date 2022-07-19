@@ -70,8 +70,7 @@ if isinstance(user_translation_enabled, str):
 orgs_nmt_disable = os.environ.get('ORGS_NMT_DISABLE', 'NONMT')
 tmx_disable_roles = os.environ.get('ROLES_TMX_DISABLE', 'ANNOTATOR')
 utm_disable_roles = os.environ.get('ROLES_UTM_DISABLE', 'ANNOTATOR')
-
-
+suggestion_statuses = ["Pending", "Approved", "Rejected"]
 
 #nmt-machine-topics
 anu_nmt_input_topic = os.environ.get('KAFKA_NMT_TRANSLATION_INPUT_TOPIC', 'anuvaad-nmt-translate')

@@ -152,6 +152,19 @@ def suggestion_tmx_box_create():
     return jsonify(response), 200
 
 
+@translatorapp.route(context_path + '/v1/suggested-tmx/update', methods=["POST"])
+def suggestion_tmx_box_update():
+    service, data, validator = TMXService(), request.get_json(), TranslatorValidator()
+    data = add_headers(data, request)
+    error = validator.validate_suggestion_box_update(data)
+    if error:
+        return jsonify(error), 400
+    response = service.suggestion_box_update(data)
+    if "errorID" in response.keys():
+        return jsonify(response), 400
+    return jsonify(response), 200
+
+
 @translatorapp.route(context_path + '/v1/suggested-tmx/delete', methods=["POST"])
 def suggestion_tmx_box_delete():
     service = TMXService()

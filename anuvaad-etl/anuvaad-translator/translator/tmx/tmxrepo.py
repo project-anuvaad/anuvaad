@@ -126,6 +126,10 @@ class TMXRepository:
         inserts = col.insert_many(object_in)
         return inserts.inserted_ids
 
+    def suggestion_box_update(self, find_cond, set_cond):
+        col = self.instantiate_mongo_suggestion()
+        col.update_many(find_cond, set_cond)
+
     def suggestion_box_delete(self, query):
         col = self.instantiate_mongo_suggestion()
         deleted = col.delete_many(query)
