@@ -21,7 +21,6 @@ const getSuggestedGlossaryData = (data) => {
         });
         } 
     })
-    console.log("result", result);
     return result;
 }
 export default (state = initialState, action) => {
