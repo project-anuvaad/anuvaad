@@ -138,10 +138,20 @@ class MyGlossary extends React.Component {
 
       renderDeleteAllGlossaryButton = () => {
         return (
-          <div style={{ textAlign: "end" }}>
+          <div style={{ textAlign: "end", marginBottom : "1rem" }}>
             <Button
               onClick={() => this.handleDeleteAllGlossary()}
-              sx={{}}
+              variant="contained"
+                color="primary"
+                style={{
+                    borderRadius: "10px",
+                    color: "#FFFFFF",
+                    backgroundColor: "#1C9AB7",
+                    height: "35px",
+                    fontSize: "16px",
+                    textTransform: "none",
+                }}
+                size="small"
             >
               Delete All Glossary
             </Button>
@@ -219,7 +229,8 @@ class MyGlossary extends React.Component {
                 options: {
                     filter: false,
                     sort: false,
-                    display: 'excluded'
+                    display: 'excluded',
+                    download: false
                 },
             },
             {
@@ -255,6 +266,7 @@ class MyGlossary extends React.Component {
                 options: {
                     sort: false,
                     empty: true,
+                    download: false,
                     customBodyRender: (value, tableMeta, updateValue) => {
                         if (tableMeta.rowData) {
                             return (

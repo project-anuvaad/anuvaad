@@ -18,6 +18,7 @@ import Snackbar from "../../../components/web/common/Snackbar";
 import FetchSuggestions from "../../../../flux/actions/apis/organization/fetch_glossary_suggestions";
 import DeleteSuggestedGlossary from "../../../../flux/actions/apis/organization/delete_glossary_suggestion";
 import CreateOrgGlossary from "../../../../flux/actions/apis/organization/create_org_glossary";
+import UpdateSuggestedGlossaryStatus from "../../../../flux/actions/apis/organization/update_glossary_suggestion_status";
 
 var delete_glossary = require("../../../../utils/deleteSuggestions.operation");
 
@@ -41,6 +42,7 @@ class SuggestedGlossaryList extends React.Component {
     this.state = {
       loading: false,
       open: false,
+      showMessage: false,
       message: "",
       variant: 'success',
       loadMsg: "",
@@ -54,7 +56,7 @@ class SuggestedGlossaryList extends React.Component {
   getSuggestedGlossary = () => {
     const { APITransport } = this.props
 
-    let apiObj = new FetchSuggestions([], [], this.orgID ?  [this.orgID] : [], [], false, 0, 0, [], []);
+    let apiObj = new FetchSuggestions([], [], this.orgID ?  [this.orgID] : [], [], false, 0, 0, [], [], ["Pending"]);
     APITransport(apiObj)
   }
   componentDidMount() {
@@ -72,7 +74,7 @@ class SuggestedGlossaryList extends React.Component {
       this.setState({ loading: false })
     }
     if (prevProps.suggestedGlossaryData.count > this.props.suggestedGlossaryData.count && this.props.suggestedGlossaryData.deleted) {
-      this.setState({ open: true, message: 'Glossary deleted successfully', variant: 'success' }, () => {
+      this.state.showMessage && this.setState({ open: true, message: 'Glossary deleted successfully', variant: 'success' }, () => {
         setTimeout(() => this.setState({ open: false, message: "", variant: "info" }), 3000)
       })
     }
@@ -88,7 +90,7 @@ class SuggestedGlossaryList extends React.Component {
     })
         .then(async res => {
             if (res.ok) {
-              this.makeDeleteSuggestionAPICall([], [uuId], false, [this.orgID]);
+              this.makeDeleteSuggestionAPICall([], [uuId], false, [this.orgID], "Approved", false);
               this.setState({ open: true, variant: 'success', message:"Suggestion accepted Successfully...", loading: false })
             } else {
               this.setState({ open: true, variant: 'error', message:"Error in accepting suggestion...", loading: false })
@@ -96,11 +98,11 @@ class SuggestedGlossaryList extends React.Component {
         })
 }
 
-  makeDeleteSuggestionAPICall = (userIds, uuIds, deleteAll, orgIds) => {
-    this.setState({ open: true, message: 'Glossary deletion in progress...', variant: 'info', openConfirmDialog: false })
+  makeDeleteSuggestionAPICall = (userIds, uuIds, deleteAll, orgIds, status, showMessage) => {
+    this.setState({ open: true, message: 'Glossary deletion in progress...', variant: 'info', openConfirmDialog: false, showMessage })
     console.log("userIds, uuIds, deleteAll, orgIds");
     console.log(userIds, uuIds, deleteAll, orgIds);
-    let apiObj = new DeleteSuggestedGlossary(userIds, uuIds, deleteAll, orgIds);
+    let apiObj = new UpdateSuggestedGlossaryStatus( uuIds, status);
     fetch(apiObj.apiEndPoint(), {
       method: 'post',
       headers: apiObj.getHeaders().headers,
@@ -125,8 +127,8 @@ class SuggestedGlossaryList extends React.Component {
 
   handleDeleteSuggestion = (dataArray) => {
     console.log("dataArray", dataArray);
-    let reverseLocale = dataArray[3].split("|").reverse().join("|");
-    this.makeDeleteSuggestionAPICall([], [dataArray[6]], false, [this.orgID]);
+    // let reverseLocale = dataArray[3].split("|").reverse().join("|");
+    this.makeDeleteSuggestionAPICall([], [dataArray[6]], false, [this.orgID], "Rejected", true);
   }
 
   handleClose = () => {
@@ -141,7 +143,7 @@ class SuggestedGlossaryList extends React.Component {
       return el.id
     });
 
-    this.makeDeleteSuggestionAPICall([], IdArrOfSelectedRows, false, [this.orgID]);
+    this.makeDeleteSuggestionAPICall([], IdArrOfSelectedRows, false, [this.orgID],  "Rejected", true);
   }
 
 
@@ -206,6 +208,14 @@ class SuggestedGlossaryList extends React.Component {
           filter: false,
           sort: false,
           display: 'excluded'
+        },
+      },
+      {
+        name: "status",
+        label: "Status",
+        options: {
+          filter: true,
+          sort: true,
         },
       },
       // {
