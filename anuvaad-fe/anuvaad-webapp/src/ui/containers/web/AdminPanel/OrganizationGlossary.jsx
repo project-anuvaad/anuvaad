@@ -50,7 +50,8 @@ class OrganizationGlossary extends React.Component {
       variant: 'success',
       loadMsg: "",
       rowsToDelete: [],
-      openConfirmDialog: false
+      openConfirmDialog: false,
+      openDeleteSelectedGlossaryConfirmDialogue: false
     }
   }
 
@@ -103,7 +104,7 @@ class OrganizationGlossary extends React.Component {
   }
 
   makeDeleteAllGlossaryAPICall = (userObj, context) => {
-    this.setState({ open: true, message: 'Glossary deletion in progress...', variant: 'info'})
+    this.setState({ open: true, message: 'Glossary deletion in progress...', variant: 'info' })
     this.handleCloseConfirmBox();
     let apiObj = new DeleteTmx(userObj, context)
     // console.log("apiObj.getBody()", apiObj.getBody());
@@ -137,15 +138,16 @@ class OrganizationGlossary extends React.Component {
 
   handleDeleteAllGlossary = () => {
     console.log("handleDeleteAllGlossary")
-    this.setState({openConfirmDialog : true})
+    this.setState({ openConfirmDialog: true })
   }
 
   deleteMultipleRows = () => {
+    this.setState({ openDeleteSelectedGlossaryConfirmDialogue: false });
     let isOrg = delete_glossary.isOrg(this.props.glossaryData, this.state.rowsToDelete)
     // if (!isOrg) {
-      let userId = JSON.parse(localStorage.getItem("userProfile")).userID
-      let rowsToBeDeleted = delete_glossary.getBulkDeletionArray(this.props.glossaryData, this.state.rowsToDelete)
-      this.makeDeleteGlossaryAPICall(this.orgID, "", "", "", "", "JUDICIARY", true, rowsToBeDeleted)
+    let userId = JSON.parse(localStorage.getItem("userProfile")).userID
+    let rowsToBeDeleted = delete_glossary.getBulkDeletionArray(this.props.glossaryData, this.state.rowsToDelete)
+    this.makeDeleteGlossaryAPICall(this.orgID, "", "", "", "", "JUDICIARY", true, rowsToBeDeleted)
     // } else {
     //   this.setState({ open: true, message: "Cannot delete glossary of type Organization..", variant: "error" })
     // }
@@ -155,7 +157,7 @@ class OrganizationGlossary extends React.Component {
   }
 
   handleCloseConfirmBox = () => {
-    this.setState({openConfirmDialog : false})
+    this.setState({ openConfirmDialog: false })
   }
 
   renderDeleteAllGlossaryButton = () => {
@@ -163,13 +165,23 @@ class OrganizationGlossary extends React.Component {
       <div style={{ textAlign: "end" }}>
         <Button
           onClick={() => this.handleDeleteAllGlossary()}
-          sx={{}}
+          variant="contained"
+          color="primary"
+          style={{
+            borderRadius: "10px",
+            color: "#FFFFFF",
+            backgroundColor: "#1C9AB7",
+            height: "35px",
+            fontSize: "16px",
+            textTransform: "none",
+          }}
+          size="small"
         >
           Delete All Glossary
         </Button>
         <Dialog
           open={this.state.openConfirmDialog}
-          onClose={()=>this.handleCloseConfirmBox()}
+          onClose={() => this.handleCloseConfirmBox()}
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
@@ -180,10 +192,42 @@ class OrganizationGlossary extends React.Component {
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={()=>this.makeDeleteAllGlossaryAPICall({orgID : this.orgID},"JUDICIARY")} color="primary">
+            <Button onClick={() => this.makeDeleteAllGlossaryAPICall({ orgID: this.orgID }, "JUDICIARY")} color="primary">
               Confirm
             </Button>
-            <Button onClick={()=>this.handleCloseConfirmBox()} color="primary" autoFocus>
+            <Button onClick={() => this.handleCloseConfirmBox()} color="primary" autoFocus>
+              Cancel
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </div>
+    )
+  }
+
+  handleDeleteSelectedGlossaryBox = () => {
+    this.setState({ openDeleteSelectedGlossaryConfirmDialogue: false })
+  }
+
+  renderDeleteSelectedGlossaryConfirmBox = () => {
+    return (
+      <div style={{ textAlign: "end", marginBottom: "1rem" }}>
+        <Dialog
+          open={this.state.openDeleteSelectedGlossaryConfirmDialogue}
+          onClose={() => this.handleDeleteSelectedGlossaryBox()}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">{"Delete Selected glossary"}</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              Are you sure you want to delete selected glossary?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => this.deleteMultipleRows()} color="primary">
+              Confirm
+            </Button>
+            <Button onClick={() => this.handleDeleteSelectedGlossaryBox()} color="primary" autoFocus>
               Cancel
             </Button>
           </DialogActions>
@@ -305,7 +349,7 @@ class OrganizationGlossary extends React.Component {
         this.setState({ rowsToDelete: allRowsSelected })
       },
       onRowsDelete: () => {
-        this.deleteMultipleRows()
+        this.setState({ openDeleteSelectedGlossaryConfirmDialogue: true });
       }
     };
     return (
@@ -317,6 +361,7 @@ class OrganizationGlossary extends React.Component {
             :
             <MuiThemeProvider theme={getMuiTheme()}>
               {this.renderDeleteAllGlossaryButton()}
+              {this.renderDeleteSelectedGlossaryConfirmBox()}
               <MUIDataTable
                 title={translate("common.page.title.glossary")}
                 columns={columns}
