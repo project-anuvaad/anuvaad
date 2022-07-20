@@ -12,6 +12,7 @@ import config
 from config import USR_TOKEN_MONGO_COLLECTION, USR_MONGO_COLLECTION, USR_TEMP_TOKEN_MONGO_COLLECTION
 
 admin_role_key      =   config.ADMIN_ROLE_KEY
+super_admin_role_key = config.SUPER_ADMIN_ROLE_KEY
 
 class UserAuthenticationModel(object):
 
@@ -131,7 +132,7 @@ class UserAuthenticationModel(object):
                     #fetching user name
                     username=user["userName"]
                 #verifying the requested person, both admin and user can reset password   
-                if (admin_role_key in role_keys) or (username == user_name):
+                if (admin_role_key in role_keys) or (username == user_name) or (super_admin_role_key in role_keys):
                     log_info("Reset password request is checked against role permission and username", MODULE_CONTEXT)
                     results = collections.update({"userName":user_name,"is_active":True}, {"$set": {"password": hashed}})
                     if 'writeError' in list(results.keys()):
