@@ -1,3 +1,4 @@
+import formatDataByStatus from '../../../utils/formatDataByStatus';
 import C from '../../actions/constants';
 
 const initialState = {
@@ -5,10 +6,11 @@ const initialState = {
     result: [],
 }
 
-const getSuggestedGlossaryData = (data) => {
+const getSuggestedGlossaryData = (data=[]) => {
     let result = [];
+    let finalResult = [];
+
     data.map(val => {
-        // if(val.created_on && val.id && val.locale && val.orgID && val.src && val.tgt && val.uploaded_by){
             result.push({
             id: val.id,
             src: val.src,
@@ -20,9 +22,14 @@ const getSuggestedGlossaryData = (data) => {
             uuid : val.id,
             status: val.status
         });
-        // } 
-    })
-    return result;
+    });
+    let pendingSuggestions = result.filter((el)=>{return el.status === "Pending"});
+    let approvedSuggestions = result.filter((el)=>{return el.status === "Approved"});
+    let rejectedSuggestions = result.filter((el)=>{return el.status === "Rejected"});
+
+    finalResult = [...pendingSuggestions, ...approvedSuggestions, ...rejectedSuggestions ];
+    console.log("finalResult", finalResult);
+    return finalResult;
 }
 export default (state = initialState, action) => {
     switch (action.type) {
