@@ -157,6 +157,14 @@ class SuggestedGlossaryList extends React.Component {
         },
       },
       {
+        name: "status",
+        label: "Status",
+        options: {
+          filter: true,
+          sort: true,
+        },
+      },
+      {
         name: "createdOn",
         label: "createdOn",
         options: {
@@ -204,10 +212,10 @@ class SuggestedGlossaryList extends React.Component {
                 <div>
                   <Tooltip title="Delete Glossary" placement="left">
                     <IconButton
-                      style={{ color: "#233466", padding: "5px" }}
+                      style={{ color: tableMeta.rowData[5] !== "Pending" ? "grey" : "#233466", padding: "5px" }}
                       component="a"
                       onClick={() => this.handleDeleteSuggestion(tableMeta.rowData)}
-                    // disabled={tableMeta.rowData[5] === "Organization"}
+                      disabled={tableMeta.rowData[5] !== "Pending"}
                     >
                       <DeleteIcon />
                     </IconButton>

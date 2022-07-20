@@ -216,7 +216,8 @@ class OrganizationGlossary extends React.Component {
         options: {
           filter: false,
           sort: false,
-          display: 'excluded'
+          display: 'excluded',
+          download: false
         },
       },
       {
@@ -252,6 +253,7 @@ class OrganizationGlossary extends React.Component {
         options: {
           sort: false,
           empty: true,
+          download: false,
           customBodyRender: (value, tableMeta, updateValue) => {
             if (tableMeta.rowData) {
               return (
