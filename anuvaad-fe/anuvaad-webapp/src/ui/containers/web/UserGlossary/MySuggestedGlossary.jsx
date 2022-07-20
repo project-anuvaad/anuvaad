@@ -102,8 +102,8 @@ class SuggestedGlossaryList extends React.Component {
 
   handleDeleteSuggestion = (dataArray) => {
     console.log("dataArray", dataArray);
-    let reverseLocale = dataArray[3].split("|").reverse().join("|");
-    this.makeDeleteSuggestionAPICall([], [dataArray[6]], false, [this.orgID]);
+    // let reverseLocale = dataArray[3].split("|").reverse().join("|");
+    this.makeDeleteSuggestionAPICall([], [dataArray[7]], false, [this.orgID]);
   }
 
   handleClose = () => {
