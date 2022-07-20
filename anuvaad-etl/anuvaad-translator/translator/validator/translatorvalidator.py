@@ -198,7 +198,7 @@ class TranslatorValidator:
                             return post_error("TGT_NOT_FOUND", "tgt is mandatory for every translation", None)
                         if 'locale' not in translation.keys():
                             return post_error("LOCALE_NOT_FOUND", "locale is mandatory for every translation", None)
-                        search_req = {"src": translation["src"], "tgt": translation["tgt"], "orgIDs": input_req["orgID"]}
+                        search_req = {"src": translation["src"], "tgt": translation["tgt"], "orgIDs": [input_req["orgID"]]}
                         search_res = tmx_service.suggestion_box_get(search_req)
                         if search_res:
                             return post_error("DUPLICATE_RECORD", "This suggestion has already been submitted for this Org.", None)

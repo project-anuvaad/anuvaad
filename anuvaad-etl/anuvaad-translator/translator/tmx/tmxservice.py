@@ -516,10 +516,11 @@ class TMXService:
         if 'endDate' in delete_req.keys():
             query["createdOn"] = {"$lte": delete_req["endDate"]}
         if query:
+            query["status"] = "Pending"
             log_info(f"Delete Query: {query}", None)
             del_count = repo.suggestion_box_delete(query)
             if del_count > 0:
-                return {"message": "Suggestions deleted successfully", "status": "SUCCESS"}
+                return {"message": "Suggestions pending for approval deleted successfully", "status": "SUCCESS"}
         return {"message": "No Suggestions deleted", "status": "SUCCESS"}
 
     # Method to search suggestions from the suggestions db.
@@ -533,13 +534,13 @@ class TMXService:
                 query = {"id": {"$in": search_req["ids"]}}
         if 'src' in search_req.keys():
             if search_req["src"]:
-                query["src"] = {"$in": search_req["src"]}
+                query["src"] = search_req["src"]
         if 'tgt' in search_req.keys():
             if search_req["tgt"]:
-                query["tgt"] = {"$in": search_req["tgt"]}
+                query["tgt"] = search_req["tgt"]
         if 'locale' in search_req.keys():
             if search_req["locale"]:
-                query["locale"] = {"$in": search_req["locale"]}
+                query["locale"] = search_req["locale"]
         if 'orgIDs' in search_req.keys():
             if search_req["orgIDs"]:
                 query["orgID"] = {"$in": search_req["orgIDs"]}

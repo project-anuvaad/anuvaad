@@ -994,11 +994,6 @@
             "role":"SUPERADMIN",
             "actionID": "0cf59821-0258-4c5a-9c4e-6178c074764a",
             "active":true
-        },
-        {
-            "role":"TRANSLATOR",
-            "actionID": "0cf59821-0258-4c5a-9c4e-6178c074764a",
-            "active":true
         }
     ]
 }
