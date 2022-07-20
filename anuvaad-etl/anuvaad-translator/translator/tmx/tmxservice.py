@@ -478,7 +478,7 @@ class TMXService:
             if suggested_translations:
                 inserts = repo.suggestion_box_create(suggested_translations)
                 log_info(f"Insert IDS: {inserts}", None)
-                return {"message": "Suggestions accepted successfully", "status": "SUCCESS"}
+                return {"message": "Suggestions created successfully", "status": "SUCCESS"}
             return {"message": "No Suggestions created!", "status": "SUCCESS"}
         except Exception as e:
             return post_error("SUGGESTION_BOX_CREATION_FAILED",
