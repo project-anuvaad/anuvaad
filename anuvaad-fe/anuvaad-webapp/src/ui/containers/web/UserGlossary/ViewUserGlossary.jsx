@@ -48,7 +48,8 @@ class MyGlossary extends React.Component {
             variant: 'success',
             loadMsg: "",
             rowsToDelete: [],
-            openConfirmDialog: false
+            openConfirmDialog: false,
+            openDeleteSelectedGlossaryConfirmDialogue: false
         }
     }
     getUserGlossary = () => {
@@ -180,6 +181,38 @@ class MyGlossary extends React.Component {
         )
       }
 
+      handleDeleteSelectedGlossaryBox = () => {
+        this.setState({openDeleteSelectedGlossaryConfirmDialogue : false})
+      }
+
+      renderDeleteSelectedGlossaryConfirmBox = () => {
+        return (
+          <div style={{ textAlign: "end", marginBottom : "1rem" }}>
+            <Dialog
+              open={this.state.openDeleteSelectedGlossaryConfirmDialogue}
+              onClose={()=>this.handleDeleteSelectedGlossaryBox()}
+              aria-labelledby="alert-dialog-title"
+              aria-describedby="alert-dialog-description"
+            >
+              <DialogTitle id="alert-dialog-title">{"Delete Selected glossary"}</DialogTitle>
+              <DialogContent>
+                <DialogContentText id="alert-dialog-description">
+                  Are you sure you want to delete selected glossary?
+                </DialogContentText>
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={()=>this.deleteMultipleRows()} color="primary">
+                  Confirm
+                </Button>
+                <Button onClick={()=>this.handleDeleteSelectedGlossaryBox()} color="primary" autoFocus>
+                  Cancel
+                </Button>
+              </DialogActions>
+            </Dialog>
+          </div>
+        )
+      }
+
     handleDeleteGlossary = (dataArray) => {
         let reverseLocale = dataArray[3].split("|").reverse().join("|");
         let orgID = JSON.parse(localStorage.getItem("userProfile")).orgID;
@@ -192,6 +225,7 @@ class MyGlossary extends React.Component {
 
     deleteMultipleRows = () => {
         let isOrg = delete_glossary.isOrg(this.props.glossaryData, this.state.rowsToDelete)
+        this.handleDeleteSelectedGlossaryBox()
         if (!isOrg) {
             let userId = JSON.parse(localStorage.getItem("userProfile")).userID
             let rowsToBeDeleted = delete_glossary.getBulkDeletionArray(this.props.glossaryData, this.state.rowsToDelete);
@@ -318,7 +352,7 @@ class MyGlossary extends React.Component {
                 this.setState({ rowsToDelete: allRowsSelected })
             },
             onRowsDelete: () => {
-                this.deleteMultipleRows()
+                this.setState({openDeleteSelectedGlossaryConfirmDialogue : true})
             }
         };
         return (
@@ -330,6 +364,7 @@ class MyGlossary extends React.Component {
                         :
                         <MuiThemeProvider theme={getMuiTheme()}>
                             {this.renderDeleteAllGlossaryButton()}
+                            {this.renderDeleteSelectedGlossaryConfirmBox()}
                             <MUIDataTable
                                 title={translate("common.page.title.glossary")}
                                 columns={columns}
