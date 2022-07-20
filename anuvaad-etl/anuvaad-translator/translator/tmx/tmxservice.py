@@ -516,7 +516,7 @@ class TMXService:
         if 'endDate' in delete_req.keys():
             query["createdOn"] = {"$lte": delete_req["endDate"]}
         if query:
-            #query["status"] = "Pending"
+            query["status"] = "Pending"
             log_info(f"Delete Query: {query}", None)
             del_count = repo.suggestion_box_delete(query)
             if del_count > 0:
