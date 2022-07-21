@@ -1,6 +1,10 @@
 #!/bin/python
 
 from anuvaad_auditor.errorhandler import post_error
+from configs.translatorconfig import suggestion_statuses
+from tmx.tmxservice import TMXService
+
+tmx_service = TMXService()
 
 
 class TranslatorValidator:
@@ -194,6 +198,21 @@ class TranslatorValidator:
                             return post_error("TGT_NOT_FOUND", "tgt is mandatory for every translation", None)
                         if 'locale' not in translation.keys():
                             return post_error("LOCALE_NOT_FOUND", "locale is mandatory for every translation", None)
+                        search_req = {"src": translation["src"], "tgt": translation["tgt"], "orgIDs": [input_req["orgID"]]}
+                        search_res = tmx_service.suggestion_box_get(search_req)
+                        if search_res:
+                            return post_error("DUPLICATE_RECORD", "This suggestion has already been submitted for this Org.", None)
+        return None
+
+    def validate_suggestion_box_update(self, input_req):
+        if 'ids' not in input_req.keys():
+            return post_error("IDS_NOT_FOUND", "ids mandatory", None)
+        elif not input_req["ids"]:
+            return post_error("IDS_NOT_FOUND", "ids mandatory", None)
+        if 'status' not in input_req.keys():
+            return post_error("STATUS_NOT_FOUND", "status is mandatory", None)
+        elif input_req["status"] not in suggestion_statuses:
+            return post_error("STATUS_INVALID", "status is invalid", None)
         return None
 
 

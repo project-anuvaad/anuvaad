@@ -25,13 +25,13 @@ import OutlinedInput from '@material-ui/core/OutlinedInput';
 import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
 import InputAdornment from '@material-ui/core/InputAdornment';
-import ADMINCONFIG from "../../../../configs/adminConfig";
 import FetchOrganizationList from "../../../../flux/actions/apis/organization/organization-list";
+import adminConfig from "../../../../configs/adminConfig";
 const TELEMETRY = require("../../../../utils/TelemetryManager");
 
-const roles = ADMINCONFIG.roles;
+// const roles = localStorage.getItem("roles") == "SUPERADMIN" ? adminConfig.superAdminConfig.roles : adminConfig.adminConfig.roles;
 
-console.log("roles",roles);
+// console.log("roles",roles);
 
 class CreateUser extends React.Component {
   constructor(props) {
@@ -48,7 +48,8 @@ class CreateUser extends React.Component {
       loading: false,
       showPassword: false,
       orgName: '',
-      orgDropDownDisabled : false
+      orgDropDownDisabled : false,
+      roles: localStorage.getItem("roles") == "SUPERADMIN" ? adminConfig.superAdminConfig.roles : adminConfig.adminConfig.roles,
     };
   }
 
@@ -211,7 +212,7 @@ class CreateUser extends React.Component {
               }}
             >
               {
-                roles.map((role, i) => <MenuItem id={role.roleCode} key={role.roleCode} value={role.roleCode}>{role.roleCode}</MenuItem>)
+                this.state.roles.map((role, i) => <MenuItem id={role.roleCode} key={role.roleCode} value={role.roleCode}>{role.roleCode}</MenuItem>)
               }
             </Select>
           </FormControl>
@@ -265,7 +266,7 @@ class CreateUser extends React.Component {
 
 
   processOnSelect = (e) => {
-    const roleInfo = roles.filter(role => {
+    const roleInfo = this.state.roles.filter(role => {
       return role["roleCode"].includes(e.target.value)
     });
     this.setState({ roleCode: e.target.value, roleInfo: roleInfo })

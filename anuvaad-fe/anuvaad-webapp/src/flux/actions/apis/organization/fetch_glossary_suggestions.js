@@ -3,7 +3,7 @@ import C from "../../constants";
 import ENDPOINTS from "../../../../configs/apiendpoints";
 
 export default class FetchSuggestions extends API {
-    constructor(userID = [], uuids = [], org = [], locale = [], fetchAll = false, startDate = "", endDate = "", src = [], tgt = [], timeout = 2000) {
+    constructor(userID = [], uuids = [], org = [], locale = [], fetchAll = false, startDate = "", endDate = "", src = [], tgt = [], statuses = [], timeout = 2000) {
         super('POST', timeout, false);
         this.type = C.GET_GLOSSARY_SUGGESTION;
         this.userID = userID;
@@ -15,6 +15,7 @@ export default class FetchSuggestions extends API {
         this.endDate = endDate;
         this.src = src;
         this.tgt = tgt;
+        this.statuses = statuses;
         this.response = "";
         this.endpoint = `${super.apiEndPointAuto()}${ENDPOINTS.fetch_glossary_suggestions}`;
     }
@@ -44,7 +45,8 @@ export default class FetchSuggestions extends API {
             orgIDs:this.org,
             fetchAll: this.fetchAll,
             startDateX: this.startDate,
-            endDateX: this.endDate
+            endDateX: this.endDate,
+            statuses: this.statuses,
         };
     }
 

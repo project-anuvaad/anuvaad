@@ -39,6 +39,4 @@ const superAdminConfig = {
     orgID: ["ANUVAAD"]
 }
 
-const ObjToExport = localStorage.getItem("roles") == "SUPERADMIN" ? superAdminConfig : adminConfig
-
-export default ObjToExport;
+export default {adminConfig, superAdminConfig};

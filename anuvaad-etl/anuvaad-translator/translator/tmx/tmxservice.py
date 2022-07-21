@@ -470,17 +470,30 @@ class TMXService:
             suggested_translations = []
             for translation in object_in["translations"]:
                 translation["id"], translation["orgID"] = str(uuid.uuid4()), object_in["orgID"]
-                translation["uploaded_by"] = object_in["metadata"]["userID"]
-                translation["created_on"] = eval(str(time.time()).replace('.', '')[0:13])
+                translation["uploadedBy"] = object_in["metadata"]["userID"]
+                translation["createdOn"] = eval(str(time.time()).replace('.', '')[0:13])
+                translation["updatedOn"] = eval(str(time.time()).replace('.', '')[0:13])
+                translation["status"] = "Pending"
                 suggested_translations.append(translation)
             if suggested_translations:
                 inserts = repo.suggestion_box_create(suggested_translations)
                 log_info(f"Insert IDS: {inserts}", None)
-                return {"message": "Suggestions accepted successfully", "status": "SUCCESS"}
+                return {"message": "Suggestions created successfully", "status": "SUCCESS"}
             return {"message": "No Suggestions created!", "status": "SUCCESS"}
         except Exception as e:
             return post_error("SUGGESTION_BOX_CREATION_FAILED",
                               "Suggestions creation failed due to exception: {}".format(str(e)), None)
+
+    # Method updates entry to the suggestion box
+    def suggestion_box_update(self, object_in):
+        try:
+            find_condition = {"id": {"$in": object_in["ids"]}}
+            set_clause = {"status": object_in["status"], "updatedOn": eval(str(time.time()).replace('.', '')[0:13])}
+            repo.suggestion_box_update(find_condition, {"$set": set_clause})
+            return {"message": "Suggestions Updated !", "status": "SUCCESS"}
+        except Exception as e:
+            return post_error("SUGGESTION_BOX_UPDATE_FAILED",
+                              "Suggestions update failed due to exception: {}".format(str(e)), None)
 
     # Method to delete suggestions from the db
     def suggestion_box_delete(self, delete_req):
@@ -494,19 +507,20 @@ class TMXService:
                 query = {"id": {"$in": delete_req["ids"]}}
         if 'userIDs' in delete_req.keys():
             if delete_req["userIDs"]:
-                query["uploaded_by"] = {"$in": delete_req["userIDs"]}
+                query["uploadedBy"] = {"$in": delete_req["userIDs"]}
         if 'orgIDs' in delete_req.keys():
             if delete_req["orgIDs"]:
                 query["orgID"] = {"$in": delete_req["orgIDs"]}
         if 'startDate' in delete_req.keys():
-            query["created_on"] = {"$gte": delete_req["startDate"]}
+            query["createdOn"] = {"$gte": delete_req["startDate"]}
         if 'endDate' in delete_req.keys():
-            query["created_on"] = {"$lte": delete_req["endDate"]}
+            query["createdOn"] = {"$lte": delete_req["endDate"]}
         if query:
+            query["status"] = "Pending"
             log_info(f"Delete Query: {query}", None)
             del_count = repo.suggestion_box_delete(query)
             if del_count > 0:
-                return {"message": "Suggestions deleted successfully", "status": "SUCCESS"}
+                return {"message": "Suggestions pending for approval deleted successfully", "status": "SUCCESS"}
         return {"message": "No Suggestions deleted", "status": "SUCCESS"}
 
     # Method to search suggestions from the suggestions db.
@@ -520,23 +534,26 @@ class TMXService:
                 query = {"id": {"$in": search_req["ids"]}}
         if 'src' in search_req.keys():
             if search_req["src"]:
-                query["src"] = {"$in": search_req["src"]}
+                query["src"] = search_req["src"]
         if 'tgt' in search_req.keys():
             if search_req["tgt"]:
-                query["tgt"] = {"$in": search_req["tgt"]}
+                query["tgt"] = search_req["tgt"]
         if 'locale' in search_req.keys():
             if search_req["locale"]:
-                query["locale"] = {"$in": search_req["locale"]}
+                query["locale"] = search_req["locale"]
         if 'orgIDs' in search_req.keys():
             if search_req["orgIDs"]:
                 query["orgID"] = {"$in": search_req["orgIDs"]}
         if 'userIDs' in search_req.keys():
             if search_req["userIDs"]:
-                query["uploaded_by"] = {"$in": search_req["userIDs"]}
+                query["uploadedBy"] = {"$in": search_req["userIDs"]}
+        if 'statuses' in search_req.keys():
+            if search_req["statuses"]:
+                query["status"] = {"$in": search_req["statuses"]}
         if 'startDate' in search_req.keys():
-            query["created_on"] = {"$gte": search_req["startDate"]}
+            query["createdOn"] = {"$gte": search_req["startDate"]}
         if 'endDate' in search_req.keys():
-            query["created_on"] = {"$lte": search_req["endDate"]}
+            query["createdOn"] = {"$lte": search_req["endDate"]}
         if query:
             log_info(f"Search Query: {query}", None)
             return repo.suggestion_box_search(query, exclude)
