@@ -46,8 +46,19 @@ class UserManagementModel(object):
             #connecting to mongo instance/collection
             collections = get_db()[USR_MONGO_COLLECTION]
             #inserting user records on db
-            results = collections.insert(records)
-            log_info("Count of users created : {}".format(len(results)), MODULE_CONTEXT)
+            if "ADMIN" == role_info["roleCode"]:
+                admin_check = collections.find_one({"orgID":users_data['orgID'],"roles.roleCode":"ADMIN"})
+                print("ADMIN_CHECK",admin_check)
+                if admin_check == None:
+                    results = collections.insert(records)
+                    log_info("Count of users created : {}".format(len(results)), MODULE_CONTEXT)
+                else:
+                    return post_error("Database exception", "already an ADMIN present for the given org", None)
+            else :
+                results = collections.insert(records)
+                log_info("Count of users created : {}".format(len(results)), MODULE_CONTEXT)
+            # results = collections.insert(records)
+            # log_info("Count of users created : {}".format(len(results)), MODULE_CONTEXT)
             if len(records) != len(results):
                 return post_error("Database exception", "Some of the users were not created due to databse error", None)
             #email notification for registered users
@@ -170,7 +181,18 @@ class UserManagementModel(object):
             #connecting to mongo instance/collection
             collections = get_db()[USR_MONGO_COLLECTION]
             #inserting records on database
-            results = collections.insert(records)
+            if "ADMIN" == role_info["roleCode"]:
+                admin_check = collections.find_one({"orgID":users_data['orgID'],"roles.roleCode":"ADMIN"})
+                print("ADMIN_CHECK",admin_check)
+                if admin_check == None:
+                    results = collections.insert(records)
+                    log_info("Count of users created : {}".format(len(results)), MODULE_CONTEXT)
+                else:
+                    return post_error("Database exception", "already an ADMIN present for the given org", None)
+            else :
+                results = collections.insert(records)
+                log_info("Count of users created : {}".format(len(results)), MODULE_CONTEXT)
+            # results = collections.insert(records)
             if len(records) != len(results):
                 return post_error("Database error", "some of the records were not inserted into db", None)
             log_info("Count of users onboared : {}".format(len(results)), MODULE_CONTEXT)

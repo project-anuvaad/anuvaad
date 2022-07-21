@@ -3,14 +3,14 @@ import json
 
 import redis
 import pymongo
-from anuvaad_auditor.loghandler import log_exception
+from anuvaad_auditor.loghandler import log_exception, log_info
 from configs.translatorconfig import redis_server_host, redis_server_port
 from configs.translatorconfig import mongo_server_host, mongo_translator_db, mongo_tmx_collection
 from configs.translatorconfig import mongo_suggestion_box_collection, tmx_org_enabled, tmx_user_enabled, tmx_redis_db
 
 redis_client = None
-mongo_client = None
-
+mongo_client_tmx = None
+mongo_client_suggestion = None
 
 class TMXRepository:
 
@@ -30,20 +30,21 @@ class TMXRepository:
         else:
             return redis_client
 
-    # Initialises and fetches mongo client
-    def instantiate(self, collection):
-        client = pymongo.MongoClient(mongo_server_host)
-        db = client[mongo_translator_db]
-        global mongo_client
-        mongo_client = db[collection]
-        return mongo_client
+    def instantiate_mongo_suggestion(self):
+        global mongo_client_suggestion
+        if not mongo_client_suggestion:
+            client = pymongo.MongoClient(mongo_server_host)
+            db = client[mongo_translator_db]
+            mongo_client_suggestion = db[mongo_suggestion_box_collection]
+        return mongo_client_suggestion
 
-    def get_mongo_instance(self, collection):
-        global mongo_client
-        if not mongo_client:
-            return self.instantiate(collection)
-        else:
-            return mongo_client
+    def instantiate_mongo_tmx(self):
+        global mongo_client_tmx
+        if not mongo_client_tmx:
+            client = pymongo.MongoClient(mongo_server_host)
+            db = client[mongo_translator_db]
+            mongo_client_tmx = db[mongo_tmx_collection]
+        return mongo_client_tmx
 
     def upsert(self, key, value):
         try:
@@ -54,10 +55,10 @@ class TMXRepository:
             log_exception("Exception in TMXREPO: upsert | Cause: " + str(e), None, e)
             return None
 
-    def delete(self, key):
+    def delete(self, keys):
         try:
             client = self.get_redis_instance()
-            client.delete(key)
+            client.delete(*keys)
             return 1
         except Exception as e:
             log_exception("Exception in TMXREPO: delete | Cause: " + str(e), None, e)
@@ -93,13 +94,13 @@ class TMXRepository:
 
     # Inserts the object into mongo collection
     def tmx_create(self, object_in):
-        col = self.get_mongo_instance(mongo_tmx_collection)
+        col = self.instantiate_mongo_tmx()
         col.insert_one(object_in)
         del object_in["_id"]
 
     # Searches tmx entries from mongo collection
     def search_tmx_db(self, user_id, org_id, locale):
-        col = self.get_mongo_instance(mongo_tmx_collection)
+        col = self.instantiate_mongo_tmx()
         user, org = 0, 0
         if tmx_user_enabled:
             res_user = col.find({"locale": locale, "userID": user_id}, {'_id': False})
@@ -121,15 +122,21 @@ class TMXRepository:
         return None
 
     def suggestion_box_create(self, object_in):
-        col = self.get_mongo_instance(mongo_suggestion_box_collection)
-        col.insert_many(object_in)
+        col = self.instantiate_mongo_suggestion()
+        inserts = col.insert_many(object_in)
+        return inserts.inserted_ids
+
+    def suggestion_box_update(self, find_cond, set_cond):
+        col = self.instantiate_mongo_suggestion()
+        col.update_many(find_cond, set_cond)
 
     def suggestion_box_delete(self, query):
-        col = self.get_mongo_instance(mongo_suggestion_box_collection)
-        col.remove(query)
+        col = self.instantiate_mongo_suggestion()
+        deleted = col.delete_many(query)
+        return deleted.deleted_count
 
     def suggestion_box_search(self, query, exclude):
-        col = self.get_mongo_instance(mongo_suggestion_box_collection)
+        col = self.instantiate_mongo_suggestion()
         res = col.find(query, exclude)
         result = []
         for record in res:

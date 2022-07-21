@@ -21,6 +21,11 @@
             "active":true
         },
         {
+            "role":"SUPERADMIN",
+            "actionID": "216313cc-0668-442f-a13e-3fd022be5eb2",
+            "active":true
+        },
+        {
             "role":"TRANSLATOR",
             "actionID": "bde39a83-8a4f-400e-bcf0-d14b8895f0ae",
             "active":true
@@ -246,6 +251,106 @@
             "active":true
         },
         {
+            "role":"SUPERADMIN",
+            "actionID": "8ef47a2a-0a85-4efe-865e-8c52b567bf74",
+            "active":true
+        },
+        {
+            "role":"SUPERADMIN",
+            "actionID": "36677274-7ac3-4319-8170-f2e007341ecf",
+            "active":true
+        },
+        {
+            "role":"SUPERADMIN",
+            "actionID": "1bf2b56f-9b83-404f-98c6-e59ab89e24a6",
+            "active":true
+        },
+        {
+            "role":"SUPERADMIN",
+            "actionID": "986bb1b6-ac89-4430-a7ec-ba04f1ab470d",
+            "active":true
+        },
+        {
+            "role":"SUPERADMIN",
+            "actionID": "36122d56-6077-48eb-a2d8-303b1460d4ac",
+            "active":true
+        },
+        {
+            "role":"SUPERADMIN",
+            "actionID": "8ae246ee-8b27-4dcf-93df-faad13b3c64b",
+            "active":true
+        },
+        {
+            "role":"SUPERADMIN",
+            "actionID": "b0c793d1-215c-4de6-8d88-714f8394e75a",
+            "active":true
+        },
+        {
+            "role":"SUPERADMIN",
+            "actionID": "400bf52e-d7ef-4bdb-9ce5-8f64b42ada9c",
+            "active":true
+        },
+        {
+            "role":"SUPERADMIN",
+            "actionID": "9b8af8f1-c2a1-4a49-9b10-d7c125712395",
+            "active":true
+        },
+        {
+            "role":"SUPERADMIN",
+            "actionID": "b533843f-5259-4723-b670-b9f483d9db43",
+            "active":true
+        },
+        {
+            "role":"SUPERADMIN",
+            "actionID": "76952b3b-6017-4d58-86e2-246a16b1c952",
+            "active":true
+        },
+        {
+            "role":"SUPERADMIN",
+            "actionID": "7f3c15a0-bdc4-4dc5-8ebb-5c7ba80ee016",
+            "active":true
+        },
+        {
+            "role":"SUPERADMIN",
+            "actionID": "753e2245-75d8-4d88-bb87-26874c184907",
+            "active":true
+        },
+        {
+            "role":"SUPERADMIN",
+            "actionID": "3a670c68-737f-4546-9cf6-54de188a0298",
+            "active":true
+        },
+        {
+            "role":"SUPERADMIN",
+            "actionID": "c5e9002e-4784-453d-b5dc-3dbafb09bc1c",
+            "active":true
+        },
+        {
+            "role":"SUPERADMIN",
+            "actionID": "36a3d56e-34b4-4d66-90cd-dea526f70f0b",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "36a3d56e-34b4-4d66-90cd-dea526f70f0b",
+            "active":true
+        },
+        {
+            "role":"SUPERADMIN",
+            "actionID": "588efe49-4f9d-4101-b274-aa9755717b52",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "588efe49-4f9d-4101-b274-aa9755717b52",
+            "active":true
+        },
+        {
+            "role":"SUPERADMIN",
+            "actionID": "30b20c13-db5a-465c-a6b4-50a7c0daee57",
+            "active":true
+        },
+        {
             "role":"ANNOTATOR",
             "actionID": "30b20c13-db5a-465c-a6b4-50a7c0daee57",
             "active":true
@@ -386,6 +491,11 @@
             "active":true
         },
         {
+            "role":"SUPERADMIN",
+            "actionID": "7dfdea6c-3dbf-43f0-949e-f78ce99e8c1d",
+            "active":true
+        },
+        {
             "role":"ANNOTATOR",
             "actionID": "7dfdea6c-3dbf-43f0-949e-f78ce99e8c1d",
             "active":true
@@ -401,6 +511,11 @@
             "active":true
         },
         {
+            "role":"SUPERADMIN",
+            "actionID": "eb88f8fa-7649-4a30-9f59-d242ebe25bdd",
+            "active":true
+        },
+        {
             "role":"ANNOTATOR",
             "actionID": "eb88f8fa-7649-4a30-9f59-d242ebe25bdd",
             "active":true
@@ -416,6 +531,11 @@
             "active":true
         },
         {
+            "role":"SUPERADMIN",
+            "actionID": "07ce7b32-4eb3-4269-b73b-b69d5b84e2fd",
+            "active":true
+        },
+        {
             "role":"ANNOTATOR",
             "actionID": "07ce7b32-4eb3-4269-b73b-b69d5b84e2fd",
             "active":true
@@ -431,6 +551,11 @@
             "active":true
         },
         {
+            "role":"SUPERADMIN",
+            "actionID": "3c02f80e-c12d-4555-9dcb-fc540be64645",
+            "active":true
+        },
+        {
             "role":"ANNOTATOR",
             "actionID": "3c02f80e-c12d-4555-9dcb-fc540be64645",
             "active":true
@@ -446,6 +571,11 @@
             "active":true
         },
         {
+            "role":"SUPERADMIN",
+            "actionID": "75675521-a94e-424b-b2e8-1c46a3c4dc9b",
+            "active":true
+        },
+        {
             "role":"ANNOTATOR",
             "actionID": "75675521-a94e-424b-b2e8-1c46a3c4dc9b",
             "active":true
@@ -457,6 +587,11 @@
         },
         {
             "role":"ADMIN",
+            "actionID": "e6132e87-0616-4efe-9c68-6b4a37b16d18",
+            "active":true
+        },
+        {
+            "role":"SUPERADMIN",
             "actionID": "e6132e87-0616-4efe-9c68-6b4a37b16d18",
             "active":true
         },
@@ -507,6 +642,41 @@
         },
         {
             "role":"ADMIN",
+            "actionID": "1fd85b70-ee0e-4bb8-aff4-fe1c57efcf21",
+            "active":true
+        },
+        {
+            "role":"SUPERADMIN",
+            "actionID": "98360963-7f7b-4b4b-93d5-5f055d283868",
+            "active":true
+        },
+        {
+            "role":"SUPERADMIN",
+            "actionID": "b5ff81c9-8c7b-44eb-ad19-92c4d21b239c",
+            "active":true
+        },
+        {
+            "role":"SUPERADMIN",
+            "actionID": "0976372a-28b2-438b-9ec5-15952a31d224",
+            "active":true
+        },
+        {
+            "role":"SUPERADMIN",
+            "actionID": "3b9b7642-356a-4027-9c2a-ac44901dd5d4",
+            "active":true
+        },
+	    {
+            "role":"SUPERADMIN",
+            "actionID": "a1d46e6d-bbe6-4ffc-bb8e-cc8412e0353d",
+            "active":true
+        },
+	    {
+            "role":"SUPERADMIN",
+            "actionID": "736e5d42-e8da-4a6d-b89d-1cca1b54c787",
+            "active":true
+        },
+        {
+            "role":"SUPERADMIN",
             "actionID": "1fd85b70-ee0e-4bb8-aff4-fe1c57efcf21",
             "active":true
         },
@@ -761,6 +931,21 @@
             "active":true
         },
         {
+            "role":"SUPERADMIN",
+            "actionID": "dae2209d-e3ac-4ed2-9789-c1bb03bdf913",
+            "active":true
+        },
+        {
+            "role":"SUPERADMIN",
+            "actionID": "f13e0c81-b559-444d-bb57-8d0360f7a2e8",
+            "active":true
+        },
+        {
+            "role":"SUPERADMIN",
+            "actionID": "4851c243-bb56-4faf-9290-a46740e5c00e",
+            "active":true
+        },
+        {
             "role":"ANNOTATOR",
             "actionID": "dae2209d-e3ac-4ed2-9789-c1bb03bdf913",
             "active":true
@@ -788,6 +973,26 @@
         {
             "role":"ADMIN",
             "actionID": "43c6bb3a-2e58-4fe7-b9df-bd1a1d02660a",
+            "active":true
+        },
+        {
+            "role":"SUPERADMIN",
+            "actionID": "5b603b31-ecfe-4cf8-b199-c979ad46302e",
+            "active":true
+        },
+        {
+            "role":"SUPERADMIN",
+            "actionID": "43c6bb3a-2e58-4fe7-b9df-bd1a1d02660a",
+            "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "0cf59821-0258-4c5a-9c4e-6178c074764a",
+            "active":true
+        },
+        {
+            "role":"SUPERADMIN",
+            "actionID": "0cf59821-0258-4c5a-9c4e-6178c074764a",
             "active":true
         }
     ]

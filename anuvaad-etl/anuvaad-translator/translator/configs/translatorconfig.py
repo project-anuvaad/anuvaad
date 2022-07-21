@@ -70,8 +70,7 @@ if isinstance(user_translation_enabled, str):
 orgs_nmt_disable = os.environ.get('ORGS_NMT_DISABLE', 'NONMT')
 tmx_disable_roles = os.environ.get('ROLES_TMX_DISABLE', 'ANNOTATOR')
 utm_disable_roles = os.environ.get('ROLES_UTM_DISABLE', 'ANNOTATOR')
-
-
+suggestion_statuses = ["Pending", "Approved", "Rejected"]
 
 #nmt-machine-topics
 anu_nmt_input_topic = os.environ.get('KAFKA_NMT_TRANSLATION_INPUT_TOPIC', 'anuvaad-nmt-translate')
@@ -94,7 +93,7 @@ mongo_translator_collection = os.environ.get('MONGO_TRANSLATOR_CONTENT_COL', 'an
 mongo_trans_pages_collection = os.environ.get('MONGO_TRANSLATOR_PAGES_COL', 'anuvaad-etl-translator-pages-collection')
 mongo_trans_batch_collection = os.environ.get('MONGO_TRANSLATOR_BATCH_COL', 'anuvaad-etl-translator-batch-collection')
 mongo_tmx_collection = os.environ.get('MONGO_TMX_COL', 'anuvaad-tmx-collection')
-mongo_suggestion_box_collection = os.environ.get('MONGO_SUGGESTION_COL', 'anuvaad-tmx-suggestion-collection')
+mongo_suggestion_box_collection = os.environ.get('MONGO_SUGGESTIONS_COL', 'anuvaad-tmx-suggestion-box-collection')
 
 #module-configs
 context_path = os.environ.get('ANUVAAD_ETL_TRANSLATOR_CONTEXT_PATH', '/anuvaad-etl/translator')

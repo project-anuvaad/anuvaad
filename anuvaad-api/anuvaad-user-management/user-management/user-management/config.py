@@ -40,6 +40,7 @@ if isinstance(AUTH_TOKEN_EXPIRY_HRS, str):
     AUTH_TOKEN_EXPIRY_HRS  =  eval(AUTH_TOKEN_EXPIRY_HRS)
 
 ADMIN_ROLE_KEY          =   os.environ.get('UMS_ADMIN_ROLE_KEY','ADMIN')
+SUPER_ADMIN_ROLE_KEY    =   os.environ.get('UMS_SUPERADMIN_ROLE_KEY','SUPERADMIN')
 EXTENSION_USR_ROLE_KEY  =   os.environ.get('UMS_EXTENSION_USER','EXTENSION')
 SECRET_KEY              =   os.environ.get('EXTENSION_SECRET_KEY','85U62e26b2aJ68dae8eQc188e0c8z8J9')
 EXTENSION_CODE          =   os.environ.get('EXTENSION_URL_CODE','extn')
@@ -48,7 +49,7 @@ if isinstance(EXTENSION_EXPIRY, str):
     EXTENSION_EXPIRY  =  eval(EXTENSION_EXPIRY)
 EXTENSION_ORG           =   os.environ.get('EXTENSION_USR_ORG','ANUVAAD')
 #external file read configs
-ROLE_CODES_URL          =   os.environ.get('UMS_ROLE_CODES_URL','https://raw.githubusercontent.com/project-anuvaad/anuvaad/zuul_gateway/anuvaad-api/anuvaad-zuul-api-gw/dev-configs/roles.json')
+ROLE_CODES_URL          =   os.environ.get('UMS_ROLE_CODES_URL','https://raw.githubusercontent.com/project-anuvaad/anuvaad/master/anuvaad-api/anuvaad-zuul-api-gw/dev-configs/roles.json')
 ROLE_CODES_DIR_PATH     =   os.environ.get('UMS_ROLE_DIR_PATH','/app/configs/') #'/home/jainy/Documents/Anuvaad_local_files/usrmgmt/'
 ROLE_CODES_FILE_NAME    =   os.environ.get('UMS_FILE_NAME','roles.json')
 

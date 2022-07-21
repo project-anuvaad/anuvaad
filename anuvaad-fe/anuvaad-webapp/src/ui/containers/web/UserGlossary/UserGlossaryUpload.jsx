@@ -256,10 +256,11 @@ class UserGlossaryUpload extends React.Component {
                         this.setState({ open: true, variantType: 'success', message:"Glossary created successfully...", showLoader: false }, () => {
                             setTimeout(() => {
                                     const { APITransport } = this.props
-                                    let userID = JSON.parse(localStorage.getItem("userProfile")).userID
-                                    let apiObj = new ViewGlossary(userID)
-                                    APITransport(apiObj)
-                                history.push(`${process.env.PUBLIC_URL}/my-glossary`)
+                                    let userID = JSON.parse(localStorage.getItem("userProfile")).userID;
+                                    let orgID = JSON.parse(localStorage.getItem("userProfile")).orgID;
+                                    let apiObj = new ViewGlossary(userID, orgID);
+                                    APITransport(apiObj);
+                                history.push(`${process.env.PUBLIC_URL}/my-glossary`);
                             }, 3000)
                         })
                     } else {

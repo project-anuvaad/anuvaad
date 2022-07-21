@@ -6,7 +6,7 @@ import C from "../../constants";
 import ENDPOINTS from "../../../../configs/apiendpoints";
 
 export default class FetchUserDetails extends API {
-  constructor(offset = null, limit = null, token, updateExisiting = false, updateUserDetail = false, userIDs = [], userNames = [], roleCodes = [], orgCodes = [], timeout = 2000) {
+  constructor(offset = null, limit = null, token, updateExisiting = false, updateUserDetail = false, userIDs = [], userNames = [], roleCodes = [], orgCodes = [], skipPagination = false, timeout = 2000) {
     super("POST", timeout, false);
     if (updateExisiting) {
       this.type = C.FETCH_NEXT_USERDETAIL
@@ -22,7 +22,8 @@ export default class FetchUserDetails extends API {
     this.offset = offset;
     this.limit = limit;
     this.data = null;
-    this.orgCodes = orgCodes
+    this.orgCodes = orgCodes;
+    this.skipPagination = skipPagination;
     this.endpoint = `${super.apiEndPointAuto()}${ENDPOINTS.userdetails}`;
   }
 
@@ -56,7 +57,7 @@ export default class FetchUserDetails extends API {
       offset: this.offset,
       limit: this.limit,
       orgCodes: this.orgCodes,
-      skip_pagination: true
+      skip_pagination: this.skipPagination
 
     }
   }

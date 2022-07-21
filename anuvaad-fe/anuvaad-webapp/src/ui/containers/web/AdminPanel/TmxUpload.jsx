@@ -73,6 +73,7 @@ class TmxUpload extends Component {
       workspaceName: "",
       path: "",
       orgName:'',
+      orgDropDownDisabled: false,
       cleared: false
     };
   }
@@ -106,6 +107,19 @@ class TmxUpload extends Component {
     // TELEMETRY.pageLoadCompleted('');
     this.setState({ showLoader: true })
     this.props.organizationList.length<1 && this.processFetchBulkOrganizationAPI()
+
+    let role = [localStorage.getItem("roles")];
+    let useRole = [];
+    role.map((item, value) => {
+      useRole.push(item); value !== role.length - 1 && useRole.push(", ")
+      return true;
+    });
+
+    if(role && Array.isArray(role) && role.includes("ADMIN")){
+      let orgID = JSON.parse(localStorage.getItem("userProfile")).orgID;
+      console.log("orgID", orgID);
+      this.setState({orgName : orgID, orgDropDownDisabled : true})
+    }
   }
 
   handleSelectChange = event => {
@@ -178,6 +192,7 @@ class TmxUpload extends Component {
               labelId="demo-simple-select-outlined-label"
               id="roles"
               onChange={this.handleSelectChange}
+              disabled={this.state.orgDropDownDisabled}
               value={this.state.orgName}
               name= "orgName"
               style={{

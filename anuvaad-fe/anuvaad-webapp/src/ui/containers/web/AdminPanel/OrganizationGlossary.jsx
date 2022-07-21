@@ -14,8 +14,15 @@ import APITransport from "../../../../flux/actions/apitransport/apitransport";
 import DeleteIcon from "@material-ui/icons/Delete";
 import ViewGlossary from '../../../../flux/actions/apis/organization/fetch_organization_glossary';
 import Spinner from "../../../components/web/common/Spinner";
-import DeleteGlossary from '../../../../flux/actions/apis/user_glossary/delete_glossary';
 import Snackbar from "../../../components/web/common/Snackbar";
+import DeleteOrgGlossary from "../../../../flux/actions/apis/organization/delete_org_glossary";
+import { Button } from "@material-ui/core";
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DeleteTmx from "../../../../flux/actions/apis/tmx/tmxDelete";
 
 var delete_glossary = require("../../../../utils/deleteGlossary.operation");
 
@@ -34,25 +41,32 @@ const getMuiTheme = () =>
 class OrganizationGlossary extends React.Component {
   constructor(props) {
     super(props);
+    this.orgID = this.props.match.params.orgId;
+    this.userID = JSON.parse(localStorage.getItem("userProfile")).userID;
     this.state = {
       loading: false,
       open: false,
       message: "",
       variant: 'success',
       loadMsg: "",
-      rowsToDelete: []
+      rowsToDelete: [],
+      openConfirmDialog: false,
+      openDeleteSelectedGlossaryConfirmDialogue: false
     }
   }
+
+
+
   getOrganizationGlossary = () => {
     const { APITransport } = this.props
-    let orgID = this.props.match.params.orgId
-    let apiObj = new ViewGlossary(orgID)
+
+    let apiObj = new ViewGlossary(this.userID, this.orgID)
     APITransport(apiObj)
   }
   componentDidMount() {
     // if (this.props.glossaryData.count === 0) {
-      this.setState({ loading: true })
-      this.getOrganizationGlossary();
+    this.setState({ loading: true })
+    this.getOrganizationGlossary();
     // }
     // console.log("this.props.match.params.orgId", this.props.match.params.orgId)
   }
@@ -67,9 +81,9 @@ class OrganizationGlossary extends React.Component {
     }
   }
 
-  makeDeleteGlossaryAPICall = (userId, src, tgt, locale, reverseLocale, context, bulkDelete = false, deletionArray = []) => {
-    this.setState({ open: true, message: 'Glossary deletion in progress...', variant: 'info' })
-    let apiObj = new DeleteGlossary(userId, src, tgt, locale, reverseLocale, context, bulkDelete, deletionArray)
+  makeDeleteGlossaryAPICall = (orgId, src, tgt, locale, reverseLocale, context, bulkDelete = false, deletionArray = []) => {
+    this.setState({ open: true, message: 'Glossary deletion in progress...', variant: 'info', openConfirmDialog: false })
+    let apiObj = new DeleteOrgGlossary(this.orgID, src, tgt, locale, reverseLocale, context, bulkDelete, deletionArray)
     fetch(apiObj.apiEndPoint(), {
       method: 'post',
       headers: apiObj.getHeaders().headers,
@@ -78,7 +92,31 @@ class OrganizationGlossary extends React.Component {
       .then(async res => {
         if (res.ok) {
           this.setState({ open: false })
-          let apiObj = new ViewGlossary(userId)
+          let apiObj = new ViewGlossary(this.userID, this.orgID)
+          let { APITransport } = this.props
+          APITransport(apiObj)
+          return true;
+        } else {
+          this.setState({ open: true, message: 'Glossary deletion failed', variant: 'error' })
+          return false;
+        }
+      })
+  }
+
+  makeDeleteAllGlossaryAPICall = (userObj, context) => {
+    this.setState({ open: true, message: 'Glossary deletion in progress...', variant: 'info' })
+    this.handleCloseConfirmBox();
+    let apiObj = new DeleteTmx(userObj, context)
+    // console.log("apiObj.getBody()", apiObj.getBody());
+    fetch(apiObj.apiEndPoint(), {
+      method: 'post',
+      headers: apiObj.getHeaders().headers,
+      body: JSON.stringify(apiObj.getBody())
+    })
+      .then(async res => {
+        if (res.ok) {
+          this.setState({ open: false })
+          let apiObj = new ViewGlossary(this.userID, this.orgID)
           let { APITransport } = this.props
           APITransport(apiObj)
           return true;
@@ -98,18 +136,104 @@ class OrganizationGlossary extends React.Component {
     this.setState({ open: false })
   }
 
+  handleDeleteAllGlossary = () => {
+    console.log("handleDeleteAllGlossary")
+    this.setState({ openConfirmDialog: true })
+  }
+
   deleteMultipleRows = () => {
+    this.setState({ openDeleteSelectedGlossaryConfirmDialogue: false });
     let isOrg = delete_glossary.isOrg(this.props.glossaryData, this.state.rowsToDelete)
-    if (!isOrg) {
-      let userId = JSON.parse(localStorage.getItem("userProfile")).userID
-      let rowsToBeDeleted = delete_glossary.getBulkDeletionArray(this.props.glossaryData, this.state.rowsToDelete)
-      this.makeDeleteGlossaryAPICall(userId, "", "", "", "", "JUDICIARY", true, rowsToBeDeleted)
-    } else {
-      this.setState({ open: true, message: "Cannot delete glossary of type Organization..", variant: "error" })
-    }
+    // if (!isOrg) {
+    let userId = JSON.parse(localStorage.getItem("userProfile")).userID
+    let rowsToBeDeleted = delete_glossary.getBulkDeletionArray(this.props.glossaryData, this.state.rowsToDelete)
+    this.makeDeleteGlossaryAPICall(this.orgID, "", "", "", "", "JUDICIARY", true, rowsToBeDeleted)
+    // } else {
+    //   this.setState({ open: true, message: "Cannot delete glossary of type Organization..", variant: "error" })
+    // }
     setTimeout(() => {
       this.setState({ open: false, message: "", variant: "" })
     }, 2000)
+  }
+
+  handleCloseConfirmBox = () => {
+    this.setState({ openConfirmDialog: false })
+  }
+
+  renderDeleteAllGlossaryButton = () => {
+    return (
+      <div style={{ textAlign: "end" }}>
+        <Button
+          onClick={() => this.handleDeleteAllGlossary()}
+          variant="contained"
+          color="primary"
+          style={{
+            borderRadius: "10px",
+            color: "#FFFFFF",
+            backgroundColor: "#1C9AB7",
+            height: "35px",
+            fontSize: "16px",
+            textTransform: "none",
+          }}
+          size="small"
+        >
+          Delete All Glossary
+        </Button>
+        <Dialog
+          open={this.state.openConfirmDialog}
+          onClose={() => this.handleCloseConfirmBox()}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">{"Delete all glossary"}</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              Are you sure you want to delete all glossary for this organization?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => this.makeDeleteAllGlossaryAPICall({ orgID: this.orgID }, "JUDICIARY")} color="primary">
+              Confirm
+            </Button>
+            <Button onClick={() => this.handleCloseConfirmBox()} color="primary" autoFocus>
+              Cancel
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </div>
+    )
+  }
+
+  handleDeleteSelectedGlossaryBox = () => {
+    this.setState({ openDeleteSelectedGlossaryConfirmDialogue: false })
+  }
+
+  renderDeleteSelectedGlossaryConfirmBox = () => {
+    return (
+      <div style={{ textAlign: "end", marginBottom: "1rem" }}>
+        <Dialog
+          open={this.state.openDeleteSelectedGlossaryConfirmDialogue}
+          onClose={() => this.handleDeleteSelectedGlossaryBox()}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">{"Delete Selected glossary"}</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              Are you sure you want to delete selected glossary?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => this.deleteMultipleRows()} color="primary">
+              Confirm
+            </Button>
+            <Button onClick={() => this.handleDeleteSelectedGlossaryBox()} color="primary" autoFocus>
+              Cancel
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </div>
+    )
   }
 
   render() {
@@ -136,7 +260,8 @@ class OrganizationGlossary extends React.Component {
         options: {
           filter: false,
           sort: false,
-          display: 'excluded'
+          display: 'excluded',
+          download: false
         },
       },
       {
@@ -172,6 +297,7 @@ class OrganizationGlossary extends React.Component {
         options: {
           sort: false,
           empty: true,
+          download: false,
           customBodyRender: (value, tableMeta, updateValue) => {
             if (tableMeta.rowData) {
               return (
@@ -181,7 +307,7 @@ class OrganizationGlossary extends React.Component {
                       style={{ color: tableMeta.rowData[5] === "Organization" ? "grey" : "#233466", padding: "5px" }}
                       component="a"
                       onClick={() => this.handleDeleteGlossary(tableMeta.rowData)}
-                      disabled={tableMeta.rowData[5] === "Organization"}
+                    // disabled={tableMeta.rowData[5] === "Organization"}
                     >
                       <DeleteIcon />
                     </IconButton>
@@ -223,7 +349,7 @@ class OrganizationGlossary extends React.Component {
         this.setState({ rowsToDelete: allRowsSelected })
       },
       onRowsDelete: () => {
-        this.deleteMultipleRows()
+        this.setState({ openDeleteSelectedGlossaryConfirmDialogue: true });
       }
     };
     return (
@@ -234,6 +360,8 @@ class OrganizationGlossary extends React.Component {
             <Spinner />
             :
             <MuiThemeProvider theme={getMuiTheme()}>
+              {this.renderDeleteAllGlossaryButton()}
+              {this.renderDeleteSelectedGlossaryConfirmBox()}
               <MUIDataTable
                 title={translate("common.page.title.glossary")}
                 columns={columns}
@@ -259,7 +387,7 @@ class OrganizationGlossary extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
-  glossaryData: state.fetchglossary,
+  glossaryData: state.fetchOrgGlossary,
 });
 
 const mapDispatchToProps = (dispatch) =>
