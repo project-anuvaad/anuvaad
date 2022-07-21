@@ -40,7 +40,7 @@ if isinstance(AUTH_TOKEN_EXPIRY_HRS, str):
     AUTH_TOKEN_EXPIRY_HRS  =  eval(AUTH_TOKEN_EXPIRY_HRS)
 
 ADMIN_ROLE_KEY          =   os.environ.get('UMS_ADMIN_ROLE_KEY','ADMIN')
-SUPER_ADMIN_ROLE_KEY    =   os.environ.get('SUPER_ADMIN_ROLE_KEY','SUPERADMIN')
+SUPER_ADMIN_ROLE_KEY    =   os.environ.get('UMS_SUPERADMIN_ROLE_KEY','SUPERADMIN')
 EXTENSION_USR_ROLE_KEY  =   os.environ.get('UMS_EXTENSION_USER','EXTENSION')
 SECRET_KEY              =   os.environ.get('EXTENSION_SECRET_KEY','85U62e26b2aJ68dae8eQc188e0c8z8J9')
 EXTENSION_CODE          =   os.environ.get('EXTENSION_URL_CODE','extn')
