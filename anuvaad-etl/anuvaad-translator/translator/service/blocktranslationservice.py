@@ -196,7 +196,7 @@ class BlockTranslationService:
                         if translation["tmx_phrases"]:
                             log_info("SRC: {} | TGT: {} | TMX Count: {}".format(translation["src"], translation["tgt"],
                                                                                 str(len(translation["tmx_phrases"]))), block_translate_input)
-                            translation["tgt"], translation["tmx_replacement"] = tmxservice.replace_nmt_tgt_with_user_tgt(translation["tmx_phrases"],
+                            translation["tgt"], translation["tmx_replacement"] = tmxservice.replace_nmt_tgt_with_user_tgt(translation["tmx_phrases"], translation["src"],
                                                                                                                           translation["tgt"], block_translate_input)
                             log_info(translation["tmx_replacement"], block_translate_input)
                         b_index, s_index = None, None
