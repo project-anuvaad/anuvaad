@@ -87,7 +87,7 @@ const DashboardStyles = theme => ({
   progress: {
     position: 'relative',
     top: '40%',
-    color: '#1C9AB7'
+    color: '#2C2799'
   },
   progressDiv: {
     position: 'fixed',

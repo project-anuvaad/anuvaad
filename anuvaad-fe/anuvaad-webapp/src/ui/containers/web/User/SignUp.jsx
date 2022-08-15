@@ -193,7 +193,7 @@ class SignUp extends React.Component {
                     variant="contained" aria-label="edit" style={{
                       width: '50%', marginBottom: '2%', marginTop: '2%', borderRadius: '20px', height: '45px', textTransform: 'initial', fontWeight: '20px',
                       color: 'white',
-                      backgroundColor: this.state.termsAndCondition ? '#1ca9c9' : 'gray'
+                      backgroundColor: this.state.termsAndCondition ? '#2C2799' : 'gray'
                     }} onClick={this.handleSubmit}
                     ref={e => this.SignUpBtn = e}>
                     {translate('singUp.page.label.signUp')}

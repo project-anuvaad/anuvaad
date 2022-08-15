@@ -28,6 +28,7 @@ import JobStatus from "../../../../flux/actions/apis/view_document/translation.p
 import { clearJobEntry } from "../../../../flux/actions/users/async_job_management";
 import DownloadFile from "../../../../flux/actions/apis/download/download_file";
 import fetchpageno from '../../../../flux/actions/apis/view_document/fetch_page_no';
+import DataTable from "../../../components/web/common/DataTable";
 
 const TELEMETRY = require("../../../../utils/TelemetryManager");
 
@@ -695,7 +696,7 @@ class ViewDocument extends React.Component {
           <ToolBar />
           {!this.state.showLoader && (
             <MuiThemeProvider theme={this.getMuiTheme()}>
-              <MUIDataTable
+              <DataTable
                 title={translate("common.page.title.document")}
                 data={this.getJobsSortedByTimestamp()}
                 columns={columns}

@@ -103,12 +103,12 @@ const LoginStyles = theme => ({
   },
   //for signup page
   signUpPaper: {
-    backgroundColor: '#f1f5f7',
+    // backgroundColor: '#f1f5f7',
 
   },
 
   signInPaper: {
-    backgroundColor: '#f1f5f7',
+    // backgroundColor: '#f1f5f7',
   },
   
   typographyHeader: {

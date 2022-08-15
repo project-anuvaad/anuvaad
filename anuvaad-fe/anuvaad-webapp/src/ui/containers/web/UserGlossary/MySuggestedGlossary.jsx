@@ -18,6 +18,7 @@ import Snackbar from "../../../components/web/common/Snackbar";
 import FetchSuggestions from "../../../../flux/actions/apis/organization/fetch_glossary_suggestions";
 import DeleteSuggestedGlossary from "../../../../flux/actions/apis/organization/delete_glossary_suggestion";
 import CreateOrgGlossary from "../../../../flux/actions/apis/organization/create_org_glossary";
+import DataTable from "../../../components/web/common/DataTable";
 
 var delete_glossary = require("../../../../utils/deleteSuggestions.operation");
 
@@ -270,7 +271,7 @@ class SuggestedGlossaryList extends React.Component {
             :
             <MuiThemeProvider theme={getMuiTheme()}>
               {/* {this.renderDeleteAllGlossaryButton()} */}
-              <MUIDataTable
+              <DataTable
                 title={translate("common.page.title.mySuggestion")}
                 columns={columns}
                 options={options}

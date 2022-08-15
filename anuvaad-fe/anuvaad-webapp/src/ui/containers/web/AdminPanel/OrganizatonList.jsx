@@ -20,6 +20,7 @@ import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import AddOrg from "../../../../flux/actions/apis/organization/addOrganization";
 import Visibility from "@material-ui/icons/Visibility";
 import history from "../../../../web.history";
+import DataTable from "../../../components/web/common/DataTable";
 
 
 const TELEMETRY = require('../../../../utils/TelemetryManager')
@@ -312,7 +313,7 @@ class OrganizationList extends React.Component {
           {
             (!this.state.showLoader || this.props.count) &&
             <MuiThemeProvider theme={this.getMuiTheme()}>
-              <MUIDataTable title={translate("common.page.title.orgList")}
+              <DataTable title={translate("common.page.title.orgList")}
                 columns={columns} options={options} data={this.props.organizationList} />
             </MuiThemeProvider>
           }

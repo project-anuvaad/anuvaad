@@ -23,6 +23,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DeleteTmx from "../../../../flux/actions/apis/tmx/tmxDelete";
+import DataTable from "../../../components/web/common/DataTable";
 
 var delete_glossary = require("../../../../utils/deleteGlossary.operation");
 
@@ -170,7 +171,7 @@ class OrganizationGlossary extends React.Component {
           style={{
             borderRadius: "10px",
             color: "#FFFFFF",
-            backgroundColor: "#1C9AB7",
+            backgroundColor: "#2C2799",
             height: "35px",
             fontSize: "16px",
             textTransform: "none",
@@ -362,7 +363,7 @@ class OrganizationGlossary extends React.Component {
             <MuiThemeProvider theme={getMuiTheme()}>
               {this.renderDeleteAllGlossaryButton()}
               {this.renderDeleteSelectedGlossaryConfirmBox()}
-              <MUIDataTable
+              <DataTable
                 title={translate("common.page.title.glossary")}
                 columns={columns}
                 options={options}

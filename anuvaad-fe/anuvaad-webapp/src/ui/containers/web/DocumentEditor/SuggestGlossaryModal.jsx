@@ -48,7 +48,7 @@ class SuggestGlossaryModal extends React.Component {
                         <Button
                             variant="contained" aria-label="edit" style={{
                                 width: '40%', marginRight: '2%', marginBottom: '2%', marginTop: '2%', borderRadius: '20px', height: '45px', textTransform: 'initial', fontWeight: '20px',
-                                backgroundColor: this.props.loading ? 'grey' : '#1ca9c9', color: 'white',
+                                backgroundColor: this.props.loading ? 'grey' : '#2C2799', color: 'white',
                             }} disabled={this.props.loading}
                             onClick={() => this.props.makeCreateGlossaryAPICall(this.state.word)}
                         >
@@ -66,7 +66,7 @@ class SuggestGlossaryModal extends React.Component {
                         <Button
                             variant="contained" aria-label="edit" style={{
                                 width: '40%', marginBottom: '2%', marginTop: '2%', borderRadius: '20px', height: '45px', textTransform: 'initial', fontWeight: '20px',
-                                backgroundColor: this.props.loading ? 'grey' : '#1ca9c9', color: 'white', color: 'white',
+                                backgroundColor: this.props.loading ? 'grey' : '#2C2799', color: 'white', color: 'white',
                             }}
                             onClick={this.props.handleClose}
                             disabled={this.props.loading}

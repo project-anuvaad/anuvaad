@@ -13,6 +13,7 @@ import NewCorpusStyle from "../../../../styles/web/Newcorpus";
 
 import APITransport from "../../../../../flux/actions/apitransport/apitransport";
 import FetchTaskDetails from '../../../../../flux/actions/apis/view_scheduled_jobs/fetch_annotator_job';
+import DataTable from "../../../../components/web/common/DataTable";
 
 class ViewAnnotatorJob extends React.Component {
     constructor(props) {
@@ -115,7 +116,7 @@ class ViewAnnotatorJob extends React.Component {
                 <div style={{ margin: "0% 3% 3% 3%", paddingTop: "7%" }}>
                     <ToolBar />
                     <MuiThemeProvider theme={this.getMuiTheme()}>
-                        <MUIDataTable
+                        <DataTable
                             title={"Job Details"}
                             data={this.props.taskdetail.result}
                             columns={columns}

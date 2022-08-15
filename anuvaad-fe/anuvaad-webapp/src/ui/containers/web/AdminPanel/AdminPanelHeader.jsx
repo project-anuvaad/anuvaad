@@ -29,7 +29,12 @@ class UserDetailsHeader extends React.Component {
 
     renderOption() {
         return (
-            <div>
+            <div
+                style={{
+                    textAlign : "end",
+                    marginBottom : 20
+                }}
+            >
                 <Button
                     id='create-user'
                     variant="contained"
@@ -37,7 +42,7 @@ class UserDetailsHeader extends React.Component {
                     style={{
                         borderRadius: "20px",
                         color: "#FFFFFF",
-                        backgroundColor: "#1C9AB7",
+                        backgroundColor: "#2C2799",
                         height: "35px",
                         fontSize: "16px",
                     }}
@@ -53,30 +58,30 @@ class UserDetailsHeader extends React.Component {
         const { classes, open_sidebar } = this.props;
         return (
 
-            <AppBar position="fixed" color="secondary" className={classNames(classes.appBar, open_sidebar && classes.appBarShift)} style={{ height: '50px' }}>
+            // <AppBar position="fixed" color="secondary" className={classNames(classes.appBar, open_sidebar && classes.appBarShift)} style={{ height: '50px' }}>
 
-                <Toolbar disableGutters={!this.props.open_sidebar} style={{ minHeight: "50px" }}>
+            //     <Toolbar disableGutters={!this.props.open_sidebar} style={{ minHeight: "50px" }}>
 
-                    {
-                        open_sidebar ?
-                            <IconButton onClick={() => this.props.showSidebar()} className={classes.menuButton} color="inherit" aria-label="Menu" style={{ margin: "0px 5px" }}>
-                                <CloseIcon />
-                            </IconButton> :
-                            <IconButton id="open-menu" onClick={() => this.props.showSidebar(!open_sidebar)} className={classes.menuButton} color="inherit" aria-label="Menu" style={{ margin: "0px 5px" }}>
-                                <MenuIcon />
-                            </IconButton>
-                    }
+            //         {
+            //             open_sidebar ?
+            //                 <IconButton onClick={() => this.props.showSidebar()} className={classes.menuButton} color="inherit" aria-label="Menu" style={{ margin: "0px 5px" }}>
+            //                     <CloseIcon />
+            //                 </IconButton> :
+            //                 <IconButton id="open-menu" onClick={() => this.props.showSidebar(!open_sidebar)} className={classes.menuButton} color="inherit" aria-label="Menu" style={{ margin: "0px 5px" }}>
+            //                     <MenuIcon />
+            //                 </IconButton>
+            //         }
 
-                    <div style={{ borderLeft: "1px solid #D6D6D6", height: "40px", marginRight: "10px" }}></div>
+            //         <div style={{ borderLeft: "1px solid #D6D6D6", height: "40px", marginRight: "10px" }}></div>
 
-                    <Typography variant="h5" color="inherit" className={classes.flex}>
-                        User Details
-                    </Typography>
-                    <div style={{ position: 'absolute', right: '3%' }}>
-                        {this.renderOption()}
-                    </div>
-                </Toolbar>
-            </AppBar>
+            //         <Typography variant="h5" color="inherit" className={classes.flex}>
+            //             User Details
+            //         </Typography>
+            //         <div style={{ position: 'absolute', right: '3%' }}>
+                        this.renderOption()
+                    // </div>
+            //     </Toolbar>
+            // </AppBar>
         )
     }
 }

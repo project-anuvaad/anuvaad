@@ -834,7 +834,8 @@ class DocumentEditor extends React.Component {
     }
     render() {
         return (
-            <div style={{ height: window.innerHeight }}>
+            <div style={{ height: window.innerHeight, marginTop : 70 }}>
+                {/* <h1>hello</h1> */}
                 <div style={{ height: "50px", marginBottom: "13px" }}>
                     <InteractiveDocToolBar
                         docView={this.state.docView}

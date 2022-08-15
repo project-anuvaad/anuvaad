@@ -19,6 +19,7 @@ import history from "../../../../../web.history";
 import Snackbar from "../../../../components/web/common/Snackbar";
 import clearJobDetails from '../../../../../flux/actions/apis/view_scheduled_jobs/clear_job_detail';
 import clearTask from '../../../../../flux/actions/apis/view_scheduled_jobs/clear_task';
+import DataTable from "../../../../components/web/common/DataTable";
 
 class ViewJobDetails extends React.Component {
     constructor(props) {
@@ -208,7 +209,7 @@ class ViewJobDetails extends React.Component {
                 <div style={{ margin: "0% 3% 3% 3%", paddingTop: "7%" }}>
                     <ToolBar />
                     <MuiThemeProvider theme={this.getMuiTheme()}>
-                        <MUIDataTable
+                        <DataTable
                             title={"Job Details"}
                             data={this.props.job_details.result}
                             columns={columns}

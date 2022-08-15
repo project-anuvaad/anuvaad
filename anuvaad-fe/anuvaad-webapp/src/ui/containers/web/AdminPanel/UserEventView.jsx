@@ -19,6 +19,7 @@ import copy from "copy-to-clipboard";
 import { Button } from "@material-ui/core";
 import exportFromJSON from "export-from-json";
 import CloudDownloadIcon from "@material-ui/icons/CloudDownload";
+import DataTable from "../../../components/web/common/DataTable";
 class UserEventView extends React.Component {
   constructor(props) {
     super(props);
@@ -260,7 +261,7 @@ class UserEventView extends React.Component {
           <Header />
           {!this.state.showLoader && (
             <MuiThemeProvider theme={this.getMuiTheme()}>
-              <MUIDataTable
+              <DataTable
                 title={`User Event Report`}
                 data={this.props.eventData}
                 columns={columns}

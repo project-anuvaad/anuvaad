@@ -13,6 +13,7 @@ import APITransport from "../../../../flux/actions/apitransport/apitransport";
 import history from "../../../../web.history";
 
 import { showSidebar } from '../../../../flux/actions/apis/common/showSidebar';
+import TopHeader from "../../../components/web/common/TopHeader";
 
 class App extends React.Component {
   constructor(props) {
@@ -64,11 +65,13 @@ class App extends React.Component {
     const Component = this.props.component; // eslint-disable-line
     return (
       <MuiThemeProvider theme={Theme}>
+        <TopHeader currentMenu={currentMenu} />
         <div className={classes.root} >
           {!dontShowLoader &&
             this.renderSpinner()
           }
-          <Header toolBarComp={headerAttribute} dontShowHeader={dontShowHeader} currentMenu={currentMenu} forDemo={forDemo || showLogo} classes={classes} theme={theme} title={title} drawer={drawer} tocken={this.state.tocken} handleTockenChange={this.handleTockenChange.bind(this)} />
+          
+          {/* <Header toolBarComp={headerAttribute} dontShowHeader={dontShowHeader} currentMenu={currentMenu} forDemo={forDemo || showLogo} classes={classes} theme={theme} title={title} drawer={drawer} tocken={this.state.tocken} handleTockenChange={this.handleTockenChange.bind(this)} /> */}
 
           <div style={dontShowHeader ? { width: '100%' } : {}} className={dontShowHeader ? '' : (forDemo ? classes.containerDemo : classes.container)} onClick={this.handlDrawerTocken.bind(this)}>
 

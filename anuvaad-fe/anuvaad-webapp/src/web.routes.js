@@ -133,7 +133,7 @@ class AppRoutes extends React.Component {
               title={translate('dashboard.page.heading.title')}
               component={InstantTranslate}
               authenticate={this.authenticateUser}
-              currentMenu="dashboard"
+              currentMenu="instant-translate"
             />
 
             <PrivateRoute
