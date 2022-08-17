@@ -126,7 +126,7 @@ const headersData = [
 export default function TopHeader(props) {
     const { header, logo, menuButton, toolbar, desktopMenuContainer, drawerContainer, popoverStyle, highlightedMenuButton, userMenuButton, activeUserMenuButton, userMenuButtonText } = useStyles();
 
-    const { currentMenu } = props;
+    const { currentMenu, dontShowHeader } = props;
 
     const [state, setState] = useState({
         mobileView: false,
@@ -157,7 +157,7 @@ export default function TopHeader(props) {
 
     const displayDesktop = () => {
         return (
-            <Toolbar className={toolbar}>
+            !dontShowHeader && <Toolbar className={toolbar}>
                 {femmecubatorLogo}
                 <div>{getMenuButtons()}</div>
                 <div>{PopOverMenuButtons()}</div>
@@ -172,7 +172,7 @@ export default function TopHeader(props) {
             setState((prevState) => ({ ...prevState, drawerOpen: false }));
 
         return (
-            <Toolbar>
+            !dontShowHeader && <Toolbar>
                 <IconButton
                     {...{
                         edge: "start",

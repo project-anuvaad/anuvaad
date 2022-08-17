@@ -65,7 +65,7 @@ class App extends React.Component {
     const Component = this.props.component; // eslint-disable-line
     return (
       <MuiThemeProvider theme={Theme}>
-        <TopHeader currentMenu={currentMenu} />
+        <TopHeader currentMenu={currentMenu} dontShowHeader={dontShowHeader} />
         <div className={classes.root} >
           {!dontShowLoader &&
             this.renderSpinner()

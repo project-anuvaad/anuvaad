@@ -154,7 +154,7 @@ class AppRoutes extends React.Component {
               authenticate={this.authenticateUser}
               dontShowLoader
               currentMenu="texttranslate"
-              dontShowHeader={true}
+              dontShowHeader={false}
             />
 
             <PrivateRoute
@@ -165,7 +165,7 @@ class AppRoutes extends React.Component {
               authenticate={this.authenticateUser}
               dontShowLoader
               currentMenu="texttranslate"
-              dontShowHeader={true}
+              dontShowHeader={false}
             />
 
             <PrivateRoute
@@ -175,7 +175,7 @@ class AppRoutes extends React.Component {
               title="Start Translate"
               authenticate={this.authenticateUser}
               currentMenu="texttranslate"
-              dontShowHeader={true}
+              dontShowHeader={false}
             />
 
 
@@ -228,7 +228,7 @@ class AppRoutes extends React.Component {
               component={ViewDocument}
               authenticate={this.authenticateUser}
               currentMenu="view-document"
-              dontShowHeader={true}
+              dontShowHeader={false}
             />
             <PrivateRoute
               path={`${process.env.PUBLIC_URL}/grading-sentence-card/:taskId`}
@@ -238,7 +238,7 @@ class AppRoutes extends React.Component {
               component={GradeDocument}
               authenticate={this.authenticateUser}
               currentMenu="grade-document"
-              dontShowHeader={true}
+              dontShowHeader={false}
             />
 
             <PrivateRoute
@@ -249,7 +249,7 @@ class AppRoutes extends React.Component {
               component={ViewDocumentDigitization}
               authenticate={this.authenticateUser}
               currentMenu="document-digitization"
-              dontShowHeader={true}
+              dontShowHeader={false}
             />
 
             <PrivateRoute
@@ -280,7 +280,7 @@ class AppRoutes extends React.Component {
               component={UserDetails}
               authenticate={this.authenticateUser}
               currentMenu="user-details"
-              dontShowHeader={true}
+              dontShowHeader={false}
             />
 
 
@@ -301,7 +301,7 @@ class AppRoutes extends React.Component {
               component={OrganizationList}
               authenticate={this.authenticateUser}
               currentMenu="organization-list"
-              dontShowHeader={true}
+              dontShowHeader={false}
 
             />
 
@@ -313,7 +313,7 @@ class AppRoutes extends React.Component {
               component={OrganizationGlossary}
               authenticate={this.authenticateUser}
               currentMenu="organization-glossary"
-              dontShowHeader={true}
+              dontShowHeader={false}
 
             />
 
@@ -325,7 +325,7 @@ class AppRoutes extends React.Component {
               component={SuggestedGlossaryList}
               authenticate={this.authenticateUser}
               currentMenu="suggestion-list"
-              dontShowHeader={true}
+              dontShowHeader={false}
 
             />
 
@@ -337,7 +337,7 @@ class AppRoutes extends React.Component {
               component={MySuggestedGlossary}
               authenticate={this.authenticateUser}
               currentMenu="my-suggestions"
-              dontShowHeader={true}
+              dontShowHeader={false}
 
             />
 
@@ -349,7 +349,7 @@ class AppRoutes extends React.Component {
               component={UserReport}
               authenticate={this.authenticateUser}
               currentMenu="user-report"
-              dontShowHeader={true}
+              dontShowHeader={false}
             />
             <PrivateRoute
               path={`${process.env.PUBLIC_URL}/document-stats/:recordId/:fname`}
@@ -359,7 +359,7 @@ class AppRoutes extends React.Component {
               component={DocumentStats}
               authenticate={this.authenticateUser}
               currentMenu="document-stats"
-              dontShowHeader={true}
+              dontShowHeader={false}
             />
 
             <PrivateRoute
@@ -370,7 +370,7 @@ class AppRoutes extends React.Component {
               component={ViewScheduledJobs}
               authenticate={this.authenticateUser}
               currentMenu="view-scheduled-jobs"
-              dontShowHeader={true}
+              dontShowHeader={false}
             />
 
             <PrivateRoute
@@ -381,7 +381,7 @@ class AppRoutes extends React.Component {
               component={ScheduleJob}
               authenticate={this.authenticateUser}
               currentMenu="schedule-annotation-job"
-              dontShowHeader={true}
+              dontShowHeader={false}
             />
 
             <PrivateRoute
@@ -392,7 +392,7 @@ class AppRoutes extends React.Component {
               component={NmtModelAssign}
               authenticate={this.authenticateUser}
               currentMenu="assign-nmt-model"
-              dontShowHeader={true}
+              dontShowHeader={false}
             />
             <PrivateRoute
               path={`${process.env.PUBLIC_URL}/view-annotation-job`}
@@ -402,7 +402,7 @@ class AppRoutes extends React.Component {
               component={ViewAnnotationJob}
               authenticate={this.authenticateUser}
               currentMenu="view-annotation-job"
-              dontShowHeader={true}
+              dontShowHeader={false}
             />
 
             <PrivateRoute
@@ -413,7 +413,7 @@ class AppRoutes extends React.Component {
               component={ViewJobDetail}
               authenticate={this.authenticateUser}
               currentMenu="view-job-detail"
-              dontShowHeader={true}
+              dontShowHeader={false}
             />
 
             <PrivateRoute
@@ -424,7 +424,7 @@ class AppRoutes extends React.Component {
               component={ViewAnnotatorJob}
               authenticate={this.authenticateUser}
               currentMenu="view-job-detail"
-              dontShowHeader={true}
+              dontShowHeader={false}
             />
             <PrivateRoute
               path={`${process.env.PUBLIC_URL}/my-glossary`}
@@ -434,7 +434,7 @@ class AppRoutes extends React.Component {
               component={ViewUserGlossary}
               authenticate={this.authenticateUser}
               currentMenu="my-glossary"
-              dontShowHeader={true}
+              dontShowHeader={false}
             />
 
             <PrivateRoute
