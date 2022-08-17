@@ -17,6 +17,7 @@ import Grid from '@material-ui/core/Grid';
 import Popover from '@material-ui/core/Popover';
 import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state';
 import MenuIcon from "@material-ui/icons/Menu";
+import CloseIcon from '@material-ui/icons/Close';
 import SettingsIcon from '@material-ui/icons/Settings';
 import React, { useState, useEffect } from "react";
 import { Link as RouterLink } from "react-router-dom";
@@ -141,7 +142,7 @@ export default function TopHeader(props) {
 
     useEffect(() => {
         const setResponsiveness = () => {
-            return window.innerWidth < 900
+            return window.innerWidth < 1300
                 ? setState((prevState) => ({ ...prevState, mobileView: true }))
                 : setState((prevState) => ({ ...prevState, mobileView: false }));
         };
@@ -192,7 +193,33 @@ export default function TopHeader(props) {
                         onClose: handleDrawerClose,
                     }}
                 >
-                    <div className={drawerContainer}>{getDrawerChoices()}</div>
+                    <div className={drawerContainer}>
+                        <div 
+                            style={{
+                                display : "flex",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                                marginTop: 5,
+                                marginBottom: 5
+                            }}
+                        >
+                            {femmecubatorLogo}
+                            <IconButton
+                            {...{
+                                edge: "start",
+                                color: "#2C2799",
+                                "aria-label": "menu",
+                                "aria-haspopup": "true",
+                                onClick: handleDrawerClose,
+                            }}
+                            // style={{marginLeft : "90%"}}
+                        >
+                            <CloseIcon />
+                        </IconButton>
+                        </div>
+                        <Divider />
+                        {getDrawerChoices(handleDrawerClose)}
+                    </div>
                 </Drawer>
 
                 <div>{femmecubatorLogo}</div>
@@ -200,22 +227,81 @@ export default function TopHeader(props) {
         );
     };
 
-    const getDrawerChoices = () => {
-        return headersData.map(({ label, href }) => {
-            return (
-                <Link
-                    {...{
-                        component: RouterLink,
-                        to: href,
-                        color: "inherit",
-                        style: { textDecoration: "none" },
-                        key: label,
-                    }}
-                >
-                    <MenuItem style={{ color: "black" }}>{label}</MenuItem>
-                </Link>
-            );
-        });
+    const getDrawerChoices = (closeDrawerOnMenuClick) => {
+        return (
+            <>
+                <Typography variant="body2" style={{marginBottom : 3, marginTop: 3}}>Main Menu -</Typography>
+                {headerMenuConfig.map((el, i) => {
+                    return el.menuType === "MAIN" && el.rolesAllowed.includes(role) && assignedOrgId !== "NONMT" &&
+                        <div>
+                            <Button
+                                {...{
+                                    key: el.id,
+                                    // color: "primary",
+                                    id: el.id,
+                                    onClick: () => { el.onclick(assignedOrgId);
+                                        closeDrawerOnMenuClick() 
+                                    },
+                                    style: { textDecoration: "none", color: "#000000" },
+                                    // to: href,
+                                    component: RouterLink,
+                                    className: currentMenu === el.id ? highlightedMenuButton : menuButton,
+                                }}
+                            >
+                                {el.title}
+                            </Button>
+                        </div>
+
+                })}
+                <Typography variant="body2" style={{marginBottom : 3, marginTop: 3}}>Settings -</Typography>
+                {headerMenuConfig.map((el, i) => {
+                    return el.menuType === "SETTINGS" && el.rolesAllowed.includes(role) && assignedOrgId !== "NONMT" &&
+                        <div>
+                            <Button
+                                {...{
+                                    key: el.id,
+                                    // color: "primary",
+                                    id: el.id,
+                                    onClick: () => { el.onclick(assignedOrgId);
+                                        closeDrawerOnMenuClick() 
+                                    },
+                                    style: { textDecoration: "none", color: "#000000" },
+                                    // to: href,
+                                    component: RouterLink,
+                                    className: currentMenu === el.id ? highlightedMenuButton : menuButton,
+                                }}
+                            >
+                                {el.title}
+                            </Button>
+                        </div>
+
+                })}
+                <Typography variant="body2" style={{marginBottom : 3, marginTop: 3}}>Options -</Typography>
+                {headerMenuConfig.map((el, i) => {
+                    return el.menuType === "USER" && el.rolesAllowed.includes(role) && assignedOrgId !== "NONMT" &&
+                        <div>
+                            <Button
+                                {...{
+                                    key: el.id,
+                                    // color: "primary",
+                                    id: el.id,
+                                    onClick: () => { el.onclick(assignedOrgId);
+                                        closeDrawerOnMenuClick() 
+                                    },
+                                    style: { textDecoration: "none", color: "#000000" },
+                                    // to: href,
+                                    component: RouterLink,
+                                    className: currentMenu === el.id ? highlightedMenuButton : menuButton,
+                                }}
+                            >
+                                {el.title}
+                            </Button>
+                        </div>
+
+                })}
+            </>
+
+        );
     };
 
     const femmecubatorLogo = (
@@ -287,15 +373,15 @@ export default function TopHeader(props) {
                                                     headerMenuConfig.map((el, i) => {
                                                         return (
                                                             el.menuType === "SETTINGS" && el.rolesAllowed.includes(role) && assignedOrgId !== "NONMT" &&
-                                                            <Button 
-                                                                variant="text" 
-                                                                className={currentMenu === el.id ? activeUserMenuButton : userMenuButton} 
+                                                            <Button
+                                                                variant="text"
+                                                                className={currentMenu === el.id ? activeUserMenuButton : userMenuButton}
                                                                 // {...bindTrigger(popupState)}
-                                                                onClick={() =>{ 
+                                                                onClick={() => {
                                                                     popupState.close()
                                                                     el.onclick(assignedOrgId)
                                                                 }}
-                                                                >
+                                                            >
                                                                 <Typography className={userMenuButtonText} variant="button">{el.title}</Typography>
                                                             </Button>
                                                         )
@@ -322,7 +408,7 @@ export default function TopHeader(props) {
                                             }}
                                             {...bindTrigger(popupState)}
                                         >
-                                            <Avatar style={{backgroundColor : "#2C2799"}}>{userName?.split("")[0].toLocaleUpperCase()}</Avatar>
+                                            <Avatar style={{ backgroundColor: "#2C2799" }}>{userName?.split("")[0].toLocaleUpperCase()}</Avatar>
                                         </IconButton>
                                             {userName?.split(" ")[0]}
                                         </Button>
@@ -347,12 +433,12 @@ export default function TopHeader(props) {
                                                     headerMenuConfig.map((el, i) => {
                                                         return (
                                                             el.menuType === "USER" && el.rolesAllowed.includes(role) &&
-                                                            <Button 
-                                                                variant="text" 
-                                                                className={currentMenu === el.id ? activeUserMenuButton : userMenuButton} 
-                                                                onClick={() => { 
+                                                            <Button
+                                                                variant="text"
+                                                                className={currentMenu === el.id ? activeUserMenuButton : userMenuButton}
+                                                                onClick={() => {
                                                                     popupState.close()
-                                                                    el.onclick(assignedOrgId) 
+                                                                    el.onclick(assignedOrgId)
                                                                 }}
                                                             >
                                                                 <Typography className={userMenuButtonText} variant="button">{el.title}</Typography>

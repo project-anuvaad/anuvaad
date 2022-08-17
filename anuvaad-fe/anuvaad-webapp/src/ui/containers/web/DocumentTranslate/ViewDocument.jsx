@@ -691,8 +691,8 @@ class ViewDocument extends React.Component {
     };
 
     return (
-      <div style={{ maxHeight: window.innerHeight, height: window.innerHeight, overflow: "auto" }}>
-        <div style={{ margin: "0% 3% 3% 3%", paddingTop: "7%" }}>
+      <div style={{  }}>
+        <div style={{ margin: "0% 3% 3% 3%", paddingTop: "2%" }}>
           <ToolBar />
           {!this.state.showLoader && (
             <MuiThemeProvider theme={this.getMuiTheme()}>
