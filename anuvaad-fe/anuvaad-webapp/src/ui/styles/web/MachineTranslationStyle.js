@@ -1,6 +1,6 @@
 const MachineTranslationStyles = theme => ({
   paper: {
-    border: "1px solid #1C9AB7",
+    border: "1px solid #2C2799",
     minHeight: "100%",
     backgroundColor: "#F4FDFF",
     marginBottom: "20px"
@@ -21,7 +21,7 @@ const MachineTranslationStyles = theme => ({
     textAlign: "justify"
   },
   dictionary: {
-    border: "1px solid #1C9AB7",
+    border: "1px solid #2C2799",
     minHeight: "100%",
     overflow: "auto",
     marginTop: "20px",

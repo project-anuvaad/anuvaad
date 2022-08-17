@@ -49,19 +49,19 @@ const theme = createMuiTheme({
         width: '100%',
         minHeight: '380px',
         height: "85%",
-        borderColor: '#1C9AB7',
+        borderColor: '#2C2799',
         backgroundColor: '#F5F9FA',
-        border: '1px dashed #1C9AB7',
-        fontColor: '#1C9AB7',
+        border: '1px dashed #2C2799',
+        fontColor: '#2C2799',
         marginTop: "3%",
         marginLeft: '1%',
-        "& svg": { color: '#1C9AB7', },
+        "& svg": { color: '#2C2799', },
         "& p": {
           textOverflow: "ellipsis",
           whiteSpace: "nowrap",
           overflow: "hidden",
           fontSize: "19px",
-          color: '#1C9AB7',
+          color: '#2C2799',
 
         }
       },
@@ -593,7 +593,7 @@ class CreateUser extends React.Component {
                 onClick={this.processClearButton}
                 aria-label="edit"
                 className={classes.button1}
-                style={{ backgroundColor: '#1ca9c9' }}
+                style={{ backgroundColor: '#2C2799' }}
               >
                 {translate("common.page.button.reset")}
               </Button>
@@ -612,7 +612,7 @@ class CreateUser extends React.Component {
                   className={classes.button1}
                   disabled={this.state.loading}
                   style={{
-                    backgroundColor: this.state.loading ? 'grey' : '#1ca9c9',
+                    backgroundColor: this.state.loading ? 'grey' : '#2C2799',
                   }}
                 >
                   {this.state.loading && <CircularProgress size={24} className={'success'} style={{

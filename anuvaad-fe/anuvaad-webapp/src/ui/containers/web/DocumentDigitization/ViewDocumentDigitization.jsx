@@ -23,6 +23,7 @@ import MarkInactive from "../../../../flux/actions/apis/view_document/markinacti
 import togglebtnstatus from '../../../../flux/actions/apis/view_digitized_document/show_bg_image';
 import fetchnextpage from '../../../../flux/actions/apis/view_digitized_document/fetch_page_number';
 import switch_styles from '../../../../flux/actions/apis/view_digitized_document/switch_styles';
+import DataTable from '../../../components/web/common/DataTable';
 
 const TELEMETRY = require("../../../../utils/TelemetryManager");
 
@@ -638,12 +639,12 @@ class ViewDocumentDigitization extends React.Component {
             page: this.state.currentPageIndex,
         };
         return (
-            <div style={{ maxHeight: window.innerHeight, height: window.innerHeight, overflow: "auto" }}>
-                <div style={{ margin: "0% 3% 3% 3%", paddingTop: "7%" }}>
+            <div style={{}}>
+                <div style={{ margin: "0% 3% 3% 3%", paddingTop: "2%" }}>
                     <ToolBar />
                     {!this.state.showLoader && (
                         <MuiThemeProvider theme={this.getMuiTheme()}>
-                            <MUIDataTable
+                            <DataTable
                                 title={translate("common.page.title.document")}
                                 data={this.getJobsSortedByTimestamp()}
                                 columns={columns}

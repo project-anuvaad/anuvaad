@@ -397,7 +397,7 @@ class CreateUser extends React.Component {
                 onClick={this.processClearButton}
                 aria-label="edit"
                 className={classes.button1}
-                style={{ backgroundColor: '#1ca9c9' }}
+                style={{ backgroundColor: '#2C2799' }}
               >
                 {translate("common.page.button.reset")}
               </Button>
@@ -416,7 +416,7 @@ class CreateUser extends React.Component {
                   className={classes.button1}
                   disabled={this.state.loading}
                   style={{
-                    backgroundColor: this.state.loading ? 'grey' : '#1ca9c9',
+                    backgroundColor: this.state.loading ? 'grey' : '#2C2799',
                   }}
                 >
                   {this.state.loading && <CircularProgress size={24} className={'success'} style={{

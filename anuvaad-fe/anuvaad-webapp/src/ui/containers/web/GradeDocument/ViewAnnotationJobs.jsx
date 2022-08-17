@@ -15,6 +15,7 @@ import { connect } from "react-redux";
 import Spinner from "../../../components/web/common/Spinner";
 import history from "../../../../web.history";
 import Snackbar from "../../../components/web/common/Snackbar";
+import DataTable from '../../../components/web/common/DataTable';
 
 
 class ViewAnnotationJobs extends React.Component {
@@ -267,7 +268,7 @@ class ViewAnnotationJobs extends React.Component {
                         <Spinner />
                         :
                         <MuiThemeProvider theme={this.getMuiTheme()}>
-                            <MUIDataTable title={"Job Details"}
+                            <DataTable title={"Job Details"}
                                 columns={columns} options={options}
                                 data={this.props.fetchuserjob.result} />
                         </MuiThemeProvider>

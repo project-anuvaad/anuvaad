@@ -135,47 +135,47 @@ class DigitizedDocHeader extends React.Component {
         // jobName = jobName.substr(0, jobName.lastIndexOf("."));
         const apiObj = new DownloadDOCX(jobId, fname, jobName, 'ocr');
         this.setState({
-          anchorEl: null,
-          showStatus: true,
-          message: translate("common.page.label.download"),
+            anchorEl: null,
+            showStatus: true,
+            message: translate("common.page.label.download"),
         });
         fetch(apiObj.apiEndPoint(), {
-          method: "post",
-          headers: apiObj.getHeaders().headers,
-          body: JSON.stringify(apiObj.getBody()),
+            method: "post",
+            headers: apiObj.getHeaders().headers,
+            body: JSON.stringify(apiObj.getBody()),
         }).then((res) => {
             if (res.ok) {
                 res.blob().then((data) => {
-                //   const url = window.URL.createObjectURL(new Blob([res.data]));
-                  let url = URL.createObjectURL(data);
-                  const link = document.createElement("a");
-                  link.href = url;
-                  jobName = jobName.substr(0, jobName.lastIndexOf("."));
-                  link.setAttribute(
-                    "download",
-                    `${fname}`
-                  );
-                  document.body.appendChild(link);
-                  link.click();
-                  link.parentNode.removeChild(link);
+                    //   const url = window.URL.createObjectURL(new Blob([res.data]));
+                    let url = URL.createObjectURL(data);
+                    const link = document.createElement("a");
+                    link.href = url;
+                    jobName = jobName.substr(0, jobName.lastIndexOf("."));
+                    link.setAttribute(
+                        "download",
+                        `${fname}`
+                    );
+                    document.body.appendChild(link);
+                    link.click();
+                    link.parentNode.removeChild(link);
                 });
-              } else {
+            } else {
                 this.setState({
-                  anchorEl: null,
-                  showStatus: true,
-                  message: "Downloading failed...",
+                    anchorEl: null,
+                    showStatus: true,
+                    message: "Downloading failed...",
                 });
-              }
+            }
         });
         setTimeout(() => {
-          this.setState({ showStatus: false });
+            this.setState({ showStatus: false });
         }, 3000);
     };
 
     renderOptions() {
         const { anchorEl } = this.state;
         const openEl = Boolean(anchorEl);
-        let {jobId,filename} = this.props.match.params
+        let { jobId, filename } = this.props.match.params
         let recordId = `${jobId}|${filename}`
         let userID = JSON.parse(localStorage.getItem("userProfile")).userID
 
@@ -209,10 +209,10 @@ class DigitizedDocHeader extends React.Component {
                     <MenuItem
                         style={{ borderTop: "1px solid #D6D6D6" }}
                         onClick={() => {
-                            
+
                             this.setState({ anchorEl: null })
                             // this.props.onShowPreview()
-                            this.props.downloadFile(recordId,userID,'txt')
+                            this.props.downloadFile(recordId, userID, 'txt')
                         }}
                     >
                         As TXT
@@ -222,7 +222,7 @@ class DigitizedDocHeader extends React.Component {
                         onClick={() => {
                             this.setState({ anchorEl: null })
                             // this.props.onShowPreview()
-                            this.props.downloadFile(recordId,userID,'pdf')
+                            this.props.downloadFile(recordId, userID, 'pdf')
                         }}
                     >
                         As PDF
@@ -244,48 +244,34 @@ class DigitizedDocHeader extends React.Component {
     render() {
         const { classes, open_sidebar } = this.props;
         return (
+            <div
+                style={{
+                    alignItems: "center",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    paddingInline: "3%",
+                    height: "60px",
+                    backgroundColor: "#f0f0f0"
+                }}
+            >
+                <Typography variant="h5" color="inherit" className={classes.flex} style={{ overflow: "hidden", maxWidth: "30%", textOverflow: "ellipsis" }}>
+                    <IconButton
+                        onClick={() => {
+                            this.props.edit_status && this.props.startediting()
+                            this.props.reset_updated_word()
+                            history.push(`${process.env.PUBLIC_URL}/document-digitization`);
+                        }}
+                        className={classes.menuButton} color="inherit" aria-label="Menu" style={{ margin: "0px 5px" }}
+                    >
+                        <BackIcon />
+                    </IconButton>
+                    {this.props.match.params.og_fname}
+                </Typography>
+                {this.renderOptions()}
+                {this.state.showStatus && this.renderProgressInformation()}
+                {this.state.dialogMessage && this.renderStatusInformation()}
+            </div>
 
-            <AppBar position="fixed" color="secondary" className={classNames(classes.appBar, open_sidebar && classes.appBarShift)} style={{ height: '50px', marginBottom: "13px" }}>
-
-                <Toolbar disableGutters={!this.props.open_sidebar} style={{ minHeight: "50px" }}>
-
-                    {
-                        open_sidebar ?
-                            <IconButton onClick={() => this.props.showSidebar()} className={classes.menuButton} color="inherit" aria-label="Menu" style={{ margin: "0px 5px" }}>
-                                <CloseIcon />
-                            </IconButton> :
-                            <div style={{ display: "flex", flexDirection: "row" }}>
-                                <IconButton
-                                    onClick={() => {
-                                        this.props.edit_status && this.props.startediting()
-                                        this.props.reset_updated_word()
-                                        history.push(`${process.env.PUBLIC_URL}/document-digitization`);
-                                    }}
-                                    className={classes.menuButton} color="inherit" aria-label="Menu" style={{ margin: "0px 5px" }}
-                                >
-                                    <BackIcon />
-                                </IconButton>
-                                <div style={{ borderLeft: "1px solid #D6D6D6", height: "40px", marginRight: "1px", marginTop: "5px" }}></div>
-
-                                <IconButton onClick={() => this.props.showSidebar(!open_sidebar)} className={classes.menuButton} color="inherit" aria-label="Menu" style={{ margin: "0px 5px" }}>
-                                    <MenuIcon />
-                                </IconButton>
-                            </div>
-                    }
-
-                    <div style={{ borderLeft: "1px solid #D6D6D6", height: "40px", marginRight: "10px" }}></div>
-
-                    <Typography variant="h5" color="inherit" className={classes.flex} style={{ overflow: "hidden", maxWidth: "30%", textOverflow: "ellipsis" }}>
-                        {this.props.match.params.og_fname}
-                    </Typography>
-                    <div style={{ position: 'absolute', right: '30px' }}>
-                        {this.renderOptions()}
-                    </div>
-                    {this.state.showStatus && this.renderProgressInformation()}
-                    {this.state.dialogMessage && this.renderStatusInformation()}
-
-                </Toolbar>
-            </AppBar>
         )
     }
 }

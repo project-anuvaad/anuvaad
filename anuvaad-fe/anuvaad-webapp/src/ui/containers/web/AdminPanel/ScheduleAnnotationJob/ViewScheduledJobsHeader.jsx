@@ -36,7 +36,7 @@ class ViewScheduledJobsHeader extends React.Component {
                     style={{
                         borderRadius: "20px",
                         color: "#FFFFFF",
-                        backgroundColor: "#1C9AB7",
+                        backgroundColor: "#2C2799",
                         height: "35px",
                         fontSize: "16px",
                     }}

@@ -22,6 +22,7 @@ import CloudDownloadIcon from "@material-ui/icons/CloudDownload";
 import DownloadFile from "../../../../flux/actions/apis/download/download_file";
 import EventIcon from '@material-ui/icons/Event';
 import clearEvent from '../../../../flux/actions/apis/admin/clear_user_event_report';
+import DataTable from "../../../components/web/common/DataTable";
 
 
 const TELEMETRY = require("../../../../utils/TelemetryManager");
@@ -631,7 +632,7 @@ class UserReport extends React.Component {
                     <UserReportHeader />
                     {/* {!this.state.showLoader && ( */}
                     <MuiThemeProvider theme={this.getMuiTheme()}>
-                        <MUIDataTable
+                        <DataTable
                             title={`${this.props.match.params.name}'s Detail`}
                             data={this.getJobsSortedByTimestamp()}
                             columns={columns}
