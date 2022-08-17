@@ -31,6 +31,8 @@ const useStyles = makeStyles((theme) => ({
         paddingRight: "40px",
         paddingLeft: "40px",
         "@media (max-width: 900px)": {
+            // paddingLeft: 0,
+            paddingRight: 0,
             paddingLeft: 0,
         },
     },
@@ -158,7 +160,7 @@ export default function TopHeader(props) {
 
     const displayDesktop = () => {
         return (
-            !dontShowHeader && <Toolbar className={toolbar}>
+            !dontShowHeader && <Toolbar style={{ paddingLeft: 0, paddingRight: 0 }} className={toolbar}>
                 {femmecubatorLogo}
                 <div>{getMenuButtons()}</div>
                 <div>{PopOverMenuButtons()}</div>
@@ -173,7 +175,8 @@ export default function TopHeader(props) {
             setState((prevState) => ({ ...prevState, drawerOpen: false }));
 
         return (
-            !dontShowHeader && <Toolbar>
+            !dontShowHeader && <Toolbar className={toolbar}>
+                <div>{femmecubatorLogo}</div>
                 <IconButton
                     {...{
                         edge: "start",
@@ -188,13 +191,13 @@ export default function TopHeader(props) {
 
                 <Drawer
                     {...{
-                        anchor: "left",
+                        anchor: "right",
                         open: drawerOpen,
                         onClose: handleDrawerClose,
                     }}
                 >
                     <div className={drawerContainer}>
-                        <div 
+                        {/* <div 
                             style={{
                                 display : "flex",
                                 alignItems: "center",
@@ -202,9 +205,9 @@ export default function TopHeader(props) {
                                 marginTop: 5,
                                 marginBottom: 5
                             }}
-                        >
-                            {femmecubatorLogo}
-                            <IconButton
+                        > */}
+                        {/* {femmecubatorLogo} */}
+                        <IconButton
                             {...{
                                 edge: "start",
                                 color: "#2C2799",
@@ -212,17 +215,15 @@ export default function TopHeader(props) {
                                 "aria-haspopup": "true",
                                 onClick: handleDrawerClose,
                             }}
-                            // style={{marginLeft : "90%"}}
+                        // style={{marginLeft : "90%"}}
                         >
                             <CloseIcon />
                         </IconButton>
-                        </div>
+                        {/* </div> */}
                         <Divider />
                         {getDrawerChoices(handleDrawerClose)}
                     </div>
                 </Drawer>
-
-                <div>{femmecubatorLogo}</div>
             </Toolbar>
         );
     };
@@ -230,7 +231,7 @@ export default function TopHeader(props) {
     const getDrawerChoices = (closeDrawerOnMenuClick) => {
         return (
             <>
-                <Typography variant="body2" style={{marginBottom : 3, marginTop: 3}}>Main Menu -</Typography>
+                <Typography variant="body2" style={{ marginBottom: 3, marginTop: 3 }}>Main Menu -</Typography>
                 {headerMenuConfig.map((el, i) => {
                     return el.menuType === "MAIN" && el.rolesAllowed.includes(role) && assignedOrgId !== "NONMT" &&
                         <div>
@@ -239,8 +240,9 @@ export default function TopHeader(props) {
                                     key: el.id,
                                     // color: "primary",
                                     id: el.id,
-                                    onClick: () => { el.onclick(assignedOrgId);
-                                        closeDrawerOnMenuClick() 
+                                    onClick: () => {
+                                        el.onclick(assignedOrgId);
+                                        closeDrawerOnMenuClick()
                                     },
                                     style: { textDecoration: "none", color: "#000000" },
                                     // to: href,
@@ -253,7 +255,7 @@ export default function TopHeader(props) {
                         </div>
 
                 })}
-                <Typography variant="body2" style={{marginBottom : 3, marginTop: 3}}>Settings -</Typography>
+                <Typography variant="body2" style={{ marginBottom: 3, marginTop: 3 }}>Settings -</Typography>
                 {headerMenuConfig.map((el, i) => {
                     return el.menuType === "SETTINGS" && el.rolesAllowed.includes(role) && assignedOrgId !== "NONMT" &&
                         <div>
@@ -262,8 +264,9 @@ export default function TopHeader(props) {
                                     key: el.id,
                                     // color: "primary",
                                     id: el.id,
-                                    onClick: () => { el.onclick(assignedOrgId);
-                                        closeDrawerOnMenuClick() 
+                                    onClick: () => {
+                                        el.onclick(assignedOrgId);
+                                        closeDrawerOnMenuClick()
                                     },
                                     style: { textDecoration: "none", color: "#000000" },
                                     // to: href,
@@ -276,7 +279,7 @@ export default function TopHeader(props) {
                         </div>
 
                 })}
-                <Typography variant="body2" style={{marginBottom : 3, marginTop: 3}}>Options -</Typography>
+                <Typography variant="body2" style={{ marginBottom: 3, marginTop: 3 }}>Options -</Typography>
                 {headerMenuConfig.map((el, i) => {
                     return el.menuType === "USER" && el.rolesAllowed.includes(role) && assignedOrgId !== "NONMT" &&
                         <div>
@@ -285,8 +288,9 @@ export default function TopHeader(props) {
                                     key: el.id,
                                     // color: "primary",
                                     id: el.id,
-                                    onClick: () => { el.onclick(assignedOrgId);
-                                        closeDrawerOnMenuClick() 
+                                    onClick: () => {
+                                        el.onclick(assignedOrgId);
+                                        closeDrawerOnMenuClick()
                                     },
                                     style: { textDecoration: "none", color: "#000000" },
                                     // to: href,
