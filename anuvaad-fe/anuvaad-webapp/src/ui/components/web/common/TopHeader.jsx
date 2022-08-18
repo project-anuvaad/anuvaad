@@ -136,6 +136,9 @@ export default function TopHeader(props) {
         drawerOpen: false,
     });
 
+    const [showUserPopoverMenuAnchorEle, setShowUserPopoverMenuAnchorEle] = useState(null);
+    const [showSettingsPopoverMenuAnchorEle, setShowSettingsPopoverMenuAnchorEle] = useState(null);
+
     const assignedOrgId = JSON.parse(localStorage.getItem("userProfile"))?.orgID;
     const role = localStorage.getItem("roles");
     const userName = JSON.parse(localStorage.getItem("userProfile"))?.name;
@@ -244,7 +247,7 @@ export default function TopHeader(props) {
                                         el.onclick(assignedOrgId);
                                         closeDrawerOnMenuClick()
                                     },
-                                    style: { textDecoration: "none", color: "#000000" },
+                                    style: { textDecoration: "none", color: "#000000", marginTop : 5 },
                                     // to: href,
                                     component: RouterLink,
                                     className: currentMenu === el.id ? highlightedMenuButton : menuButton,
@@ -268,7 +271,7 @@ export default function TopHeader(props) {
                                         el.onclick(assignedOrgId);
                                         closeDrawerOnMenuClick()
                                     },
-                                    style: { textDecoration: "none", color: "#000000" },
+                                    style: { textDecoration: "none", color: "#000000", marginTop : 5 },
                                     // to: href,
                                     component: RouterLink,
                                     className: currentMenu === el.id ? highlightedMenuButton : menuButton,
@@ -292,7 +295,7 @@ export default function TopHeader(props) {
                                         el.onclick(assignedOrgId);
                                         closeDrawerOnMenuClick()
                                     },
-                                    style: { textDecoration: "none", color: "#000000" },
+                                    style: { textDecoration: "none", color: "#000000", marginTop : 5 },
                                     // to: href,
                                     component: RouterLink,
                                     className: currentMenu === el.id ? highlightedMenuButton : menuButton,
@@ -344,117 +347,110 @@ export default function TopHeader(props) {
                 <Grid item xs={12}>
                     <Grid container justifyContent="center" alignItems="center" spacing={2}>
                         {(role !== "SUPERADMIN" && role !== "ADMIN") && <Grid item>
-                            <PopupState variant="popover" popupId="demo-popup-popover">
-                                {(popupState) => (
-                                    <div style={{ display: "flex", alignItems: "center" }}>
-
-                                        <IconButton
-                                            {...{
-                                                edge: "start",
-                                                color: "#2C2799",
-                                                "aria-label": "menu",
-                                                "aria-haspopup": "true",
-                                                // onClick: handleDrawerOpen,
-                                            }}
-                                            {...bindTrigger(popupState)}
-                                        >
-                                            <SettingsIcon />
-                                        </IconButton>
-                                        <Popover
-                                            {...bindPopover(popupState)}
-                                            anchorOrigin={{
-                                                vertical: 'bottom',
-                                                horizontal: 'center',
-                                            }}
-                                            transformOrigin={{
-                                                vertical: 'top',
-                                                horizontal: 'center',
-                                            }}
-                                            style={{ backgroundColor: "rgba(0,0,0,0.4)" }}
-                                        >
-                                            <Grid container direction="column" className={popoverStyle}>
-                                                {
-                                                    headerMenuConfig.map((el, i) => {
-                                                        return (
-                                                            el.menuType === "SETTINGS" && el.rolesAllowed.includes(role) && assignedOrgId !== "NONMT" &&
-                                                            <Button
-                                                                variant="text"
-                                                                className={currentMenu === el.id ? activeUserMenuButton : userMenuButton}
-                                                                // {...bindTrigger(popupState)}
-                                                                onClick={() => {
-                                                                    popupState.close()
-                                                                    el.onclick(assignedOrgId)
-                                                                }}
-                                                            >
-                                                                <Typography className={userMenuButtonText} variant="button">{el.title}</Typography>
-                                                            </Button>
-                                                        )
-                                                    })
-                                                }
-                                            </Grid>
-                                        </Popover>
-                                    </div>
-                                )}
-                            </PopupState>
+                            <div style={{ display: "flex", alignItems: "center" }}>
+                                <IconButton
+                                    {...{
+                                        edge: "start",
+                                        color: "#2C2799",
+                                        "aria-label": "menu",
+                                        "aria-haspopup": "true",
+                                    }}
+                                    onClick={(e) => setShowSettingsPopoverMenuAnchorEle(e.currentTarget)}
+                                >
+                                    <SettingsIcon />
+                                </IconButton>
+                                <Popover
+                                    id={"simple-popover"}
+                                    open={Boolean(showSettingsPopoverMenuAnchorEle)}
+                                    anchorEl={showSettingsPopoverMenuAnchorEle}
+                                    onClose={() => setShowSettingsPopoverMenuAnchorEle(null)}
+                                    anchorOrigin={{
+                                        vertical: 'bottom',
+                                        horizontal: 'center',
+                                    }}
+                                    transformOrigin={{
+                                        vertical: 'top',
+                                        horizontal: 'center',
+                                    }}
+                                    style={{ backgroundColor: "rgba(0,0,0,0.4)" }}
+                                >
+                                    <Grid container direction="column" className={popoverStyle}>
+                                        {
+                                            headerMenuConfig.map((el, i) => {
+                                                return (
+                                                    el.menuType === "SETTINGS" && el.rolesAllowed.includes(role) && assignedOrgId !== "NONMT" &&
+                                                    <Button
+                                                        variant="text"
+                                                        className={currentMenu === el.id ? activeUserMenuButton : userMenuButton}
+                                                        onClick={() => {
+                                                            setShowSettingsPopoverMenuAnchorEle(null)
+                                                            el.onclick(assignedOrgId)
+                                                        }}
+                                                    >
+                                                        <Typography className={userMenuButtonText} variant="button">{el.title}</Typography>
+                                                    </Button>
+                                                )
+                                            })
+                                        }
+                                    </Grid>
+                                </Popover>
+                            </div>
                         </Grid>}
                         <Grid item>
-                            <PopupState variant="popover" popupId="demo-popup-popover">
-                                {(popupState) => (
-                                    <div style={{ display: "flex", alignItems: "center" }}>
+                            <div style={{ display: "flex", alignItems: "center" }}>
 
-                                        <Button variant="text" color="primary" {...bindTrigger(popupState)}><IconButton
-                                            {...{
-                                                edge: "start",
-                                                color: "#2C2799",
-                                                "aria-label": "menu",
-                                                "aria-haspopup": "true",
-                                                // onClick: handleDrawerOpen,
-                                            }}
-                                            {...bindTrigger(popupState)}
-                                        >
-                                            <Avatar style={{ backgroundColor: "#2C2799" }}>{userName?.split("")[0].toLocaleUpperCase()}</Avatar>
-                                        </IconButton>
-                                            {userName?.split(" ")[0]}
-                                        </Button>
-                                        <Popover
-                                            {...bindPopover(popupState)}
-                                            anchorOrigin={{
-                                                vertical: 'bottom',
-                                                horizontal: 'center',
-                                            }}
-                                            transformOrigin={{
-                                                vertical: 'top',
-                                                horizontal: 'center',
-                                            }}
-                                            style={{ backgroundColor: "rgba(0,0,0,0.4)" }}
-                                        >
-                                            <Grid container direction="column" className={popoverStyle}>
-                                                <Grid item>
-                                                    <Typography variant="caption">Signed in as <b>{role ? role : ""}</b></Typography>
-                                                </Grid>
-                                                <Divider style={{ marginTop: 5, marginBottom: 5, width: "100%" }} />
-                                                {
-                                                    headerMenuConfig.map((el, i) => {
-                                                        return (
-                                                            el.menuType === "USER" && el.rolesAllowed.includes(role) &&
-                                                            <Button
-                                                                variant="text"
-                                                                className={currentMenu === el.id ? activeUserMenuButton : userMenuButton}
-                                                                onClick={() => {
-                                                                    popupState.close()
-                                                                    el.onclick(assignedOrgId)
-                                                                }}
-                                                            >
-                                                                <Typography className={userMenuButtonText} variant="button">{el.title}</Typography>
-                                                            </Button>
-                                                        )
-                                                    })
-                                                }
-                                            </Grid>
-                                        </Popover>
-                                    </div>
-                                )}
-                            </PopupState>
+                                <Button variant="text" color="primary" onClick={(e) => setShowUserPopoverMenuAnchorEle(e.currentTarget)}><IconButton
+                                    {...{
+                                        edge: "start",
+                                        color: "#2C2799",
+                                        "aria-label": "menu",
+                                        "aria-haspopup": "true",
+                                    }}
+                                >
+                                    <Avatar style={{ backgroundColor: "#2C2799" }}>{userName?.split("")[0].toLocaleUpperCase()}</Avatar>
+                                </IconButton>
+                                    {userName?.split(" ")[0]}
+                                </Button>
+                                <Popover
+                                    id={"simple-popover"}
+                                    open={Boolean(showUserPopoverMenuAnchorEle)}
+                                    anchorEl={showUserPopoverMenuAnchorEle}
+                                    onClose={() => setShowUserPopoverMenuAnchorEle(null)}
+                                    anchorOrigin={{
+                                        vertical: 'bottom',
+                                        horizontal: 'center',
+                                    }}
+                                    transformOrigin={{
+                                        vertical: 'top',
+                                        horizontal: 'center',
+                                    }}
+                                    style={{ backgroundColor: "rgba(0,0,0,0.4)" }}
+                                >
+                                    <Grid container direction="column" className={popoverStyle}>
+                                        <Grid item>
+                                            <Typography variant="caption">Signed in as <b>{role ? role : ""}</b></Typography>
+                                        </Grid>
+                                        <Divider style={{ marginTop: 5, marginBottom: 5, width: "100%" }} />
+                                        {
+                                            headerMenuConfig.map((el, i) => {
+                                                return (
+                                                    el.menuType === "USER" && el.rolesAllowed.includes(role) &&
+                                                    <Button
+                                                        variant="text"
+                                                        className={currentMenu === el.id ? activeUserMenuButton : userMenuButton}
+                                                        onClick={() => {
+                                                            setShowUserPopoverMenuAnchorEle(null)
+                                                            el.onclick(assignedOrgId)
+                                                        }}
+                                                    >
+                                                        <Typography className={userMenuButtonText} variant="button">{el.title}</Typography>
+                                                    </Button>
+                                                )
+                                            })
+                                        }
+                                    </Grid>
+                                </Popover>
+                            </div>
                         </Grid>
                     </Grid>
                 </Grid>
