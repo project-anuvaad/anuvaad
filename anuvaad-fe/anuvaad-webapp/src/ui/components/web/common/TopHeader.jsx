@@ -15,7 +15,6 @@ import {
 } from "@material-ui/core";
 import Grid from '@material-ui/core/Grid';
 import Popover from '@material-ui/core/Popover';
-import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state';
 import MenuIcon from "@material-ui/icons/Menu";
 import CloseIcon from '@material-ui/icons/Close';
 import SettingsIcon from '@material-ui/icons/Settings';
