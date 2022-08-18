@@ -477,7 +477,7 @@ class DocumentEditor extends React.Component {
     renderProgressInformation = () => {
         return (
             <Snackbar
-                anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
                 open={this.state.apiInProgress}
                 message={this.state.snackBarMessage}
             >
@@ -489,7 +489,7 @@ class DocumentEditor extends React.Component {
     renderStatusInformation = () => {
         return (
             <Snackbar
-                anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
                 open={this.state.showStatus}
                 onClose={(e, r) => {
                     this.setState({ showStatus: false })
@@ -834,7 +834,7 @@ class DocumentEditor extends React.Component {
     }
     render() {
         return (
-            <div style={{ height: window.innerHeight, marginTop : 70 }}>
+            <div style={{ marginTop : 5 }}>
                 {/* <h1>hello</h1> */}
                 <div style={{ height: "50px", marginBottom: "13px" }}>
                     <InteractiveDocToolBar

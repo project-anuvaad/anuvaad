@@ -400,7 +400,7 @@ class MyGlossary extends React.Component {
                     <Snackbar
                         open={this.state.open}
                         message={this.state.message}
-                        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
                         autoHideDuration={3000}
                         onClose={this.handleClose}
                         variant={this.state.variant}

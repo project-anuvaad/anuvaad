@@ -138,7 +138,7 @@ class OrganizationList extends React.Component {
   renderProgressInformation = () => {
     return (
       <Snackbar
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         open={this.state.apiInProgress}
         message={this.state.snackBarMessage}
       >
@@ -150,7 +150,7 @@ class OrganizationList extends React.Component {
   renderStatusInformation = () => {
     return (
       <Snackbar
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         open={this.state.showStatus}
         onClose={(e, r) => {
           this.setState({ showStatus: false })

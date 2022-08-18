@@ -18,7 +18,7 @@ import Popover from '@material-ui/core/Popover';
 import MenuIcon from "@material-ui/icons/Menu";
 import CloseIcon from '@material-ui/icons/Close';
 import SettingsIcon from '@material-ui/icons/Settings';
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import AnuvaadLogo from "../../../../assets/AnuvaadLogo.svg";
 import configs from "../../../../configs/configs";
@@ -130,17 +130,21 @@ export default function TopHeader(props) {
 
     const { currentMenu, dontShowHeader } = props;
 
+    const logoRef = useRef(null);
+
     const [state, setState] = useState({
         mobileView: false,
         drawerOpen: false,
     });
+
+    const [headerLogoImg, setHeaderLogoImg] = useState(AnuvaadLogo);
 
     const [showUserPopoverMenuAnchorEle, setShowUserPopoverMenuAnchorEle] = useState(null);
     const [showSettingsPopoverMenuAnchorEle, setShowSettingsPopoverMenuAnchorEle] = useState(null);
 
     const assignedOrgId = JSON.parse(localStorage.getItem("userProfile"))?.orgID;
     const role = localStorage.getItem("roles");
-    const userName = JSON.parse(localStorage.getItem("userProfile"))?.name;
+    const userName = JSON.parse(localStorage.getItem("userProfile"))?.name.trim();
 
     const { mobileView, drawerOpen } = state;
 
@@ -160,10 +164,25 @@ export default function TopHeader(props) {
         };
     }, []);
 
+    // useEffect(()=>{
+        
+    // //     logoRef.current.src !== AnuvaadLogo ? logoRef.current.src = AnuvaadLogo : null;
+    // // },[logoRef.current.src])
+    
+
+    // setTimeout(()=>{
+    //     if(!logoRef.current.src.includes(AnuvaadLogo)){
+    //         logoRef.current.src = AnuvaadLogo
+    //     }
+    //     console.log("AnuvaadLogo", AnuvaadLogo);
+    //     console.log("logoRef.current.src", logoRef.current.src);
+    // }, 10000)
+    // }, [logoRef.current])
+
     const displayDesktop = () => {
         return (
             !dontShowHeader && <Toolbar style={{ paddingLeft: 0, paddingRight: 0 }} className={toolbar}>
-                {femmecubatorLogo}
+                {femmecubatorLogo()}
                 <div>{getMenuButtons()}</div>
                 <div>{PopOverMenuButtons()}</div>
             </Toolbar>
@@ -178,7 +197,7 @@ export default function TopHeader(props) {
 
         return (
             !dontShowHeader && <Toolbar className={toolbar}>
-                <div>{femmecubatorLogo}</div>
+                <div>{femmecubatorLogo()}</div>
                 <IconButton
                     {...{
                         edge: "start",
@@ -310,9 +329,21 @@ export default function TopHeader(props) {
         );
     };
 
-    const femmecubatorLogo = (
-        <img src={AnuvaadLogo} className={logo} />
-    );
+    const femmecubatorLogo = () => {
+        return <img 
+                    src={headerLogoImg} 
+                    className={logo}
+                    ref={logoRef}
+                    onError={(({currentTarget})=> {
+                        currentTarget.onerror = null;
+                        if(!currentTarget.src.includes(AnuvaadLogo)){
+                            currentTarget.src = AnuvaadLogo;
+                            return
+                        }
+                    })}
+                />
+        // <img src="/HeaderLogo.svg" alt="header logo" className={logo} />
+    };
 
     const getMenuButtons = () => {
         return (

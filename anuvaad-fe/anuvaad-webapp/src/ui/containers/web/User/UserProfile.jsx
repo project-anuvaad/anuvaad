@@ -382,7 +382,7 @@ class UserProfile extends React.Component {
                 </FormControl>
                 <div>
                   <span style={{ marginLeft: "20%", color: "red" }}>{this.state.message}</span>
-                  <Snackbar anchorOrigin={{ vertical: "top", horizontal: "right" }} open={this.state.open} autoHideDuration={6000}>
+                  <Snackbar anchorOrigin={{ vertical: "bottom", horizontal: "right" }} open={this.state.open} autoHideDuration={6000}>
                     <MySnackbarContentWrapper onClose={this.handleClose} variant="success" message={this.state.messageSnack} />
                   </Snackbar>
                   <DialogActions style={{ marginLeft: "0px", marginRight: '0px' }}>

@@ -182,7 +182,7 @@ class Login extends React.Component {
           <div className={classes.buttonsDiv} />
           {this.state.error && (
             <Snackbar
-              anchorOrigin={{ vertical: "top", horizontal: "right" }}
+              anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
               open={this.state.error}
               autoHideDuration={4000}
               onClose={this.handleClose}

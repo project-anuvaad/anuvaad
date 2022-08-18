@@ -39,7 +39,8 @@ ValueLabelComponent.propTypes = {
 class InteractivePagination extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { offset: 1, gotoValue: 1 };
+    this.pageInputRef = React.createRef(null);
+    this.state = { offset: 1, gotoValue: 1, isInputActive: false };
   }
   handleClick = (offset, value) => {
     this.props.currentPageUpdate(value);
@@ -48,6 +49,13 @@ class InteractivePagination extends React.Component {
 
   componentDidMount() {
     this.props.currentPageUpdate(1);
+    window.addEventListener("keydown",(event)=>{
+      if(this.state.isInputActive && event.key === "Enter"){
+        // this.pageInputRef.current.blur();
+        // this.setState({isInputActive: false})
+        this.handlePageClick();
+      }
+    })
   }
 
   sentenceCount = () => {
@@ -175,6 +183,9 @@ class InteractivePagination extends React.Component {
               <TextField
                 type="number"
                 style={{ width: "40px" }}
+                ref={this.pageInputRef}
+                onFocus={()=>this.setState({isInputActive: true})}
+                onBlur={()=>this.setState({isInputActive: false})}
                 InputProps={{
 
                   inputProps: {
@@ -197,7 +208,7 @@ class InteractivePagination extends React.Component {
               {(!this.props.show_pdf && !this.props.hideMergeBtn) &&
                 <>
                   {this.sentenceCount() && (
-                    <div style={{ position: "absolute", marginLeft: "62%" }}>
+                    <div style={{ position: "absolute", marginLeft: "50%" }}>
                       <Typography variant="subtitle1" component="h2">
                         Page Sentences
                       </Typography>
@@ -208,7 +219,7 @@ class InteractivePagination extends React.Component {
                     </div>
                   )}
 
-                  {this.props.job_status && this.props.job_status.word_status && <div style={{ position: "absolute", marginLeft: "70%" }}>
+                  {this.props.job_status && this.props.job_status.word_status && <div style={{ position: "absolute", marginLeft: "65%" }}>
                     <Typography variant="subtitle1" component="h2">
                       Total Word Count
                     </Typography>
@@ -219,7 +230,7 @@ class InteractivePagination extends React.Component {
                   </div>}
 
                   {this.props.job_status && this.props.job_status.status &&
-                    <div style={{ position: "absolute", marginLeft: "79%" }}>
+                    <div style={{ position: "absolute", marginLeft: "80%" }}>
                       <Typography variant="subtitle1" component="h2">
                         Total Sentences
                       </Typography>

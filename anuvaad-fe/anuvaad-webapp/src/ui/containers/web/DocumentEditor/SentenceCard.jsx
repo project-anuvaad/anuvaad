@@ -822,7 +822,7 @@ class SentenceCard extends React.Component {
     renderProgressInformation = () => {
         return (
             <Snackbar
-                anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
                 open={this.state.showProgressStatus}
                 message={this.state.message}
 
@@ -835,7 +835,7 @@ class SentenceCard extends React.Component {
     snackBarMessage = () => {
         return (
             <Snackbar
-                anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
                 open={this.state.showStatus}
                 onClose={(e, r) => {
                     this.setState({ showStatus: false, snackBarMessage: null })

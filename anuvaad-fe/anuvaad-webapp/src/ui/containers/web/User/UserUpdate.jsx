@@ -382,7 +382,7 @@ class UserUpdate extends React.Component {
 
         {this.state.open && this.state.snackMessage && (
           <Snackbar
-            anchorOrigin={{ vertical: "top", horizontal: "right" }}
+            anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
             open={this.state.open}
             autoHideDuration={4000}
             onClose={this.handleClose}
