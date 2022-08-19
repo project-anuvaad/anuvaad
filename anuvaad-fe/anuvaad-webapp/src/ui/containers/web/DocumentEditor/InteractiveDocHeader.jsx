@@ -84,7 +84,7 @@ class InteractiveDocHeader extends React.Component {
   renderProgressInformation = () => {
     return (
       <Snackbar
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         open={this.state.showStatus}
         message={this.state.message}
         variant={this.state.variant}
@@ -487,7 +487,7 @@ class InteractiveDocHeader extends React.Component {
           alignItems: "center",
           display: "flex",
           justifyContent: "space-between",
-          paddingInline: "3%",
+          paddingInline: "1%",
           height: "60px",
           backgroundColor: "#f0f0f0"
         }}

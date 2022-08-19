@@ -139,7 +139,7 @@ class UserEventView extends React.Component {
     return (
       <div>
         <Snackbar
-          anchorOrigin={{ vertical: "top", horizontal: "right" }}
+          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
           open={this.state.open}
           autoHideDuration={this.state.timeOut}
           variant={this.state.variant}

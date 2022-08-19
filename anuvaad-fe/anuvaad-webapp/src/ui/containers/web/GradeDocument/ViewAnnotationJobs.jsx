@@ -123,7 +123,7 @@ class ViewAnnotationJobs extends React.Component {
     processSnackBar = () => {
         return (
             <Snackbar
-                anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
                 open={this.state.open}
                 autoHideDuration={3000}
                 onClose={this.handleClose}

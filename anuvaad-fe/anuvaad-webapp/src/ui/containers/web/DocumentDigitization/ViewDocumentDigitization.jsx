@@ -297,7 +297,7 @@ class ViewDocumentDigitization extends React.Component {
         return (
             <div>
                 <Snackbar
-                    anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                    anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
                     open={!this.state.timeOut}
                     autoHideDuration={this.state.timeOut}
                     variant={this.state.variant}

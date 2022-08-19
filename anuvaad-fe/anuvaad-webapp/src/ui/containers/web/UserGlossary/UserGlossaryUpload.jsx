@@ -280,7 +280,7 @@ class UserGlossaryUpload extends React.Component {
         const { classes } = this.props
         return (
             <div className={classes.root}>
-                <Header />
+                {/* <Header /> */}
 
                 <Typography variant="h4" className={classes.typographyHeader}>
                     {"Create Glossary"}
@@ -322,7 +322,7 @@ class UserGlossaryUpload extends React.Component {
                 {
                     this.state.open &&
                     <Snackbar
-                        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
                         open={this.state.open}
                         autoHideDuration={3000}
                         onClose={this.handleClose}

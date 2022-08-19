@@ -612,7 +612,7 @@ class PdfUpload extends Component {
             {this.state.formatWarning && this.renderDialog()}
             {this.state.open && (
               <Snackbar
-                anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
                 open={this.state.open}
                 autoHideDuration={6000}
                 onClose={this.handleClose}
