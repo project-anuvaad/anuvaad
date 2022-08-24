@@ -29,12 +29,17 @@ import { clearJobEntry } from "../../../../flux/actions/users/async_job_manageme
 import DownloadFile from "../../../../flux/actions/apis/download/download_file";
 import fetchpageno from '../../../../flux/actions/apis/view_document/fetch_page_no';
 import DataTable from "../../../components/web/common/DataTable";
+import { Button, TableCell, TableRow, TextField, TableFooter, Typography } from "@material-ui/core";
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 
 const TELEMETRY = require("../../../../utils/TelemetryManager");
 
 class ViewDocument extends React.Component {
   constructor(props) {
     super(props);
+    this.tableRef = React.createRef();
+    this.pageInputRef = React.createRef()
     this.state = {
       role: localStorage.getItem("roles"),
       showInfo: false,
@@ -45,6 +50,8 @@ class ViewDocument extends React.Component {
       dialogMessage: null,
       timeOut: 3000,
       variant: "info",
+      isInputActive: false,
+      inputPageNumber: 0,
     };
   }
 
@@ -337,7 +344,7 @@ class ViewDocument extends React.Component {
     });
     let job = this.getJobIdDetail(jobId);
     let user_profile = JSON.parse(localStorage.getItem("userProfile"));
-    console.log(job.converted_filename,user_profile.userID)
+    console.log(job.converted_filename, user_profile.userID)
     let obj = new DownloadFile(job.converted_filename, user_profile.userID);
 
     const apiReq1 = fetch(obj.apiEndPoint(), {
@@ -406,6 +413,14 @@ class ViewDocument extends React.Component {
       });
     }
   };
+
+  handleInputPageChange = (event, totalPageCount) =>{
+    if (event.target.value <= totalPageCount) {
+      this.setState({ inputPageNumber: event.target.value })
+    } else if (event.target.value > totalPageCount) {
+      this.setState({ inputPageNumber: totalPageCount })
+    }
+  }
 
   render() {
     const columns = [
@@ -688,10 +703,82 @@ class ViewDocument extends React.Component {
         direction: "desc",
       },
       page: this.state.currentPageIndex,
+      customFooter: (
+        count,
+        page,
+        rowsPerPage,
+        changeRowsPerPage,
+        changePage
+      ) => {
+        const startIndex = page * rowsPerPage;
+        const endIndex = (page + 1) * rowsPerPage;
+        const totalPageCount = Math.ceil(this.props.job_details.count / 10) - 1;
+        // totalPageCount = totalPageCount > 0 && 
+        // console.log("this.state.currentPageIndex", this.state.currentPageIndex);
+        // console.log("totalPageCount", totalPageCount);
+        return (
+
+          <TableFooter>
+            <TableRow>
+              <TableCell colSpan={12}>
+                <div style={{ textAlign: "end", justifyContent: "space-evenly" }}>
+                  <Typography variant="caption" style={{ fontSize: "0.9rem", fontWeight: "600" }}>Page No. - </Typography>
+                  <TextField
+                    type="number"
+                    style={{ width: "4%", marginRight: "1%", marginLeft: "1%" }}
+                    ref={this.pageInputRef}
+                    onFocus={() => this.setState({ isInputActive: true })}
+                    onBlur={() => this.setState({ isInputActive: false })}
+                    InputProps={{
+
+                      inputProps: {
+                        style: { textAlign: "center" },
+                        max: totalPageCount, min: 0
+                      }
+                    }}
+                    onChange={(event) => this.handleInputPageChange(event, totalPageCount)}
+                    value={this.state.inputPageNumber}
+                  />
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    style={{borderRadius: "15%"}}
+                    onClick={() => {
+                      // console.log("this.tableRef.current.changePage(Number(this.state.currentPageIndex)) ", this.tableRef.current)
+                      this.tableRef.current.changePage(Number(this.state.inputPageNumber))
+                      this.setState({currentPageIndex: this.state.inputPageNumber})
+                    }}
+                  >Go</Button>
+                  <IconButton 
+                    onClick={()=>{
+                      this.setState({currentPageIndex: this.state.currentPageIndex-1})
+                      this.tableRef.current.changePage(Number(this.state.currentPageIndex-1))
+                    }}
+                    tabIndex={this.state.currentPageIndex-1}
+                    disabled={this.state.currentPageIndex == 0}>
+                    <ChevronLeftIcon />
+                  </IconButton>
+                  <Typography variant="caption" style={{ fontSize: "0.9rem", fontWeight: "600" }}> {this.state.currentPageIndex} of {totalPageCount} </Typography>
+                  <IconButton 
+                    onClick={()=>{
+                      this.setState({currentPageIndex: this.state.currentPageIndex+1})
+                      this.tableRef.current.changePage(Number(this.state.currentPageIndex+1))
+                    }}
+                    tabIndex={this.state.currentPageIndex+1}
+                    disabled={this.state.currentPageIndex == totalPageCount}>
+                    <ChevronRightIcon />
+                  </IconButton>
+                </div>
+              </TableCell>
+            </TableRow>
+          </TableFooter>
+
+        );
+      }
     };
 
     return (
-      <div style={{  }}>
+      <div style={{}}>
         <div style={{ margin: "0% 3% 3% 3%", paddingTop: "2%" }}>
           <ToolBar />
           {!this.state.showLoader && (
@@ -701,6 +788,7 @@ class ViewDocument extends React.Component {
                 data={this.getJobsSortedByTimestamp()}
                 columns={columns}
                 options={options}
+                innerRef={this.tableRef}
               />
             </MuiThemeProvider>
           )}

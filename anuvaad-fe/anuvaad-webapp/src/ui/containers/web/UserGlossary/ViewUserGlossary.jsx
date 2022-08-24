@@ -51,6 +51,8 @@ class MyGlossary extends React.Component {
             loadMsg: "",
             rowsToDelete: [],
             openConfirmDialog: false,
+            openSingleGlossaryDeleteConfirmBox: false,
+            singleDeletionArr: [],
             openDeleteSelectedGlossaryConfirmDialogue: false
         }
     }
@@ -218,7 +220,8 @@ class MyGlossary extends React.Component {
     handleDeleteGlossary = (dataArray) => {
         let reverseLocale = dataArray[3].split("|").reverse().join("|");
         let orgID = JSON.parse(localStorage.getItem("userProfile")).orgID;
-        this.makeDeleteGlossaryAPICall(dataArray[2], orgID, dataArray[0], dataArray[1], dataArray[3], reverseLocale, dataArray[4])
+        this.makeDeleteGlossaryAPICall(dataArray[2], orgID, dataArray[0], dataArray[1], dataArray[3], reverseLocale, dataArray[4]);
+        this.setState({ openSingleGlossaryDeleteConfirmBox: false });
     }
 
     handleClose = () => {
@@ -311,12 +314,38 @@ class MyGlossary extends React.Component {
                                         <IconButton
                                             style={{ color: tableMeta.rowData[5] === "Organization" ? "grey" : "#233466", padding: "5px" }}
                                             component="a"
-                                            onClick={() => this.handleDeleteGlossary(tableMeta.rowData)}
+                                            onClick={() => {this.setState({ openSingleGlossaryDeleteConfirmBox: true, singleDeletionArr: tableMeta.rowData  }) }}
                                             disabled={tableMeta.rowData[5] === "Organization"}
                                         >
                                             <DeleteIcon />
                                         </IconButton>
                                     </Tooltip>
+                                    <Dialog
+                                        open={this.state.openSingleGlossaryDeleteConfirmBox && this.state.singleDeletionArr.length > 0}
+                                        onClose={() => this.setState({ openSingleGlossaryDeleteConfirmBox: false })}
+                                        aria-labelledby="alert-dialog-title"
+                                        aria-describedby="alert-dialog-description"
+                                    >
+                                        <DialogTitle id="alert-dialog-title">{"Delete glossary"}</DialogTitle>
+                                        <DialogContent>
+                                            <DialogContentText id="alert-dialog-description">
+                                                Are you sure you want to delete {this.state.singleDeletionArr[0]} - {this.state.singleDeletionArr[1]} glossary?
+                                            </DialogContentText>
+                                        </DialogContent>
+                                        <DialogActions>
+                                            <Button onClick={() => {
+                                                // console.log("confirm tableMeta.rowData", this.state.singleDeletionArr);
+                                                this.handleDeleteGlossary(this.state.singleDeletionArr)
+                                            }
+                                            }
+                                                color="primary">
+                                                Confirm
+                                            </Button>
+                                            <Button onClick={() => this.setState({ openSingleGlossaryDeleteConfirmBox: false })} color="primary" autoFocus>
+                                                Cancel
+                                            </Button>
+                                        </DialogActions>
+                                    </Dialog>
                                 </div>
                             );
                         }
@@ -358,7 +387,7 @@ class MyGlossary extends React.Component {
             }
         };
         return (
-            <div style={{ }}>
+            <div style={{}}>
                 <div style={{ margin: "0% 3% 3% 3%", paddingTop: "2%" }}>
                     {/* <Header /> */}
                     {this.state.loading ?
