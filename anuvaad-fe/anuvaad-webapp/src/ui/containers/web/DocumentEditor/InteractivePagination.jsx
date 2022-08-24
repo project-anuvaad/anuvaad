@@ -51,6 +51,7 @@ class InteractivePagination extends React.Component {
     this.props.currentPageUpdate(1);
     window.addEventListener("keydown",(event)=>{
       if(this.state.isInputActive && event.key === "Enter"){
+        event.preventDefault()
         // this.pageInputRef.current.blur();
         // this.setState({isInputActive: false})
         this.handlePageClick();
