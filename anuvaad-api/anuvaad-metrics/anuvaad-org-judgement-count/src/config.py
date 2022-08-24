@@ -3,7 +3,7 @@ import pymongo
 
 ## app configuration variables
 DEBUG = False
-API_URL_PREFIX = "/anuvaad-metrics-api"
+API_URL_PREFIX = "/anuvaad-metrics"
 HOST = '0.0.0.0'
 PORT = 5001
 
