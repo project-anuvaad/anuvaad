@@ -111,7 +111,7 @@ CLEAN_BACKGROUND = False
 
 ##########################################################################
 #Alignment
-ALIGN = True
+ALIGN = False
 ALIGN_MODE= 'FAST'
 
 
