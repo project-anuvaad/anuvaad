@@ -91,7 +91,9 @@ class ViewDocument extends React.Component {
   }
 
   keyPress = (e) => {
+    // e.preventDefault();
     if (e.code === "Enter" && this.state.isInputActive) {
+      e.preventDefault();
       // handleTransliterationModelClose();
       console.log("enter key press.");
       this.onChangePageMAnually();
@@ -419,7 +421,8 @@ class ViewDocument extends React.Component {
        */
       this.props.fetchpageno()
       this.makeAPICallJobsBulkSearch(
-        this.state.offset + this.state.limit,
+        page*this.state.limit,
+        // this.state.offset + this.state.limit,
         this.state.limit,
         false,
         false,
@@ -427,7 +430,7 @@ class ViewDocument extends React.Component {
       );
       this.setState({
         currentPageIndex: page,
-        offset: this.state.offset + this.state.limit,
+        offset: page*this.state.limit,
       });
     }
   };
@@ -691,7 +694,9 @@ class ViewDocument extends React.Component {
         },
         options: { sortDirection: "desc" },
       },
+      // jumpToPage: true,
       onChangeRowsPerPage: (limit) => {
+        // console.log("onChangeRowsPerPage is being called")
         let diffValue = limit - this.state.limit;
         if (diffValue > 0) {
           this.makeAPICallJobsBulkSearch(this.state.offset + diffValue, limit - this.state.limit, false, false, true)
@@ -705,6 +710,7 @@ class ViewDocument extends React.Component {
       onTableChange: (action, tableState) => {
         switch (action) {
           case "changePage":
+            // console.log("tableState",tableState);
             this.processTableClickedNextOrPrevious(
               tableState.page,
               tableState.sortOrder
@@ -725,76 +731,76 @@ class ViewDocument extends React.Component {
         direction: "desc",
       },
       page: this.state.currentPageIndex,
-      customFooter: (
-        count,
-        page,
-        rowsPerPage,
-        changeRowsPerPage,
-        changePage
-      ) => {
-        const startIndex = page * rowsPerPage;
-        const endIndex = (page + 1) * rowsPerPage;
-        const totalPageCount = Math.ceil(this.props.job_details.count / 10);
-        // totalPageCount = totalPageCount > 0 && 
-        // console.log("this.state.currentPageIndex", this.state.currentPageIndex);
-        // console.log("totalPageCount", totalPageCount);
-        return (
+      // customFooter: (
+      //   count,
+      //   page,
+      //   rowsPerPage,
+      //   changeRowsPerPage,
+      //   changePage
+      // ) => {
+      //   const startIndex = page * rowsPerPage;
+      //   const endIndex = (page + 1) * rowsPerPage;
+      //   const totalPageCount = Math.ceil(this.props.job_details.count / 10);
+      //   // totalPageCount = totalPageCount > 0 && 
+      //   // console.log("this.state.currentPageIndex", this.state.currentPageIndex);
+      //   // console.log("totalPageCount", totalPageCount);
+      //   return (
 
-          <TableFooter>
-            <TableRow>
-              <TableCell colSpan={12}>
-                <div style={{ textAlign: "end", justifyContent: "space-evenly" }}>
-                  <Typography variant="caption" style={{ fontSize: "0.9rem", fontWeight: "600" }}>Page No. - </Typography>
-                  <TextField
-                    type="number"
-                    style={{ width: "4%", marginRight: "1%", marginLeft: "1%" }}
-                    ref={this.pageInputRef}
-                    onFocus={() => this.setState({ isInputActive: true })}
-                    onBlur={() => this.setState({ isInputActive: false })}
-                    InputProps={{
+      //     <TableFooter>
+      //       <TableRow>
+      //         <TableCell colSpan={12}>
+      //           <div style={{ textAlign: "end", justifyContent: "space-evenly" }}>
+      //             <Typography variant="caption" style={{ fontSize: "0.9rem", fontWeight: "600" }}>Page No. - </Typography>
+      //             <TextField
+      //               type="number"
+      //               style={{ width: "4%", marginRight: "1%", marginLeft: "1%" }}
+      //               ref={this.pageInputRef}
+      //               onFocus={() => this.setState({ isInputActive: true })}
+      //               onBlur={() => this.setState({ isInputActive: false })}
+      //               InputProps={{
 
-                      inputProps: {
-                        style: { textAlign: "center" },
-                        max: totalPageCount, min: 1
-                      }
-                    }}
-                    onChange={(event) => this.handleInputPageChange(event, totalPageCount)}
-                    value={this.state.inputPageNumber}
-                  />
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    style={{borderRadius: "15%"}}
-                    onClick={() => {
-                      this.onChangePageMAnually()
-                    }}
-                  >Go</Button>
-                  <IconButton 
-                    onClick={()=>{
-                      this.setState({currentPageIndex: this.state.currentPageIndex-1})
-                      this.tableRef.current.changePage(Number(this.state.currentPageIndex-1))
-                    }}
-                    tabIndex={this.state.currentPageIndex-1}
-                    disabled={this.state.currentPageIndex == 0}>
-                    <ChevronLeftIcon />
-                  </IconButton>
-                  <Typography variant="caption" style={{ fontSize: "0.9rem", fontWeight: "600" }}> {parseInt(this.state.currentPageIndex+1)} of {parseInt(totalPageCount)} </Typography>
-                  <IconButton 
-                    onClick={()=>{
-                      this.setState({currentPageIndex: this.state.currentPageIndex+1})
-                      this.tableRef.current.changePage(Number(this.state.currentPageIndex+1))
-                    }}
-                    tabIndex={this.state.currentPageIndex+1}
-                    disabled={this.state.currentPageIndex == totalPageCount}>
-                    <ChevronRightIcon />
-                  </IconButton>
-                </div>
-              </TableCell>
-            </TableRow>
-          </TableFooter>
+      //                 inputProps: {
+      //                   style: { textAlign: "center" },
+      //                   max: totalPageCount, min: 1
+      //                 }
+      //               }}
+      //               onChange={(event) => this.handleInputPageChange(event, totalPageCount)}
+      //               value={this.state.inputPageNumber}
+      //             />
+      //             <Button
+      //               variant="contained"
+      //               color="primary"
+      //               style={{borderRadius: "15%"}}
+      //               onClick={() => {
+      //                 this.onChangePageMAnually()
+      //               }}
+      //             >Go</Button>
+      //             <IconButton 
+      //               onClick={()=>{
+      //                 this.setState({currentPageIndex: this.state.currentPageIndex-1})
+      //                 this.tableRef.current.changePage(Number(this.state.currentPageIndex-1))
+      //               }}
+      //               tabIndex={this.state.currentPageIndex-1}
+      //               disabled={this.state.currentPageIndex == 0}>
+      //               <ChevronLeftIcon />
+      //             </IconButton>
+      //             <Typography variant="caption" style={{ fontSize: "0.9rem", fontWeight: "600" }}> {parseInt(this.state.currentPageIndex+1)} of {parseInt(totalPageCount)} </Typography>
+      //             <IconButton 
+      //               onClick={()=>{
+      //                 this.setState({currentPageIndex: this.state.currentPageIndex+1})
+      //                 this.tableRef.current.changePage(Number(this.state.currentPageIndex+1))
+      //               }}
+      //               tabIndex={this.state.currentPageIndex+1}
+      //               disabled={this.state.currentPageIndex == totalPageCount}>
+      //               <ChevronRightIcon />
+      //             </IconButton>
+      //           </div>
+      //         </TableCell>
+      //       </TableRow>
+      //     </TableFooter>
 
-        );
-      }
+      //   );
+      // }
     };
 
     return (
