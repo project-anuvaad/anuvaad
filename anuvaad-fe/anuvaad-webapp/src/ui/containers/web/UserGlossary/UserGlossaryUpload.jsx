@@ -33,19 +33,19 @@ const theme = createMuiTheme({
                 width: '98%',
                 minHeight: '330px',
                 height: "85%",
-                borderColor: '#1C9AB7',
+                borderColor: '#2C2799',
                 backgroundColor: '#F5F9FA',
-                border: '1px dashed #1C9AB7',
-                fontColor: '#1C9AB7',
+                border: '1px dashed #2C2799',
+                fontColor: '#2C2799',
                 marginTop: "3%",
                 marginLeft: '1%',
-                "& svg": { color: '#1C9AB7', },
+                "& svg": { color: '#2C2799', },
                 "& p": {
                     textOverflow: "ellipsis",
                     whiteSpace: "nowrap",
                     overflow: "hidden",
                     fontSize: "19px",
-                    color: '#1C9AB7',
+                    color: '#2C2799',
 
                 }
             },
@@ -280,9 +280,9 @@ class UserGlossaryUpload extends React.Component {
         const { classes } = this.props
         return (
             <div className={classes.root}>
-                <Header />
+                {/* <Header /> */}
 
-                <Typography variant="h4" className={classes.typographyHeader}>
+                <Typography className={classes.typographyHeader}>
                     {"Create Glossary"}
                 </Typography>
                 <Paper className={classes.paper}>
@@ -322,7 +322,7 @@ class UserGlossaryUpload extends React.Component {
                 {
                     this.state.open &&
                     <Snackbar
-                        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
                         open={this.state.open}
                         autoHideDuration={3000}
                         onClose={this.handleClose}

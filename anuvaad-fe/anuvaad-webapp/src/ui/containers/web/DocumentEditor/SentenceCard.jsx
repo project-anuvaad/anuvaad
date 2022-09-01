@@ -759,7 +759,7 @@ class SentenceCard extends React.Component {
                 <span style={{ textAlign: 'left', width: "30%" }}>
                     <Grid container>
                         <Grid item xs={6}>
-                            <Button variant="outlined" color="primary" style={{ marginRight: '10px', border: '1px solid #1C9AB7', color: "#1C9AB7" }} onClick={this.processSaveButtonClicked} >
+                            <Button variant="outlined" color="primary" style={{ marginRight: '10px', border: '1px solid #2C2799', color: "#2C2799" }} onClick={this.processSaveButtonClicked} >
                                 SAVE
                             </Button>
                         </Grid>
@@ -767,7 +767,7 @@ class SentenceCard extends React.Component {
                             <>{
                                 role !== 'ANNOTATOR' &&
                                 < Grid item xs={6}>
-                                    <Button variant="outlined" color="primary" style={{ marginRight: '10px', border: '1px solid #1C9AB7', color: "#1C9AB7" }}
+                                    <Button variant="outlined" color="primary" style={{ marginRight: '10px', border: '1px solid #2C2799', color: "#2C2799" }}
                                         onClick={this.retranslateSentence}
                                     >
                                         RETRANSLATE
@@ -822,7 +822,7 @@ class SentenceCard extends React.Component {
     renderProgressInformation = () => {
         return (
             <Snackbar
-                anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
                 open={this.state.showProgressStatus}
                 message={this.state.message}
 
@@ -835,7 +835,7 @@ class SentenceCard extends React.Component {
     snackBarMessage = () => {
         return (
             <Snackbar
-                anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
                 open={this.state.showStatus}
                 onClose={(e, r) => {
                     this.setState({ showStatus: false, snackBarMessage: null })

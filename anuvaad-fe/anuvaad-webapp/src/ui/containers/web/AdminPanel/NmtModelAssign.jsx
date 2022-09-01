@@ -49,19 +49,19 @@ const theme = createMuiTheme({
         width: '100%',
         minHeight: '380px',
         height: "85%",
-        borderColor: '#1C9AB7',
+        borderColor: '#2C2799',
         backgroundColor: '#F5F9FA',
-        border: '1px dashed #1C9AB7',
-        fontColor: '#1C9AB7',
+        border: '1px dashed #2C2799',
+        fontColor: '#2C2799',
         marginTop: "3%",
         marginLeft: '1%',
-        "& svg": { color: '#1C9AB7', },
+        "& svg": { color: '#2C2799', },
         "& p": {
           textOverflow: "ellipsis",
           whiteSpace: "nowrap",
           overflow: "hidden",
           fontSize: "19px",
-          color: '#1C9AB7',
+          color: '#2C2799',
 
         }
       },
@@ -205,7 +205,7 @@ class CreateUser extends React.Component {
   renderProgressInformation = () => {
     return (
       <Snackbar
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         open={this.state.apiInProgress}
         message={this.state.snackBarMessage}
       >
@@ -217,7 +217,7 @@ class CreateUser extends React.Component {
   renderStatusInformation = () => {
     return (
       <Snackbar
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         open={this.state.showStatus}
         onClose={(e, r) => {
           this.setState({ showStatus: false })
@@ -563,9 +563,9 @@ class CreateUser extends React.Component {
     const { classes } = this.props;
     let roles = localStorage.getItem('roles')
     return (
-      <div className={classes.root} style={{ marginTop: '7%', marginBottom: '5%', }}>
+      <div className={classes.root} style={{ marginTop: '5%', marginBottom: '5%', }}>
         <Toolbar />
-        <Typography variant="h4" className={classes.typographyHeader}>
+        <Typography className={classes.typographyHeader}>
           Assign NMT Model
         </Typography>
         <Paper className={classes.paper}>
@@ -593,7 +593,7 @@ class CreateUser extends React.Component {
                 onClick={this.processClearButton}
                 aria-label="edit"
                 className={classes.button1}
-                style={{ backgroundColor: '#1ca9c9' }}
+                style={{ backgroundColor: '#2C2799' }}
               >
                 {translate("common.page.button.reset")}
               </Button>
@@ -612,7 +612,7 @@ class CreateUser extends React.Component {
                   className={classes.button1}
                   disabled={this.state.loading}
                   style={{
-                    backgroundColor: this.state.loading ? 'grey' : '#1ca9c9',
+                    backgroundColor: this.state.loading ? 'grey' : '#2C2799',
                   }}
                 >
                   {this.state.loading && <CircularProgress size={24} className={'success'} style={{

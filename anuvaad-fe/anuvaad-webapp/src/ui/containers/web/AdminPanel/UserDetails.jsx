@@ -24,6 +24,7 @@ import SetPasswordApi from "../../../../flux/actions/apis/user/setpassword";
 import AssessmentOutlinedIcon from '@material-ui/icons/AssessmentOutlined';
 import history from "../../../../web.history";
 import clearStatus from '../../../../flux/actions/apis/admin/clear_job_status';
+import DataTable from "../../../components/web/common/DataTable";
 
 
 const TELEMETRY = require('../../../../utils/TelemetryManager')
@@ -152,7 +153,7 @@ class UserDetails extends React.Component {
   processSnackBar = () => {
     return (
       <Snackbar
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         open={this.state.isenabled}
         autoHideDuration={3000}
         onClose={this.handleClose}
@@ -168,6 +169,7 @@ class UserDetails extends React.Component {
         <IconButton style={{ color: '#233466', padding: '5px' }} component="a" >
           <Switch
             checked={isactive}
+            color="primary"
             onChange={() => this.toggleChecked(userId, userName, roleCodes, isactive)} />
         </IconButton>
       </Tooltip>
@@ -379,7 +381,7 @@ class UserDetails extends React.Component {
           {
             (!this.state.showLoader || this.props.count) &&
             <MuiThemeProvider theme={this.getMuiTheme()}>
-              <MUIDataTable title={translate("common.page.title.userdetails")}
+              <DataTable title={translate("common.page.title.userdetails")}
                 columns={columns} options={options} data={this.props.userinfo.data} />
             </MuiThemeProvider>
           }

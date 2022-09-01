@@ -33,20 +33,20 @@ const theme = createMuiTheme({
         width: '98%', 
         minHeight: '220px',
         height: "45%",
-        borderColor: '#1C9AB7',
+        borderColor: '#2C2799',
         backgroundColor: '#F5F9FA',
-        border: '1px dashed #1C9AB7',
-        fontColor: '#1C9AB7',
+        border: '1px dashed #2C2799',
+        fontColor: '#2C2799',
         marginTop: "3%",
         marginLeft: '1%',
-        "& svg": { color: '#1C9AB7',marginTop:'-20px' },
+        "& svg": { color: '#2C2799',marginTop:'-20px' },
         "& p": {
           textOverflow: "ellipsis",
           whiteSpace: "nowrap",
           overflow: "hidden",
           fontSize: "17px",
           paddingTop:'-50px',
-          color: '#1C9AB7',
+          color: '#2C2799',
 
         }
       },
@@ -239,7 +239,7 @@ class TmxUpload extends Component {
   renderProgressInformation = () => {
     return (
       <Snackbar
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         open={this.state.apiInProgress}
         message={this.state.snackBarMessage}
       >
@@ -251,7 +251,7 @@ class TmxUpload extends Component {
   renderStatusInformation = () => {
     return (
       <Snackbar
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         open={this.state.showStatus}
         onClose={(e, r) => {
           this.setState({ showStatus: false })
@@ -344,7 +344,7 @@ class TmxUpload extends Component {
                     // className={classes.button1} 
                     style={{
                       width: "100%",
-                      backgroundColor: '#1C9AB7',
+                      backgroundColor: '#2C2799',
                       borderRadius: "20px 20px 20px 20px",
                       color: "#FFFFFF",
                       height: '46px',
@@ -362,7 +362,7 @@ class TmxUpload extends Component {
                   size="large" onClick={this.handleBack.bind(this)}
                   style={{
                     width: "100%",
-                    backgroundColor: '#1C9AB7',
+                    backgroundColor: '#2C2799',
                     borderRadius: "20px 20px 20px 20px",
                     color: "#FFFFFF",
                     height: '46px',

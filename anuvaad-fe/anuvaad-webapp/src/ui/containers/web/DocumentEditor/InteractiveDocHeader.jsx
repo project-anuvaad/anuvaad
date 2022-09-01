@@ -84,7 +84,7 @@ class InteractiveDocHeader extends React.Component {
   renderProgressInformation = () => {
     return (
       <Snackbar
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         open={this.state.showStatus}
         message={this.state.message}
         variant={this.state.variant}
@@ -451,14 +451,14 @@ class InteractiveDocHeader extends React.Component {
           {/* } */}
 
           {!this.props.preview && workflow !== 'WF_A_FTTKTR' && <MenuItem
-                        style={{ borderTop: "1px solid #D6D6D6" }}
-                        onClick={() => {
-                            this.setState({ anchorEl: null })
-                            this.props.onShowPreview()
-                        }}
-                    >
-                        As PDF
-                    </MenuItem>}
+            style={{ borderTop: "1px solid #D6D6D6" }}
+            onClick={() => {
+              this.setState({ anchorEl: null })
+              this.props.onShowPreview()
+            }}
+          >
+            As PDF
+          </MenuItem>}
           {workflow !== "WF_A_FTTKTR" ? (
             <MenuItem
               style={{ borderTop: "1px solid #D6D6D6" }}
@@ -482,83 +482,108 @@ class InteractiveDocHeader extends React.Component {
   render() {
     const { classes, open_sidebar } = this.props;
     return (
-      <AppBar
-        position="fixed"
-        color="secondary"
-        className={classNames(
-          classes.appBar,
-          open_sidebar && classes.appBarShift
-        )}
-        style={{ height: "50px", marginBottom: "13px" }}
+      <div
+        style={{
+          alignItems: "center",
+          display: "flex",
+          justifyContent: "space-between",
+          paddingInline: "1%",
+          height: "60px",
+          backgroundColor: "#f0f0f0"
+        }}
       >
-        <Toolbar
-          disableGutters={!this.props.open_sidebar}
-          style={{ minHeight: "50px" }}
-        >
-          {open_sidebar ? (
-            <IconButton
-              onClick={() => this.props.showSidebar()}
-              className={classes.menuButton}
-              color="inherit"
-              aria-label="Menu"
-              style={{ margin: "0px 5px" }}
-            >
-              <CloseIcon />
-            </IconButton>
-          ) : (
-            <div style={{ display: "flex", flexDirection: "row" }}>
-              <IconButton
-                onClick={() => {
-                  this.props.clear_html_link();
-                  this.props.clear_docx_view();
-                  history.push(`${process.env.PUBLIC_URL}/view-document`);
-                }}
-                className={classes.menuButton}
-                color="inherit"
-                aria-label="Menu"
-                style={{ margin: "0px 5px" }}
-              >
-                <BackIcon />
-              </IconButton>
-              <div
-                style={{
-                  borderLeft: "1px solid #D6D6D6",
-                  height: "40px",
-                  marginRight: "1px",
-                  marginTop: "5px",
-                }}
-              ></div>
-
-              <IconButton
-                onClick={() => this.props.showSidebar(!open_sidebar)}
-                className={classes.menuButton}
-                color="inherit"
-                aria-label="Menu"
-                style={{ margin: "0px 5px" }}
-              >
-                <MenuIcon />
-              </IconButton>
-            </div>
+        {/* <AppBar
+          position="fixed"
+          color="secondary"
+          className={classNames(
+            classes.appBar,
+            open_sidebar && classes.appBarShift
           )}
+          style={{ height: "50px", marginBottom: "13px" }}
+        >
+          <Toolbar
+            disableGutters={!this.props.open_sidebar}
+            style={{ minHeight: "50px" }}
+          >
+            {open_sidebar ? (
+              <IconButton
+                onClick={() => this.props.showSidebar()}
+                className={classes.menuButton}
+                color="inherit"
+                aria-label="Menu"
+                style={{ margin: "0px 5px" }}
+              >
+                <CloseIcon />
+              </IconButton>
+            ) : (
+              <div style={{ display: "flex", flexDirection: "row" }}>
+                <IconButton
+                  onClick={() => {
+                    this.props.clear_html_link();
+                    this.props.clear_docx_view();
+                    history.push(`${process.env.PUBLIC_URL}/view-document`);
+                  }}
+                  className={classes.menuButton}
+                  color="inherit"
+                  aria-label="Menu"
+                  style={{ margin: "0px 5px" }}
+                >
+                  <BackIcon />
+                </IconButton>
+                <div
+                  style={{
+                    borderLeft: "1px solid #D6D6D6",
+                    height: "40px",
+                    marginRight: "1px",
+                    marginTop: "5px",
+                  }}
+                ></div>
 
-          <div
-            style={{
-              borderLeft: "1px solid #D6D6D6",
-              height: "40px",
-              marginRight: "10px",
+                <IconButton
+                  onClick={() => this.props.showSidebar(!open_sidebar)}
+                  className={classes.menuButton}
+                  color="inherit"
+                  aria-label="Menu"
+                  style={{ margin: "0px 5px" }}
+                >
+                  <MenuIcon />
+                </IconButton>
+              </div>
+            )}
+
+            <div
+              style={{
+                borderLeft: "1px solid #D6D6D6",
+                height: "40px",
+                marginRight: "10px",
+              }}
+            ></div> */}
+
+        <Typography variant="h5" color="inherit" className={classes.flex} style={{ overflow: "hidden", maxWidth: "30%", textOverflow: "ellipsis" }}>
+          <IconButton
+            onClick={() => {
+              this.props.clear_html_link();
+              this.props.clear_docx_view();
+              history.push(`${process.env.PUBLIC_URL}/view-document`);
             }}
-          ></div>
+            className={classes.menuButton}
+            color="inherit"
+            aria-label="Menu"
+            style={{ margin: "0px 5px" }}
+          >
+            <BackIcon />
+          </IconButton>
+          {this.props.match.params.filename}
+        </Typography>
+        <div style={{ position: "absolute", right: "30px" }}>
+          {this.renderOptions()}
+        </div>
+        {this.state.showStatus && this.renderProgressInformation()}
+        {this.state.dialogMessage && this.renderStatusInformation()}
+        {/* </Toolbar>
+        </AppBar> */}
+      </div>
 
-          <Typography variant="h5" color="inherit" className={classes.flex} style={{ overflow: "hidden", maxWidth: "30%", textOverflow: "ellipsis" }}>
-            {this.props.match.params.filename}
-          </Typography>
-          <div style={{ position: "absolute", right: "30px" }}>
-            {this.renderOptions()}
-          </div>
-          {this.state.showStatus && this.renderProgressInformation()}
-          {this.state.dialogMessage && this.renderStatusInformation()}
-        </Toolbar>
-      </AppBar>
     );
   }
 }

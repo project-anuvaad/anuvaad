@@ -19,6 +19,7 @@ import history from "../../../../../web.history";
 import Snackbar from "../../../../components/web/common/Snackbar";
 import clearJobDetails from '../../../../../flux/actions/apis/view_scheduled_jobs/clear_job_detail';
 import clearTask from '../../../../../flux/actions/apis/view_scheduled_jobs/clear_task';
+import DataTable from "../../../../components/web/common/DataTable";
 
 class ViewJobDetails extends React.Component {
     constructor(props) {
@@ -71,7 +72,7 @@ class ViewJobDetails extends React.Component {
     processSnackBar = () => {
         return (
             <Snackbar
-                anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
                 open={this.state.open}
                 autoHideDuration={3000}
                 onClose={this.handleClose}
@@ -203,12 +204,12 @@ class ViewJobDetails extends React.Component {
             },
         };
         return (
-            < div style={{ maxHeight: window.innerHeight, height: window.innerHeight, overflow: "auto" }
+            < div style={{ }
             }>
-                <div style={{ margin: "0% 3% 3% 3%", paddingTop: "7%" }}>
+                <div style={{ margin: "0% 3% 3% 3%", paddingTop: "2%" }}>
                     <ToolBar />
                     <MuiThemeProvider theme={this.getMuiTheme()}>
-                        <MUIDataTable
+                        <DataTable
                             title={"Job Details"}
                             data={this.props.job_details.result}
                             columns={columns}

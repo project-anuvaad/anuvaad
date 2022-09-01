@@ -19,6 +19,7 @@ import copy from "copy-to-clipboard";
 import { Button } from "@material-ui/core";
 import exportFromJSON from "export-from-json";
 import CloudDownloadIcon from "@material-ui/icons/CloudDownload";
+import DataTable from "../../../components/web/common/DataTable";
 class UserEventView extends React.Component {
   constructor(props) {
     super(props);
@@ -138,7 +139,7 @@ class UserEventView extends React.Component {
     return (
       <div>
         <Snackbar
-          anchorOrigin={{ vertical: "top", horizontal: "right" }}
+          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
           open={this.state.open}
           autoHideDuration={this.state.timeOut}
           variant={this.state.variant}
@@ -260,7 +261,7 @@ class UserEventView extends React.Component {
           <Header />
           {!this.state.showLoader && (
             <MuiThemeProvider theme={this.getMuiTheme()}>
-              <MUIDataTable
+              <DataTable
                 title={`User Event Report`}
                 data={this.props.eventData}
                 columns={columns}

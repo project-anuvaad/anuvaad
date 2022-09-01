@@ -64,7 +64,7 @@ const PdfUploadStyles = theme => ({
   //   marginTop: "6%",
     
   //   width: "87%",
-  //   backgroundColor:'#1C9AB7',
+  //   backgroundColor:'#2C2799',
   //   borderRadius:"20px 20px 20px 20px",
   //   color:"#FFFFFF"
   // },
@@ -73,7 +73,7 @@ const PdfUploadStyles = theme => ({
     marginLeft:'7%',
     marginBottom:'3%',
     width: "93%",
-    backgroundColor:'#1C9AB7',
+    backgroundColor:'#2C2799',
     borderRadius:"20px 20px 20px 20px",
     color:"#FFFFFF",
     height:'46px'
@@ -83,7 +83,7 @@ const PdfUploadStyles = theme => ({
     //marginLeft: "3%",
     width: "87%",
     marginBottom:'3%',
-    backgroundColor:'#1C9AB7',
+    backgroundColor:'#2C2799',
     borderRadius:"20px 20px 20px 20px",
     color:"#FFFFFF",
     height:'46px'
@@ -97,17 +97,17 @@ const PdfUploadStyles = theme => ({
   //   width:'91%',
   //   minHeight:'363px',
   //   height: "100%",
-  //   borderColor:'#1C9AB7',
+  //   borderColor:'#2C2799',
   //   backgroundColor: '#F5F9FA',
-  //   border: '1px dashed #1C9AB7',
-  //   fontColor:'#1C9AB7',
-  //   "& svg":{color:'#1C9AB7',},
+  //   border: '1px dashed #2C2799',
+  //   fontColor:'#2C2799',
+  //   "& svg":{color:'#2C2799',},
   //   "& p": {
   //     textOverflow: "ellipsis",
   //     whiteSpace: "nowrap",
   //     overflow: "hidden",
   //     fontSize: "19px",
-  //     color:'#1C9AB7',
+  //     color:'#2C2799',
       
   //   },
   // },
@@ -116,17 +116,17 @@ const PdfUploadStyles = theme => ({
     top: "auto",
     minHeight:'363px',
     height: "100%",
-    borderColor:'#1C9AB7',
+    borderColor:'#2C2799',
     backgroundColor: '#F5F9FA',
-    border: '1px dashed #1C9AB7',
-    fontColor:'#1C9AB7',
-    "& svg":{color:'#1C9AB7',},
+    border: '1px dashed #2C2799',
+    fontColor:'#2C2799',
+    "& svg":{color:'#2C2799',},
     "& p": {
       textOverflow: "ellipsis",
       whiteSpace: "nowrap",
       overflow: "hidden",
       fontSize: "19px",
-      color:'#1C9AB7',
+      color:'#2C2799',
       
     },
   }

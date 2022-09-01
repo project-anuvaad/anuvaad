@@ -20,6 +20,7 @@ import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import AddOrg from "../../../../flux/actions/apis/organization/addOrganization";
 import Visibility from "@material-ui/icons/Visibility";
 import history from "../../../../web.history";
+import DataTable from "../../../components/web/common/DataTable";
 
 
 const TELEMETRY = require('../../../../utils/TelemetryManager')
@@ -137,7 +138,7 @@ class OrganizationList extends React.Component {
   renderProgressInformation = () => {
     return (
       <Snackbar
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         open={this.state.apiInProgress}
         message={this.state.snackBarMessage}
       >
@@ -149,7 +150,7 @@ class OrganizationList extends React.Component {
   renderStatusInformation = () => {
     return (
       <Snackbar
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         open={this.state.showStatus}
         onClose={(e, r) => {
           this.setState({ showStatus: false })
@@ -305,14 +306,14 @@ class OrganizationList extends React.Component {
     };
 
     return (
-      <div style={{ maxHeight: window.innerHeight, height: window.innerHeight, overflow: "auto" }}>
+      <div style={{ }}>
 
-        <div style={{ margin: '0% 3% 3% 3%', paddingTop: "7%" }}>
+        <div style={{ margin: '0% 3% 3% 3%', paddingTop: "2%" }}>
           <ToolBar />
           {
             (!this.state.showLoader || this.props.count) &&
             <MuiThemeProvider theme={this.getMuiTheme()}>
-              <MUIDataTable title={translate("common.page.title.orgList")}
+              <DataTable title={translate("common.page.title.orgList")}
                 columns={columns} options={options} data={this.props.organizationList} />
             </MuiThemeProvider>
           }

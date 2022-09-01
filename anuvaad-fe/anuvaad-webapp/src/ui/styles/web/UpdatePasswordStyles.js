@@ -48,7 +48,7 @@ const UpdatePasswordStyles = theme => ({
     marginTop: "4%",
     marginLeft: "5%",
     width: "90%",
-    backgroundColor:'#1ca9c9',
+    backgroundColor:'#2C2799',
     borderRadius:"20px 20px 20px 20px",
     color:"#FFFFFF"
   },

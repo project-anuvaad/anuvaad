@@ -23,6 +23,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DeleteTmx from "../../../../flux/actions/apis/tmx/tmxDelete";
+import DataTable from "../../../components/web/common/DataTable";
 
 var delete_glossary = require("../../../../utils/deleteGlossary.operation");
 
@@ -170,7 +171,7 @@ class OrganizationGlossary extends React.Component {
           style={{
             borderRadius: "10px",
             color: "#FFFFFF",
-            backgroundColor: "#1C9AB7",
+            backgroundColor: "#2C2799",
             height: "35px",
             fontSize: "16px",
             textTransform: "none",
@@ -353,8 +354,8 @@ class OrganizationGlossary extends React.Component {
       }
     };
     return (
-      <div style={{ maxHeight: window.innerHeight, height: window.innerHeight, overflow: "auto" }}>
-        <div style={{ margin: "0% 3% 3% 3%", paddingTop: "7%" }}>
+      <div style={{ }}>
+        <div style={{ margin: "0% 3% 3% 3%", paddingTop: "2%" }}>
           <Header />
           {this.state.loading ?
             <Spinner />
@@ -362,7 +363,7 @@ class OrganizationGlossary extends React.Component {
             <MuiThemeProvider theme={getMuiTheme()}>
               {this.renderDeleteAllGlossaryButton()}
               {this.renderDeleteSelectedGlossaryConfirmBox()}
-              <MUIDataTable
+              <DataTable
                 title={translate("common.page.title.glossary")}
                 columns={columns}
                 options={options}
@@ -375,7 +376,7 @@ class OrganizationGlossary extends React.Component {
           <Snackbar
             open={this.state.open}
             message={this.state.message}
-            anchorOrigin={{ vertical: "top", horizontal: "right" }}
+            anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
             autoHideDuration={3000}
             onClose={this.handleClose}
             variant={this.state.variant}

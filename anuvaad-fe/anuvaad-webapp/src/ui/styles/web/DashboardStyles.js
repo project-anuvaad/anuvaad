@@ -15,8 +15,11 @@ const DashboardStyles = theme => ({
     marginTop: theme.spacing(3)
   },
   typographyHeader: {
-    paddingBottom: "12px", paddingTop: "2%"
-
+    paddingBottom: "12px", 
+    paddingTop: "2%",
+    fontfamily: `"Roboto", sans-serif ,sans-serif`,
+    fontSize: "1.35rem",
+    fontWeight: "700"
 
   },
   paper: {
@@ -87,7 +90,7 @@ const DashboardStyles = theme => ({
   progress: {
     position: 'relative',
     top: '40%',
-    color: '#1C9AB7'
+    color: '#2C2799'
   },
   progressDiv: {
     position: 'fixed',
