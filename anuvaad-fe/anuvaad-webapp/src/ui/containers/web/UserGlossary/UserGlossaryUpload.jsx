@@ -282,7 +282,7 @@ class UserGlossaryUpload extends React.Component {
             <div className={classes.root}>
                 {/* <Header /> */}
 
-                <Typography variant="h4" className={classes.typographyHeader}>
+                <Typography className={classes.typographyHeader}>
                     {"Create Glossary"}
                 </Typography>
                 <Paper className={classes.paper}>

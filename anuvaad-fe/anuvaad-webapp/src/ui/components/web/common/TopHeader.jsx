@@ -44,7 +44,8 @@ const useStyles = makeStyles((theme) => ({
         padding: 15,
         fontWeight: 700,
         color: "#000000",
-        size: "18px",
+        fontSize: "1.125rem",
+        // size: "200px",
         marginLeft: "38px",
         '&:hover': {
             backgroundColor: "#E0E0E0",
@@ -59,7 +60,8 @@ const useStyles = makeStyles((theme) => ({
         padding: 15,
         fontWeight: 700,
         color: "#000000",
-        size: "18px",
+        fontSize: "1.125rem",
+        // size: "18px",
         marginLeft: "38px",
         // backgroundColor: "#E0E0E0",
         // color: "#000000",
@@ -91,6 +93,8 @@ const useStyles = makeStyles((theme) => ({
     },
     userMenuButton: {
         // width: "100%",
+        fontSize: "1.125rem",
+        fontWeight: "700",
         marginTop: 5,
         '&:hover': {
             backgroundColor: "#E0E0E0"
@@ -98,11 +102,15 @@ const useStyles = makeStyles((theme) => ({
     },
     activeUserMenuButton: {
         // width: "100%",
+        fontSize: "1.125rem",
+        fontWeight: "700",
         marginTop: 5,
         backgroundColor: "#E0E0E0"
     },
     userMenuButtonText: {
         // width : "100%"
+        fontSize: "1.125rem",
+        fontWeight: "700",
     }
 }));
 
@@ -362,7 +370,7 @@ export default function TopHeader(props) {
                                 className: currentMenu === el.id ? highlightedMenuButton : menuButton,
                             }}
                         >
-                            {el.title}
+                            <Typography className={userMenuButtonText}>{el.title}</Typography>
                         </Button>
                     );
                 })}
@@ -417,7 +425,7 @@ export default function TopHeader(props) {
                                                             el.onclick(assignedOrgId)
                                                         }}
                                                     >
-                                                        <Typography className={userMenuButtonText} variant="button">{el.title}</Typography>
+                                                        <Typography className={userMenuButtonText}>{el.title}</Typography>
                                                     </Button>
                                                 )
                                             })
@@ -439,7 +447,7 @@ export default function TopHeader(props) {
                                 >
                                     <Avatar style={{ backgroundColor: "#2C2799" }}>{userName?.split("")[0].toLocaleUpperCase()}</Avatar>
                                 </IconButton>
-                                    {userName?.split(" ")[0]}
+                                    <Typography variant="subtitle1">{userName?.split(" ")[0]}</Typography>
                                 </Button>
                                 <Popover
                                     id={"simple-popover"}
@@ -473,7 +481,7 @@ export default function TopHeader(props) {
                                                             el.onclick(assignedOrgId)
                                                         }}
                                                     >
-                                                        <Typography className={userMenuButtonText} variant="button">{el.title}</Typography>
+                                                        <Typography className={userMenuButtonText}>{el.title}</Typography>
                                                     </Button>
                                                 )
                                             })

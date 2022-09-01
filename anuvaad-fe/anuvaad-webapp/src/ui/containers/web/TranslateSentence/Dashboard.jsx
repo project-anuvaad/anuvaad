@@ -263,7 +263,7 @@ class Dashboard extends React.Component {
 
     return (
       <div className={classes.root}>
-        <Typography variant="h4" className={classes.typographyHeader}>
+        <Typography className={classes.typographyHeader}>
           {translate("dashboard.page.heading.title")}
         </Typography>
         <Paper className={classes.paper}>
