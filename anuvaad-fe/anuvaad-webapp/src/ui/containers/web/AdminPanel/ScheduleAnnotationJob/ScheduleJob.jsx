@@ -84,13 +84,15 @@ class ScheduleJob extends React.Component {
             target_languages: [],
             description: '',
             array_of_users: [],
-            variant: 'success'
+            variant: 'success',
+            assignedOrgId: JSON.parse(localStorage.getItem("userProfile"))?.orgID,
         }
     }
 
     processFetchBulkUserDetailAPI = (offset, limit, updateExisiting = false, updateUserDetail = false, userIDs = [], userNames = [], roleCodes = []) => {
         const token = localStorage.getItem("token");
-        const userObj = new FetchUserDetails(offset, limit, token, updateExisiting, updateUserDetail, userIDs, userNames, roleCodes)
+        const assignedOrgIdArr = [this.state.assignedOrgId];
+        const userObj = new FetchUserDetails(offset, limit, token, updateExisiting, updateUserDetail, userIDs, userNames, roleCodes, assignedOrgIdArr);
         this.props.APITransport(userObj)
     }
 
