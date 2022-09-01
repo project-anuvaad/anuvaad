@@ -149,7 +149,7 @@ const style = createMuiTheme({
     },
 
     MUIDataTableBodyCell: {
-      root: { padding: ".5rem .5rem .5rem .8rem", textTransform: "capitalize" },
+      root: { padding: ".5rem .5rem .5rem .8rem" },
 
       stackedParent: {
         "@media (max-width: 400px)": {
