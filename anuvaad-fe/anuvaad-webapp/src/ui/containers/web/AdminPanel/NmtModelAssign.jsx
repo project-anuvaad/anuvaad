@@ -563,7 +563,7 @@ class CreateUser extends React.Component {
     const { classes } = this.props;
     let roles = localStorage.getItem('roles')
     return (
-      <div className={classes.root} style={{ marginTop: '5%', marginBottom: '5%', }}>
+      <div className={classes.root} style={{ marginTop: '3%', marginBottom: '5%', }}>
         <Toolbar />
         <Typography className={classes.typographyHeader}>
           Assign NMT Model
