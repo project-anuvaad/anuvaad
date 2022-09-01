@@ -51,7 +51,7 @@ class ViewDocument extends React.Component {
       timeOut: 3000,
       variant: "info",
       isInputActive: false,
-      inputPageNumber: 0,
+      inputPageNumber: 1,
     };
   }
 
@@ -83,6 +83,24 @@ class ViewDocument extends React.Component {
       );
     }
     this.makeAPICallDocumentsTranslationProgress();
+
+    window.addEventListener("keydown", (e)=>this.keyPress(e));
+    return () => {
+      window.removeEventListener("keydown", (e)=>this.keyPress(e));
+    }
+  }
+
+  keyPress = (e) => {
+    if (e.code === "Enter" && this.state.isInputActive) {
+      // handleTransliterationModelClose();
+      console.log("enter key press.");
+      this.onChangePageMAnually();
+    }
+  };
+
+  onChangePageMAnually = () => {
+    this.tableRef.current.changePage(Number(this.state.inputPageNumber)-1)
+    this.setState({currentPageIndex: this.state.inputPageNumber-1})
   }
 
   componentWillUnmount() {
@@ -419,6 +437,10 @@ class ViewDocument extends React.Component {
       this.setState({ inputPageNumber: event.target.value })
     } else if (event.target.value > totalPageCount) {
       this.setState({ inputPageNumber: totalPageCount })
+    } else if (event.target.value == 0) {
+      this.setState({ inputPageNumber: 1 })
+    } else if (event.target.value < 0) {
+      this.setState({ inputPageNumber: 1 })
     }
   }
 
@@ -712,7 +734,7 @@ class ViewDocument extends React.Component {
       ) => {
         const startIndex = page * rowsPerPage;
         const endIndex = (page + 1) * rowsPerPage;
-        const totalPageCount = Math.ceil(this.props.job_details.count / 10) - 1;
+        const totalPageCount = Math.ceil(this.props.job_details.count / 10);
         // totalPageCount = totalPageCount > 0 && 
         // console.log("this.state.currentPageIndex", this.state.currentPageIndex);
         // console.log("totalPageCount", totalPageCount);
@@ -733,7 +755,7 @@ class ViewDocument extends React.Component {
 
                       inputProps: {
                         style: { textAlign: "center" },
-                        max: totalPageCount, min: 0
+                        max: totalPageCount, min: 1
                       }
                     }}
                     onChange={(event) => this.handleInputPageChange(event, totalPageCount)}
@@ -744,9 +766,7 @@ class ViewDocument extends React.Component {
                     color="primary"
                     style={{borderRadius: "15%"}}
                     onClick={() => {
-                      // console.log("this.tableRef.current.changePage(Number(this.state.currentPageIndex)) ", this.tableRef.current)
-                      this.tableRef.current.changePage(Number(this.state.inputPageNumber))
-                      this.setState({currentPageIndex: this.state.inputPageNumber})
+                      this.onChangePageMAnually()
                     }}
                   >Go</Button>
                   <IconButton 
@@ -758,7 +778,7 @@ class ViewDocument extends React.Component {
                     disabled={this.state.currentPageIndex == 0}>
                     <ChevronLeftIcon />
                   </IconButton>
-                  <Typography variant="caption" style={{ fontSize: "0.9rem", fontWeight: "600" }}> {this.state.currentPageIndex} of {totalPageCount} </Typography>
+                  <Typography variant="caption" style={{ fontSize: "0.9rem", fontWeight: "600" }}> {parseInt(this.state.currentPageIndex+1)} of {parseInt(totalPageCount)} </Typography>
                   <IconButton 
                     onClick={()=>{
                       this.setState({currentPageIndex: this.state.currentPageIndex+1})

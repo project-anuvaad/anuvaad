@@ -252,7 +252,7 @@ class CreateUser extends React.Component {
     return (
       <div className={classes.root}>
         <Toolbar />
-        <Typography variant="h4" className={classes.typographyHeader}>
+        <Typography className={classes.typographyHeader}>
           Add Organization
         </Typography>
         <Paper className={classes.paper}>

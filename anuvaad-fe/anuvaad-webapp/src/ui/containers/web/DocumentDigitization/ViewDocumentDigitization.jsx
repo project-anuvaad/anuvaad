@@ -24,12 +24,17 @@ import togglebtnstatus from '../../../../flux/actions/apis/view_digitized_docume
 import fetchnextpage from '../../../../flux/actions/apis/view_digitized_document/fetch_page_number';
 import switch_styles from '../../../../flux/actions/apis/view_digitized_document/switch_styles';
 import DataTable from '../../../components/web/common/DataTable';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import { Button, TableCell, TableFooter, TableRow, TextField, Typography } from '@material-ui/core';
 
 const TELEMETRY = require("../../../../utils/TelemetryManager");
 
 class ViewDocumentDigitization extends React.Component {
     constructor() {
         super();
+        this.tableRef = React.createRef();
+        this.pageInputRef = React.createRef();
         this.state = {
             showInfo: false,
             offset: 0,
@@ -39,7 +44,9 @@ class ViewDocumentDigitization extends React.Component {
             dialogMessage: null,
             timeOut: 3000,
             variant: "info",
-            showLoader: false
+            showLoader: false,
+            isInputActive: false,
+            inputPageNumber: 1,
         }
     }
 
@@ -150,7 +157,37 @@ class ViewDocumentDigitization extends React.Component {
             );
         }
         // this.makeAPICallDocumentsTranslationProgress();
+
+        window.addEventListener("keydown", (e)=>this.keyPress(e));
+        return () => {
+          window.removeEventListener("keydown", (e)=>this.keyPress(e));
+        }
     }
+
+    keyPress = (e) => {
+        if (e.code === "Enter" && this.state.isInputActive) {
+          // handleTransliterationModelClose();
+          console.log("enter key press.");
+          this.onChangePageMAnually();
+        }
+      };
+    
+      onChangePageMAnually = () => {
+        this.tableRef.current.changePage(Number(this.state.inputPageNumber)-1)
+        this.setState({currentPageIndex: this.state.inputPageNumber-1})
+      }
+
+      handleInputPageChange = (event, totalPageCount) =>{
+        if (event.target.value <= totalPageCount) {
+          this.setState({ inputPageNumber: event.target.value })
+        } else if (event.target.value > totalPageCount) {
+          this.setState({ inputPageNumber: totalPageCount })
+        } else if (event.target.value == 0) {
+          this.setState({ inputPageNumber: 1 })
+        } else if (event.target.value < 0) {
+          this.setState({ inputPageNumber: 1 })
+        }
+      }
 
     componentWillUnmount() {
         clearInterval(this.timerId);
@@ -637,6 +674,76 @@ class ViewDocumentDigitization extends React.Component {
                 direction: "desc",
             },
             page: this.state.currentPageIndex,
+            customFooter: (
+                count,
+                page,
+                rowsPerPage,
+                changeRowsPerPage,
+                changePage
+              ) => {
+                const startIndex = page * rowsPerPage;
+                const endIndex = (page + 1) * rowsPerPage;
+                const totalPageCount = Math.ceil(this.props.digitizeddocument.count / 10);
+                // totalPageCount = totalPageCount > 0 && 
+                // console.log("this.state.currentPageIndex", this.state.currentPageIndex);
+                // console.log("totalPageCount", totalPageCount);
+                return (
+        
+                  <TableFooter>
+                    <TableRow>
+                      <TableCell colSpan={12}>
+                        <div style={{ textAlign: "end", justifyContent: "space-evenly" }}>
+                          <Typography variant="caption" style={{ fontSize: "0.9rem", fontWeight: "600" }}>Page No. - </Typography>
+                          <TextField
+                            type="number"
+                            style={{ width: "4%", marginRight: "1%", marginLeft: "1%" }}
+                            ref={this.pageInputRef}
+                            onFocus={() => this.setState({ isInputActive: true })}
+                            onBlur={() => this.setState({ isInputActive: false })}
+                            InputProps={{
+        
+                              inputProps: {
+                                style: { textAlign: "center" },
+                                max: totalPageCount, min: 1
+                              }
+                            }}
+                            onChange={(event) => this.handleInputPageChange(event, totalPageCount)}
+                            value={this.state.inputPageNumber}
+                          />
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            style={{borderRadius: "15%"}}
+                            onClick={() => {
+                              this.onChangePageMAnually()
+                            }}
+                          >Go</Button>
+                          <IconButton 
+                            onClick={()=>{
+                              this.setState({currentPageIndex: this.state.currentPageIndex-1})
+                              this.tableRef.current.changePage(Number(this.state.currentPageIndex-1))
+                            }}
+                            tabIndex={this.state.currentPageIndex-1}
+                            disabled={this.state.currentPageIndex == 0}>
+                            <ChevronLeftIcon />
+                          </IconButton>
+                          <Typography variant="caption" style={{ fontSize: "0.9rem", fontWeight: "600" }}> {parseInt(this.state.currentPageIndex+1)} of {parseInt(totalPageCount)} </Typography>
+                          <IconButton 
+                            onClick={()=>{
+                              this.setState({currentPageIndex: this.state.currentPageIndex+1})
+                              this.tableRef.current.changePage(Number(this.state.currentPageIndex+1))
+                            }}
+                            tabIndex={this.state.currentPageIndex+1}
+                            disabled={this.state.currentPageIndex == totalPageCount}>
+                            <ChevronRightIcon />
+                          </IconButton>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  </TableFooter>
+        
+                );
+              }
         };
         return (
             <div style={{}}>
@@ -649,6 +756,7 @@ class ViewDocumentDigitization extends React.Component {
                                 data={this.getJobsSortedByTimestamp()}
                                 columns={columns}
                                 options={options}
+                                innerRef={this.tableRef}
                             />
                         </MuiThemeProvider>
                     )}
