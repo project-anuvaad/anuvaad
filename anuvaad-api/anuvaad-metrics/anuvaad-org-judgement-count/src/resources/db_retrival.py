@@ -167,7 +167,8 @@ def FetchJudgementCount():
         else:
             from_date = datetime.strptime("2000-01-01", '%Y-%m-%d')
             now = datetime.now()
-            end_date  = now.strftime("%Y-%m-%d")
+            date_time = now.strftime("%Y-%m-%d")
+            end_date  = datetime.strptime(str(date_time),'%Y-%m-%d')
         try:
             for doc in user_docs:
                 log_info(f'fetching details for {doc["_id"]} users',MODULE_CONTEXT)
@@ -260,7 +261,8 @@ def FetchJudgementCount_user_wise():
         else:
             from_date = datetime.strptime("2000-01-01", '%Y-%m-%d')
             now = datetime.now()
-            end_date  = now.strftime("%Y-%m-%d")
+            date_time = now.strftime("%Y-%m-%d")
+            end_date  = datetime.strptime(str(date_time),'%Y-%m-%d')
         # else:
         #     role = body['role']
         #     email= body['email']
