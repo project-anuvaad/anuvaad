@@ -45,7 +45,8 @@ def set_bg_image(page_data,bg_image_path,page_index):
     bg_dic['boundingBox'] = {'vertices' : copy.deepcopy(page_data['boundingBox']['vertices'])}
     bg_dic['class']  = 'BGIMAGE'
     bg_dic['base64'] = 'null'
-    bg_dic['data']  = bg_image_path
+    bg_dic['data']  = "null"
+    # bg_dic['data']  = bg_image_path
     page_data['regions'].insert(0,bg_dic)
     return page_data
 

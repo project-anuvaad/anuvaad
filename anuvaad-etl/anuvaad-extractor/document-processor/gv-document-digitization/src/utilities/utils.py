@@ -4,6 +4,10 @@ import time
 import json
 from anuvaad_auditor.errorhandler import post_error
 from anuvaad_auditor.errorhandler import post_error_wf
+from anuvaad_auditor.loghandler import log_info
+from anuvaad_auditor.loghandler import log_exception
+import src.utilities.app_context as app_context
+
 
 class FileOperation(object):
 
@@ -24,7 +28,7 @@ class FileOperation(object):
             file_type = files['type']
             identifier = files['identifier']
         except Exception as e:
-            log_exception("accessing_files, keys not found ",  LOG_WITHOUT_CONTEXT, e)
+            log_exception("accessing_files, keys not found ",app_context.application_context, e)
 
         return filepath, file_type, identifier
 
@@ -42,7 +46,7 @@ class FileOperation(object):
             tool_name = json_data['tool']
             step_order = json_data['stepOrder']
         except Exception as e:
-            log_exception("json_input_format, keys not found or mismatch in json inputs ",  LOG_WITHOUT_CONTEXT, e)
+            log_exception("json_input_format, keys not found or mismatch in json inputs ",app_context.application_context, e)
         return input_data, workflow_id, jobid, tool_name, step_order
 
     # output format for individual pdf file
