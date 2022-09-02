@@ -58,9 +58,9 @@ def text_extraction(file_properties,image_paths,file):
             else:
                 page_output,_ = get_text(image_path,page_dict,font_info)
 
-
-            save_path = mask_image(image_path, page_output, idx, file_properties, width, height)
-            page_output = set_bg_image(page_output, save_path, idx)
+            if config.mask_img == True:
+                save_path = mask_image(image_path, page_output, idx, file_properties, width, height)
+                page_output = set_bg_image(page_output, save_path, idx)
             page_res.append(page_output)
             
         file['pages'] = page_res
