@@ -26,10 +26,16 @@ class ViewScheduledJobsHeader extends React.Component {
         history.push(`${process.env.PUBLIC_URL}/schedule-annotation-job`);
     }
 
+    shouldShowCreateJobButton = () => {
+        const userRole = localStorage.getItem("roles");
+        return userRole == "ADMIN" ? true : false
+    }
+
     renderOption() {
+        console.log("this.shouldShowCreateJobButton()", this.shouldShowCreateJobButton());
         return (
             <div>
-                <Button
+                {this.shouldShowCreateJobButton() && <Button
                     id='create-user'
                     variant="contained"
                     color="primary"
@@ -43,7 +49,7 @@ class ViewScheduledJobsHeader extends React.Component {
                     size="large"
                     onClick={this.handleOnClick}>
                     Create Job
-                </Button>
+                </Button>}
             </div >
         );
     }
