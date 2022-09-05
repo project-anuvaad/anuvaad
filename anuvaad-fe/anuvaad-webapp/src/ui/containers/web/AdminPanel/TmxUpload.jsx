@@ -172,7 +172,14 @@ class TmxUpload extends Component {
     return (
       <Grid item xs={12} sm={12} lg={12} xl={12} className={this.props.classes.rowData}>
         <Grid item xs={12} sm={12} lg={12} xl={12} className={this.props.classes.label}>
-          <Typography value="" variant="h5">
+          <Typography
+            style={{
+              fontSize: "0.9rem",
+              fontWeight: "600",
+              fontFamily: "Roboto",
+              marginBottom: 2
+            }}
+          >
             Organization
           </Typography>
         </Grid>
@@ -200,7 +207,7 @@ class TmxUpload extends Component {
               }}
             >
               {
-                this.props.organizationList.map((id, i) => <MenuItem id={i} key={i} value={id}>{id}</MenuItem>)
+                this.props.organizationList.map((id, i) => <MenuItem id={i} key={i} style={{fontSize: "16px", fontFamily: "Roboto"}} value={id}>{id}</MenuItem>)
               }
             </Select>
           </FormControl>
@@ -309,8 +316,8 @@ class TmxUpload extends Component {
       <div>
 
 
-        <div className={classes.div}>
-        <Typography value="" variant="h4" className={classes.typographyHeader}>
+        <div className={classes.div} style={{paddingTop: "2%", fontSize: "19px", fontWeight: "500"}}>
+        <Typography className={classes.typographyHeader}>
             {translate("common.page.label.glossaryUpload")}
           </Typography>
           <Paper elevation={3} style={{minHeight:'255px'}} className={classes.paper}>

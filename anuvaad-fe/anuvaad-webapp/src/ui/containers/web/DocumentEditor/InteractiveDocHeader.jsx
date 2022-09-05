@@ -392,7 +392,7 @@ class InteractiveDocHeader extends React.Component {
               onClose={this.handleClose.bind(this)}
             >
               <MenuItem
-                style={{ borderTop: "1px solid #D6D6D6" }}
+                style={{ borderTop: "1px solid #D6D6D6", fontFamily: "Roboto", fontSize: "0.875rem", fontWeight: "400" }}
                 onClick={() => {
                   this.props.SwitchView("View1");
                   this.setState({ optionsEl: false });
@@ -401,7 +401,7 @@ class InteractiveDocHeader extends React.Component {
                 Continuous View
               </MenuItem>
               <MenuItem
-                style={{ borderTop: "1px solid #D6D6D6" }}
+                style={{ borderTop: "1px solid #D6D6D6", fontFamily: "Roboto", fontSize: "0.875rem", fontWeight: "400" }}
                 onClick={(e) => {
                   this.props.SwitchView("View2");
                   this.setState({ optionsEl: false });
@@ -432,7 +432,7 @@ class InteractiveDocHeader extends React.Component {
           {/* {workflow !== 'WF_A_FTTKTR' && */}
           <>
             <MenuItem
-              style={{ borderTop: "1px solid #D6D6D6" }}
+              style={{ borderTop: "1px solid #D6D6D6", fontFamily: "Roboto", fontSize: "0.875rem", fontWeight: "400" }}
               onClick={() => {
                 this.fetchFile("txt");
               }}
@@ -440,7 +440,7 @@ class InteractiveDocHeader extends React.Component {
               As TXT
             </MenuItem>
             <MenuItem
-              style={{ borderTop: "1px solid #D6D6D6" }}
+              style={{ borderTop: "1px solid #D6D6D6", fontFamily: "Roboto", fontSize: "0.875rem", fontWeight: "400" }}
               onClick={() => {
                 this.fetchFile("xlsx");
               }}
@@ -451,7 +451,7 @@ class InteractiveDocHeader extends React.Component {
           {/* } */}
 
           {!this.props.preview && workflow !== 'WF_A_FTTKTR' && <MenuItem
-            style={{ borderTop: "1px solid #D6D6D6" }}
+            style={{ borderTop: "1px solid #D6D6D6", fontFamily: "Roboto", fontSize: "0.875rem", fontWeight: "400" }}
             onClick={() => {
               this.setState({ anchorEl: null })
               this.props.onShowPreview()
@@ -461,14 +461,14 @@ class InteractiveDocHeader extends React.Component {
           </MenuItem>}
           {workflow !== "WF_A_FTTKTR" ? (
             <MenuItem
-              style={{ borderTop: "1px solid #D6D6D6" }}
+              style={{ borderTop: "1px solid #D6D6D6", fontFamily: "Roboto", fontSize: "0.875rem", fontWeight: "400" }}
               onClick={this.fetchDocxFile}
             >
               As DOCX
             </MenuItem>
           ) : (
             <MenuItem
-              style={{ borderTop: "1px solid #D6D6D6" }}
+              style={{ borderTop: "1px solid #D6D6D6", fontFamily: "Roboto", fontSize: "0.875rem", fontWeight: "400" }}
               onClick={this.fetchDigitalFile}
             >
               As {type}
@@ -559,7 +559,18 @@ class InteractiveDocHeader extends React.Component {
               }}
             ></div> */}
 
-        <Typography variant="h5" color="inherit" className={classes.flex} style={{ overflow: "hidden", maxWidth: "30%", textOverflow: "ellipsis" }}>
+        <Typography
+          color="inherit"
+          // className={classes.flex}
+          style={{
+            overflow: "hidden",
+            maxWidth: "30%",
+            textOverflow: "ellipsis",
+            fontSize: "1rem",
+            fontFamily: "Roboto",
+            fontWeight: "700",
+          }}
+        >
           <IconButton
             onClick={() => {
               this.props.clear_html_link();
