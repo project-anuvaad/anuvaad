@@ -406,7 +406,14 @@ class PdfUpload extends Component {
     return (
       <Grid item xs={12} sm={12} lg={12} xl={12} style={{ marginTop: "3%" }}>
         <Grid item xs={12} sm={12} lg={12} xl={12}>
-          <Typography value="" variant="h5">
+          <Typography 
+            style={{
+              fontSize: "0.9rem",
+              fontWeight: "600",
+              fontFamily: "Roboto",
+              marginBottom: 2
+            }}
+          >
             {translate("common.page.label.sourceLang")}{" "}
           </Typography>
         </Grid>
@@ -430,6 +437,7 @@ class PdfUpload extends Component {
               <MenuItem
                 id={lang.language_name}
                 key={lang.language_code}
+                style={{fontSize: "16px", fontFamily: "Roboto"}}
                 value={lang.language_code + ""}
               >
                 {lang.language_name}
@@ -447,7 +455,14 @@ class PdfUpload extends Component {
     return (
       <Grid item xs={12} sm={12} lg={12} xl={12}>
         <Grid item xs={12} sm={12} lg={12} xl={12}>
-          <Typography value="" variant="h5">
+          <Typography 
+            style={{
+              fontSize: "0.9rem",
+              fontWeight: "600",
+              fontFamily: "Roboto",
+              marginBottom: 2
+            }}
+          >
             {translate("common.page.label.targetLang")}&nbsp;
           </Typography>
         </Grid>
@@ -472,6 +487,7 @@ class PdfUpload extends Component {
               <MenuItem
                 id={lang.language_name}
                 key={lang.language_code}
+                style={{fontSize: "16px", fontFamily: "Roboto"}}
                 value={lang.language_code + ""}
               >
                 {lang.language_name}
@@ -489,21 +505,20 @@ class PdfUpload extends Component {
       <div style={{  }}>
         <Toolbar />
 
-        <div className={classes.div}>
+        <div className={classes.div} style={{paddingTop: "2%", fontSize: "19px", fontWeight: "500"}}>
           <Typography
-            value=""
-            variant="h4"
+            // variant="h4"
             className={classes.typographyHeader}
           >
             {this.state.uploadType ? "Document Translate" : "Data Collection"}
           </Typography>
           <br />
           {this.state.uploadType ? (
-            <Typography variant="h6" className={classes.note}>
+            <Typography variant="subtitle1" style={{fontSize: "1rem"}} className={classes.note}>
               {translate("pdf_upload.page.label.uploadMessage")}
             </Typography>
           ) : (
-            <Typography className={classes.typographySubHeader}>
+            <Typography variant="subtitle1" style={{fontSize: "1rem"}} className={classes.typographySubHeader}>
               "Upload file that you want to collect data."
             </Typography>
           )}
@@ -548,7 +563,14 @@ class PdfUpload extends Component {
 
                 <Grid item xs={12} sm={12} lg={12} xl={12}>
                   <Grid item xs={12} sm={12} lg={12} xl={12}>
-                    <Typography variant="h5">Enter File Description</Typography>
+                    <Typography 
+                      style={{
+                        fontSize: "0.9rem",
+                        fontWeight: "600",
+                        fontFamily: "Roboto",
+                        marginBottom: 2
+                      }}
+                    >Enter File Description</Typography>
                   </Grid>
                   <Grid item xs={12} sm={12} lg={12} xl={12}>
                     <TextField

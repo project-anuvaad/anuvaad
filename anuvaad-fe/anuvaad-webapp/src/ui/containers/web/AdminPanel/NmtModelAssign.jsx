@@ -283,7 +283,14 @@ class CreateUser extends React.Component {
     const { classes } = this.props
     return (<Grid item xs={12} sm={12} lg={12} xl={12} className={this.props.classes.rowData}>
       <Grid item xs={6} sm={6} lg={8} xl={8} className={this.props.classes.label} style={{ marginTop: '2%' }}>
-        <Typography value="" variant="h5">
+        <Typography
+          style={{
+            fontSize: "0.9rem",
+            fontWeight: "600",
+            fontFamily: "Roboto",
+            marginBottom: 2
+          }}
+        >
           {translate("common.page.label.sourceLang")}{" "}
         </Typography>
       </Grid>
@@ -307,7 +314,7 @@ class CreateUser extends React.Component {
         >
           {
             this.state.source_languages.map(lang =>
-              <MenuItem id={lang.language_name} key={lang.language_code} value={lang.language_code + ''}>{lang.language_name}</MenuItem>)
+              <MenuItem id={lang.language_name} key={lang.language_code} style={{fontSize: "16px", fontFamily: "Roboto"}} value={lang.language_code + ''}>{lang.language_name}</MenuItem>)
           }
         </Select>
       </Grid>
@@ -319,7 +326,14 @@ class CreateUser extends React.Component {
     const { classes } = this.props
     return (<Grid item xs={12} sm={12} lg={12} xl={12} className={this.props.classes.rowData}>
       <Grid item xs={6} sm={6} lg={8} xl={8} className={this.props.classes.label} style={{ marginTop: '2%' }}>
-        <Typography value="" variant="h5">
+        <Typography
+            style={{
+              fontSize: "0.9rem",
+              fontWeight: "600",
+              fontFamily: "Roboto",
+              marginBottom: 2
+            }}
+          >
           {translate("common.page.label.targetLang")}{" "}
         </Typography>
       </Grid>
@@ -343,7 +357,7 @@ class CreateUser extends React.Component {
         >
           {
             this.state.target_languages.map(lang =>
-              <MenuItem key={lang.language_code} value={lang.language_code}>{lang.language_name}</MenuItem>)
+              <MenuItem key={lang.language_code} value={lang.language_code} style={{fontSize: "16px", fontFamily: "Roboto"}}>{lang.language_name}</MenuItem>)
           }
         </Select>
       </Grid>
@@ -355,7 +369,14 @@ class CreateUser extends React.Component {
     const { classes } = this.props
     return (<Grid item xs={12} sm={12} lg={12} xl={12} className={this.props.classes.rowData}>
       <Grid item xs={6} sm={6} lg={8} xl={8} className={this.props.classes.label} style={{ marginTop: '2%' }}>
-        <Typography value="" variant="h5">
+        <Typography
+          style={{
+            fontSize: "0.9rem",
+            fontWeight: "600",
+            fontFamily: "Roboto",
+            marginBottom: 2
+          }}
+        >
           Select model
         </Typography>
       </Grid>
@@ -380,7 +401,7 @@ class CreateUser extends React.Component {
           {
 
             this.state.modelList.map(model =>
-              <MenuItem key={model.uuid} value={model}>{model.model_name}</MenuItem>)
+              <MenuItem key={model.uuid} value={model} style={{fontSize: "16px", fontFamily: "Roboto"}}>{model.model_name}</MenuItem>)
           }
         </Select>
       </Grid>
@@ -469,7 +490,14 @@ class CreateUser extends React.Component {
   renderExistingUser = () => {
     return <Grid item xs={12} sm={12} lg={12} xl={12} className={this.props.classes.rowData}>
       <Grid item xs={6} sm={6} lg={8} xl={8} className={this.props.classes.label} style={{ marginTop: '2%' }}>
-        <Typography variant="h5">
+        <Typography
+          style={{
+            fontSize: "0.9rem",
+            fontWeight: "600",
+            fontFamily: "Roboto",
+            marginBottom: 2
+          }}
+        >
           Existing Users
         </Typography>
       </Grid>
@@ -491,7 +519,14 @@ class CreateUser extends React.Component {
         roles !== 'TRANSLATOR' &&
         <>
           <Grid item xs={6} sm={6} lg={8} xl={8} className={this.props.classes.label} style={{ marginTop: '2%' }}>
-            <Typography variant="h5">
+            <Typography
+              style={{
+                fontSize: "0.9rem",
+                fontWeight: "600",
+                fontFamily: "Roboto",
+                marginBottom: 2
+              }}
+            >
               Assign Users
             </Typography>
           </Grid>
@@ -545,13 +580,28 @@ class CreateUser extends React.Component {
     return (
       <Grid container style={{ marginTop: '4%' }}>
         <Grid item xs={6} sm={6} lg={8} xl={8} className={this.props.classes.label}>
-          <Typography value="" variant="h5">
+          <Typography
+            style={{
+              fontSize: "0.9rem",
+              fontWeight: "600",
+              fontFamily: "Roboto",
+              marginBottom: 2
+            }}
+          >
             {"Current Active Model"}{" "}
           </Typography>
         </Grid>
 
         <Grid item xs={6} sm={6} lg={4} xl={4} >
-          <Typography variant="h5" className={this.props.classes.label}>
+          <Typography 
+            style={{
+              fontSize: "1rem",
+              fontWeight: "700",
+              fontFamily: "Roboto",
+              marginBottom: 2
+            }} 
+            className={this.props.classes.label}
+          >
             {this.state.modelName}
           </Typography>
         </Grid>
@@ -563,9 +613,9 @@ class CreateUser extends React.Component {
     const { classes } = this.props;
     let roles = localStorage.getItem('roles')
     return (
-      <div className={classes.root} style={{ marginTop: '3%', marginBottom: '5%', }}>
+      <div className={classes.root}>
         <Toolbar />
-        <Typography className={classes.typographyHeader}>
+        <Typography className={classes.typographyHeader} style={{paddingTop: "2%", fontSize: "19px", fontWeight: "500"}}>
           Assign NMT Model
         </Typography>
         <Paper className={classes.paper}>

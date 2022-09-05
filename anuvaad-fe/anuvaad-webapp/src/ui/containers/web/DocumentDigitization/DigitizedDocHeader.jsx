@@ -207,7 +207,7 @@ class DigitizedDocHeader extends React.Component {
                     onClose={this.handleClose.bind(this)}
                 >
                     <MenuItem
-                        style={{ borderTop: "1px solid #D6D6D6" }}
+                        style={{ borderTop: "1px solid #D6D6D6", fontFamily: "Roboto", fontSize: "0.875rem", fontWeight: "400" }}
                         onClick={() => {
 
                             this.setState({ anchorEl: null })
@@ -218,7 +218,7 @@ class DigitizedDocHeader extends React.Component {
                         As TXT
                     </MenuItem>
                     <MenuItem
-                        style={{ borderTop: "1px solid #D6D6D6" }}
+                        style={{ borderTop: "1px solid #D6D6D6", fontFamily: "Roboto", fontSize: "0.875rem", fontWeight: "400" }}
                         onClick={() => {
                             this.setState({ anchorEl: null })
                             // this.props.onShowPreview()
@@ -228,7 +228,7 @@ class DigitizedDocHeader extends React.Component {
                         As PDF
                     </MenuItem>
                     <MenuItem
-                        style={{ borderTop: "1px solid #D6D6D6" }}
+                        style={{ borderTop: "1px solid #D6D6D6", fontFamily: "Roboto", fontSize: "0.875rem", fontWeight: "400" }}
                         onClick={this.fetchDocxFile}
                     >
                         As DOCX
@@ -254,7 +254,18 @@ class DigitizedDocHeader extends React.Component {
                     backgroundColor: "#f0f0f0"
                 }}
             >
-                <Typography variant="h5" color="inherit" className={classes.flex} style={{ overflow: "hidden", maxWidth: "30%", textOverflow: "ellipsis" }}>
+                <Typography 
+                    color="inherit" 
+                    // className={classes.flex} 
+                    style={{ 
+                            overflow: "hidden",
+                            maxWidth: "30%", 
+                            textOverflow: "ellipsis",
+                            fontSize: "1rem",
+                            fontFamily: "Roboto",
+                            fontWeight: "700",
+                        }}
+                >
                     <IconButton
                         onClick={() => {
                             this.props.edit_status && this.props.startediting()
