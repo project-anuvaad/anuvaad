@@ -190,21 +190,21 @@ class UserProfile extends React.Component {
 
     return (
       <div className={classes.root}>
-        <Typography variant="h4" className={classes.header}>
+        <Typography style={{paddingTop: "2%", fontSize: "19px", fontWeight: "500", color: "black"}} className={classes.header}>
           {translate("common.page.label.myProfile")}
         </Typography>
         <Paper className={classes.paper}>
           <Grid container spacing={4}>
             <Grid item xs={12} sm={12} lg={12} xl={12} className={classes.dataRow} style={{ marginTop: '0px' }}>
               <Grid item xs={5} sm={5} lg={5} xl={5} style={{ textAlign: 'left' }}>
-                <Typography value="" variant="h5" >
+                <Typography style={{fontSize: "1rem", fontWeight: "600", fontFamily: "Roboto"}} >
                   Name{" "}
                 </Typography>
               </Grid>
               <Grid item xs={6} sm={6} lg={6} xl={6} style={{ textAlign: 'left' }}>
                 {/* <br /> */}
                 {/* <br /> */}
-                <Typography value="" variant="h5" style={{ textTransform: "capitalize" }}>
+                <Typography style={{fontSize: "1rem", fontWeight: "400", fontFamily: "Roboto", textTransform: "capitalize"}}>
                   {" "}
                   {this.state.userDetails.name}{" "}
                 </Typography>
@@ -212,14 +212,14 @@ class UserProfile extends React.Component {
             </Grid>
             {/* <Grid item xs={12} sm={12} lg={12} xl={12} className={classes.dataRow}>
               <Grid item xs={5} sm={5} lg={5} xl={5} style={{ textAlign: 'left' }}>
-                <Typography value="" variant="h5">
+                <Typography style={{fontSize: "1rem", fontWeight: "600", fontFamily: "Roboto"}}>
                   {translate("common.page.label.lastName")}{" "}
                 </Typography>
               </Grid>
               <Grid item xs={6} sm={6} lg={6} xl={6} style={{ textAlign: 'left' }}>
                 {/* <br />
                 <br /> */}
-            {/* <Typography value="" variant="h5" style={{ textTransform: "capitalize" }}>
+            {/* <Typography style={{fontSize: "1rem", fontWeight: "400", fontFamily: "Roboto", textTransform: "capitalize"}}>
                   {" "}
                   {this.state.userDetails.lastname}{" "}
                 </Typography>
@@ -227,14 +227,14 @@ class UserProfile extends React.Component {
             </Grid>  */}
             <Grid item xs={12} sm={12} lg={12} xl={12} className={classes.dataRow}>
               <Grid item xs={5} sm={5} lg={5} xl={5} style={{ textAlign: 'left' }}>
-                <Typography value="" variant="h5" >
+                <Typography style={{fontSize: "1rem", fontWeight: "600", fontFamily: "Roboto"}} >
                   {translate("common.page.label.email")}{" "}
                 </Typography>
               </Grid>
               <Grid item xs={6} sm={6} lg={6} xl={6} style={{ textAlign: 'left' }}>
                 {/* <br />
                 <br /> */}
-                <Typography value="" variant="h5" style={{ marginTop: "-1%" }}>
+                <Typography style={{fontSize: "1rem", fontWeight: "400", fontFamily: "Roboto", marginTop: "-1%"}}>
                   {" "}
                   {this.state.userDetails.email}{" "}
                 </Typography>
@@ -243,7 +243,7 @@ class UserProfile extends React.Component {
 
             <Grid item xs={12} sm={12} lg={12} xl={12} className={classes.dataRow}>
               <Grid item xs={5} sm={5} lg={5} xl={5} style={{ textAlign: 'left' }}>
-                <Typography value="" variant="h5">
+                <Typography style={{fontSize: "1rem", fontWeight: "600", fontFamily: "Roboto"}}>
                   {translate("profile.page.label.role")}{" "}
                 </Typography>
               </Grid>
@@ -251,7 +251,7 @@ class UserProfile extends React.Component {
                 {/* <br />
                 <br />
                 <br /> */}
-                <Typography value="" variant="h5" style={{ marginTop: "-1%" }}>
+                <Typography style={{fontSize: "1rem", fontWeight: "400", fontFamily: "Roboto", marginTop: "-1%"}}>
                   {" "}
                   {useRole1 ? useRole1.join() : ""}
                   {/* [{useRole}]{" "} */}
@@ -261,7 +261,7 @@ class UserProfile extends React.Component {
 
             <Grid item xs={12} sm={12} lg={12} xl={12} className={classes.dataRow}>
               <Grid item xs={5} sm={5} lg={5} xl={5} style={{ textAlign: 'left' }}>
-                <Typography value="" variant="h5">
+                <Typography style={{fontSize: "1rem", fontWeight: "600", fontFamily: "Roboto"}}>
                   {translate("profile.page.label.org")}{" "}
                 </Typography>
               </Grid>
@@ -269,7 +269,7 @@ class UserProfile extends React.Component {
                 {/* <br />
                 <br />
                 <br /> */}
-                <Typography value="" variant="h5" style={{ marginTop: "-1%" }}>
+                <Typography style={{fontSize: "1rem", fontWeight: "400", fontFamily: "Roboto", marginTop: "-1%"}}>
                   {this.state.userDetails.orgID}{" "}
                 </Typography>
               </Grid>
@@ -277,14 +277,14 @@ class UserProfile extends React.Component {
 
             <Grid item xs={12} sm={12} lg={12} xl={12} className={classes.dataRow}>
               <Grid item xs={5} sm={5} lg={5} xl={5} style={{ textAlign: 'left' }}>
-                <Typography value="" variant="h5" >
+                <Typography style={{fontSize: "1rem", fontWeight: "600", fontFamily: "Roboto"}} >
                   Language{" "}
                 </Typography>
               </Grid>
               <Grid item xs={6} sm={6} lg={6} xl={6} style={{ textAlign: 'initial' }}>
                 {/* <br />
                 <br /> */}
-                <Typography value="" variant="h5" style={{ marginTop: "-1%" }}>
+                <Typography style={{fontSize: "1rem", fontWeight: "400", fontFamily: "Roboto", marginTop: "-1%"}}>
                   {" "}
                   {this.state.lang}{" "}
                 </Typography>
