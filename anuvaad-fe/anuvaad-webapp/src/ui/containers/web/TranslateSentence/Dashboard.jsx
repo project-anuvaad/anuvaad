@@ -198,7 +198,14 @@ class Dashboard extends React.Component {
     return (
       <Grid item xs={12} sm={12} lg={12} xl={12} className={this.props.classes.rowData} style={{ marginTop: "0%" }}>
         <Grid item xs={6} sm={6} lg={8} xl={8} className={this.props.classes.label}>
-          <Typography value="" variant="h5">
+          <Typography
+            style={{
+              fontSize: "0.9rem",
+              fontWeight: "600",
+              fontFamily: "Roboto",
+              marginBottom: 2
+            }}
+          >
             {translate("common.page.label.sourceLang")}&nbsp;<span style={{ color: "red" }}>*</span>
           </Typography>
         </Grid>
@@ -217,7 +224,7 @@ class Dashboard extends React.Component {
             >
               {
                 this.state.source_languages.map(lang =>
-                  <MenuItem key={lang.language_code} value={lang.language_code + ''}>{lang.language_name}</MenuItem>)
+                  <MenuItem key={lang.language_code} value={lang.language_code + ''} style={{fontSize: "16px", fontFamily: "Roboto"}}>{lang.language_name}</MenuItem>)
               }
             </Select>
           </FormControl>
@@ -230,7 +237,14 @@ class Dashboard extends React.Component {
     return (
       <Grid item xs={12} sm={12} lg={12} xl={12} className={this.props.classes.rowData} style={{ paddingTop: "20px" }}>
         <Grid item xs={6} sm={6} lg={8} xl={8} className={this.props.classes.label}>
-          <Typography value="" variant="h5">
+          <Typography
+            style={{
+              fontSize: "0.9rem",
+              fontWeight: "600",
+              fontFamily: "Roboto",
+              marginBottom: 2
+            }}
+          >
             {translate("common.page.label.targetLang")}&nbsp;<span style={{ color: "red" }}>*</span>
           </Typography>
         </Grid>
@@ -244,12 +258,12 @@ class Dashboard extends React.Component {
               value={this.state.target_language_code}
               style={{
                 fullWidth: true,
-                float: 'right'
+                float: 'right',
               }}
             >
               {
                 this.state.target_languages.map(lang =>
-                  <MenuItem key={lang.language_code} value={lang.language_code + ''}>{lang.language_name}</MenuItem>)
+                  <MenuItem key={lang.language_code} value={lang.language_code + ''} style={{fontSize: "16px", fontFamily: "Roboto"}}>{lang.language_name}</MenuItem>)
               }
             </Select>
           </FormControl>
@@ -263,7 +277,7 @@ class Dashboard extends React.Component {
 
     return (
       <div className={classes.root}>
-        <Typography className={classes.typographyHeader}>
+        <Typography style={{fontSize: "19px", fontWeight: "500"}} className={classes.typographyHeader}>
           {translate("dashboard.page.heading.title")}
         </Typography>
         <Paper className={classes.paper}>

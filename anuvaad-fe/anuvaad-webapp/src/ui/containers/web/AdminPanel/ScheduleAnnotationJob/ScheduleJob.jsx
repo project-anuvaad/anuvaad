@@ -163,7 +163,14 @@ class ScheduleJob extends React.Component {
         const { classes } = this.props
         return (<Grid item xs={12} sm={12} lg={12} xl={12} style={{ marginTop: "1.5%" }}>
             <Grid item xs={12} sm={12} lg={12} xl={12}>
-                <Typography value="" variant="h5">
+                <Typography 
+                    style={{
+                        fontSize: "0.9rem",
+                        fontWeight: "600",
+                        fontFamily: "Roboto",
+                        marginBottom: 2
+                    }}
+                >
                     {translate("common.page.label.sourceLang")}{" "}
                 </Typography>
             </Grid>
@@ -187,7 +194,7 @@ class ScheduleJob extends React.Component {
                 >
                     {
                         this.state.source_languages.map(lang =>
-                            <MenuItem id={lang.language_name} key={lang.language_code} value={lang.language_code + ''}>{lang.language_name}</MenuItem>)
+                            <MenuItem id={lang.language_name} key={lang.language_code} style={{fontSize: "16px", fontFamily: "Roboto"}} value={lang.language_code + ''}>{lang.language_name}</MenuItem>)
                     }
                 </Select>
             </Grid>
@@ -237,7 +244,14 @@ class ScheduleJob extends React.Component {
         const { classes } = this.props
         return (<Grid item xs={12} sm={12} lg={12} xl={12} style={{ marginTop: "1.5%" }}>
             <Grid item xs={12} sm={12} lg={12} xl={12}>
-                <Typography value="" variant="h5">
+                <Typography 
+                    style={{
+                        fontSize: "0.9rem",
+                        fontWeight: "600",
+                        fontFamily: "Roboto",
+                        marginBottom: 2
+                    }}
+                >
                     {translate("common.page.label.targetLang")}{" "}
                 </Typography>
             </Grid>
@@ -261,7 +275,7 @@ class ScheduleJob extends React.Component {
                 >
                     {
                         this.state.target_languages.map(lang =>
-                            <MenuItem key={lang.language_code} value={lang.language_code + ''}>{lang.language_name}</MenuItem>)
+                            <MenuItem key={lang.language_code} style={{fontSize: "16px", fontFamily: "Roboto"}} value={lang.language_code + ''}>{lang.language_name}</MenuItem>)
                     }
                 </Select>
             </Grid>
@@ -284,12 +298,12 @@ class ScheduleJob extends React.Component {
             <div style={{ height: window.innerHeight, overflow: 'auto' }}>
                 <Toolbar />
 
-                <div className={classes.div}>
-                    <Typography value="" variant="h4" className={classes.typographyHeader}>
+                <div className={classes.div} style={{paddingTop: "2%", fontSize: "19px", fontWeight: "500"}}>
+                    <Typography className={classes.typographyHeader}>
                         Schedule Job
                     </Typography>
                     <br />
-                    <Typography className={classes.typographySubHeader}>{"Upload file that you want to annotate."}</Typography>
+                    <Typography variant="subtitle1" style={{fontSize: "1rem"}}  className={classes.typographySubHeader}>{"Upload file that you want to annotate."}</Typography>
                     <br />
                     <Paper elevation={3} className={classes.paper}>
                         <Grid container spacing={8}>
@@ -317,7 +331,14 @@ class ScheduleJob extends React.Component {
 
                                 <Grid item xs={12} sm={12} lg={12} xl={12}>
                                     <Grid item xs={12} sm={12} lg={12} xl={12}>
-                                        <Typography variant="h5">
+                                        <Typography
+                                            style={{
+                                                fontSize: "0.9rem",
+                                                fontWeight: "600",
+                                                fontFamily: "Roboto",
+                                                marginBottom: 2
+                                              }}
+                                        >
                                             Enter Job Description
                                         </Typography>
                                     </Grid>
@@ -337,7 +358,14 @@ class ScheduleJob extends React.Component {
                                 </Grid>
                                 <Grid item xs={12} sm={12} lg={12} xl={12} style={{ marginTop: '1.5%' }}>
                                     <Grid item xs={12} sm={12} lg={12} xl={12}>
-                                        <Typography variant="h5">
+                                        <Typography 
+                                            style={{
+                                                fontSize: "0.9rem",
+                                                fontWeight: "600",
+                                                fontFamily: "Roboto",
+                                                marginBottom: 2
+                                              }}
+                                        >
                                             Search Users
                                         </Typography>
                                     </Grid>

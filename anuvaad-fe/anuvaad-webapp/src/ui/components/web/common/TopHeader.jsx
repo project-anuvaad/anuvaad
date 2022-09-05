@@ -17,7 +17,7 @@ import Grid from '@material-ui/core/Grid';
 import Popover from '@material-ui/core/Popover';
 import MenuIcon from "@material-ui/icons/Menu";
 import CloseIcon from '@material-ui/icons/Close';
-import SettingsIcon from '@material-ui/icons/Settings';
+import SettingsOutlinedIcon from '@material-ui/icons/SettingsOutlined';
 import React, { useState, useEffect, useRef } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import AnuvaadLogo from "../../../../assets/AnuvaadLogo.svg";
@@ -39,28 +39,32 @@ const useStyles = makeStyles((theme) => ({
         height: "2rem",
         width: "6rem"
     },
+
+    // inactive button menu styles
     menuButton: {
-        // fontFamily: "Open Sans, sans-serif",
-        padding: 15,
-        fontWeight: 700,
+        fontFamily: "roboto",
+        padding: 18,
+        fontWeight: 500,
         color: "#000000",
-        fontSize: "1.125rem",
+        fontSize: "19px",
         // size: "200px",
         marginLeft: "38px",
         '&:hover': {
             backgroundColor: "#E0E0E0",
             color: "#000000",
-            padding: 15,
-            borderRadius: 10
+            // padding: 18,
+            borderRadius: 12
         }
     },
     highlightedMenuButton: {
+        fontFamily: "roboto",
         backgroundColor: "#E0E0E0",
-        borderRadius: 10,
-        padding: 15,
-        fontWeight: 700,
+        borderRadius: 12,
+        padding: 18,
+        fontWeight: 500,
         color: "#000000",
-        fontSize: "1.125rem",
+        fontSize: "19px",
+        letterSpacing: "0.5px",
         // size: "18px",
         marginLeft: "38px",
         // backgroundColor: "#E0E0E0",
@@ -72,6 +76,11 @@ const useStyles = makeStyles((theme) => ({
     toolbar: {
         display: "flex",
         justifyContent: "space-between",
+        "@media (min-width: 900px)": {
+            // paddingLeft: 0,
+            paddingRight: "16.8px",
+            paddingLeft: "16.8px",
+        },
     },
     desktopMenuContainer: {
         display: "flex",
@@ -88,12 +97,15 @@ const useStyles = makeStyles((theme) => ({
         padding: theme.spacing(2),
     },
     popoverStyle: {
-        padding: 20,
+        paddingTop: 20,
+        paddingBottom: 20,
         alignItems: "start"
     },
+
+    // button text menu styles
     userMenuButton: {
         // width: "100%",
-        fontSize: "1.125rem",
+        fontSize: "19px",
         fontWeight: "700",
         marginTop: 5,
         '&:hover': {
@@ -102,39 +114,48 @@ const useStyles = makeStyles((theme) => ({
     },
     activeUserMenuButton: {
         // width: "100%",
-        fontSize: "1.125rem",
-        fontWeight: "700",
+        // fontSize: "1.125rem",
+        // fontWeight: "700",
         marginTop: 5,
         backgroundColor: "#E0E0E0"
     },
     userMenuButtonText: {
-        // width : "100%"
-        fontSize: "1.125rem",
-        fontWeight: "700",
+        width : "100%",
+        fontSize: "19px",
+        fontWeight: "500",
+        fontFamily: "roboto",
+    },
+    // popover button text style
+    popoverMenuText: {
+        width : "100%",
+        fontSize: "0.875rem",
+        fontWeight: "400",
+        fontFamily: "roboto",
+        padding: 5
+    },
+    popoverMenuButton: {
+        
+    },
+    popoverMenuButtonActive: {
+
     }
 }));
 
-const headersData = [
-    {
-        label: "Translate Document",
-        href: "/listings",
-    },
-    {
-        label: "Document Digitization",
-        href: "/mentors",
-    },
-    {
-        label: "My Glossary",
-        href: "/account",
-    },
-    // {
-    //     label: "Log Out",
-    //     href: "/logout",
-    // },
-];
-
 export default function TopHeader(props) {
-    const { header, logo, menuButton, toolbar, desktopMenuContainer, drawerContainer, popoverStyle, highlightedMenuButton, userMenuButton, activeUserMenuButton, userMenuButtonText } = useStyles();
+    const { 
+            header, 
+            logo, 
+            menuButton, 
+            toolbar, 
+            desktopMenuContainer, 
+            drawerContainer, 
+            popoverStyle, 
+            highlightedMenuButton, 
+            userMenuButton, 
+            activeUserMenuButton, 
+            userMenuButtonText,
+            popoverMenuText
+        } = useStyles();
 
     const { currentMenu, dontShowHeader } = props;
 
@@ -172,24 +193,9 @@ export default function TopHeader(props) {
         };
     }, []);
 
-    // useEffect(()=>{
-        
-    // //     logoRef.current.src !== AnuvaadLogo ? logoRef.current.src = AnuvaadLogo : null;
-    // // },[logoRef.current.src])
-    
-
-    // setTimeout(()=>{
-    //     if(!logoRef.current.src.includes(AnuvaadLogo)){
-    //         logoRef.current.src = AnuvaadLogo
-    //     }
-    //     console.log("AnuvaadLogo", AnuvaadLogo);
-    //     console.log("logoRef.current.src", logoRef.current.src);
-    // }, 10000)
-    // }, [logoRef.current])
-
     const displayDesktop = () => {
         return (
-            !dontShowHeader && <Toolbar style={{ paddingLeft: 0, paddingRight: 0 }} className={toolbar}>
+            !dontShowHeader && <Toolbar className={toolbar}>
                 {femmecubatorLogo()}
                 <div>{getMenuButtons()}</div>
                 <div>{PopOverMenuButtons()}</div>
@@ -244,11 +250,9 @@ export default function TopHeader(props) {
                                 "aria-haspopup": "true",
                                 onClick: handleDrawerClose,
                             }}
-                        // style={{marginLeft : "90%"}}
                         >
                             <CloseIcon />
                         </IconButton>
-                        {/* </div> */}
                         <Divider />
                         {getDrawerChoices(handleDrawerClose)}
                     </div>
@@ -267,14 +271,12 @@ export default function TopHeader(props) {
                             <Button
                                 {...{
                                     key: el.id,
-                                    // color: "primary",
                                     id: el.id,
                                     onClick: () => {
                                         el.onclick(assignedOrgId);
                                         closeDrawerOnMenuClick()
                                     },
                                     style: { textDecoration: "none", color: "#000000", marginTop : 5 },
-                                    // to: href,
                                     component: RouterLink,
                                     className: currentMenu === el.id ? highlightedMenuButton : menuButton,
                                 }}
@@ -291,14 +293,12 @@ export default function TopHeader(props) {
                             <Button
                                 {...{
                                     key: el.id,
-                                    // color: "primary",
                                     id: el.id,
                                     onClick: () => {
                                         el.onclick(assignedOrgId);
                                         closeDrawerOnMenuClick()
                                     },
                                     style: { textDecoration: "none", color: "#000000", marginTop : 5 },
-                                    // to: href,
                                     component: RouterLink,
                                     className: currentMenu === el.id ? highlightedMenuButton : menuButton,
                                 }}
@@ -315,14 +315,12 @@ export default function TopHeader(props) {
                             <Button
                                 {...{
                                     key: el.id,
-                                    // color: "primary",
                                     id: el.id,
                                     onClick: () => {
                                         el.onclick(assignedOrgId);
                                         closeDrawerOnMenuClick()
                                     },
                                     style: { textDecoration: "none", color: "#000000", marginTop : 5 },
-                                    // to: href,
                                     component: RouterLink,
                                     className: currentMenu === el.id ? highlightedMenuButton : menuButton,
                                 }}
@@ -350,7 +348,6 @@ export default function TopHeader(props) {
                         }
                     })}
                 />
-        // <img src="/HeaderLogo.svg" alt="header logo" className={logo} />
     };
 
     const getMenuButtons = () => {
@@ -361,11 +358,9 @@ export default function TopHeader(props) {
                         el.menuType === "MAIN" && el.rolesAllowed.includes(role) && assignedOrgId !== "NONMT" && <Button
                             {...{
                                 key: el.id,
-                                // color: "primary",
                                 id: el.id,
                                 onClick: () => { el.onclick(assignedOrgId) },
                                 style: { textDecoration: "none", color: "#000000" },
-                                // to: href,
                                 component: RouterLink,
                                 className: currentMenu === el.id ? highlightedMenuButton : menuButton,
                             }}
@@ -395,7 +390,7 @@ export default function TopHeader(props) {
                                     }}
                                     onClick={(e) => setShowSettingsPopoverMenuAnchorEle(e.currentTarget)}
                                 >
-                                    <SettingsIcon />
+                                    <SettingsOutlinedIcon fontSize="large" />
                                 </IconButton>
                                 <Popover
                                     id={"simple-popover"}
@@ -410,7 +405,7 @@ export default function TopHeader(props) {
                                         vertical: 'top',
                                         horizontal: 'center',
                                     }}
-                                    style={{ backgroundColor: "rgba(0,0,0,0.4)" }}
+                                    style={{ backgroundColor: "rgba(0,0,0,0)" }}
                                 >
                                     <Grid container direction="column" className={popoverStyle}>
                                         {
@@ -419,13 +414,14 @@ export default function TopHeader(props) {
                                                     el.menuType === "SETTINGS" && el.rolesAllowed.includes(role) && assignedOrgId !== "NONMT" &&
                                                     <Button
                                                         variant="text"
+                                                        fullWidth
                                                         className={currentMenu === el.id ? activeUserMenuButton : userMenuButton}
                                                         onClick={() => {
                                                             setShowSettingsPopoverMenuAnchorEle(null)
                                                             el.onclick(assignedOrgId)
                                                         }}
                                                     >
-                                                        <Typography className={userMenuButtonText}>{el.title}</Typography>
+                                                        <Typography className={popoverMenuText} style={{textAlignLast : "left"}}>{el.title}</Typography>
                                                     </Button>
                                                 )
                                             })
@@ -466,7 +462,7 @@ export default function TopHeader(props) {
                                 >
                                     <Grid container direction="column" className={popoverStyle}>
                                         <Grid item>
-                                            <Typography variant="caption">Signed in as <b>{role ? role : ""}</b></Typography>
+                                            <Typography style={{padding: 10}} variant="caption">Signed in as <b>{role ? role : ""}</b></Typography>
                                         </Grid>
                                         <Divider style={{ marginTop: 5, marginBottom: 5, width: "100%" }} />
                                         {
@@ -475,13 +471,14 @@ export default function TopHeader(props) {
                                                     el.menuType === "USER" && el.rolesAllowed.includes(role) &&
                                                     <Button
                                                         variant="text"
+                                                        fullWidth
                                                         className={currentMenu === el.id ? activeUserMenuButton : userMenuButton}
                                                         onClick={() => {
                                                             setShowUserPopoverMenuAnchorEle(null)
                                                             el.onclick(assignedOrgId)
                                                         }}
                                                     >
-                                                        <Typography className={userMenuButtonText}>{el.title}</Typography>
+                                                        <Typography className={popoverMenuText} style={{textAlignLast : "left"}}>{el.title}</Typography>
                                                     </Button>
                                                 )
                                             })

@@ -184,7 +184,14 @@ class StartDigitizationUpload extends React.Component {
         const { classes } = this.props
         return (<Grid item xs={12} sm={12} lg={12} xl={12} style={{ marginTop: "1.5%" }}>
             <Grid item xs={12} sm={12} lg={12} xl={12}>
-                <Typography value="" variant="h5">
+                <Typography
+                    style={{
+                        fontSize: "0.9rem",
+                        fontWeight: "600",
+                        fontFamily: "Roboto",
+                        marginBottom: 2
+                      }}
+                >
                     {translate("common.page.label.sourceLang")}{" "}
                 </Typography>
             </Grid>
@@ -208,7 +215,12 @@ class StartDigitizationUpload extends React.Component {
                 >
                     {
                         this.state.source_languages.map(lang =>
-                            <MenuItem id={lang.language_name} key={lang.language_code} value={lang.language_code + ''}>{lang.language_name}</MenuItem>)
+                            <MenuItem 
+                                id={lang.language_name} 
+                                key={lang.language_code} 
+                                style={{fontSize: "16px", fontFamily: "Roboto"}} 
+                                value={lang.language_code + ''}
+                            >{lang.language_name}</MenuItem>)
                     }
                 </Select>
             </Grid>
@@ -221,7 +233,14 @@ class StartDigitizationUpload extends React.Component {
         const { classes } = this.props
         return (<Grid item xs={12} sm={12} lg={12} xl={12} style={{ marginTop: "1.5%" }}>
             <Grid item xs={12} sm={12} lg={12} xl={12}>
-                <Typography value="" variant="h5">
+                <Typography
+                    style={{
+                        fontSize: "0.9rem",
+                        fontWeight: "600",
+                        fontFamily: "Roboto",
+                        marginBottom: 2
+                      }}
+                >
                     {translate("Version")}{" "}
                 </Typography>
             </Grid>
@@ -245,7 +264,11 @@ class StartDigitizationUpload extends React.Component {
                 >
                     {
                         this.state.worflow_codes.map((code, index) =>
-                            <MenuItem id={code.code} key={code.code} value={code.code + ''}>{code.version}</MenuItem>)
+                            <MenuItem 
+                                id={code.code} 
+                                key={code.code} 
+                                style={{fontSize: "16px", fontFamily: "Roboto"}}
+                                value={code.code + ''}>{code.version}</MenuItem>)
                     }
                 </Select>
             </Grid>
@@ -256,7 +279,14 @@ class StartDigitizationUpload extends React.Component {
     renderTextField = () => {
         return <Grid item xs={12} sm={12} lg={12} xl={12}>
             <Grid item xs={12} sm={12} lg={12} xl={12}>
-                <Typography variant="h5">
+                <Typography 
+                    style={{
+                        fontSize: "0.9rem",
+                        fontWeight: "600",
+                        fontFamily: "Roboto",
+                        marginBottom: 2
+                      }}
+                >
                     {translate("common.page.label.filename")}
                 </Typography>
             </Grid>
@@ -308,12 +338,12 @@ class StartDigitizationUpload extends React.Component {
             <div style={{}}>
                 <Header />
 
-                <div className={classes.div}>
-                    <Typography value="" variant="h4" className={classes.typographyHeader}>
+                <div className={classes.div} style={{paddingTop: "2%", fontSize: "19px", fontWeight: "500"}}>
+                    <Typography className={classes.typographyHeader}>
                         {translate("common.page.label.uploadFile")}
                     </Typography>
                     <br />
-                    <Typography className={classes.typographySubHeader}>{translate("doc_upload.page.label.uploadMessage")}</Typography>
+                    <Typography variant="subtitle1" style={{fontSize: "1rem"}}  className={classes.typographySubHeader}>{translate("doc_upload.page.label.uploadMessage")}</Typography>
                     <br />
                     <Paper elevation={3} className={classes.paper}>
                         <Grid container spacing={8}>
