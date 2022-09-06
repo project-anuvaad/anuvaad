@@ -30,7 +30,7 @@ LANG_MAPPING = {
     "kn": ["anuvaad_kan",'Kannada'],
     "gu": ["Gujarati", "guj"],
     "or": ["anuvaad_ori","Oriya"],
-    "hi": ["anuvaad_hin","Devanagari"],
+    "hi": ["anuvad_hin_scene_text_real","Devanagari"],
     "bn": ["anuvaad_ben","Bengali"],
     "mr": ["Devanagari", "mar"],
     "ta": ["anuvaad_tam",'Tamil'],
@@ -85,8 +85,8 @@ SAVE_PATH_BOX="draw_sample/"
 CROP_SAVE_PATH="draw_crop_sample/"
 
 # crop config
-C_X = -7
-C_Y = -3
+C_X = -6
+C_Y = -15
 
 ### image superesolution
 SUPER_RESOLUTION=False
