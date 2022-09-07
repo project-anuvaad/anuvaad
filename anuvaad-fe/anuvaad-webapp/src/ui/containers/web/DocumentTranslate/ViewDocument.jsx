@@ -698,16 +698,16 @@ class ViewDocument extends React.Component {
         options: { sortDirection: "desc" },
       },
       // jumpToPage: true,
-      onChangeRowsPerPage: (limit) => {
-        // console.log("onChangeRowsPerPage is being called")
-        let diffValue = limit - this.state.limit;
-        if (diffValue > 0) {
-          this.makeAPICallJobsBulkSearch(this.state.offset + diffValue, limit - this.state.limit, false, false, true)
-        }
+      // onChangeRowsPerPage: (limit) => {
+      //   // console.log("onChangeRowsPerPage is being called")
+      //   let diffValue = limit - this.state.limit;
+      //   if (diffValue > 0) {
+      //     this.makeAPICallJobsBulkSearch(this.state.offset + diffValue, limit - this.state.limit, false, false, true)
+      //   }
 
-        this.setState({ limit })
+      //   this.setState({ limit })
 
-      },
+      // },
       rowsPerPageOptions: [10],
 
       // onTableChange: (action, tableState) => {
