@@ -26,6 +26,7 @@ nmt_fetch_models_url = str(os.environ.get('NMT_HOST', 'http://172.30.0.234:5001'
 nmt_translate_url = str(os.environ.get('NMT_HOST', 'http://172.30.0.234:5001')) + str(os.environ.get('NMT_TRANSLATE_ENDPOINT', '/nmt-inference/v4/translate'))
 nmt_it_url = str(os.environ.get('NMT_HOST', 'http://172.30.0.234:5001')) + str(os.environ.get('NMT_IT_ENDPOINT', '/nmt-inference/v3/interactive-translation'))
 nmt_labse_align_url = str(os.environ.get('NMT_HOST', 'http://172.30.0.234:5001')) + str(os.environ.get('NMT_LABSE_ALIGN_ENDPOINT', '/nmt-inference/v1/labse-aligner'))
+nmt_attention_align_url = str(os.environ.get('NMT_HOST', 'http://172.30.0.234:5001')) + str(os.environ.get('NMT_ATTN_ALIGN_ENDPOINT', '/aai4b-nmt-inference/v1/labse-aligner-attention'))
 
 
 
@@ -71,6 +72,12 @@ orgs_nmt_disable = os.environ.get('ORGS_NMT_DISABLE', 'NONMT')
 tmx_disable_roles = os.environ.get('ROLES_TMX_DISABLE', 'ANNOTATOR')
 utm_disable_roles = os.environ.get('ROLES_UTM_DISABLE', 'ANNOTATOR')
 suggestion_statuses = ["Pending", "Approved", "Rejected"]
+is_attention_based_alignment_enabled = os.environ.get('IS_ATTN_BASED_ALIGNMENT_ENABLED', True)
+if isinstance(is_attention_based_alignment_enabled, str):
+    if is_attention_based_alignment_enabled == "TRUE":
+        is_attention_based_alignment_enabled = True
+    else:
+        is_attention_based_alignment_enabled = False
 
 #nmt-machine-topics
 anu_nmt_input_topic = os.environ.get('KAFKA_NMT_TRANSLATION_INPUT_TOPIC', 'anuvaad-nmt-translate')

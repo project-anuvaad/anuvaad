@@ -9,7 +9,7 @@ import requests
 from .tmxrepo import TMXRepository
 from utilities.translatorutils import TranslatorUtils
 from configs.translatorconfig import nmt_labse_align_url, download_folder, tmx_global_enabled, tmx_org_enabled, \
-    tmx_user_enabled, tmx_word_length
+    tmx_user_enabled, tmx_word_length, is_attention_based_alignment_enabled, nmt_attention_align_url
 from anuvaad_auditor.errorhandler import post_error
 
 repo = TMXRepository()
@@ -285,7 +285,7 @@ class TMXService:
         return None, False
 
     # Replaces TMX phrases in NMT tgt using TMX NMT phrases and LaBSE alignments
-    def replace_nmt_tgt_with_user_tgt(self, tmx_phrases, tgt, ctx):
+    def replace_nmt_tgt_with_user_tgt(self, tmx_phrases, src, tgt, ctx):
         tmx_without_nmt_phrases, tmx_tgt, tmx_replacement = [], None, []
         try:
             tmx_replace_dict = {}
@@ -307,9 +307,17 @@ class TMXService:
                 tgt = utils.multiple_replace(tgt, tmx_replace_dict)
             tmx_tgt = tgt
             if tmx_without_nmt_phrases:
-                log_info("Phrases to LaBSE: {} | Total: {}".format(len(tmx_without_nmt_phrases), len(tmx_phrases)), ctx)
-                tmx_tgt, tmx_replacement = self.replace_with_labse_alignments(tmx_without_nmt_phrases, tgt,
-                                                                              tmx_replacement, ctx)
+                if not is_attention_based_alignment_enabled:
+                    log_info("Phrases to LaBSE: {} | Total: {}".format(len(tmx_without_nmt_phrases), len(tmx_phrases)),
+                             ctx)
+                    tmx_tgt, tmx_replacement = self.replace_with_labse_alignments(tmx_without_nmt_phrases, tgt,
+                                                                                  tmx_replacement, ctx)
+                else:
+                    log_info("Phrases to Attention API: {} | Total: {}".format(len(tmx_without_nmt_phrases),
+                                                                               len(tmx_phrases)), ctx)
+                    tmx_tgt, tmx_replacement = self.replace_with_attention_api(tmx_without_nmt_phrases, src, tgt,
+                                                                               tmx_replacement, ctx)
+ 
             if tmx_tgt:
                 return tmx_tgt, tmx_replacement
             else:
@@ -351,6 +359,46 @@ class TMXService:
                     else:
                         log_info("No LaBSE alignments found!", ctx)
                         log_info("LaBSE - " + str(nmt_req), ctx)
+                    return tgt, tmx_replacement
+            else:
+                return tgt, tmx_replacement
+        else:
+            return tgt, tmx_replacement
+
+    # Replaces phrases in tgt with user tgts using labse alignments and updates nmt_tgt in TMX
+    def replace_with_attention_api(self, tmx_phrases, src, tgt, tmx_replacement, ctx):
+        tmx_phrase_dict, tmx_replace_dict = {}, {}
+        for tmx_phrase in tmx_phrases:
+            tmx_phrase_dict[tmx_phrase["src"]] = tmx_phrase
+        nmt_req = {"src": src, "src_phrases": list(tmx_phrase_dict.keys()), "tgt": tgt}
+        nmt_req = [nmt_req]
+        api_headers = {'Content-Type': 'application/json'}
+        nmt_response = requests.post(url=nmt_attention_align_url, json=nmt_req, headers=api_headers)
+        if nmt_response:
+            if nmt_response.text:
+                nmt_response = json.loads(nmt_response.text)
+            if 'status' in nmt_response.keys():
+                if nmt_response["status"]["statusCode"] != 200:
+                    log_info("Attention API Error: {}".format(nmt_response["status"]["message"]), ctx)
+                    return tgt, tmx_replacement
+                else:
+                    nmt_aligned_phrases = nmt_response["response_body"][0]["aligned_phrases"]
+                    if nmt_aligned_phrases:
+                        for aligned_phrase in nmt_aligned_phrases.keys():
+                            phrase = tmx_phrase_dict[aligned_phrase]
+                            tmx_replacement.append({"src_phrase": phrase["src"], "tmx_tgt": phrase["user_tgt"],
+                                                    "tgt": str(nmt_aligned_phrases[aligned_phrase]),
+                                                    "type": "Attention API"})
+                            tmx_replace_dict[nmt_aligned_phrases[aligned_phrase]] = phrase["user_tgt"]
+                            modified_nmt_tgt = phrase["nmt_tgt"]
+                            modified_nmt_tgt.append(nmt_aligned_phrases[aligned_phrase])
+                            phrase["nmt_tgt"] = modified_nmt_tgt
+                            repo.upsert(phrase["hash"], phrase)
+                        if tmx_replace_dict:
+                            tgt = utils.multiple_replace(tgt, tmx_replace_dict)
+                    else:
+                        log_info("No Attention API alignments found!", ctx)
+                        log_info("Attention API - " + str(nmt_req), ctx)
                     return tgt, tmx_replacement
             else:
                 return tgt, tmx_replacement
