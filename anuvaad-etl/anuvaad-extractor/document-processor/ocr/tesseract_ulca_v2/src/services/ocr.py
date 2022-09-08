@@ -80,7 +80,7 @@ class TextExtraction:
             ]
             if config.MASK_OUT:
                 masked_image = mask_image(self.image,lines)
-                masked_text = pytesseract.image_to_string(masked_image, lang=lang)
+                masked_text = pytesseract.image_to_string(masked_image,config='--psm 7', lang=lang)
                 text.extend(masked_text)
             filtered_lines=""
             for line in text:
@@ -95,8 +95,7 @@ class TextExtraction:
             ]
 
         else:
-            text = pytesseract.image_to_string(self.image, lang=lang)
-
+            text = pytesseract.image_to_string(self.image,config='--psm 7', lang=lang)
             return [
                 {"source": escape(line)}
                 for line in text.split("\n")
