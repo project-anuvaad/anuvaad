@@ -343,7 +343,7 @@ WorkflowConfigs:
 
 
 
- - workflowCode: WF_A_WDOD15GV
+  - workflowCode: WF_A_WDOD15GV
     type: ASYNC
     description: Document digitization wf enhanced over 1.0 flow
     useCase: A_WOD15G
