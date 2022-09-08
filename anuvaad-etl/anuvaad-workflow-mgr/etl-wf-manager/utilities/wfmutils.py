@@ -59,7 +59,7 @@ wfmrepo = WFMRepository()
 log = logging.getLogger('file')
 configs_global = {}
 
-yaml_file_loc = "/app/configs"
+yaml_file_loc = "/Users/vishalmahuli/Desktop/anuvaad"
 yam_file_path_delimiter = "/"
 yaml_file_name = "wfconfig.yml"
 
