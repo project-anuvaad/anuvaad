@@ -36,8 +36,10 @@ def text_extraction(file_properties,image_paths,file):
     width, height = file_properties.get_pageinfo(0)
     for idx,image_path in enumerate(image_paths):
 
-        
-        font_info = file_properties.get_fontinfo(idx)
+        if config.FONTS == True:
+            font_info = file_properties.get_fontinfo(idx)
+        else :
+            font_info = None
         page_dict = {"identifier": str(uuid.uuid4()),"resolution": config.EXRACTION_RESOLUTION }
         page_regions =  file_properties.get_regions(idx)
         page_c_words = file_properties.get_words(idx)
@@ -48,7 +50,8 @@ def text_extraction(file_properties,image_paths,file):
         page_output = set_bg_image(page_output, save_path, idx,file)
         file_properties.set_regions(idx,page_output)
         file_properties.delete_regions(idx)
-        file_properties.pop_fontinfo(idx)
+        if config.FONTS == True:
+            file_properties.pop_fontinfo(idx)
 
 
     return file_properties.get_file()
