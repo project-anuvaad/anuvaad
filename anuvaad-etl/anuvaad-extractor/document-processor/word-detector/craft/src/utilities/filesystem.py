@@ -36,7 +36,7 @@ def extract_image_paths_from_pdf(filepath, workspace_output_dir):
 
     maxPages = info["Pages"]
 # print(maxPages)
-    for page in range(1, maxPages+1, 50) : 
+    for page in range(1, maxPages+1, 10) : 
         # convert_from_path(pdf_file, dpi=300, first_page=page, last_page = min(page+10-1,maxPages))
 
         paths           = pdf2image.convert_from_path(filepath, dpi=config.EXRACTION_RESOLUTION,first_page=page, last_page = min(page+10-1,maxPages), output_file=image_filename, output_folder=working_dir, fmt='jpg', paths_only=True)
