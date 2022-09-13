@@ -7,7 +7,7 @@ import src.utilities.app_context as app_context
 def get_redis():
 
     rdb = redis.StrictRedis(host=REDIS_SERVER_HOST, port=REDIS_SERVER_PORT, db=REDIS_OCRGV_DB, decode_responses=True,encoding="utf-8")
-    log_info("Establishing connection with redis store", app_context.app_context)
+    log_info("Establishing connection with redis store", None)
 
     # if 'redisdb' not in g:
     #     log_info("Establishing connection with redis store", getContext())

@@ -20,7 +20,6 @@ from anuvaad_auditor.loghandler import log_exception
 import src.utilities.app_context as app_context
 
 
-
 region_unifier = Region_Unifier()
 removeoverlap = RemoveOverlap()
 
@@ -66,7 +65,7 @@ def text_extraction(file_properties,image_paths,file):
         sent_key=hashlib.sha256(img_name.encode('utf_16')).hexdigest()
         save_result= save_sentences_on_hashkey(sent_key,page_output)
         redis_keys.append(sent_key)
-        log_info("texts pushed to redis store", app_context.app_context)
+        log_info("texts pushed to redis store", None)
 
     for i,key in enumerate(redis_keys):
         val=redis_db.get(key)
@@ -77,7 +76,7 @@ def text_extraction(file_properties,image_paths,file):
             file_properties.pop_fontinfo(i)
     if redis_keys != None:
         delete(redis_keys)
-        log_info("keys deleted from redis store", app_context.app_context)
+        log_info("keys deleted from redis store", None)
     return file_properties.get_file()
 
 def delete(keys):
@@ -93,7 +92,7 @@ def save_sentences_on_hashkey(key,sent):
             redis_db.set(key, json.dumps(sent))
             return 1
         except Exception as e:
-            log_exception("Exception in storing sentence data on redis store | Cause: " + str(e),app_context.app_context, e)
+            log_exception("Exception in storing sentence data on redis store | Cause: " + str(e),None, e)
             return None
 
 def extract_line(paragraph):

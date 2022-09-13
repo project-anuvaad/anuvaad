@@ -58,7 +58,7 @@ class Response(object):
                         response_true = CustomResponse(Status.SUCCESS.value, jobid, task_id)
                         response_success = response_true.success_response(workflow_id, task_starttime, task_endtime, tool_name, step_order, output_file_response)
                         response = copy.deepcopy(response_success)
-                        log_info("successfully generated response for workflow", app_context.app_context)
+                        log_info("successfully generated response for workflow", None)
                         
                         return response
                         # return ressponse, gv_file_response
