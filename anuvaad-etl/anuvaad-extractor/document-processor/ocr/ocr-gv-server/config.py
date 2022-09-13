@@ -86,7 +86,7 @@ SAVE_NO_PAGE = 1
 REDIS_SERVER_PREFIX     = os.environ.get('REDIS_PREFIX', 'redis')
 REDIS_SERVER_HOST       = os.environ.get('REDIS_URL', 'localhost')
 REDIS_SERVER_PORT       = os.environ.get('REDIS_PORT', 6379)
-REDIS_OCRGV_DB            = os.environ.get('REDIS_OCR_DB',6)
+REDIS_OCRGV_DB            = os.environ.get('REDIS_OCR_DB',7)
 
 
 FONTS = False
