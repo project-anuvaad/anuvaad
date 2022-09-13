@@ -32,7 +32,7 @@ class Response(object):
         app_context.application_context = {}
 
         input_files, workflow_id, jobid, tool_name, step_order = file_ops.json_input_format(self.json_data)
-        log_info("workflow_response started the response generation", app_context.application_context)
+        log_info("workflow_response started the response generation", app_context.app_context)
         error_validator = ValidationResponse(self.DOWNLOAD_FOLDER)
         try:
             error_validator.wf_keyerror(jobid, workflow_id, tool_name, step_order)
@@ -58,16 +58,16 @@ class Response(object):
                         response_true = CustomResponse(Status.SUCCESS.value, jobid, task_id)
                         response_success = response_true.success_response(workflow_id, task_starttime, task_endtime, tool_name, step_order, output_file_response)
                         response = copy.deepcopy(response_success)
-                        log_info("successfully generated response for workflow", app_context.application_context)
+                        log_info("successfully generated response for workflow", app_context.app_context)
                         
                         return response
                         # return ressponse, gv_file_response
                     else:
-                        post_error_wf(response['code'], response['message'], app_context.application_context, None)
+                        post_error_wf(response['code'], response['message'], app_context.app_context, None)
                         return None
                 else:
-                    log_info('flushing queue data, not handling file {}'.format(input_files), app_context.application_context)
-                    post_error_wf(400, 'flushing queue data, not handling file {}'.format(input_files), app_context.application_context, None)
+                    log_info('flushing queue data, not handling file {}'.format(input_files), app_context.app_context)
+                    post_error_wf(400, 'flushing queue data, not handling file {}'.format(input_files), app_context.app_context, None)
                     return None
 
             
