@@ -7,5 +7,3 @@ def init():
         'application_context' : None
     }
 
-def getContext():
-    return LOG_WITHOUT_CONTEXT
