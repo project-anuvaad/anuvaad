@@ -32,7 +32,7 @@ class Response(object):
         app_context.application_context = {}
 
         input_files, workflow_id, jobid, tool_name, step_order = file_ops.json_input_format(self.json_data)
-        log_info("workflow_response started the response generation", app_context.app_context)
+        log_info("workflow_response started the response generation", app_context.application_context)
         error_validator = ValidationResponse(self.DOWNLOAD_FOLDER)
         try:
             error_validator.wf_keyerror(jobid, workflow_id, tool_name, step_order)
