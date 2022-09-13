@@ -14,9 +14,10 @@ from src.services.overlap_remove import RemoveOverlap,merger_lines_words
 from src.services.dynamic_adjustment import coord_adjustment
 import json
 from src.db.connection_manager import get_redis
-from src.utilities.app_context import getContext
+# from src.utilities.app_context import getContext, app_context
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
+import src.utilities.app_context as app_context
 
 
 
@@ -65,7 +66,7 @@ def text_extraction(file_properties,image_paths,file):
         sent_key=hashlib.sha256(img_name.encode('utf_16')).hexdigest()
         save_result= save_sentences_on_hashkey(sent_key,page_output)
         redis_keys.append(sent_key)
-        log_info("texts pushed to redis store", getContext())
+        log_info("texts pushed to redis store", app_context.application_context)
 
     for i,key in enumerate(redis_keys):
         val=redis_db.get(key)
@@ -76,7 +77,7 @@ def text_extraction(file_properties,image_paths,file):
             file_properties.pop_fontinfo(i)
     if redis_keys != None:
         delete(redis_keys)
-        log_info("keys deleted from redis store", getContext())
+        log_info("keys deleted from redis store", app_context.application_context)
     return file_properties.get_file()
 
 def delete(keys):
@@ -92,7 +93,7 @@ def save_sentences_on_hashkey(key,sent):
             redis_db.set(key, json.dumps(sent))
             return 1
         except Exception as e:
-            log_exception("Exception in storing sentence data on redis store | Cause: " + str(e), getContext(), e)
+            log_exception("Exception in storing sentence data on redis store | Cause: " + str(e),app_context.application_context, e)
             return None
 
 def extract_line(paragraph):
