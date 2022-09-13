@@ -1,3 +1,4 @@
+import hashlib
 import uuid, os, io
 import config
 import sys
@@ -11,12 +12,18 @@ from src.utilities.model_response import set_bg_image
 from src.utilities.request_parse import MapKeys,UpdateKeys
 from src.services.overlap_remove import RemoveOverlap,merger_lines_words
 from src.services.dynamic_adjustment import coord_adjustment
+import json
+from src.db.connection_manager import get_redis
+from src.utilities.app_context import getContext
+from anuvaad_auditor.loghandler import log_info
+from anuvaad_auditor.loghandler import log_exception
 
 
 
 region_unifier = Region_Unifier()
 removeoverlap = RemoveOverlap()
 
+redis_db = get_redis()
 client = vision.ImageAnnotatorClient()
 breaks = vision.enums.TextAnnotation.DetectedBreak.BreakType
 
@@ -34,6 +41,7 @@ def get_text(page_c_lines,file,path,page_dict,page_regions,page_c_words,font_inf
 def text_extraction(file_properties,image_paths,file):
     page_res = []
     width, height = file_properties.get_pageinfo(0)
+    redis_keys = []
     for idx,image_path in enumerate(image_paths):
 
         if config.FONTS == True:
@@ -53,8 +61,39 @@ def text_extraction(file_properties,image_paths,file):
         if config.FONTS == True:
             file_properties.pop_fontinfo(idx)
 
+        img_name = image_path.split("/")[-1].split(".jpg")[0]
+        sent_key=hashlib.sha256(img_name.encode('utf_16')).hexdigest()
+        save_result= save_sentences_on_hashkey(sent_key,page_output)
+        redis_keys.append(sent_key)
+        log_info("texts pushed to redis store", getContext())
 
+    for i,key in enumerate(redis_keys):
+        val=redis_db.get(key)
+        val = json.loads(val)
+        file_properties.set_regions(i,val)
+        file_properties.delete_regions(i)
+        if config.FONTS == True:
+            file_properties.pop_fontinfo(i)
+    if redis_keys != None:
+        delete(redis_keys)
+        log_info("keys deleted from redis store", getContext())
     return file_properties.get_file()
+
+def delete(keys):
+        try:
+            redis_db.delete(*keys)
+            return 1
+        except Exception as e:
+            log_exception("Exception in TMXREPO: delete | Cause: " + str(e), None, e)
+            return None
+
+def save_sentences_on_hashkey(key,sent):
+        try:
+            redis_db.set(key, json.dumps(sent))
+            return 1
+        except Exception as e:
+            log_exception("Exception in storing sentence data on redis store | Cause: " + str(e), getContext(), e)
+            return None
 
 def extract_line(paragraph):
     line_coord = []

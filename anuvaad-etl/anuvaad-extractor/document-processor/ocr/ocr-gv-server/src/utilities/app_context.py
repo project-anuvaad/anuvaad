@@ -6,3 +6,6 @@ def init():
     app_context = {
         'application_context' : None
     }
+
+def getContext():
+    return LOG_WITHOUT_CONTEXT

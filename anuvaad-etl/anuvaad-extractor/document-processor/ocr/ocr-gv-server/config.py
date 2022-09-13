@@ -82,6 +82,12 @@ SAVE_URL = os.environ.get(SAVE_VAR,SAVE_DEFAULT)
 #SAVE_URL = "http://172.30.0.232:5009//anuvaad/ocr-content-handler/v0/ocr/save-document"
 SAVE_NO_PAGE = 1
 
+#redis config
+REDIS_SERVER_PREFIX     = os.environ.get('REDIS_PREFIX', 'redis')
+REDIS_SERVER_HOST       = os.environ.get('REDIS_URL', 'localhost')
+REDIS_SERVER_PORT       = os.environ.get('REDIS_PORT', 6379)
+
+
 FONTS = False
 IS_DYNAMIC =True
 EXRACTION_RESOLUTION  =  300
