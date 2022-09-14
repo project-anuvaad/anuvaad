@@ -63,11 +63,11 @@ class Response(object):
                         return response
                         # return ressponse, gv_file_response
                     else:
-                        post_error_wf(response['code'], response['message'], app_context.app_context, None)
+                        post_error_wf(response['code'], response['message'], app_context.application_context, None)
                         return None
                 else:
-                    log_info('flushing queue data, not handling file {}'.format(input_files), app_context.app_context)
-                    post_error_wf(400, 'flushing queue data, not handling file {}'.format(input_files), app_context.app_context, None)
+                    log_info('flushing queue data, not handling file {}'.format(input_files), app_context.application_context)
+                    post_error_wf(400, 'flushing queue data, not handling file {}'.format(input_files), app_context.application_context, None)
                     return None
 
             

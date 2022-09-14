@@ -17,7 +17,6 @@ from src.db.connection_manager import get_redis
 # from src.utilities.app_context import getContext, app_context
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
-from src.utilities.app_context import LOG_WITHOUT_CONTEXT
 
 
 region_unifier = Region_Unifier()
@@ -65,7 +64,7 @@ def text_extraction(file_properties,image_paths,file):
         sent_key=hashlib.sha256(img_name.encode('utf_16')).hexdigest()
         save_result= save_sentences_on_hashkey(sent_key,page_output)
         redis_keys.append(sent_key)
-        log_info("texts pushed to redis store", LOG_WITHOUT_CONTEXT)
+        log_info("texts pushed to redis store", None)
 
     for i,key in enumerate(redis_keys):
         val=redis_db.get(key)
@@ -76,7 +75,7 @@ def text_extraction(file_properties,image_paths,file):
             file_properties.pop_fontinfo(i)
     if redis_keys != None:
         delete(redis_keys)
-        log_info("keys deleted from redis store", LOG_WITHOUT_CONTEXT)
+        log_info("keys deleted from redis store", None)
     return file_properties.get_file()
 
 def delete(keys):
