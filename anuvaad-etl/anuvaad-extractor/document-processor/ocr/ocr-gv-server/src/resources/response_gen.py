@@ -46,7 +46,7 @@ class Response(object):
                 if debug_flush == False:
                     ############################
                     response = Service(app_context=app_context)
-                    # gv_file_response = copy.deepcopy(response)
+                    gv_file_response = copy.deepcopy(response)
                     ##############################
                     if response['code'] == 200:
                         
@@ -58,10 +58,9 @@ class Response(object):
                         response_true = CustomResponse(Status.SUCCESS.value, jobid, task_id)
                         response_success = response_true.success_response(workflow_id, task_starttime, task_endtime, tool_name, step_order, output_file_response)
                         response = copy.deepcopy(response_success)
-                        log_info("successfully generated response for workflow", None)
+                        log_info("successfully generated response for workflow", app_context.application_context)
                         
-                        return response
-                        # return ressponse, gv_file_response
+                        return response,gv_file_response
                     else:
                         post_error_wf(response['code'], response['message'], app_context.application_context, None)
                         return None
@@ -144,4 +143,3 @@ class Response(object):
 
         else:
             log_info("process_merger_kf error send to error handler", app_context.application_context)
-        
