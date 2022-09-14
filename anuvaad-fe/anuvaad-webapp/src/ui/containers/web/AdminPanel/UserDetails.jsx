@@ -25,6 +25,12 @@ import AssessmentOutlinedIcon from '@material-ui/icons/AssessmentOutlined';
 import history from "../../../../web.history";
 import clearStatus from '../../../../flux/actions/apis/admin/clear_job_status';
 import DataTable from "../../../components/web/common/DataTable";
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import { Button } from "@material-ui/core";
 
 
 const TELEMETRY = require('../../../../utils/TelemetryManager')
@@ -47,7 +53,9 @@ class UserDetails extends React.Component {
       status: false,
       isModalOpen: false,
       username: '',
-      showLoader: false
+      showLoader: false,
+      openSwitchBoxActionConfirmBox: false,
+      selectedArrForSwitchAction: []
 
     };
 
@@ -117,9 +125,10 @@ class UserDetails extends React.Component {
 
 
   toggleChecked = (userId, userName, roleCodes, currentState) => {
+    // console.log("userId, userName, roleCodes, currentState", userId, userName, roleCodes, currentState);
     const token = localStorage.getItem("token");
     const userObj = new ActivateDeactivateUser(userName, !currentState, token);
-    this.setState({ showLoader: true, status: true });
+    this.setState({ showLoader: true, status: true, openSwitchBoxActionConfirmBox:false });
     fetch(userObj.apiEndPoint(), {
       method: 'post',
       body: JSON.stringify(userObj.getBody()),
@@ -170,7 +179,9 @@ class UserDetails extends React.Component {
           <Switch
             checked={isactive}
             color="primary"
-            onChange={() => this.toggleChecked(userId, userName, roleCodes, isactive)} />
+            onChange={()=>this.setState({openSwitchBoxActionConfirmBox: true, selectedArrForSwitchAction: [userId, userName, roleCodes, isactive]})}
+            // onChange={() => this.toggleChecked(userId, userName, roleCodes, isactive)} 
+            />
         </IconButton>
       </Tooltip>
     );
@@ -186,6 +197,40 @@ class UserDetails extends React.Component {
         </IconButton>
       </Tooltip>
     );
+  }
+
+  renderConfirmSwitchButtonActionBox = () => {
+    // console.log("this.state.selectedArrForSwitchAction", this.state.selectedArrForSwitchAction);
+    return(
+      <div style={{ textAlign: "end", marginBottom: "1rem" }}>
+        <Dialog
+          open={this.state.openSwitchBoxActionConfirmBox && this.state.selectedArrForSwitchAction.length > 0}
+          onClose={() => this.setState({ openSwitchBoxActionConfirmBox: false })}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">{this.state.selectedArrForSwitchAction[3] ? "De-Activate" : "Activate"} User</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              Are you sure you want to {this.state.selectedArrForSwitchAction[3] ? "De-Activate" : "Activate"} user {this.state.selectedArrForSwitchAction[1]} ({this.state.selectedArrForSwitchAction[2]}) ?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => {
+              // this.handleDeleteGlossary(this.state.selectedArrForSwitchAction)
+              this.toggleChecked(this.state.selectedArrForSwitchAction[0], this.state.selectedArrForSwitchAction[1], this.state.selectedArrForSwitchAction[2], this.state.selectedArrForSwitchAction[3])
+            }
+            }
+              color="primary">
+              Confirm
+            </Button>
+            <Button onClick={() => this.setState({ openSwitchBoxActionConfirmBox: false, selectedArrForSwitchAction: [] })} color="primary" autoFocus>
+              Cancel
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </div>
+    )
   }
 
   handleUserViewClick = (id, name) => {
@@ -374,7 +419,7 @@ class UserDetails extends React.Component {
     };
 
     return (
-      <div style={{ maxHeight: window.innerHeight, height: window.innerHeight - 10}}>
+      <div style={{}}>
 
         <div style={{ margin: '0% 3% 3% 3%', paddingTop: "2%" }}>
           <ToolBar />
@@ -390,6 +435,9 @@ class UserDetails extends React.Component {
         {
           this.state.isenabled &&
           this.processSnackBar()
+        }
+        {
+          this.renderConfirmSwitchButtonActionBox()
         }
         {
           this.state.isModalOpen &&
