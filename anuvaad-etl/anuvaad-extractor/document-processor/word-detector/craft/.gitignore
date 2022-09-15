@@ -1,3 +1,5 @@
 upload
 src/utilities/primalinenet/anuvaad_line_v1.pth
 anuvaad_line_v1.pth
+*.pyc
+__pycache__/
