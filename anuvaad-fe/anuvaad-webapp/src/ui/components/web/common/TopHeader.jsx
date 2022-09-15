@@ -39,6 +39,9 @@ const useStyles = makeStyles((theme) => ({
         height: "2rem",
         width: "6rem"
     },
+    // ".MuiButton-label":{
+    //     letterSpacing: "0.5px"
+    // },
 
     // inactive button menu styles
     menuButton: {
@@ -48,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
         color: "#000000",
         fontSize: "19px",
         // size: "200px",
-        marginLeft: "38px",
+        marginLeft: "20px",
         '&:hover': {
             backgroundColor: "#E0E0E0",
             color: "#000000",
@@ -66,7 +69,7 @@ const useStyles = makeStyles((theme) => ({
         fontSize: "19px",
         letterSpacing: "0.5px",
         // size: "18px",
-        marginLeft: "38px",
+        marginLeft: "20px",
         // backgroundColor: "#E0E0E0",
         // color: "#000000",
         // padding: 15,
@@ -124,6 +127,7 @@ const useStyles = makeStyles((theme) => ({
         fontSize: "19px",
         fontWeight: "500",
         fontFamily: "roboto",
+        letterSpacing: "0.5px"
     },
     // popover button text style
     popoverMenuText: {
@@ -360,7 +364,7 @@ export default function TopHeader(props) {
                                 key: el.id,
                                 id: el.id,
                                 onClick: () => { el.onclick(assignedOrgId) },
-                                style: { textDecoration: "none", color: "#000000" },
+                                style: { textDecoration: "none", color: "#000000", letterSpacing: "0.5px" },
                                 component: RouterLink,
                                 className: currentMenu === el.id ? highlightedMenuButton : menuButton,
                             }}
@@ -443,7 +447,7 @@ export default function TopHeader(props) {
                                 >
                                     <Avatar style={{ backgroundColor: "#2C2799" }}>{userName?.split("")[0].toLocaleUpperCase()}</Avatar>
                                 </IconButton>
-                                    <Typography variant="subtitle1">{userName?.split(" ")[0]}</Typography>
+                                    <Typography variant="subtitle1" style={{fontSize: "1.25rem"}}>{userName?.split(" ")[0]}</Typography>
                                 </Button>
                                 <Popover
                                     id={"simple-popover"}

@@ -222,7 +222,8 @@ class Dashboard extends React.Component {
               value={this.state.source_language_code}
               style={{
                 fullWidth: true,
-                float: 'right'
+                float: 'right',
+                textAlign: "left"
               }}
             >
               {
@@ -262,6 +263,7 @@ class Dashboard extends React.Component {
               style={{
                 fullWidth: true,
                 float: 'right',
+                textAlign: "left"
               }}
             >
               {
@@ -299,9 +301,9 @@ class Dashboard extends React.Component {
 
     return (
       <div className={classes.root}>
-        <Typography style={{ fontSize: "19px", fontWeight: "500" }} className={classes.typographyHeader}>
+        {/* <Typography style={{ fontSize: "19px", fontWeight: "500" }} className={classes.typographyHeader}>
           {translate("dashboard.page.heading.title")}
-        </Typography>
+        </Typography> */}
         <Paper className={classes.paper}>
           <Grid container >
 

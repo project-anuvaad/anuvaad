@@ -136,7 +136,8 @@ class UserGlossaryUpload extends React.Component {
                             value={this.state.source_language_code}
                             style={{
                                 fullWidth: true,
-                                float: 'right'
+                                float: 'right',
+                                textAlign: "left"
                             }}
                         >
                             {
@@ -168,7 +169,8 @@ class UserGlossaryUpload extends React.Component {
                             value={this.state.target_language_code}
                             style={{
                                 fullWidth: true,
-                                float: 'right'
+                                float: 'right',
+                                textAlign: "left"
                             }}
                         >
                             {

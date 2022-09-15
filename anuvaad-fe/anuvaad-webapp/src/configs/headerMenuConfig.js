@@ -27,6 +27,20 @@ const headerMenuConfig = [
         menuType : menuTypes[1]
     },
     {
+        id : "view-document",
+        title: "Translate Document",
+        onclick : (assignedOrgId)=>history.push(`${process.env.PUBLIC_URL}/view-document`),
+        rolesAllowed : [userRoles[0], userRoles[1]],
+        menuType : menuTypes[2]
+    },
+    {
+        id : "document-digitization",
+        title: "Digitize Document",
+        onclick : (assignedOrgId)=>history.push(`${process.env.PUBLIC_URL}/document-digitization`),
+        rolesAllowed : [userRoles[0], userRoles[1]],
+        menuType : menuTypes[2]
+    },
+    {
         id : "instant-translate",
         title: translate('dashboard.page.heading.title'),
         onclick : ()=>history.push(`${process.env.PUBLIC_URL}/instant-translate`),
@@ -66,7 +80,7 @@ const headerMenuConfig = [
         title: "My Glossary Suggestions",
         onclick : (assignedOrgId)=>history.push(`${process.env.PUBLIC_URL}/my-suggestions/${assignedOrgId}`),
         rolesAllowed : [userRoles[0]],
-        menuType : menuTypes[2]
+        menuType : menuTypes[1]
     },
     {
         id : "organization-glossary",
@@ -80,20 +94,6 @@ const headerMenuConfig = [
         title: "View Jobs",
         onclick : (assignedOrgId)=>history.push(`${process.env.PUBLIC_URL}/view-scheduled-jobs`),
         rolesAllowed : [userRoles[2], userRoles[3]],
-        menuType : menuTypes[2]
-    },
-    {
-        id : "view-document",
-        title: "Translate document",
-        onclick : (assignedOrgId)=>history.push(`${process.env.PUBLIC_URL}/view-document`),
-        rolesAllowed : [userRoles[0], userRoles[1]],
-        menuType : menuTypes[2]
-    },
-    {
-        id : "document-digitization",
-        title: "Digitize Document",
-        onclick : (assignedOrgId)=>history.push(`${process.env.PUBLIC_URL}/document-digitization`),
-        rolesAllowed : [userRoles[0], userRoles[1]],
         menuType : menuTypes[2]
     },
     {
