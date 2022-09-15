@@ -24,7 +24,7 @@ const DashboardStyles = theme => ({
   },
   paper: {
     width: "40%",
-    marginTop: "2%",
+    marginTop: "3%",
     marginBottom: "2%",
     padding: '3%'
   },
