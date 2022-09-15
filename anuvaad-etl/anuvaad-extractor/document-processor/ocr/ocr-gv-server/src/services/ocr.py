@@ -18,8 +18,6 @@ from src.db.connection_manager import get_redis
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
 
-os.environ['GOOGLE_APPLICATION_CREDENTIALS']='/home/srihari/anuvaad-f7a059c268e4_new.json'
-
 region_unifier = Region_Unifier()
 removeoverlap = RemoveOverlap()
 
