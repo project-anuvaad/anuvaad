@@ -18,6 +18,7 @@ from src.db.connection_manager import get_redis
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
 
+os.environ['GOOGLE_APPLICATION_CREDENTIALS']='/home/srihari/anuvaad-f7a059c268e4_new.json'
 
 region_unifier = Region_Unifier()
 removeoverlap = RemoveOverlap()
@@ -55,16 +56,17 @@ def text_extraction(file_properties,image_paths,file):
         
         #save_path = mask_image_vision(image_path, page_words, idx, file_properties, width, height)
         page_output = set_bg_image(page_output, save_path, idx,file)
-        file_properties.set_regions(idx,page_output)
-        file_properties.delete_regions(idx)
-        if config.FONTS == True:
-            file_properties.pop_fontinfo(idx)
+        # file_properties.set_regions(idx,page_output)
+        # file_properties.delete_regions(idx)
+        # if config.FONTS == True:
+        #     file_properties.pop_fontinfo(idx)
 
         img_name = image_path.split("/")[-1].split(".jpg")[0]
         sent_key=hashlib.sha256(img_name.encode('utf_16')).hexdigest()
         save_result= save_sentences_on_hashkey(sent_key,page_output)
         redis_keys.append(sent_key)
         log_info("texts pushed to redis store", None)
+        del page_output
 
     for i,key in enumerate(redis_keys):
         val=redis_db.get(key)
