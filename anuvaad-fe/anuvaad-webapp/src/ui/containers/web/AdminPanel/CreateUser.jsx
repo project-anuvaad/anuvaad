@@ -209,6 +209,7 @@ class CreateUser extends React.Component {
               value={this.state.roleCode}
               style={{
                 fullWidth: true,
+                textAlign: "left"
               }}
             >
               {
@@ -248,6 +249,7 @@ class CreateUser extends React.Component {
               disabled={this.state.orgDropDownDisabled}
               style={{
                 fullWidth: true,
+                textAlign: "left"
               }}
             >
               {

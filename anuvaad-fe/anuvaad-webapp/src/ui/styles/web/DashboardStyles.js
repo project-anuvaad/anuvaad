@@ -24,7 +24,7 @@ const DashboardStyles = theme => ({
   },
   paper: {
     width: "40%",
-    marginTop: "2%",
+    marginTop: "3%",
     marginBottom: "2%",
     padding: '3%'
   },
@@ -101,6 +101,14 @@ const DashboardStyles = theme => ({
     top: 0,
     left: 0,
     opacity: 0.7
+  },
+  transliterateTextArea: {
+    padding: "1%", 
+    height: '100px', 
+    fontFamily: '"Source Sans Pro", "Arial", sans-serif', 
+    fontSize: "21px", 
+    width: '97.8%', 
+    borderRadius: '4px'
   }
 
 });

@@ -316,10 +316,10 @@ class TmxUpload extends Component {
       <div>
 
 
-        <div className={classes.div} style={{paddingTop: "2%", fontSize: "19px", fontWeight: "500"}}>
-        <Typography className={classes.typographyHeader}>
+        <div className={classes.div} style={{paddingTop: "3%", fontSize: "19px", fontWeight: "500"}}>
+        {/* <Typography className={classes.typographyHeader}>
             {translate("common.page.label.glossaryUpload")}
-          </Typography>
+          </Typography> */}
           <Paper elevation={3} style={{minHeight:'255px'}} className={classes.paper}>
             <Grid container spacing={8}>
 

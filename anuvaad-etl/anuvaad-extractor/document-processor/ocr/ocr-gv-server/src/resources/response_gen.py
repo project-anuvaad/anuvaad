@@ -61,6 +61,7 @@ class Response(object):
                         log_info("successfully generated response for workflow", app_context.application_context)
                         
                         return response,gv_file_response
+#                         return response
                     else:
                         post_error_wf(response['code'], response['message'], app_context.application_context, None)
                         return None
@@ -143,4 +144,3 @@ class Response(object):
 
         else:
             log_info("process_merger_kf error send to error handler", app_context.application_context)
-        

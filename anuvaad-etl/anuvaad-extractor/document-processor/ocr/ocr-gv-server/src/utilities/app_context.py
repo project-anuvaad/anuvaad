@@ -6,3 +6,4 @@ def init():
     app_context = {
         'application_context' : None
     }
+
