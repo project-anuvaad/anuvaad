@@ -52,7 +52,7 @@ mongo_wfm_jobs_col = os.environ.get('MONGO_WFMJOBS_COL', 'anuvaad-etl-wfm-jobs-c
 
 #module-configs
 context_path = os.environ.get('ANUVAAD_ETL_WFM_CONTEXT_PATH', '/anuvaad-etl/wf-manager')
-config_file_url = os.environ.get('ANUVAAD_ETL_WFM_CONFIG_FILE_URL', 'https://raw.githubusercontent.com/project-anuvaad/anuvaad/translator_feature/anuvaad-etl/anuvaad-workflow-mgr/config/etl-wf-manager-config-dev.yml')
+config_file_url = os.environ.get('ANUVAAD_ETL_WFM_CONFIG_FILE_URLX', 'https://raw.githubusercontent.com/project-anuvaad/anuvaad/translator_feature/anuvaad-etl/anuvaad-workflow-mgr/config/etl-wf-manager-config-prod.yml')
 
 #general-log-messages
 log_msg_start = " process started."
