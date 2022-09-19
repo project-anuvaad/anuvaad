@@ -25,6 +25,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import DeleteTmx from "../../../../flux/actions/apis/tmx/tmxDelete";
 import DataTable from "../../../components/web/common/DataTable";
 import history from "../../../../web.history";
+import ConfirmBox from "../../../components/web/common/ConfirmBox";
 
 var delete_glossary = require("../../../../utils/deleteGlossary.operation");
 
@@ -160,7 +161,14 @@ class MyGlossary extends React.Component {
                 >
                     Delete All Glossary
                 </Button>
-                <Dialog
+                <ConfirmBox
+                    open={this.state.openConfirmDialog}
+                    onClose={() => this.handleCloseConfirmBox()}
+                    title="Delete all glossary"
+                    contentText="Are you sure you want to delete all glossary?"
+                    onConfirm={() => this.makeDeleteAllGlossaryAPICall({ userID: JSON.parse(localStorage.getItem("userProfile")).userID }, "JUDICIARY")}
+                />
+                {/* <Dialog
                     open={this.state.openConfirmDialog}
                     onClose={() => this.handleCloseConfirmBox()}
                     aria-labelledby="alert-dialog-title"
@@ -173,14 +181,14 @@ class MyGlossary extends React.Component {
                         </DialogContentText>
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={() => this.makeDeleteAllGlossaryAPICall({ userID: JSON.parse(localStorage.getItem("userProfile")).userID }, "JUDICIARY")} color="primary">
+                        <Button onClick={() => this.makeDeleteAllGlossaryAPICall({ userID: JSON.parse(localStorage.getItem("userProfile")).userID }, "JUDICIARY")} style={{textTransform: "none"}} color="primary">
                             Confirm
                         </Button>
-                        <Button onClick={() => this.handleCloseConfirmBox()} color="primary" autoFocus>
+                        <Button onClick={() => this.handleCloseConfirmBox()} style={{textTransform: "none"}} color="primary" autoFocus>
                             Cancel
                         </Button>
                     </DialogActions>
-                </Dialog>
+                </Dialog> */}
             </div>
         )
     }
@@ -192,7 +200,14 @@ class MyGlossary extends React.Component {
     renderDeleteSelectedGlossaryConfirmBox = () => {
         return (
             <div style={{ textAlign: "end", marginBottom: "1rem" }}>
-                <Dialog
+                <ConfirmBox
+                    open={this.state.openDeleteSelectedGlossaryConfirmDialogue}
+                    onClose={() => this.handleDeleteSelectedGlossaryBox()}
+                    title="Delete Selected glossary"
+                    contentText="Are you sure you want to delete selected glossary?"
+                    onConfirm={() => this.deleteMultipleRows()}
+                />
+                {/* <Dialog
                     open={this.state.openDeleteSelectedGlossaryConfirmDialogue}
                     onClose={() => this.handleDeleteSelectedGlossaryBox()}
                     aria-labelledby="alert-dialog-title"
@@ -212,7 +227,7 @@ class MyGlossary extends React.Component {
                             Cancel
                         </Button>
                     </DialogActions>
-                </Dialog>
+                </Dialog> */}
             </div>
         )
     }
@@ -314,17 +329,36 @@ class MyGlossary extends React.Component {
                                         <IconButton
                                             style={{ color: tableMeta.rowData[5] === "Organization" ? "grey" : "#233466", padding: "5px" }}
                                             component="a"
-                                            onClick={() => {this.setState({ openSingleGlossaryDeleteConfirmBox: true, singleDeletionArr: tableMeta.rowData  }) }}
+                                            onClick={() => { this.setState({ openSingleGlossaryDeleteConfirmBox: true, singleDeletionArr: tableMeta.rowData }) }}
                                             disabled={tableMeta.rowData[5] === "Organization"}
                                         >
                                             <DeleteIcon />
                                         </IconButton>
                                     </Tooltip>
-                                    <Dialog
+                                    <ConfirmBox
+                                        open={this.state.openSingleGlossaryDeleteConfirmBox && this.state.singleDeletionArr.length > 0}
+                                        onClose={() => this.setState({ openSingleGlossaryDeleteConfirmBox: false })}
+                                        title="Delete glossary"
+                                        contentText={"Are you sure you want to delete " + this.state.singleDeletionArr[0] + " - " + this.state.singleDeletionArr[1] + " glossary?"}
+                                        onConfirm={() => this.handleDeleteGlossary(this.state.singleDeletionArr)}
+                                        BackdropProps={{
+                                            style: {
+                                                backgroundColor: 'rgba(0,0,0,0.2)',
+                                                boxShadow: 'none',
+                                            }
+                                        }}
+                                    />
+                                    {/* <Dialog
                                         open={this.state.openSingleGlossaryDeleteConfirmBox && this.state.singleDeletionArr.length > 0}
                                         onClose={() => this.setState({ openSingleGlossaryDeleteConfirmBox: false })}
                                         aria-labelledby="alert-dialog-title"
                                         aria-describedby="alert-dialog-description"
+                                        BackdropProps={{
+                                            style:{
+                                                backgroundColor: 'rgba(0,0,0,0.2)',
+                                                boxShadow: 'none',
+                                            }
+                                        }}                  
                                     >
                                         <DialogTitle id="alert-dialog-title">{"Delete glossary"}</DialogTitle>
                                         <DialogContent>
@@ -336,16 +370,15 @@ class MyGlossary extends React.Component {
                                             <Button onClick={() => {
                                                 // console.log("confirm tableMeta.rowData", this.state.singleDeletionArr);
                                                 this.handleDeleteGlossary(this.state.singleDeletionArr)
-                                            }
-                                            }
-                                                color="primary">
+                                            }}
+                                                style={{fontWeight: "400", color: "#3f51b5", textTransform: "none"}}>
                                                 Confirm
                                             </Button>
-                                            <Button onClick={() => this.setState({ openSingleGlossaryDeleteConfirmBox: false })} color="primary" autoFocus>
+                                            <Button onClick={() => this.setState({ openSingleGlossaryDeleteConfirmBox: false })} style={{fontWeight: "400", color: "#3f51b5", textTransform: "none"}}>
                                                 Cancel
                                             </Button>
                                         </DialogActions>
-                                    </Dialog>
+                                    </Dialog> */}
                                 </div>
                             );
                         }
