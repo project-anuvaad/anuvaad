@@ -194,8 +194,6 @@ WorkflowConfigs:
 
 
 
-
-
   - workflowCode: WF_A_OTES
     type: ASYNC
     description: tess-ocr wf.
