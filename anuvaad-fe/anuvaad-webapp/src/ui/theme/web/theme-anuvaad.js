@@ -178,7 +178,7 @@ const themeAnuvaad = createMuiTheme({
         fontSize: "16px",
         //fontWeight: "500",
         //lineHeight: "1.14",
-        letterSpacing: "0.16px",
+        letterSpacing: "0.5px",
         textAlign: "center",
         display:'flex',
         justifyContent:'center',

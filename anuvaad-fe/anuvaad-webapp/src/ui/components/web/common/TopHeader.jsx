@@ -462,7 +462,7 @@ export default function TopHeader(props) {
                                         vertical: 'top',
                                         horizontal: 'center',
                                     }}
-                                    style={{ backgroundColor: "rgba(0,0,0,0.4)" }}
+                                    style={{ backgroundColor: "rgba(0,0,0,0)" }}
                                 >
                                     <Grid container direction="column" className={popoverStyle}>
                                         <Grid item>

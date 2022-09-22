@@ -24,6 +24,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DeleteTmx from "../../../../flux/actions/apis/tmx/tmxDelete";
 import DataTable from "../../../components/web/common/DataTable";
+import ConfirmBox from "../../../components/web/common/ConfirmBox";
 
 var delete_glossary = require("../../../../utils/deleteGlossary.operation");
 
@@ -174,7 +175,7 @@ class OrganizationGlossary extends React.Component {
           style={{
             borderRadius: "10px",
             color: "#FFFFFF",
-            backgroundColor: "#2C2799",
+            backgroundColor: "#D32F2F",
             height: "35px",
             fontSize: "16px",
             textTransform: "none",
@@ -183,7 +184,14 @@ class OrganizationGlossary extends React.Component {
         >
           Delete All Glossary
         </Button>
-        <Dialog
+        <ConfirmBox
+            open={this.state.openConfirmDialog}
+            onClose={() => this.handleCloseConfirmBox()}
+            title="Delete all glossary"
+            contentText="Are you sure you want to delete all glossary for this organization?"
+            onConfirm={() => this.makeDeleteAllGlossaryAPICall({ orgID: this.orgID }, "JUDICIARY")}
+        />
+        {/* <Dialog
           open={this.state.openConfirmDialog}
           onClose={() => this.handleCloseConfirmBox()}
           aria-labelledby="alert-dialog-title"
@@ -203,7 +211,7 @@ class OrganizationGlossary extends React.Component {
               Cancel
             </Button>
           </DialogActions>
-        </Dialog>
+        </Dialog> */}
       </div>
     )
   }
@@ -215,7 +223,14 @@ class OrganizationGlossary extends React.Component {
   renderDeleteSelectedGlossaryConfirmBox = () => {
     return (
       <div style={{ textAlign: "end", marginBottom: "1rem" }}>
-        <Dialog
+        <ConfirmBox
+            open={this.state.openDeleteSelectedGlossaryConfirmDialogue}
+            onClose={() => this.handleDeleteSelectedGlossaryBox()}
+            title="Delete Selected glossary"
+            contentText="Are you sure you want to delete selected glossary?"
+            onConfirm={() => this.deleteMultipleRows()}
+        />
+        {/* <Dialog
           open={this.state.openDeleteSelectedGlossaryConfirmDialogue}
           onClose={() => this.handleDeleteSelectedGlossaryBox()}
           aria-labelledby="alert-dialog-title"
@@ -235,7 +250,7 @@ class OrganizationGlossary extends React.Component {
               Cancel
             </Button>
           </DialogActions>
-        </Dialog>
+        </Dialog> */}
       </div>
     )
   }
@@ -243,7 +258,14 @@ class OrganizationGlossary extends React.Component {
   renderSingleGlossaryConfirmBox = () => {
     return (
       <div style={{ textAlign: "end", marginBottom: "1rem" }}>
-        <Dialog
+        <ConfirmBox
+            open={this.state.openSingleGlossaryDeleteConfirmBox && this.state.singleDeletionArr.length > 0}
+            onClose={() => this.setState({ openSingleGlossaryDeleteConfirmBox: false })}
+            title="Delete glossary"
+            contentText={"Are you sure you want to delete " + this.state.singleDeletionArr[0] + " - " + this.state.singleDeletionArr[1] + " glossary?"}
+            onConfirm={() => this.this.handleDeleteGlossary(this.state.singleDeletionArr)}
+        />
+        {/* <Dialog
           open={this.state.openSingleGlossaryDeleteConfirmBox && this.state.singleDeletionArr.length > 0}
           onClose={() => this.setState({ openSingleGlossaryDeleteConfirmBox: false })}
           aria-labelledby="alert-dialog-title"
@@ -267,7 +289,7 @@ class OrganizationGlossary extends React.Component {
               Cancel
             </Button>
           </DialogActions>
-        </Dialog>
+        </Dialog> */}
       </div>
     )
   }
