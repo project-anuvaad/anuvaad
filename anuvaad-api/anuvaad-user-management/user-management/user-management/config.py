@@ -56,7 +56,7 @@ ROLE_CODES_FILE_NAME    =   os.environ.get('UMS_FILE_NAME','roles.json')
 #mail server configs
 MAIL_SETTINGS           =   {
                             "MAIL_SERVER": os.environ.get('SMTP_HOST','smtp.gmail.com'),
-                            "MAIL_PORT": 465,
+                            "MAIL_PORT": os.environ.get("SMTP_PORT",465),
                             "MAIL_USE_TLS": False,
                             "MAIL_USE_SSL": True,
                             "MAIL_USERNAME": os.environ.get('SMTP_USERNAME','xxxxxxxxxxx'),
