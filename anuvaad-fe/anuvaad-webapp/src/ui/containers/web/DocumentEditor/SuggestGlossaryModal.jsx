@@ -26,7 +26,7 @@ class SuggestGlossaryModal extends React.Component {
                 <FormControl style={{
                     position: 'absolute',
                     width: "30%",
-                    height: "22%",
+                    // height: "22%",
                     top: "25%",
                     left: '35%',
                     paddingTop: '1%',
