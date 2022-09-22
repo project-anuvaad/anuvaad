@@ -510,11 +510,12 @@ class TranslatorService:
                 log_info(nmt_res_sentence["tmx_replacement"], translate_wf_input)
             block_id, b_index, s_index, sentence_id = node[3], None, None, nmt_res_sentence["s_id"]
             for b_in, block in enumerate(page["text_blocks"]):
-                for s_in, sentence in enumerate(block["tokenized_sentences"]):
-                    if str(sentence["s_id"]) == str(sentence_id):
-                        s_index = s_in
-                        b_index = b_in
-                        break
+                if block["block_id"] == block_id:
+                    for s_in, sentence in enumerate(block["tokenized_sentences"]):
+                        if str(sentence["s_id"]) == str(sentence_id):
+                            s_index = s_in
+                            b_index = b_in
+                            break
             if s_index is not None:
                 page_enriched["text_blocks"][b_index]["tokenized_sentences"][s_index] = nmt_res_sentence
             else:
