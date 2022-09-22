@@ -508,22 +508,19 @@ class TranslatorService:
                 nmt_res_sentence["tgt"], nmt_res_sentence["tmx_replacement"] = tmxservice.replace_nmt_tgt_with_user_tgt(
                     nmt_res_sentence["tmx_phrases"], nmt_res_sentence["src"], nmt_res_sentence["tgt"], translate_wf_input)
                 log_info(nmt_res_sentence["tmx_replacement"], translate_wf_input)
-            block_id = node[3]
-            b_index, s_index = None, None
-            sentence_id = nmt_res_sentence["s_id"]
-            for j, block in enumerate(page["text_blocks"]):
-                if str(block["block_id"]) == str(block_id):
-                    b_index = j
-                    break
-            block = page["text_blocks"][b_index]
-            for k, sentence in enumerate(block["tokenized_sentences"]):
-                if str(sentence["s_id"]) == str(sentence_id):
-                    s_index = k
-                    break
-            if b_index is not None and s_index is not None:
+            block_id, b_index, s_index, sentence_id = node[3], None, None, nmt_res_sentence["s_id"]
+            for b_in, block in enumerate(page["text_blocks"]):
+                for s_in, sentence in enumerate(block["tokenized_sentences"]):
+                    if str(sentence["s_id"]) == str(sentence_id):
+                        s_index = s_in
+                        b_index = b_in
+                        break
+            if s_index is not None:
                 page_enriched["text_blocks"][b_index]["tokenized_sentences"][s_index] = nmt_res_sentence
             else:
-                log_info("Replace failed, NodeID: {}".format(str(nmt_res_sentence["n_id"])), translate_wf_input)
+                log_info(f'Replace failed for n_id: {str(nmt_res_sentence["n_id"])}, block_id received: {block_id}, '
+                         f'sentence_id received: {sentence_id}, b_index: {b_index}, s_index: {s_index}, '
+                         f'nmt_res_sentence: {nmt_res_sentence}', translate_wf_input)
         query = {"record_id": record_id, "page_no": eval(page_no)}
         repo.update_pages(query, page_enriched)
 
