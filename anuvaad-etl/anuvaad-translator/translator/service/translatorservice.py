@@ -515,15 +515,17 @@ class TranslatorService:
                 if str(block["block_id"]) == str(block_id):
                     b_index = j
                     break
-            block = page["text_blocks"][b_index]
-            for k, sentence in enumerate(block["tokenized_sentences"]):
-                if str(sentence["s_id"]) == str(sentence_id):
-                    s_index = k
-                    break
+            if b_index:
+                block = page["text_blocks"][b_index]
+                for k, sentence in enumerate(block["tokenized_sentences"]):
+                    if str(sentence["s_id"]) == str(sentence_id):
+                        s_index = k
+                        break
             if b_index is not None and s_index is not None:
                 page_enriched["text_blocks"][b_index]["tokenized_sentences"][s_index] = nmt_res_sentence
             else:
-                log_info("Replace failed, NodeID: {}".format(str(nmt_res_sentence["n_id"])), translate_wf_input)
+                log_info(f'Replace failed for n_id: {str(nmt_res_sentence["n_id"])}, block_id received: {block_id}, '
+                         f'sentence_id received: {sentence_id}, b_index: {b_index}, s_index: {s_index}', translate_wf_input)
         query = {"record_id": record_id, "page_no": eval(page_no)}
         repo.update_pages(query, page_enriched)
 
