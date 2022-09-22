@@ -53,14 +53,14 @@ ROLE_CODES_URL          =   os.environ.get('UMS_ROLE_CODES_URL','https://raw.git
 ROLE_CODES_DIR_PATH     =   os.environ.get('UMS_ROLE_DIR_PATH','/app/configs/') #'/home/jainy/Documents/Anuvaad_local_files/usrmgmt/'
 ROLE_CODES_FILE_NAME    =   os.environ.get('UMS_FILE_NAME','roles.json')
 
-#gmail server configs
+#mail server configs
 MAIL_SETTINGS           =   {
-                            "MAIL_SERVER": 'smtp.gmail.com',
+                            "MAIL_SERVER": os.environ.get('SMTP_HOST','smtp.gmail.com'),
                             "MAIL_PORT": 465,
                             "MAIL_USE_TLS": False,
                             "MAIL_USE_SSL": True,
-                            "MAIL_USERNAME": os.environ.get('SUPPORT_EMAIL','XXXXX'),
-                            "MAIL_PASSWORD": os.environ.get('SUPPORT_EMAIL_PASSWORD','xxxxx')
+                            "MAIL_USERNAME": os.environ.get('SMTP_USERNAME','xxxxxxxxxxx'),
+                            "MAIL_PASSWORD": os.environ.get('SMTP_PASSWORD','xxxxxxxxxxx')
                             }
 
 #React-app base url
