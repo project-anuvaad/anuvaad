@@ -53,7 +53,7 @@ LINE_PRIMA=True
 CRAFT=False
 
 LINE_PRIMA_SCORE_THRESH_TEST = 0.50
-LINE_DETECTION=False
+LINE_DETECTION=True
 
 LINE_LAYOUT_MODEL_PATH = "./src/utilities/primalinenet/scene_text_judgement_line_detection_v1_model.pth"
 LINE_LAYOUT_CONFIG_PATH = "./src/utilities/primalinenet/scene_text_line_detection_model_config.yaml"
