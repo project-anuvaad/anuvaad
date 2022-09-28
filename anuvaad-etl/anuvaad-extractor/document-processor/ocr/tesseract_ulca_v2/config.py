@@ -30,7 +30,7 @@ LANG_MAPPING = {
     "kn": ["anuvaad_kan",'Kannada'],
     "gu": ["Gujarati", "guj"],
     "or": ["anuvaad_ori","Oriya"],
-    "hi": ["anuvad_hin_scene_text_real","Devanagari"],
+    "hi": ["anuvaad_hin","Devanagari"],
     "bn": ["anuvaad_ben","Bengali"],
     "mr": ["Devanagari", "mar"],
     "ta": ["anuvaad_tam",'Tamil'],
@@ -53,7 +53,7 @@ LINE_PRIMA=True
 CRAFT=False
 
 LINE_PRIMA_SCORE_THRESH_TEST = 0.50
-LINE_DETECTION=True
+LINE_DETECTION=False
 
 LINE_LAYOUT_MODEL_PATH = "./src/utilities/primalinenet/scene_text_judgement_line_detection_v1_model.pth"
 LINE_LAYOUT_CONFIG_PATH = "./src/utilities/primalinenet/scene_text_line_detection_model_config.yaml"
