@@ -600,11 +600,16 @@ class UserUtils:
 
         try:
             file = requests.get(role_codes_filepath, allow_redirects=True)
+            log_info("role_codes_filepath:{}".format(str(role_codes_filepath)),MODULE_CONTEXT)
+            log_info("files:{}".format(str(file)),MODULE_CONTEXT)
             file_path = json_file_dir + json_file_name
+            log_info("file_path:{}".format(str(file_path)),MODULE_CONTEXT)
             open(file_path, "wb").write(file.content)
             log_info("Roles data read from git and pushed to local", MODULE_CONTEXT)
             with open(file_path, "r") as stream:
+                log_info("stream:{}".format(str(stream)),MODULE_CONTEXT)
                 parsed = json.load(stream)
+                log_info("read the roles:{}".format(str(parsed)),MODULE_CONTEXT)
                 roles = parsed["roles"]
                 rolecodes = []
                 role_details = []
