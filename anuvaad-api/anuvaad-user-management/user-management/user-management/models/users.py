@@ -123,7 +123,7 @@ class UserManagementModel(object):
                 out = collections.find({"is_verified":True},exclude).sort([("_id",-1)]).skip(offset).limit(limit_value)
                 record_count=collections.find({"is_verified":True}).count()
             #fetching users with given org codes and role codes
-            elif len(role_codes and org_codes) != None and len(user_ids and user_names) == 0:
+            elif len(role_codes and org_codes) != 0 and len(user_ids and user_names) == 0:
                 log_info("Fetching verified users from database with org code and role code", MODULE_CONTEXT)
                 out = collections.find(
                 {'$and': [ 
