@@ -130,7 +130,7 @@ class UserManagementModel(object):
                     {'userID': {'$in': user_ids},'is_verified': True},
                     {'userName': {'$in': user_names},'is_verified': True},
                     {'roles.roleCode': {'$in': role_codes},'is_verified': True},
-                    {'orgID': {'$in': org_codes},'is_verified': True}
+                    {'orgID':  org_codes,'is_verified': True}
                 ]}, exclude)
                 record_count=out.count()          
             result = []
