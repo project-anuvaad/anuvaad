@@ -107,7 +107,6 @@ class UserManagementModel(object):
 
     def get_user_by_keys(self,user_ids, user_names, role_codes,org_codes,offset,limit_value,skip_pagination):
         """Searching for user records in the databse"""
-
         #keys to exclude from search result
         exclude = {"password": False,"_id":False}
         try:
@@ -123,6 +122,21 @@ class UserManagementModel(object):
                 log_info("Fetching verified users from database with pagination property", MODULE_CONTEXT)
                 out = collections.find({"is_verified":True},exclude).sort([("_id",-1)]).skip(offset).limit(limit_value)
                 record_count=collections.find({"is_verified":True}).count()
+            #fetching users with given org codes and role codes
+            elif len(role_codes and org_codes) != None and len(user_ids and user_names) == 0:
+                log_info("Fetching verified users from database with org code and role code", MODULE_CONTEXT)
+                out = collections.find(
+                {'$and': [ 
+                    {'roles.roleCode': {'$in': role_codes},'is_verified': True},
+                    {'orgID': {'$in': org_codes},'is_verified': True}
+                ]}, exclude)
+                record_count=out.count()          
+                result = []
+                for record in out:
+                    result.append(record)
+                if not result:
+                    return None
+                return result,record_count
             else:
                 log_info("Fetching verified users from database matching user properties", MODULE_CONTEXT)
                 out = collections.find(
@@ -130,7 +144,7 @@ class UserManagementModel(object):
                     {'userID': {'$in': user_ids},'is_verified': True},
                     {'userName': {'$in': user_names},'is_verified': True},
                     {'roles.roleCode': {'$in': role_codes},'is_verified': True},
-                    {'orgID':  org_codes,'is_verified': True}
+                    {'orgID': {'$in': org_codes},'is_verified': True}
                 ]}, exclude)
                 record_count=out.count()          
             result = []
