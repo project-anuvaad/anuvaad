@@ -78,19 +78,24 @@ class WFMUtils:
             file = requests.get(config_file_url, allow_redirects=True)
             file_path = yaml_file_loc + yam_file_path_delimiter + yaml_workflow_config_file_name
             open(file_path, 'wb').write(file.content)
+            log_info(f"Read WF Configs to: {file_path}",None)
             with open(file_path, 'r') as stream:
                 parsed = yaml.safe_load(stream)
+                log_info(f"WF Configs Content: {parsed}",None)
                 configs_global['numPartitions'] = parsed['WorkflowConfigs'][0]['numPartitions']
                 configs = parsed['WorkflowConfigs'][1]['workflowCodes']
                 configs_global['workflowCodes'] = {}
                 for obj in configs:
                     key = obj['workflowCode']
                     configs_global['workflowCodes'][key] = obj
+            log_info(f"Reading Tool Configs from: {tool_config_url}", None)
             file = requests.get(tool_config_url, allow_redirects=True)
             file_path = yaml_file_loc + yam_file_path_delimiter + yaml_tools_file_name
             open(file_path, 'wb').write(file.content)
+            log_info(f"Read Tool Configs to: {file_path}",None)
             with open(file_path, 'r') as stream:
                 parsed = yaml.safe_load(stream)
+                log_info(f"Tool Configs Content: {parsed}",None)
                 configs = parsed['ToolConfigs']
                 for obj in configs:
                     key = obj['name']
