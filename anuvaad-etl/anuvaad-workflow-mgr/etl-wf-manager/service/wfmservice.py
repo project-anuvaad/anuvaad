@@ -218,7 +218,7 @@ class WFMService:
                 log_error("The workflow contains incompatible steps.", wf_input, None)
                 return None
             configs_global = wfmutils.get_configs
-            partitions = os.environ.get(configs_global['numPartitions'])
+            partitions = os.environ.get(configs_global['numPartitions'],total_no_of_partitions)
             producer.push_to_queue(first_tool_input, input_topic, eval(partitions))
             client_output = self.get_wf_details_async(wf_input, None, False, None)
             self.update_job_details(client_output, False)
@@ -256,7 +256,8 @@ class WFMService:
                     next_tool = wfmutils.get_tool_config_details(next_step_details[1]["name"])
                     topic = os.environ.get(next_tool["kafka-input"], "NA")
                     configs_global = wfmutils.get_configs
-                    partitions = os.environ.get(configs_global['numPartitions'])
+                    partitions = os.environ.get(configs_global['numPartitions'],total_no_of_partitions)
+                    log_info(f"Partitions: {partitions}")
                     if next_step_input is None or topic == "NA":
                         log_error("The workflow contains incompatible steps in sequence. Please check the wf config.",
                                   task_output, None)
