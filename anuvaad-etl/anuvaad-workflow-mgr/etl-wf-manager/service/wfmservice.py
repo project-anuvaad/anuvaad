@@ -117,7 +117,7 @@ class WFMService:
                     tool_input = wfmutils.get_tool_input_sync(tool_details["name"], None, None, wf_input)
                 else:
                     tool_input = wfmutils.get_tool_input_sync(tool_details["name"], previous_tool, tool_output, None)
-                response = wfmutils.call_api(tool_details["api-details"][0]["uri"], tool_input, wf_input["metadata"]["userID"])
+                response = wfmutils.call_api(wfmutils.get_tool_config_details(tool_details["name"])["api-details"][0]["uri"], tool_input, wf_input["metadata"]["userID"])
                 error = self.validate_tool_response(response, tool_details, wf_input)
                 if error:
                     return error
@@ -178,7 +178,7 @@ class WFMService:
         else:
             wf_details = wfmutils.get_job_details(task_output["jobID"])
         if wf_details is None or len(wf_details) == 0:
-            config = wfmutils.get_configs()[wf_input["workflowCode"]]
+            config = wfmutils.get_configs()['workflowCodes'][wf_input["workflowCode"]]
             client_output = {"input": wf_input, "jobID": wf_input["jobID"], "translation": config["translation"],
                              "workflowCode": wf_input["workflowCode"], "active": True,
                              "status": "STARTED", "state": "INITIATED", "metadata": wf_input["metadata"],
@@ -208,8 +208,8 @@ class WFMService:
         try:
             order_of_execution = wfmutils.get_order_of_exc(wf_input["workflowCode"])
             first_step_details = order_of_execution[0]
-            first_tool = first_step_details["tool"][0]
-            input_topic = os.environ.get(first_tool["kafka-input"][0]["topic"], "NA")
+            first_tool = wfmutils.get_tool_config_details(first_step_details["tool"][0]["name"])
+            input_topic = os.environ.get(first_tool["kafka-input"], "NA")
             first_tool_input = wfmutils.get_tool_input_async(first_tool["name"], None, None, wf_input)
             if first_tool_input is None or input_topic == "NA":
                 error = post_error("INCOMPATIBLE_TOOL_SEQUENCE", "The workflow contains incompatible steps.", None)
@@ -217,7 +217,8 @@ class WFMService:
                 self.update_job_details(client_output, False)
                 log_error("The workflow contains incompatible steps.", wf_input, None)
                 return None
-            partitions = os.environ.get(first_tool["kafka-input"][0]["partitions"], str(total_no_of_partitions))
+            configs_global = wfmutils.get_configs
+            partitions = os.environ.get(configs_global['numPartitions'])
             producer.push_to_queue(first_tool_input, input_topic, eval(partitions))
             client_output = self.get_wf_details_async(wf_input, None, False, None)
             self.update_job_details(client_output, False)
@@ -251,9 +252,11 @@ class WFMService:
                         return None
                     client_output = self.get_wf_details_async(None, task_output, False, None)
                     self.update_job_details(client_output, False)
-                    next_step_input, next_tool = next_step_details[0], next_step_details[1]
-                    topic = os.environ.get(next_tool["kafka-input"][0]["topic"], "NA")
-                    partitions = os.environ.get(next_tool["kafka-input"][0]["partitions"], str(total_no_of_partitions))
+                    next_step_input = next_step_details[0]
+                    next_tool = wfmutils.get_tool_config_details(next_step_details[1]["name"])
+                    topic = os.environ.get(next_tool["kafka-input"], "NA")
+                    configs_global = wfmutils.get_configs
+                    partitions = os.environ.get(configs_global['numPartitions'])
                     if next_step_input is None or topic == "NA":
                         log_error("The workflow contains incompatible steps in sequence. Please check the wf config.",
                                   task_output, None)

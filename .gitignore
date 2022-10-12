@@ -3,7 +3,7 @@
 *.log
 .idea
 .DS_Store
-
+__pycache__/
 ## for anuvaad-fe
 ##  - build
 ##  - node_modules

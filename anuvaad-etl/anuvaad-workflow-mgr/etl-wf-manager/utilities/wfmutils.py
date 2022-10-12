@@ -7,7 +7,7 @@ import time
 
 import requests
 import yaml
-from configs.wfmconfig import config_file_url, tool_blockmerger, tool_tokeniser, tool_fileconverter, tool_aligner, tool_translator
+from configs.wfmconfig import config_file_url, tool_config_url, tool_blockmerger, tool_tokeniser, tool_fileconverter, tool_aligner, tool_translator
 from configs.wfmconfig import tool_worddetector, tool_layoutdetector, tool_ch, tool_nmt, tool_ocrgooglevision, tool_ocrtesseract, tool_annotator
 from configs.wfmconfig import tool_blocksegmenter, tool_ocrdd10googlevision, tool_ocrdd15googlevision, \
     jobid_random_str_length, tool_ocrtokeniser, tool_filetranslator, tool_imageocr, tool_ocrdd20tesseract
@@ -58,11 +58,13 @@ wfmrepo = WFMRepository()
 
 log = logging.getLogger('file')
 configs_global = {}
+tools_global = {}
 
 yaml_file_loc = "/app/configs"
 yam_file_path_delimiter = "/"
-yaml_file_name = "wfconfig.yml"
-
+#yaml_file_name = "wfconfig.yml"
+yaml_workflow_config_file_name = "wfconfig.yml"
+yaml_tools_file_name = "toolconfig.yml"
 
 class WFMUtils:
     def __init__(self):
@@ -74,15 +76,25 @@ class WFMUtils:
         try:
             log_info(f"Reading WF Configs from: {config_file_url}", None)
             file = requests.get(config_file_url, allow_redirects=True)
-            file_path = yaml_file_loc + yam_file_path_delimiter + yaml_file_name
+            file_path = yaml_file_loc + yam_file_path_delimiter + yaml_workflow_config_file_name
             open(file_path, 'wb').write(file.content)
             with open(file_path, 'r') as stream:
                 parsed = yaml.safe_load(stream)
-                configs = parsed['WorkflowConfigs']
+                configs_global['numPartitions'] = parsed['WorkflowConfigs'][0]['numPartitions']
+                configs = parsed['WorkflowConfigs'][1]['workflowCodes']
+                configs_global['workflowCodes'] = {}
                 for obj in configs:
                     key = obj['workflowCode']
-                    configs_global[key] = obj
-            log_info(f"WF Configs: {configs_global.keys()}", None)
+                    configs_global['workflowCodes'][key] = obj
+            file = requests.get(tool_config_url, allow_redirects=True)
+            file_path = yaml_file_loc + yam_file_path_delimiter + yaml_tools_file_name
+            open(file_path, 'wb').write(file.content)
+            with open(file_path, 'r') as stream:
+                parsed = yaml.safe_load(stream)
+                configs = parsed['ToolConfigs']
+                for obj in configs:
+                    key = obj['name']
+                    tools_global[key] = obj
         except Exception as exc:
             log_exception("Exception while reading configs: " +
                           str(exc), None, exc)
@@ -96,22 +108,26 @@ class WFMUtils:
     # The WFM consumer will listen to these topics only.
     def fetch_output_topics(self, all_configs):
         topics = []
-        for key in all_configs:
-            config = all_configs[key]
+        for key in all_configs["workflowCodes"]:
+            config = all_configs["workflowCodes"][key]
             sequence = config["sequence"]
             for step in sequence:
-                tool_details = step["tool"][0]
+                tool_details = self.get_tool_config_details(step["tool"][0]['name'])
                 if 'kafka-output' in tool_details.keys():
                     output_topic = os.environ.get(
-                        tool_details["kafka-output"][0]["topic"], "NA")
+                        tool_details["kafka-output"], "NA")
                     if output_topic != "NA" and output_topic not in topics:
                         topics.append(output_topic)
         return topics
 
+    # Helper method to fetch tool details [kafka topics / api details] for any tool name provided.
+    def get_tool_config_details(self,tool_name):
+        return tools_global[tool_name]
+
     # Helper method to fetch tools involved in a given workflow.
     def get_tools_of_wf(self, workflowCode):
         configs = self.get_configs()
-        config = configs[workflowCode]
+        config = configs['workflowCodes'][workflowCode]
         sequence = config["sequence"]
         tools = []
         for step in sequence:
@@ -124,7 +140,7 @@ class WFMUtils:
     # Format: <use_case>-<6_char_random>-<13_digit_epoch>
     def generate_job_id(self, workflowCode):
         config = self.get_configs()
-        config_to_be_used = config[workflowCode]
+        config_to_be_used = config['workflowCodes'][workflowCode]
         use_case = config_to_be_used["useCase"]
         rand_str = ''.join(random.choice(string.ascii_letters)
                            for i in range(eval(str(jobid_random_str_length))))
@@ -134,7 +150,7 @@ class WFMUtils:
     def get_order_of_exc(self, workflowCode):
         order_of_exc_dict = {}
         config = self.get_configs()
-        config_to_be_used = config[workflowCode]
+        config_to_be_used = config['workflowCodes'][workflowCode]
         sequence = config_to_be_used["sequence"]
         for step in sequence:
             order_of_exc_dict[step["order"]] = step

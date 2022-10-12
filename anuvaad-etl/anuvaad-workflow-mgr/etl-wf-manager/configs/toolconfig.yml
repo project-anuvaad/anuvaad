@@ -1,0 +1,111 @@
+ToolConfigs: 
+
+  - name: ALIGNER
+    description: Accepts 2 parallel files and aligns them into parallel corp for training
+    kafka-input: KAFKA_ANUVAAD_DP_TOOLS_ALIGNER_INPUT
+    kafka-output: KAFKA_ANUVAAD_DP_TOOLS_ALIGNER_OUTPUT
+
+  - name: ANNOTATOR
+    description: WF for annotation
+    kafka-input: KAFKA_ANUVAAD_DP_TOOLS_SENTENCE_ANNOTATION_INPUT
+    kafka-output: KAFKA_ANUVAAD_DP_TOOLS_SENTENCE_ANNOTATION_OUTPUT
+
+  - name: BLOCK-MERGER
+    description: extracts different blocks from a pdf file.
+    kafka-input: KAFKA_ANUVAAD_DP_TOOLS_BLOCK_MERGER_INPUT
+    kafka-output: KAFKA_ANUVAAD_DP_TOOLS_BLOCK_MERGER_OUTPUT
+
+  - name: BLOCK-SEGMENTER
+    description: block segmentation process
+    kafka-input: KAFKA_ANUVAAD_DP_TOOLS_BLOCK_SEGMENTER_INPUT
+    kafka-output: KAFKA_ANUVAAD_DP_TOOLS_BLOCK_SEGMENTER_OUTPUT
+
+  - name: FILE-CONVERTER
+    description: converts a file into pdf and other formats.
+    kafka-input: KAFKA_ANUVAAD_DP_TOOLS_FC_INPUT
+    kafka-output: KAFKA_ANUVAAD_DP_TOOLS_FC_OUTPUT
+
+  - name: FILE-TRANSLATOR
+    description: Search WF for docx download
+    kafka-input: KAFKA_ANUVAAD_DP_TOOLS_FT_DOWNLOAD_INPUT
+    kafka-output: KAFKA_ANUVAAD_DP_TOOLS_FT_DOWNLOAD_OUTPUT
+
+  - name: IMAGE-OCR
+    description: WF for OCR on images
+    kafka-input: KAFKA_ANUVAAD_DP_TOOLS_OCR_DIAGRAM_INPUT
+    kafka-output: KAFKA_ANUVAAD_DP_TOOLS_OCR_DIAGRAM__OUTPUT
+
+  - name: LAYOUT-DETECTOR
+    description: detects layouts from a given file
+    kafka-input: KAFKA_ANUVAAD_DP_TOOLS_LAYOUT_DETECTOR_PRIMA_INPUT
+    kafka-output: KAFKA_ANUVAAD_DP_TOOLS_LAYOUT_DETECTOR_PRIMA_OUTPUT
+
+  - name: OCR-DD10-GOOGLE-VISION
+    description: ocr using google vision for doc digitisation.
+    kafka-input: KAFKA_ANUVAAD_DP_TOOLS_GV_DOCUMENT_DIGITIZATION_INPUT
+    kafka-output: KAFKA_ANUVAAD_DP_TOOLS_GV_DOCUMENT_DIGITIZATION_OUTPUT
+
+  - name: OCR-DD15-GOOGLE-VISION
+    description: ocr using google vision for doc digitisation.
+    kafka-input: KAFKA_ANUVAAD_DP_TOOLS_OCR_GOOGLE_VISION_INPUT_V15
+    kafka-output: KAFKA_ANUVAAD_DP_TOOLS_OCR_GOOGLE_VISION_OUTPUT_V15
+
+  - name: OCR-DD20-TESSERACT
+    description: ocr using custom trained  for doc digitisation.
+    kafka-input: KAFKA_ANUVAAD_DP_TOOLS_OCR_TESSERACT_INPUT_V20
+    kafka-output: KAFKA_ANUVAAD_DP_TOOLS_OCR_TESSERACT_OUTPUT_V20
+
+  - name: OCR-TESSERACT
+    description: ocr using tesseract
+    kafka-input: KAFKA_ANUVAAD_DP_TOOLS_OCR_TESSERACT_INPUT
+    kafka-output: KAFKA_ANUVAAD_DP_TOOLS_OCR_TESSERACT_OUTPUT
+
+  - name: OCR-TOKENISER
+    description: OCR Tokeniser process
+    kafka-input: KAFKA_ANUVAAD_DP_TOOLS_TOKENISER_OCR_INPUT
+    kafka-output: KAFKA_ANUVAAD_DP_TOOLS_TOKENISER_OCR_OUTPUT
+
+  - name: TOKENISER
+    description: Tokenises a given file with paragraphs
+    kafka-input: KAFKA_ANUVAAD_DP_TOOLS_TOKENISER_INPUT
+    kafka-output: KAFKA_ANUVAAD_DP_TOOLS_TOKENISER_OUTPUT
+
+  - name: TRANSLATOR
+    description: Translates sentences from a bm-tok processed json file.
+    kafka-input: KAFKA_ANUVAAD_DP_TRANSLATOR_INPUT_TOPIC
+    kafka-output: KAFKA_ANUVAAD_DP_TRANSLATOR_OUTPUT_TOPIC
+
+  - name: WORD-DETECTOR
+    description: detects word blocks from a given file
+    kafka-input: KAFKA_ANUVAAD_DP_TOOLS_WORD_DETECTOR_CRAFT_INPUT
+    kafka-output: KAFKA_ANUVAAD_DP_TOOLS_WORD_DETECTOR_CRAFT_OUTPUT
+
+  - name: SYNC-BLOCK-TRANSLATOR
+    description: Translates the blocks.
+    api-details:
+    - uri: http://gateway_anuvaad-etl-translator:5001/anuvaad-etl/translator/v1/block/workflow/translate
+
+  - name: SYNC-FILE-TRANSLATOR
+    description: Search WF for docx download
+    api-details:
+    - uri: http://gateway_anuvaad-etl-file-translator:5001/anuvaad-etl/file-translator/v0/download-wf
+
+  - name: SYNC-SENTENCE-TRANSLATOR
+    description: Translates the sentences.
+    api-details:
+    - uri: http://gateway_anuvaad-etl-translator:5001/anuvaad-etl/translator/v1/sentences/workflow/translate
+
+  - name: SYNC-BLOCK-TOKENISER
+    description: tokenises the text blocks.
+    api-details:
+    - uri: http://0.0.0.0:5002/anuvaad-etl/tokeniser/v0/blocks-tokenisation-wf
+
+  - name: SYNC-PARAGRAPH-TOKENIZER
+    description: tokenises the text blocks.
+    api-details:
+    - uri: http://0.0.0.0:5002/anuvaad-etl/tokeniser/v0/paragraphs-tokenisation-wf
+
+  - name: SYNC-SENTENCE-TRANSLATOR
+    description: Translates the sentences.
+    api-details:
+    - uri: http://gateway_anuvaad-etl-translator:5001/anuvaad-etl/translator/v1/sentences/workflow/translate

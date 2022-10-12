@@ -24,14 +24,14 @@ class WFMValidator:
             return post_error("WOFKLOWCODE_NOT_FOUND", "workflowCode is mandatory", None)
         else:
             configs = wfmutils.get_configs()
-            if data["workflowCode"] not in configs.keys():
+            if data["workflowCode"] not in configs["workflowCodes"].keys():
                 return post_error("WORKFLOW_NOT_FOUND", "There's no workflow configured against this workflowCode", None)
 
     # Input Validations for SYNC flow
     def validate_sync(self, data, workflowCode):
         if is_sync_flow_enabled:
             configs = wfmutils.get_configs()
-            config = configs[workflowCode]
+            config = configs["workflowCodes"][workflowCode]
             if config["type"] != "SYNC":
                 return post_error("UNSUPPORTED_WF_CODE", "This workflow is NOT of the SYNC type.", None)
             if config["translation"] not in ["BLOCK", "SENTENCE", "DOWNLOAD"]:
@@ -100,7 +100,7 @@ class WFMValidator:
     def validate_async(self, data, workflowCode):
         if is_async_flow_enabled:
             configs = wfmutils.get_configs()
-            if configs[workflowCode]["type"] != "ASYNC":
+            if configs["workflowCodes"][workflowCode]["type"] != "ASYNC":
                 return post_error("UNSUPPORTED_WF_CODE", "This workflow is NOT of the ASYNC type.", None)
             if 'files' not in data.keys():
                 return post_error("FILES_NOT_FOUND", "files are mandatory", None)
