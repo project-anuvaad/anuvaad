@@ -143,6 +143,16 @@ class TranslatorValidator:
                             if 'target_language_code' not in model.keys():
                                 return post_error("TGT_LANG_NOT_FOUND", "Target language code is mandatory.", None)
 
+    def validate_tmx_create(self, input_req):
+        for indx, sentence in enumerate(input_req.get('sentences')):
+            if 'src' not in sentence.keys() or sentence.get('src')=="":
+                return post_error("SRC_NOT_FOUND", "src is mandatory for every translation", None)
+            if 'tgt' not in sentence.keys() or sentence.get('tgt')=="":
+                return post_error("TGT_NOT_FOUND", "tgt is mandatory for every translation", None)
+            if 'locale' not in sentence.keys() or sentence.get('tgt')=="":
+                return post_error("LOCALE_NOT_FOUND", "locale is mandatory for every translation", None)
+            return None
+
     def validate_tmx_search(self, input_req):
         user_roles = str(input_req["metadata"]["roles"]).split(",")
         if 'SUPERADMIN' in user_roles:

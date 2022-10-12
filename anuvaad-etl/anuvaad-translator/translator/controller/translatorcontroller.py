@@ -98,12 +98,20 @@ def tmx_create_bulk():
 def tmx_create():
     service = TMXService()
     data = request.get_json()
-    response = service.push_to_tmx_store(data)
-    if response["status"] == "FAILED":
+    validator = TranslatorValidator()
+    validated =validator.validate_tmx_create(data)
+    try:
+        if not validated:
+            response = service.push_to_tmx_store(data)
+            if response["status"] == "FAILED":
+                return jsonify(response), 400
+            else:
+                return jsonify(response), 200
+        else:
+            return jsonify(validated), 400
+    except Exception as e:
+        response = {"message": "Something went wrong.", "status": "FAILED"}
         return jsonify(response), 400
-    else:
-        return jsonify(response), 200
-
 
 @translatorapp.route(context_path + '/v1/tmx/delete', methods=["POST"])
 def tmx_delete():
