@@ -9,7 +9,7 @@ from kafkawrapper.wfmerrorconsumer import error_consume
 from anuvaad_auditor.loghandler import log_exception
 from configs.wfmconfig import app_host
 from configs.wfmconfig import app_port
-
+#import os
 log = logging.getLogger('file')
 
 
@@ -17,6 +17,8 @@ log = logging.getLogger('file')
 def start_consumer():
     with wfmapp.test_request_context():
         try:
+            #os.environ["KAFKA_ANUVAAD_DP_TOOLS_TOKENISER_INPUT"] = "anuvaad-dp-tools-tokeniser-input-v1"
+            #os.environ["KAFKA_ANUVAAD_DP_TOOLS_TOKENISER_OUTPUT"] = "anuvaad-dp-tools-tokeniser-output-v1"
             wfm_consumer_th = Thread(target=consume, name="wfm-cons-th")
             wfm_consumer_th.start()
             wfm_core_consumer_th = Thread(target=core_consume, name="wfm-core-cons-th")
