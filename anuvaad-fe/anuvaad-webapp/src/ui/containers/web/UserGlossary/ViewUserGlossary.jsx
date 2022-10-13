@@ -343,8 +343,8 @@ class MyGlossary extends React.Component {
                                         onConfirm={() => this.handleDeleteGlossary(this.state.singleDeletionArr)}
                                         BackdropProps={{
                                             style: {
-                                                backgroundColor: 'rgba(0,0,0,0.2)',
-                                                boxShadow: 'none',
+                                                backgroundColor: 'rgba(0,0,0,0.15)',
+                                                boxShadow: '2px 2px 2px 1px rgb(0 0 0 / 2%)',
                                             }
                                         }}
                                     />
