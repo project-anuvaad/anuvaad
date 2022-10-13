@@ -82,8 +82,8 @@ class WFMUtils:
             with open(file_path, 'r') as stream:
                 parsed = yaml.safe_load(stream)
                 log_info(f"WF Configs Content: {parsed}",None)
-                log_info(f"KAFKA TOPICS KEY IS: {parsed['WorkflowConfigs'][0]['numPartitions']}")
-                log_info(f"KAFKA TOPICS VALUE IS: {os.environ.get(parsed['WorkflowConfigs'][0]['numPartitions'])}")
+                log_info(f"KAFKA TOPICS KEY IS: {parsed['WorkflowConfigs'][0]['numPartitions']}",None)
+                log_info(f"KAFKA TOPICS VALUE IS: {os.environ.get(parsed['WorkflowConfigs'][0]['numPartitions'],None)}",None)
                 configs_global['numPartitions'] = parsed['WorkflowConfigs'][0]['numPartitions']
                 configs = parsed['WorkflowConfigs'][1]['workflowCodes']
                 configs_global['workflowCodes'] = {}
