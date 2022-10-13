@@ -10,7 +10,7 @@ import yaml
 from configs.wfmconfig import config_file_url, tool_config_url, tool_blockmerger, tool_tokeniser, tool_fileconverter, tool_aligner, tool_translator
 from configs.wfmconfig import tool_worddetector, tool_layoutdetector, tool_ch, tool_nmt, tool_ocrgooglevision, tool_ocrtesseract, tool_annotator
 from configs.wfmconfig import tool_blocksegmenter, tool_ocrdd10googlevision, tool_ocrdd15googlevision, \
-    jobid_random_str_length, tool_ocrtokeniser, tool_filetranslator, tool_imageocr, tool_ocrdd20tesseract
+    jobid_random_str_length, tool_ocrtokeniser, tool_sync_block_translator, tool_filetranslator, tool_imageocr, tool_ocrdd20tesseract
 from repository.wfmrepository import WFMRepository
 from anuvaad_auditor.loghandler import log_exception, log_error, log_info
 
@@ -184,7 +184,7 @@ class WFMUtils:
             if current_tool == tool_blockmerger:
                 tool_input = block_merger.get_bm_input(
                     task_output, previous_tool)
-            if current_tool == tool_translator:
+            if current_tool in tool_translator:
                 tool_input = translator.get_translator_input(
                     task_output, previous_tool, False)
                 job_details, files = self.get_job_details(
@@ -237,7 +237,7 @@ class WFMUtils:
                 tool_input = file_converter.get_fc_input_wf(wf_input)
             if current_tool == tool_blockmerger:
                 tool_input = block_merger.get_bm_input_wf(wf_input)
-            if current_tool == tool_translator:
+            if current_tool in tool_translator:
                 tool_input = translator.get_translator_input_wf(
                     wf_input, False)
             if current_tool == tool_worddetector:
@@ -278,7 +278,7 @@ class WFMUtils:
             if current_tool == tool_tokeniser:
                 tool_input = tokeniser.get_tokeniser_input(
                     task_output, previous_tool)
-            if current_tool == tool_translator:
+            if current_tool in tool_translator:
                 tool_input = translator.get_translator_input(
                     task_output, previous_tool, True)
                 job_details = self.get_job_details(task_output["jobID"])[0]
@@ -295,7 +295,7 @@ class WFMUtils:
         else:
             if current_tool == tool_tokeniser:
                 tool_input = tokeniser.get_tokeniser_input_wf(wf_input, True)
-            if current_tool in tool_translator:
+            if current_tool in [tool_translator,tool_sync_block_translator]:
                 tool_input = translator.get_translator_input_wf(wf_input, True)
             if current_tool == tool_ch:
                 tool_input = ch.get_ch_update_req(wf_input)
