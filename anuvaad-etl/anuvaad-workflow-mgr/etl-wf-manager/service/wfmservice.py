@@ -255,7 +255,7 @@ class WFMService:
                     next_step_input = next_step_details[0]
                     next_tool = wfmutils.get_tool_config_details(next_step_details[1]["name"])
                     topic = os.environ.get(next_tool["kafka-input"], "NA")
-                    configs_global = wfmutils.get_configs
+                    configs_global = wfmutils.get_configs()
                     partitions = os.environ.get(configs_global['numPartitions'],str(total_no_of_partitions))
                     log_info(f"Partitions: {partitions}")
                     if next_step_input is None or topic == "NA":
