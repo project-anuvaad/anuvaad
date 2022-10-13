@@ -1,7 +1,6 @@
 #!/bin/python
 import logging
 from threading import Thread
-import os
 from logging.config import dictConfig
 from controller.wfmcontroller import wfmapp
 from kafkawrapper.wfmconsumer import consume
@@ -18,8 +17,6 @@ log = logging.getLogger('file')
 def start_consumer():
     with wfmapp.test_request_context():
         try:
-            os.environ["KAFKA_ANUVAAD_DP_TOOLS_TOKENISER_INPUT"] = "anuvaad-dp-tools-tokeniser-input-v1"
-            os.environ["KAFKA_ANUVAAD_DP_TOOLS_TOKENISER_OUTPUT"] = "anuvaad-dp-tools-tokeniser-output-v1"
             wfm_consumer_th = Thread(target=consume, name="wfm-cons-th")
             wfm_consumer_th.start()
             wfm_core_consumer_th = Thread(target=core_consume, name="wfm-core-cons-th")
