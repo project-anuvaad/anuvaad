@@ -117,7 +117,9 @@ class WFMService:
                     tool_input = wfmutils.get_tool_input_sync(tool_details["name"], None, None, wf_input)
                 else:
                     tool_input = wfmutils.get_tool_input_sync(tool_details["name"], previous_tool, tool_output, None)
+                log_info(f'Sync Call API Params: {wfmutils.get_tool_config_details(tool_details["name"])["api-details"][0]["uri"]} tool_input: {tool_input} userid: {wf_input["metadata"]["userID"]}',None)
                 response = wfmutils.call_api(wfmutils.get_tool_config_details(tool_details["name"])["api-details"][0]["uri"], tool_input, wf_input["metadata"]["userID"])
+                log_info(f'Sync Call API Response: {response}',None)
                 error = self.validate_tool_response(response, tool_details, wf_input)
                 if error:
                     return error
