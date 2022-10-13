@@ -263,7 +263,7 @@ class OrganizationGlossary extends React.Component {
             onClose={() => this.setState({ openSingleGlossaryDeleteConfirmBox: false })}
             title="Delete glossary"
             contentText={"Are you sure you want to delete " + this.state.singleDeletionArr[0] + " - " + this.state.singleDeletionArr[1] + " glossary?"}
-            onConfirm={() => this.this.handleDeleteGlossary(this.state.singleDeletionArr)}
+            onConfirm={() => this.handleDeleteGlossary(this.state.singleDeletionArr)}
         />
         {/* <Dialog
           open={this.state.openSingleGlossaryDeleteConfirmBox && this.state.singleDeletionArr.length > 0}
