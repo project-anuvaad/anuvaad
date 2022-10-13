@@ -257,7 +257,7 @@ class WFMService:
                     topic = os.environ.get(next_tool["kafka-input"], "NA")
                     configs_global = wfmutils.get_configs()
                     partitions = os.environ.get(configs_global['numPartitions'],str(total_no_of_partitions))
-                    log_info(f"Partitions: {partitions}")
+                    log_info(f"Partitions: {partitions}",None)
                     if next_step_input is None or topic == "NA":
                         log_error("The workflow contains incompatible steps in sequence. Please check the wf config.",
                                   task_output, None)
