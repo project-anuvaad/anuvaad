@@ -217,7 +217,7 @@ class WFMService:
                 self.update_job_details(client_output, False)
                 log_error("The workflow contains incompatible steps.", wf_input, None)
                 return None
-            configs_global = wfmutils.get_configs
+            configs_global = wfmutils.get_configs()
             partitions = os.environ.get(configs_global['numPartitions'],total_no_of_partitions)
             producer.push_to_queue(first_tool_input, input_topic, eval(partitions))
             client_output = self.get_wf_details_async(wf_input, None, False, None)
