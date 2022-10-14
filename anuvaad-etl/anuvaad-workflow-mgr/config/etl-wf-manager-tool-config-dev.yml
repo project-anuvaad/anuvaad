@@ -104,8 +104,3 @@ ToolConfigs:
     description: tokenises the text blocks.
     api-details:
     - uri: http://gateway_anuvaad-etl-translator:5001/anuvaad-etl/tokeniser/v0/paragraphs-tokenisation-wf
-
-  - name: SYNC-SENTENCE-TRANSLATOR
-    description: Translates the sentences.
-    api-details:
-    - uri: http://gateway_anuvaad-etl-translator:5001/anuvaad-etl/translator/v1/sentences/workflow/translate
