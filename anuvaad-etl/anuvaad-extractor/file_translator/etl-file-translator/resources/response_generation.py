@@ -30,6 +30,7 @@ class Response(object):
     # Generating response for a workflow request coming from kafka consumer or flask server
     def workflow_response(self, task_id, task_starttime, transform_flow=False, download_flow=False):
         input_key, workflow_id, jobid, tool_name, step_order, user_id = file_ops.json_input_format(self.json_data)
+        log_info(f"Test31: user_id = {user_id}",None)
         log_info("workflow_response : started the response generation for %s" % jobid, self.json_data)
         error_validator = ValidationResponse(DOWNLOAD_FOLDER=self.DOWNLOAD_FOLDER, json_data=self.json_data)
         try:
@@ -40,22 +41,35 @@ class Response(object):
             if isinstance(input_key, dict) and 'files' in input_key.keys():
                 for i, item in enumerate(input_key['files']):
                     input_filename, in_file_type, in_locale = file_ops.accessing_files(item)
+                    #
+                    log_info(f"Test31: in_file_type = {in_file_type}", None)
                     if in_file_type == "docx" and transform_flow:
                         docx_transform_obj = DocxTransform(input_filename=input_filename, json_data=self.json_data)
+                        #
+                        log_info(f"Test31: docx_transform_object = {docx_transform_obj}",None)
                         docx_obj = docx_transform_obj.read_docx_file(input_filename)
                         if in_locale != config.LOCALE_ENGLISH and config.DOCX_FONT_VALIDATION_ENABLED:
                             docx_transform_obj.check_if_valid_fonts_used(in_locale=in_locale)
                         transformed_obj = docx_transform_obj.generate_json_structure(docx_obj)
+                        #
+                        log_info(f"Test31: transformed_obj = {transformed_obj}",None)
                         out_json_filepath = docx_transform_obj.write_json_file(transformed_obj)
                         output_filename = out_json_filepath
                         out_file_type = 'json'
 
                         html_convert_obj = HtmlConvert(input_filename=input_filename, file_type=config.TYPE_DOCX, json_data=self.json_data)
+                        #
+                        log_info(f"Test31: html_convert_obj = {html_convert_obj}",None)
+
                         out_files_url = html_convert_obj.generate_html(input_filename=input_filename)
+                        #
+                        log_info(f"Test31:out_files_url = {out_files_url}",None)
                         log_info(f"URL TO HTML FILE FOR JOBID {jobid}: {str(out_files_url)}", self.json_data)
 
                         fc_obj = FetchContent(record_id=input_filename, json_data=self.json_data)
                         fc_obj.store_reference_link(job_id=jobid, location=out_files_url)
+                        #
+                        log_info(f"Test31:fc_object = {fc_obj}",None)
 
 
                     elif in_file_type == "pptx" and transform_flow:
