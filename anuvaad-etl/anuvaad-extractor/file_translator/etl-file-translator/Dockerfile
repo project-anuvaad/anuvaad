@@ -9,6 +9,8 @@ RUN apt-get install -y build-essential libssl-dev libffi-dev python3-dev wget
 #RUN apt-cache policy libreoffice
 #RUN apt-get install -y pdftohtml
 RUN apt install -y libreoffice
+RUN apt update && apt install -y libmagic-dev
+
 
 RUN apt-get install -y poppler-utils
 
