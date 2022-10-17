@@ -37,6 +37,8 @@ class Producer:
         topic_partition_map[topic] = partition
         try:
             if object_in:
+                log_info(f"Test28: Data Sent is {object_in}",None)
+                log_info(f"Test28: Data Sent to topic {topic}",None)
                 producer.send(topic, partition=partition, value=object_in)
                 object_in["metadata"]["module"] = module_wfm_name  # FOR LOGGING ONLY.
                 log_info("Pushing to TOPIC: " + topic + " | PARTITION: " + str(partition), object_in)
