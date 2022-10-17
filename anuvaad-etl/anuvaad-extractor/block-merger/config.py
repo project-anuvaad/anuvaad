@@ -117,7 +117,7 @@ CRAFT_REFINE_MODEL_PATH = "./src/utilities/craft_pytorch/model/craft_refiner_CTW
 
 WATERMARK_THRESHOLD_LOW = 175
 WATERMARK_THRESHOLD_HIGH = 250
-
+WATERMARK_REMOVE = True
 
 PRIMA_SCORE_THRESH_TEST =0.5
 LAYOUT_MODEL_PATH =  "./src/utilities/primalaynet/model_final.pth"
