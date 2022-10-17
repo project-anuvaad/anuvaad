@@ -291,7 +291,7 @@ class TmxUpload extends Component {
         
         return Promise.reject('');
       } else {
-        this.setState({orgName:'',files: [], key:this.state.key+1 })
+        this.setState({files: [], key:this.state.key+1 })
         if(rsp_data.status== "SUCCESS"){
             this.informUserStatus("Glossary uploaded.", true)
         }
