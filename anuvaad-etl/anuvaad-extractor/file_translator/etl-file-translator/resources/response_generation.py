@@ -44,7 +44,7 @@ class Response(object):
                     #
                     log_info(f"Test31: in_file_type = {in_file_type}", None)
                     log_info(f"Test31: transform_flow = {transform_flow}", None)
-                    if in_file_type == "docx": #and transform_flow:
+                    if in_file_type == "docx" and transform_flow:
                         docx_transform_obj = DocxTransform(input_filename=input_filename, json_data=self.json_data)
                         #
                         log_info(f"Test31: docx_transform_object = {docx_transform_obj}",None)
