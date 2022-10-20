@@ -257,8 +257,17 @@ class Login extends React.Component {
             md={12}
             lg={12}
             xl={12}
-            style={{textAlign: "end"}}
+            style={{ display: "flex", justifyContent: "space-between" }}
           >
+            <Link
+              onClick={() => {
+                history.push(`${process.env.PUBLIC_URL}/signup`);
+              }}
+              className={classes.forgotPassLink}
+            >
+              Sign Up
+            </Link>
+
             <Link
               onClick={() => {
                 history.push(`${process.env.PUBLIC_URL}/forgot-password`);
