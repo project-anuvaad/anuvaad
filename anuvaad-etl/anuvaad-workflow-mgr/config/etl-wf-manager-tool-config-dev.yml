@@ -31,7 +31,7 @@ ToolConfigs:
     kafka-output: KAFKA_ANUVAAD_DP_TOOLS_FT_DOWNLOAD_OUTPUT
 
   - name: FILE-TRANSLATOR
-    description: Search WF for docx download
+    description: File Translation using File Translator
     kafka-input: KAFKA_ANUVAAD_DP_TOOLS_FT_INPUT
     kafka-output: KAFKA_ANUVAAD_DP_TOOLS_FT_OUTPUT
 
