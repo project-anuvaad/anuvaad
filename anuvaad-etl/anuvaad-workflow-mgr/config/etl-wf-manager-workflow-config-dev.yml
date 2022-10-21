@@ -198,7 +198,7 @@ WorkflowConfigs:
         sequence:
         - order: 0
           tool:
-          - name: FILE-TRANSLATOR
+          - name: FILE-TRANSLATOR-DOWNLOAD
           endState: true
 
 

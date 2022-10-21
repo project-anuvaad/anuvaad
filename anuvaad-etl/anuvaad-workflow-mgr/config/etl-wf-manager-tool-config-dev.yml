@@ -25,10 +25,15 @@ ToolConfigs:
     kafka-input: KAFKA_ANUVAAD_DP_TOOLS_FC_INPUT
     kafka-output: KAFKA_ANUVAAD_DP_TOOLS_FC_OUTPUT
 
-  - name: FILE-TRANSLATOR
+  - name: FILE-TRANSLATOR-DOWNLOAD
     description: Search WF for docx download
     kafka-input: KAFKA_ANUVAAD_DP_TOOLS_FT_DOWNLOAD_INPUT
     kafka-output: KAFKA_ANUVAAD_DP_TOOLS_FT_DOWNLOAD_OUTPUT
+
+  - name: FILE-TRANSLATOR
+    description: Search WF for docx download
+    kafka-input: KAFKA_ANUVAAD_DP_TOOLS_FT_INPUT
+    kafka-output: KAFKA_ANUVAAD_DP_TOOLS_FT_OUTPUT
 
   - name: IMAGE-OCR
     description: WF for OCR on images
