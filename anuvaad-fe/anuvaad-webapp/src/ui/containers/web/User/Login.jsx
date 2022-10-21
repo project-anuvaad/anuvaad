@@ -25,6 +25,8 @@ import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import CustomCard from "../../../components/web/common/Card";
 import Anuvaanlogo from "../../../../assets/Anuvaanlogo.png";
+import UpdatePassword from "./UpdatePassword";
+import SignUp from "./SignUp";
 
 class Login extends React.Component {
   constructor(props) {
@@ -37,6 +39,7 @@ class Login extends React.Component {
       errMessage: "",
       password: "",
       showPassword: false,
+      currentFocusedComponent: "Login"
     };
   }
 
@@ -261,7 +264,8 @@ class Login extends React.Component {
           >
             <Link
               onClick={() => {
-                history.push(`${process.env.PUBLIC_URL}/signup`);
+                this.handleChangeFocusedComponent("Signup")
+                // history.push(`${process.env.PUBLIC_URL}/signup`);
               }}
               className={classes.forgotPassLink}
             >
@@ -270,7 +274,8 @@ class Login extends React.Component {
 
             <Link
               onClick={() => {
-                history.push(`${process.env.PUBLIC_URL}/forgot-password`);
+                this.handleChangeFocusedComponent("ForgetPassword")
+                // history.push(`${process.env.PUBLIC_URL}/forgot-password`);
               }}
               className={classes.forgotPassLink}
             >
@@ -290,6 +295,25 @@ class Login extends React.Component {
     );
   };
 
+  renderLoginForm = () => {
+    return <form autoComplete="off">{this.renderCardContent()}</form>
+  }
+
+  renderSignupForm = () => {
+    return <div style={{width: '100%'}}><SignUp navigateToLoginPress={()=>this.handleChangeFocusedComponent('Login')} /></div>
+  }
+
+  renderForgetPasswordForm = () => {
+    return <div style={{width: '100%'}}>
+      <UpdatePassword navigateToLoginPress={()=>this.handleChangeFocusedComponent('Login')} />
+    </div>
+    
+  }
+
+  handleChangeFocusedComponent = (value) => {
+    this.setState({currentFocusedComponent: value});
+  }
+
   render() {
     const { classes } = this.props;
     return (
@@ -307,7 +331,9 @@ class Login extends React.Component {
             {this.renderLeftPanel()}
           </Grid>
           <Grid item xs={12} sm={9} md={9} lg={9} className={classes.parent}>
-            <form autoComplete="off">{this.renderCardContent()}</form>
+              {this.state.currentFocusedComponent === "Login" && this.renderLoginForm()}
+              {this.state.currentFocusedComponent === "Signup" && this.renderSignupForm()}
+              {this.state.currentFocusedComponent === "ForgetPassword" && this.renderForgetPasswordForm()}
           </Grid>
         </Grid>
 

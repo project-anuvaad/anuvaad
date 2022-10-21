@@ -131,7 +131,7 @@ const LoginStyles = theme => ({
     backgroundColor: ' #D8D8D8',
     color: '#D8D8D8',
     border: '0',
-    marginTop: '2%'
+    // marginTop: '2%'
   },
   formControl: {
     marginLeft: '25%'
@@ -144,7 +144,7 @@ const LoginStyles = theme => ({
   typographyFooter: {
     marginTop: '3%',
     fontSize: "100%",
-    marginBottom: "5%",
+    // marginBottom: "5%",
     fontfamily: '"Source Sans Pro", sans-serif',
   },
   typographyForgotPwd: {
