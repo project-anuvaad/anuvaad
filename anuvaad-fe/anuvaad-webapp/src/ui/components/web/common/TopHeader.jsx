@@ -20,7 +20,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import SettingsOutlinedIcon from '@material-ui/icons/SettingsOutlined';
 import React, { useState, useEffect, useRef } from "react";
 import { Link as RouterLink } from "react-router-dom";
-import AnuvaadLogo from "../../../../assets/AnuvaadLogo.svg";
+import AnuvaadLogo from "../../../../assets/HeaderTransparentLogo.png";
 import configs from "../../../../configs/configs";
 import headerMenuConfig from "../../../../configs/headerMenuConfig";
 
@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
         },
     },
     logo: {
-        height: "2rem",
+        // height: "2rem",
         width: "6rem"
     },
     // ".MuiButton-label":{
