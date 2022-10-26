@@ -34,6 +34,7 @@ tool_blocksegmenter = "BLOCK-SEGMENTER"
 tool_annotator = "ANNOTATOR"
 module_wfm_name = "WORKFLOW-MANAGER"
 tool_filetranslator = "FILE-TRANSLATOR"
+tool_filetranslator_download = "FILE-TRANSLATOR-DOWNLOAD"
 tool_imageocr = "IMAGE-OCR"
 is_sync_flow_enabled = True
 is_async_flow_enabled = True
