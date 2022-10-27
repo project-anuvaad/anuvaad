@@ -9,7 +9,7 @@ import requests
 import yaml
 from configs.wfmconfig import config_file_url, tool_config_url, tool_sync_sentence_translator, tool_sync_paragraph_translator, tool_blockmerger, tool_tokeniser, tool_fileconverter, tool_aligner, tool_translator
 from configs.wfmconfig import tool_worddetector, tool_layoutdetector, tool_ch, tool_nmt, tool_ocrgooglevision, tool_ocrtesseract, tool_annotator
-from configs.wfmconfig import tool_blocksegmenter, tool_filetranslator_download, tool_ocrdd10googlevision, tool_ocrdd15googlevision, \
+from configs.wfmconfig import tool_blocksegmenter, tool_syncfiletranslator, tool_ocrdd10googlevision, tool_ocrdd15googlevision, \
     jobid_random_str_length, tool_ocrtokeniser, tool_sync_block_translator, tool_filetranslator, tool_imageocr, tool_ocrdd20tesseract
 from repository.wfmrepository import WFMRepository
 from anuvaad_auditor.loghandler import log_exception, log_error, log_info
@@ -278,7 +278,7 @@ class WFMUtils:
             if current_tool == tool_tokeniser:
                 tool_input = tokeniser.get_tokeniser_input(
                     task_output, previous_tool)
-            if current_tool in tool_translator:
+            if current_tool in [tool_filetranslator,tool_syncfiletranslator]:
                 tool_input = translator.get_translator_input(
                     task_output, previous_tool, True)
                 job_details = self.get_job_details(task_output["jobID"])[0]
@@ -301,7 +301,7 @@ class WFMUtils:
                 tool_input = ch.get_ch_update_req(wf_input)
             if current_tool == tool_nmt:
                 tool_input = nmt.get_nmt_it_req(wf_input)
-            if current_tool in [tool_filetranslator,tool_filetranslator_download]:
+            if current_tool in [tool_filetranslator,tool_syncfiletranslator]:
                 tool_input = file_translator.get_ft_input_wf(wf_input)
         return tool_input
 
