@@ -243,13 +243,13 @@ class AnuvaadEngTokenizer(object):
         return text
 
     def serialize_dots(self, text):
-        pattern = re.compile(r'([.]{3,})')
+        pattern = re.compile(r'([ ][.][ ])')
         text = pattern.sub('XX__XX', text)
         return text
 
     def deserialize_dots(self, text):
         pattern = re.compile(re.escape('XX__XX'), re.IGNORECASE)
-        text = pattern.sub('......', text)
+        text = pattern.sub('[.][ ]', text)
         return text
 
     def serialize_consecutive_dots(self, text):
