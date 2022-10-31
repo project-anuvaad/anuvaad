@@ -303,6 +303,19 @@ WorkflowConfigs:
           - name: TRANSLATOR
           endState: true
 
+      - workflowCode: WF_A_WDOD15GV
+        type: ASYNC
+        description: Document digitization wf enhanced over 1.0 flow
+        useCase: A_WOD15G
+        sequence:
+        - order: 0
+          tool:
+          - name: WORD-DETECTOR
+          endState: false
+        - order: 1
+          tool:
+          - name: OCR-DD15-GOOGLE-VISION
+          endState: true
 
 
       - workflowCode: WF_A_FTTKTR
