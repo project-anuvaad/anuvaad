@@ -78,7 +78,9 @@ class UserDetails extends React.Component {
     TELEMETRY.pageLoadCompleted('user-details');
     this.setState({ showLoader: true, })
     this.props.clearStatus();
-    this.processFetchBulkUserDetailAPI(this.state.offset, this.state.limit)
+    let roleArr = [];
+    roleArr = this.state.role === "ADMIN" ? ["ANNOTATOR","TRANSLATOR"] : [];
+    this.processFetchBulkUserDetailAPI(this.state.offset, this.state.limit, false, false, [], [], roleArr);
   }
 
   componentDidUpdate(prevProps) {

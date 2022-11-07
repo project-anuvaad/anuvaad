@@ -84,9 +84,9 @@ class ViewDocument extends React.Component {
     }
     this.makeAPICallDocumentsTranslationProgress();
 
-    window.addEventListener("keydown", (e)=>this.keyPress(e));
+    window.addEventListener("keydown", (e) => this.keyPress(e));
     return () => {
-      window.removeEventListener("keydown", (e)=>this.keyPress(e));
+      window.removeEventListener("keydown", (e) => this.keyPress(e));
     }
   }
 
@@ -104,8 +104,8 @@ class ViewDocument extends React.Component {
     // console.log("offset", 0);
     // console.log("limit (Number(this.state.inputPageNumber)-1)*10 ---> ", this.props.job_details.count);
     // this.makeAPICallJobsBulkSearch(0, (Number(this.state.inputPageNumber)-1)*10, false, false, true)
-    this.tableRef.current.changePage(Number(this.state.inputPageNumber)-1);
-    this.setState({currentPageIndex: this.state.inputPageNumber-1});
+    this.tableRef.current.changePage(Number(this.state.inputPageNumber) - 1);
+    this.setState({ currentPageIndex: this.state.inputPageNumber - 1 });
   }
 
   componentWillUnmount() {
@@ -424,7 +424,7 @@ class ViewDocument extends React.Component {
        */
       this.props.fetchpageno()
       this.makeAPICallJobsBulkSearch(
-        page*this.state.limit,
+        page * this.state.limit,
         // this.state.offset + this.state.limit,
         this.state.limit,
         false,
@@ -433,12 +433,12 @@ class ViewDocument extends React.Component {
       );
       this.setState({
         currentPageIndex: page,
-        offset: page*this.state.limit,
+        offset: page * this.state.limit,
       });
     }
   };
 
-  handleInputPageChange = (event, totalPageCount) =>{
+  handleInputPageChange = (event, totalPageCount) => {
     if (event.target.value <= totalPageCount) {
       this.setState({ inputPageNumber: event.target.value })
     } else if (event.target.value > totalPageCount) {
@@ -750,56 +750,57 @@ class ViewDocument extends React.Component {
         return (
 
           <TableFooter>
-            <TableRow>
-              <TableCell colSpan={12}>
-                <div style={{ textAlign: "end", justifyContent: "space-evenly" }}>
-                  <Typography variant="caption" style={{ fontSize: "0.9rem", fontWeight: "600" }}>Page No. - </Typography>
-                  <TextField
-                    type="number"
-                    style={{ width: "4%", marginRight: "1%", marginLeft: "1%" }}
-                    ref={this.pageInputRef}
-                    onFocus={() => this.setState({ isInputActive: true })}
-                    onBlur={() => this.setState({ isInputActive: false })}
-                    InputProps={{
+            {totalPageCount > 0 &&
+              <TableRow>
+                <TableCell colSpan={12}>
+                  <div style={{ textAlign: "end", justifyContent: "space-evenly" }}>
+                    <Typography variant="caption" style={{ fontSize: "0.9rem", fontWeight: "600" }}>Page No. - </Typography>
+                    <TextField
+                      type="number"
+                      style={{ width: "4%", marginRight: "1%", marginLeft: "1%" }}
+                      ref={this.pageInputRef}
+                      onFocus={() => this.setState({ isInputActive: true })}
+                      onBlur={() => this.setState({ isInputActive: false })}
+                      InputProps={{
 
-                      inputProps: {
-                        style: { textAlign: "center" },
-                        max: totalPageCount, min: 1
-                      }
-                    }}
-                    onChange={(event) => this.handleInputPageChange(event, totalPageCount)}
-                    value={this.state.inputPageNumber}
-                  />
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    style={{borderRadius: "15%"}}
-                    onClick={() => {
-                      this.onChangePageMAnually()
-                    }}
-                  >Go</Button>
-                  <IconButton 
-                    onClick={()=>{
-                      this.setState({currentPageIndex: this.state.currentPageIndex-1})
-                      this.tableRef.current.changePage(Number(this.state.currentPageIndex-1))
-                    }}
-                    tabIndex={this.state.currentPageIndex-1}
-                    disabled={this.state.currentPageIndex == 0}>
-                    <ChevronLeftIcon />
-                  </IconButton>
-                  <Typography variant="caption" style={{ fontSize: "0.9rem", fontWeight: "600" }}> {parseInt(this.state.currentPageIndex+1)} of {parseInt(totalPageCount)} </Typography>
-                  <IconButton 
-                    onClick={()=>{
-                      this.setState({currentPageIndex: this.state.currentPageIndex+1})
-                      this.tableRef.current.changePage(Number(this.state.currentPageIndex+1))
-                    }}
-                    tabIndex={this.state.currentPageIndex+1}
-                    disabled={this.state.currentPageIndex == totalPageCount}>
-                    <ChevronRightIcon />
-                  </IconButton>
-                </div>
-              </TableCell>
-            </TableRow>
+                        inputProps: {
+                          style: { textAlign: "center" },
+                          max: totalPageCount, min: 1
+                        }
+                      }}
+                      onChange={(event) => this.handleInputPageChange(event, totalPageCount)}
+                      value={this.state.inputPageNumber}
+                    />
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      style={{ borderRadius: "15%" }}
+                      onClick={() => {
+                        this.onChangePageMAnually()
+                      }}
+                    >Go</Button>
+                    <IconButton
+                      onClick={() => {
+                        this.setState({ currentPageIndex: this.state.currentPageIndex - 1 })
+                        this.tableRef.current.changePage(Number(this.state.currentPageIndex - 1))
+                      }}
+                      tabIndex={this.state.currentPageIndex - 1}
+                      disabled={this.state.currentPageIndex == 0}>
+                      <ChevronLeftIcon />
+                    </IconButton>
+                    <Typography variant="caption" style={{ fontSize: "0.9rem", fontWeight: "600" }}> {parseInt(this.state.currentPageIndex + 1)} of {parseInt(totalPageCount)} </Typography>
+                    <IconButton
+                      onClick={() => {
+                        this.setState({ currentPageIndex: this.state.currentPageIndex + 1 })
+                        this.tableRef.current.changePage(Number(this.state.currentPageIndex + 1))
+                      }}
+                      tabIndex={this.state.currentPageIndex + 1}
+                      disabled={this.state.currentPageIndex == totalPageCount}>
+                      <ChevronRightIcon />
+                    </IconButton>
+                  </div>
+                </TableCell>
+              </TableRow>}
           </TableFooter>
 
         );
