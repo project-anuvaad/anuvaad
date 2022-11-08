@@ -183,7 +183,7 @@ export default function TopHeader(props) {
 
     useEffect(() => {
         const setResponsiveness = () => {
-            return window.innerWidth < 1300
+            return window.innerWidth < 1100
                 ? setState((prevState) => ({ ...prevState, mobileView: true }))
                 : setState((prevState) => ({ ...prevState, mobileView: false }));
         };

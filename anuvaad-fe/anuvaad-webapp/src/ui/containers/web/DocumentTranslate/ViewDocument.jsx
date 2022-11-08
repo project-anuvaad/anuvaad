@@ -601,9 +601,10 @@ class ViewDocument extends React.Component {
         name: "Action",
         label: translate("common.page.label.action"),
         options: {
-          filter: true,
+          filter: false,
           sort: false,
           empty: true,
+          viewColumns: false,
           customBodyRender: (value, tableMeta, updateValue) => {
             if (tableMeta.rowData) {
               return (
@@ -724,7 +725,7 @@ class ViewDocument extends React.Component {
       // },
       count: this.props.job_details.count,
       filterType: "checkbox",
-      download: true,
+      download: this.getJobsSortedByTimestamp()?.length > 0 ? true : false,
       print: false,
       fixedHeader: true,
       filter: false,
