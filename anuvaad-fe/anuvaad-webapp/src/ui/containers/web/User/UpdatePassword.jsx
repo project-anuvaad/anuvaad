@@ -1,6 +1,6 @@
 import React from "react";
 import { MuiThemeProvider } from "@material-ui/core/styles";
-import { withRouter } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import Button from "@material-ui/core/Button";
 import Grid from '@material-ui/core/Grid';
 import { connect } from "react-redux";
@@ -61,21 +61,22 @@ class UpdatePassword extends React.Component {
     }
 
     render() {
+        const { classes } = this.props;
         return (
             <MuiThemeProvider theme={ThemeDefault}>
 
-                <div style={{ height: window.innerHeight, overflow: 'hidden' }}>
+                <div style={{ overflow: 'hidden' }}>
 
-                    <Grid container spacing={8}>
-                        <Grid item xs={12} sm={4} lg={5} xl={5} style={{ paddingRight: "0px" }}>
-                            <img src="Anuvaad.png" width="100%" height={window.innerHeight} alt="" />
-                        </Grid>
-                        <Grid item xs={12} sm={8} lg={7} xl={7} style={{ backgroundColor: '#f1f5f7', textAlign: "center" }} >
-                            <Typography align='center' style={{ marginTop: '25%', marginBottom: '5%', fontSize: '33px', fontfamily: 'Trebuchet MS, sans-serif', color: '#003366' }}>
+                    {/* <Grid container spacing={8}> */}
+                        {/* <Grid item xs={12} sm={4} lg={5} xl={5} style={{ paddingRight: "0px" }}> */}
+                            {/* <img src="Anuvaad.png" width="100%" height={window.innerHeight} alt="" /> */}
+                        {/* </Grid> */}
+                        <Grid item xs={12} sm={12} lg={12} xl={12} style={{ textAlign: "center" }} >
+                            <Typography align='center'variant='h3' className={classes.headingStyle}>
                                 {translate('updatePassword.page.label.forgotPassword')}</Typography>
 
                             <TextField id="outlined-required" type="email" placeholder={translate('common.page.placeholder.emailUsername')}
-                                margin="normal" varient="outlined" style={{ width: '50%', marginBottom: '2%', backgroundColor: 'white' }}
+                                margin="normal" varient="outlined" style={{ width: '40%', marginTop: '2%', marginBottom: '2%', backgroundColor: 'white' }}
                                 onChange={this.handleInputReceived('email')}
                                 value={this.state.email}
                             />
@@ -83,13 +84,22 @@ class UpdatePassword extends React.Component {
                                 id="submit"
                                 disabled={!this.state.email}
                                 variant="contained" aria-label="edit" style={{
-                                    width: '50%', marginBottom: '2%', marginTop: '2%', borderRadius: "20px 20px 20px 20px", height: '45px',
+                                    width: '40%', marginBottom: '2%', borderRadius: "20px 20px 20px 20px", height: '45px',
                                     backgroundColor: this.state.email ? '#2C2799' : 'gray', color: 'white',
                                 }} onClick={this.handleSubmit.bind(this)}>
                                 {translate("common.page.button.submit")}
                             </Button>
+                            <div><Button
+                                id="submit"
+                                variant="contained" aria-label="edit" style={{
+                                    width: '40%', marginBottom: '2%', borderRadius: "20px 20px 20px 20px", height: '45px',
+                                    backgroundColor: '#2C2799', color: 'white',
+                                }} onClick={()=>this.props.navigateToLoginPress()}>
+                                Back to Login
+                            </Button></div>                
+
                         </Grid>
-                    </Grid>
+                    {/* </Grid> */}
                 </div>
                 {this.state.open && (
                     <Snackbar

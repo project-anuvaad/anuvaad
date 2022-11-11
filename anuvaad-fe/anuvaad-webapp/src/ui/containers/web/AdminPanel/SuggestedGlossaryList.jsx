@@ -20,6 +20,7 @@ import DeleteSuggestedGlossary from "../../../../flux/actions/apis/organization/
 import CreateOrgGlossary from "../../../../flux/actions/apis/organization/create_org_glossary";
 import UpdateSuggestedGlossaryStatus from "../../../../flux/actions/apis/organization/update_glossary_suggestion_status";
 import DataTable from "../../../components/web/common/DataTable";
+import ConfirmBox from "../../../components/web/common/ConfirmBox";
 
 var delete_glossary = require("../../../../utils/deleteSuggestions.operation");
 
@@ -48,7 +49,9 @@ class SuggestedGlossaryList extends React.Component {
       variant: 'success',
       loadMsg: "",
       rowsToDelete: [],
-      openConfirmDialog: false
+      openConfirmDialog: false,
+      openSingleSuggestionDeleteConfirmBox: false,
+      singleDeletionArr: []
     }
   }
 
@@ -75,7 +78,7 @@ class SuggestedGlossaryList extends React.Component {
       this.setState({ loading: false })
     }
     if (prevProps.suggestedGlossaryData.count > this.props.suggestedGlossaryData.count && this.props.suggestedGlossaryData.deleted) {
-      this.state.showMessage && this.setState({ open: true, message: 'Glossary deleted successfully', variant: 'success' }, () => {
+      this.state.showMessage && this.setState({ open: true, message: 'Glossary suggestion deleted successfully', variant: 'success' }, () => {
         setTimeout(() => this.setState({ open: false, message: "", variant: "info" }), 3000)
       })
     }
@@ -100,7 +103,7 @@ class SuggestedGlossaryList extends React.Component {
 }
 
   makeDeleteSuggestionAPICall = (userIds, uuIds, deleteAll, orgIds, status, showMessage) => {
-    this.setState({ open: true, message: 'Glossary deletion in progress...', variant: 'info', openConfirmDialog: false, showMessage })
+    this.setState({ open: true, message: 'Glossary suggestion deletion in progress...', variant: 'info', openConfirmDialog: false, showMessage })
     console.log("userIds, uuIds, deleteAll, orgIds");
     console.log(userIds, uuIds, deleteAll, orgIds);
     let apiObj = new UpdateSuggestedGlossaryStatus( uuIds, status);
@@ -130,6 +133,7 @@ class SuggestedGlossaryList extends React.Component {
     console.log("dataArray", dataArray);
     // let reverseLocale = dataArray[3].split("|").reverse().join("|");
     this.makeDeleteSuggestionAPICall([], [dataArray[6]], false, [this.orgID], "Rejected", true);
+    this.setState({openSingleSuggestionDeleteConfirmBox: false, singleDeletionArr: [] })
   }
 
   handleClose = () => {
@@ -145,6 +149,20 @@ class SuggestedGlossaryList extends React.Component {
     });
 
     this.makeDeleteSuggestionAPICall([], IdArrOfSelectedRows, false, [this.orgID],  "Rejected", true);
+  }
+
+  renderSingleGlossaryConfirmBox = () => {
+    return (
+      <div style={{ textAlign: "end", marginBottom: "1rem" }}>
+        <ConfirmBox
+            open={this.state.openSingleSuggestionDeleteConfirmBox && this.state.singleDeletionArr.length > 0}
+            onClose={() => this.setState({ openSingleSuggestionDeleteConfirmBox: false })}
+            title="Delete glossary"
+            contentText={"Are you sure you want to delete ` " + this.state.singleDeletionArr[0] + " - " + this.state.singleDeletionArr[1] + " ` glossary suggestion?"}
+            onConfirm={() => this.handleDeleteSuggestion(this.state.singleDeletionArr)}
+        />
+      </div>
+    )
   }
 
 
@@ -261,7 +279,8 @@ class SuggestedGlossaryList extends React.Component {
                     <IconButton
                       style={{ color: "#233466", padding: "5px" }}
                       component="a"
-                      onClick={() => this.handleDeleteSuggestion(tableMeta.rowData)}
+                      onClick={()=>this.setState({singleDeletionArr: tableMeta.rowData, openSingleSuggestionDeleteConfirmBox: true})}
+                      // onClick={() => this.handleDeleteSuggestion(tableMeta.rowData)}
                     // disabled={tableMeta.rowData[5] === "Organization"}
                     >
                       <DeleteIcon />
@@ -322,6 +341,7 @@ class SuggestedGlossaryList extends React.Component {
                 options={options}
                 data={this.props.suggestedGlossaryData.result}
               />
+              {this.renderSingleGlossaryConfirmBox()}
             </MuiThemeProvider>
           }
         </div>
