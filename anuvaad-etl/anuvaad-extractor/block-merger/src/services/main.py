@@ -43,8 +43,8 @@ def merge_horizontally(input) :
         pdf_data = prepocess_pdf_regions(pdf_data,flags)
         pdf_data['h_dfs']  = children_functions.get_layout_proposals(pdf_data,flags)
         # Uncomment Later
-        # if (pdf_data['lang'] != 'en') or (flags['doc_class'] != 'class_1'):
-        pdf_data['h_dfs'] = tesseract_ocr(pdf_data,flags)
+        if (pdf_data['lang'] != 'en') or (flags['doc_class'] != 'class_1'):
+            pdf_data['h_dfs'] = tesseract_ocr(pdf_data,flags)
 
         return [pdf_data, flags]
         #del pdf_data['in_dfs']
