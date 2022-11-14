@@ -543,6 +543,10 @@ class DocumentEditor extends React.Component {
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         open={this.state.apiInProgress}
         message={this.state.snackBarMessage}
+        autoHideDuration={3000}
+        onClose={(e, r) => {
+          this.setState({ apiInProgress: false })
+        }}
       >
         <Alert elevation={6} variant="filled" severity="info">{this.state.snackBarMessage}</Alert>
       </Snackbar>
@@ -554,6 +558,7 @@ class DocumentEditor extends React.Component {
       <Snackbar
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         open={this.state.showStatus}
+        autoHideDuration={3000}
         onClose={(e, r) => {
           this.setState({ showStatus: false })
         }}
@@ -746,6 +751,7 @@ class DocumentEditor extends React.Component {
       <InfiniteScroll height={window.innerHeight - 141} style={{
         maxHeight: window.innerHeight - 141,
         overflowY: "auto",
+        paddingBottom: 141
       }}
         hasMore={(this.props.document_contents.count > this.props.document_contents.pages.length) ? true : false}
         dataLength={pages.length}

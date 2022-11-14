@@ -251,6 +251,7 @@ class OrganizationList extends React.Component {
           filter: true,
           sort: true,
           empty: true,
+          viewColumns: false,
           customBodyRender: (value, tableMeta, updateValue) => {
             if (tableMeta.rowData) {
               return (
@@ -267,6 +268,7 @@ class OrganizationList extends React.Component {
           filter: true,
           sort: true,
           empty: true,
+          viewColumns: false,
           customBodyRender: (value, tableMeta, updateValue) => {
             if (tableMeta.rowData) {
               return (

@@ -567,6 +567,7 @@ class UserReport extends React.Component {
                     filter: true,
                     sort: false,
                     empty: true,
+                    viewColumns: false,
                     customBodyRender: (value, tableMeta, updateValue) => {
                         if (tableMeta.rowData) {
                             return (
