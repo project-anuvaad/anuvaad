@@ -228,6 +228,7 @@ class TMXService:
                         tmx_result, fetch = self.get_tmx_with_fallback(tmx_record, tmx_level, tmx_file_cache, ctx)
                         computed += 1
                         if tmx_result:
+                            log_info(f"Test68 phrase {tmx_record}, result {tmx_result}",None)
                             tmx_phrases.append(tmx_result[0])
                             phrase_list = phrase.split(" ")
                             hopping_pivot += (1 + len(' '.join(phrase_list)))
@@ -263,7 +264,7 @@ class TMXService:
             if hash_dict["USER"] not in tmx_file_cache.keys():
                 tmx_result = repo.search([hash_dict["USER"]])
                 if tmx_result:
-                    log_info(f"Test68 USER tmx_result {tmx_result}", None)
+                    #log_info(f"Test68 USER tmx_result {tmx_result}", None)
                     tmx_file_cache[hash_dict["USER"]] = tmx_result
                     return tmx_result, True
             else:
@@ -272,7 +273,7 @@ class TMXService:
             if hash_dict["ORG"] not in tmx_file_cache.keys():
                 tmx_result = repo.search([hash_dict["ORG"]])
                 if tmx_result:
-                    log_info(f"Test68 ORG tmx_result {tmx_result}", None)
+                    #log_info(f"Test68 ORG tmx_result {tmx_result}", None)
                     tmx_file_cache[hash_dict["ORG"]] = tmx_result
                     return tmx_result, True
             else:
