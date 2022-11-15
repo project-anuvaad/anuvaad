@@ -104,15 +104,15 @@ class TMXRepository:
         user, org = 0, 0
         if tmx_user_enabled:
             res_user = col.find({"locale": locale, "userID": user_id}, {'_id': False})
-            log_info(f"Test68 res_user {res_user}", None)
             if res_user:
                 for record in res_user:
+                    log_info(f"Test68 res_user record {record}", None)
                     user += 1
         if tmx_org_enabled:
             res_org = col.find({"locale": locale, "orgID": org_id}, {'_id': False})
-            log_info(f"Test68 res_org {res_org}", None)
             if res_org:
                 for record in res_org:
+                    log_info(f"Test68 res_org record {record}", None)
                     org += 1
         if user > 0 and org > 0:
             return "BOTH"
