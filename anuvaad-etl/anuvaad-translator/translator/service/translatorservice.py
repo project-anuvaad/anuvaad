@@ -307,6 +307,7 @@ class TranslatorService:
             org_id = translate_wf_input["metadata"]["orgID"]
             locale = file["model"]["source_language_code"] + "|" + file["model"]["target_language_code"]
             tmx_entries = tmx_repo.search_tmx_db(user_id, org_id, locale)
+            log_info(f"Test68 tmx_entries {tmx_entries}", None)
             if tmx_entries:
                 if tmx_entries == "USER":
                     log_info("Only USER level TMX available for this user!", translate_wf_input)
