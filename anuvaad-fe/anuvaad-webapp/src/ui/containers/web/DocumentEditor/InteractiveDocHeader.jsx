@@ -89,7 +89,7 @@ class InteractiveDocHeader extends React.Component {
         message={this.state.message}
         variant={this.state.variant}
       >
-        <Alert elevation={6} variant="filled" severity="info">
+        <Alert elevation={6} variant="filled" severity={this.state.variant}>
           {this.state.message}
         </Alert>
       </Snackbar>
@@ -111,7 +111,7 @@ class InteractiveDocHeader extends React.Component {
           message={this.state.dialogMessage}
           onClose={() => this.setState({ dialogMessage: null })}
         >
-          <Alert elevation={6} variant="filled" severity="error">
+          <Alert elevation={6} variant="filled" severity={this.state.variant}>
             {this.state.dialogMessage}
           </Alert>
         </Snackbar>
@@ -293,6 +293,7 @@ class InteractiveDocHeader extends React.Component {
           anchorEl: null,
           showStatus: true,
           message: "Downloading failed...",
+          variant: "error"
         });
       }
     });
@@ -335,6 +336,7 @@ class InteractiveDocHeader extends React.Component {
           anchorEl: null,
           showStatus: true,
           message: "Downloading failed...",
+          variant: "error"
         });
       }
     });
