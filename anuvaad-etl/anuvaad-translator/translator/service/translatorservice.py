@@ -383,6 +383,7 @@ class TranslatorService:
                     log_error("NMT returned empty response_body!", translate_wf_input, None)
                 else:
                     try:
+                        log_info(f"Test68 Sentences of the batch {sentences_of_the_batch}",None)
                         self.update_sentences(record_id, sentences_of_the_batch, translate_wf_input)
                         trans_count += len(sentences_of_the_batch)
                     except Exception as e:
@@ -495,6 +496,7 @@ class TranslatorService:
                                 tgt = json.loads(response["data"][0]["value"][0])
                                 for translation in response["data"][0]["value"]:
                                     translation_obj = json.loads(translation)
+                                    log_info(f"Test68 translation_obj {translation_obj}, tgt {tgt}", None)
                                     if translation_obj["timestamp"] > tgt["timestamp"]:
                                         tgt = translation_obj
                                 log_info("User Translation | TGT: " + str(nmt_res_sentence["tgt"]) +
