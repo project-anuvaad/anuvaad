@@ -249,6 +249,10 @@ class TmxUpload extends Component {
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         open={this.state.apiInProgress}
         message={this.state.snackBarMessage}
+        autoHideDuration={4000}
+        onClose={(e, r) => {
+          this.setState({ apiInProgress: false })
+        }}
       >
         <Alert elevation={6} variant="filled" severity="info">{this.state.snackBarMessage}</Alert>
       </Snackbar>
@@ -260,6 +264,7 @@ class TmxUpload extends Component {
       <Snackbar
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         open={this.state.showStatus}
+        autoHideDuration={4000}
         onClose={(e, r) => {
           this.setState({ showStatus: false })
         }}

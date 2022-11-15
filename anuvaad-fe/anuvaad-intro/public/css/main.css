@@ -1,0 +1,210 @@
+.platform {
+	background: #515151 url('../img/ecommerceBg.jpg') no-repeat center top;
+	background-size: cover;
+	width: 100%;
+	height: 100%;
+}
+/* ------------- 
+chatbot css start here
+-----------------*/
+.platform a:hover .chatbot{
+	background-color: #2754fb;
+}
+.platform a:hover .support p {
+	color: #2754fb;
+} 
+.support {
+    display: flex;
+    align-items: center;
+    background-color: #F9F9F9;
+    padding: 0.8em 1rem;
+    border-radius: 3.5rem;
+    width: 16rem;
+    box-shadow: 0 0px 6px rgb(0 0 0 / 10%);
+}
+.support.fixed-bottom {
+    left: auto;
+    right: 2rem;
+    bottom: 2rem;
+}
+.support .chatbot {
+    background-color: #0C0F0F;
+    display: inline-block;
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 40px;
+    text-align: center;
+    line-height: 3.5rem;
+    margin-right: .8em;
+}
+.support p {
+    color: #0C0F0F;
+    margin-bottom: 0;
+    /* width: calc(100% - 60px); */
+    text-align: left;
+}
+.chatBody {
+    background-color: #ffffff;
+    height: 700px;
+    width: 420px;
+    position: fixed;
+    bottom: 0;
+    right: .5rem;
+    border-radius: .5rem .5rem 0 0;
+    overflow: hidden;
+}
+
+.chatBody .chatHeader {
+    background-color: #0C0F0F;
+    height: 3.75rem;
+    padding: 0 1em;
+}
+.chatBody .chatHeader img {
+	height: 24px;
+}
+.chatBody  .chatContent {
+    position: relative;
+    margin: .5rem 0;
+    overflow: hidden;
+    min-height: calc(622px - 60px);
+    max-height: calc(622px - 60px);
+    overflow-y: scroll;
+}
+.chatContent .date::before {
+    content: '';
+    width: 100%;
+    height: 1px;
+    background-color: rgba(12, 15, 15, .1);
+    position: absolute;
+    top: 8px;
+    z-index: -1;
+    left: 0;
+}
+.chatContent .displayDate {
+    background-color: #ffffff;
+    padding: 0 1em;
+    display: inline;
+    text-align: center;
+}
+.mesgs-list {
+    padding: 1em;
+}
+
+.mesgs-list .received_msg,
+.mesgs-list .outgoing_msg {
+    background-color: #F6F7FA;
+    padding: .5rem 1em;
+    margin-bottom: .5em;
+    border-radius: 0 8px 8px 8px;
+    width: 80%;
+    clear: both;
+    float: left;
+}
+.mesgs-list .received_msg p,
+.mesgs-list .outgoing_msg p {
+    font-size: .875rem;
+    margin-bottom: 0;
+}
+.mesgs-list .received_msg .select-one {
+    text-align: center;
+}
+.mesgs-list .received_msg .btn {
+    background-color: #ffffff;
+    margin-bottom: .5em;
+    font-size: .875rem;
+    padding: .6em 2em;
+    max-width: 85%;
+    color: #191919;
+    width: auto;
+}
+.mesgs-list .received_msg .btn:focus,
+.mesgs-list .received_msg .btn:active,
+.mesgs-list .received_msg .active {
+	background-color: #0C0F0F;
+	color: #ffffff;
+}
+.mesgs-list .outgoing_msg {
+    background-color: #1891FC;
+    border: 1px solid #1999FC;
+    max-width: 80%;
+    color: #ffffff;
+    float: right;
+    display: inline-block;
+     clear: both;
+     width: auto;
+     max-width: 80%;
+}
+.outgoing_msg a {
+    color: #ffffff;
+}
+.chatMsg .input-group{
+    background-color: #f5f5f5;
+    border-top: 1px solid rgba(12, 15, 15, .1);  
+}
+.chatMsg .form-control {
+    background-color: #F5F5F5;
+    height: 60px;
+}
+.chatMsg .input-group .input-group-append {
+    margin-left: -1px;
+    opacity: .4;
+}
+.form-control:focus + .input-group-append  {
+    opacity: 1;
+}
+/* ------------- 
+e-court dashboard css start here
+-----------------*/
+.dst-tab .tab-default {
+    padding: 1.5em 1rem;
+    background-color: #ddd;
+    width: 100%;
+    display: flex;
+    background-color: rgba(12,15,15,.1);
+    color: #000;
+    border: none;
+    border-left: 1px solid transparent;
+    border-radius: 4px;
+    align-items: center;
+}
+/* 
+.collapsed .add {
+    transform: rotate(45deg);
+}
+ */
+.dst-tab .card{
+    padding: 0 1em;
+    border: none;
+    min-height: 350px;
+    font-size: .875rem;
+}
+.dst-tab .card ul {
+    min-height: 280px;
+}
+.dst-tab .card .dot-arrow {
+    float: left;
+    width: 24px;
+}
+.dst-tab .card .content {
+    width: 100%;
+    padding-left: 24px;
+}
+.dst-tab .card li {
+    margin-bottom: 1em;
+}
+.dst-tab a.tab-default[aria-expanded="true"] > div {
+    transform: rotate(45deg);
+    -webkit-transition: all 300ms ease-in-out;
+    -moz-transition: all 300ms ease-in-out;
+    transition: all 300ms ease-in-out;
+    background-color: #ffffff;
+    width: 24px;
+    height: 24px;
+    border-radius: 24px;
+    left: 0px;
+}
+.dst-tab a.tab-default[aria-expanded="true"] > div img {
+    position: relative;
+    left: 0;
+    top: -2px;
+}
