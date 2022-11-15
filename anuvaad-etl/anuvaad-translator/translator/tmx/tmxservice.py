@@ -258,7 +258,7 @@ class TMXService:
     # Fetches TMX phrases for a sentence from hierarchical cache
     def get_tmx_with_fallback(self, tmx_record, tmx_level, tmx_file_cache, ctx):
         hash_dict = self.get_hash_key_search(tmx_record, tmx_level)
-        log_info(f"Test68 hash_dict {hash_dict}", None)
+        #log_info(f"Test68 hash_dict {hash_dict}", None)
         if 'USER' in hash_dict.keys():
             if hash_dict["USER"] not in tmx_file_cache.keys():
                 tmx_result = repo.search([hash_dict["USER"]])
@@ -272,7 +272,7 @@ class TMXService:
             if hash_dict["ORG"] not in tmx_file_cache.keys():
                 tmx_result = repo.search([hash_dict["ORG"]])
                 if tmx_result:
-                    log_info(f"Test68 ORG tmx_result {tmx_result}", None)
+                    #log_info(f"Test68 ORG tmx_result {tmx_result}", None)
                     tmx_file_cache[hash_dict["ORG"]] = tmx_result
                     return tmx_result, True
             else:
