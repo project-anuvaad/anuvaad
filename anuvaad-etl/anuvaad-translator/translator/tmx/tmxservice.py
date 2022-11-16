@@ -228,7 +228,7 @@ class TMXService:
                         tmx_result, fetch = self.get_tmx_with_fallback(tmx_record, tmx_level, tmx_file_cache, ctx)
                         computed += 1
                         if tmx_result:
-                            log_info(f"Test68 phrase {tmx_record}, result {tmx_result}",None)
+                            #log_info(f"Test68 phrase {tmx_record}, result {tmx_result}",None)
                             tmx_phrases.append(tmx_result[0])
                             phrase_list = phrase.split(" ")
                             hopping_pivot += (1 + len(' '.join(phrase_list)))
@@ -311,17 +311,17 @@ class TMXService:
                 tgt = utils.multiple_replace(tgt, tmx_replace_dict)
             tmx_tgt = tgt
             if tmx_without_nmt_phrases:
-                # if not is_attention_based_alignment_enabled:
+                if not is_attention_based_alignment_enabled:
                     log_info("Phrases to LaBSE: {} | Total: {}".format(len(tmx_without_nmt_phrases), len(tmx_phrases)),
                              ctx)
                     tmx_tgt, tmx_replacement = self.replace_with_labse_alignments(tmx_without_nmt_phrases, tgt,
                                                                                   tmx_replacement, ctx)
-                # else:
-                #     log_info("Phrases to Attention API: {} | Total: {}".format(len(tmx_without_nmt_phrases),
-                #                                                                len(tmx_phrases)), ctx)
+                else:
+                    log_info("Phrases to Attention API: {} | Total: {}".format(len(tmx_without_nmt_phrases),
+                                                                               len(tmx_phrases)), ctx)
                                                                                
-                #     tmx_tgt, tmx_replacement = self.replace_with_attention_api(tmx_without_nmt_phrases, src, tgt,
-                #                                                                tmx_replacement, ctx)
+                    tmx_tgt, tmx_replacement = self.replace_with_attention_api(tmx_without_nmt_phrases, src, tgt,
+                                                                               tmx_replacement, ctx)
  
             if tmx_tgt:
                 return tmx_tgt, tmx_replacement
@@ -340,6 +340,7 @@ class TMXService:
         nmt_req = [nmt_req]
         api_headers = {'Content-Type': 'application/json'}
         nmt_response = requests.post(url=nmt_labse_align_url, json=nmt_req, headers=api_headers)
+        log_info(f"Test68 NMT Response with Labse API {nmt_response.json}",None)
         if nmt_response:
             if nmt_response.text:
                 nmt_response = json.loads(nmt_response.text)
@@ -379,6 +380,7 @@ class TMXService:
         nmt_req = [nmt_req]
         api_headers = {'Content-Type': 'application/json'}
         nmt_response = requests.post(url=nmt_attention_align_url, json=nmt_req, headers=api_headers)
+        log_info(f"Test68 NMT Response with Attention API {nmt_response.json}",None)
         if nmt_response:
             if nmt_response.text:
                 nmt_response = json.loads(nmt_response.text)
