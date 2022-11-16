@@ -489,6 +489,7 @@ class TranslatorService:
                 locale = file["model"]["source_language_code"] + "|" + file["model"]["target_language_code"]
                 api_input = {"keys": [{"userID": user_id, "src": nmt_res_sentence["src"], "locale": locale}]}
                 response = utils.call_api(fetch_user_translation_url, "POST", api_input, None, user_id)
+                log_info(f"Test68 Response of NMT {response}",None)
                 if response:
                     if 'data' in response.keys():
                         if response["data"]:

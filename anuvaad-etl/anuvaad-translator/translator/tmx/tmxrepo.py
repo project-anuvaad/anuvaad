@@ -106,11 +106,13 @@ class TMXRepository:
             res_user = col.find({"locale": locale, "userID": user_id}, {'_id': False})
             if res_user:
                 for record in res_user:
+                    log_info(f"Test68 USER TMX RECORDS: {record}",None)
                     user += 1
         if tmx_org_enabled:
             res_org = col.find({"locale": locale, "orgID": org_id}, {'_id': False})
             if res_org:
                 for record in res_org:
+                    log_info(f"Test68 ORG TMX RECORDS: {record}",None)
                     org += 1
         log_info(f"Test68 USER TMX Records: {user}", None)
         log_info(f"Test68 ORG TMX Records: {org}", None)

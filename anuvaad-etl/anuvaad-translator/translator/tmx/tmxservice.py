@@ -311,16 +311,17 @@ class TMXService:
                 tgt = utils.multiple_replace(tgt, tmx_replace_dict)
             tmx_tgt = tgt
             if tmx_without_nmt_phrases:
-                if not is_attention_based_alignment_enabled:
+                # if not is_attention_based_alignment_enabled:
                     log_info("Phrases to LaBSE: {} | Total: {}".format(len(tmx_without_nmt_phrases), len(tmx_phrases)),
                              ctx)
                     tmx_tgt, tmx_replacement = self.replace_with_labse_alignments(tmx_without_nmt_phrases, tgt,
                                                                                   tmx_replacement, ctx)
-                else:
-                    log_info("Phrases to Attention API: {} | Total: {}".format(len(tmx_without_nmt_phrases),
-                                                                               len(tmx_phrases)), ctx)
-                    tmx_tgt, tmx_replacement = self.replace_with_attention_api(tmx_without_nmt_phrases, src, tgt,
-                                                                               tmx_replacement, ctx)
+                # else:
+                #     log_info("Phrases to Attention API: {} | Total: {}".format(len(tmx_without_nmt_phrases),
+                #                                                                len(tmx_phrases)), ctx)
+                                                                               
+                #     tmx_tgt, tmx_replacement = self.replace_with_attention_api(tmx_without_nmt_phrases, src, tgt,
+                #                                                                tmx_replacement, ctx)
  
             if tmx_tgt:
                 return tmx_tgt, tmx_replacement
