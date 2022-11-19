@@ -1,3 +1,5 @@
 upload
 .vscode
 src/notebooks/upload
+*.pyc
+__pycache__/

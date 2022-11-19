@@ -109,9 +109,11 @@ SAVE_NO_PAGE = 1
 
 CLEAN_BACKGROUND = False
 
+
+mask_img = False
 ##########################################################################
 #Alignment
-ALIGN = True
+ALIGN = False
 ALIGN_MODE= 'FAST'
 
 
