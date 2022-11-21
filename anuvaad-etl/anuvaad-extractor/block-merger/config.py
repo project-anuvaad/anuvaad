@@ -97,7 +97,7 @@ FONT_SIZE_CONFIG = {
 }
 
 CROP_CONFIG = {
-    'en' : {'top':1, 'bottom':1,'right':1,'left':1},
+    'en' : {'top':1, 'bottom':11,'right':1,'left':1},
     'hi': {'top':15, 'bottom':10,'right':5,'left':5},
     'gu': {'top': 15, 'bottom': 10, 'right': 5, 'left': 5},
     'or': {'top': 15, 'bottom': 10, 'right': 5, 'left': 5},
@@ -117,7 +117,7 @@ CRAFT_REFINE_MODEL_PATH = "./src/utilities/craft_pytorch/model/craft_refiner_CTW
 
 WATERMARK_THRESHOLD_LOW = 175
 WATERMARK_THRESHOLD_HIGH = 250
-
+WATERMARK_REMOVE = True
 
 PRIMA_SCORE_THRESH_TEST =0.5
 LAYOUT_MODEL_PATH =  "./src/utilities/primalaynet/model_final.pth"

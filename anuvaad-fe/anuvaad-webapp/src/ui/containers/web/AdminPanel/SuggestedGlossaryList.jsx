@@ -261,6 +261,7 @@ class SuggestedGlossaryList extends React.Component {
         options: {
           sort: false,
           empty: true,
+          viewColumns: false,
           customBodyRender: (value, tableMeta, updateValue) => {
             if (tableMeta.rowData) {
               return (
@@ -311,7 +312,7 @@ class SuggestedGlossaryList extends React.Component {
       rowsPerPageOptions: [10],
       count: this.props.suggestedGlossaryData.count,
       filterType: "checkbox",
-      download: true,
+      download: this.props.suggestedGlossaryData.result.length > 0 ? true : false,
       print: false,
       fixedHeader: true,
       filter: false,

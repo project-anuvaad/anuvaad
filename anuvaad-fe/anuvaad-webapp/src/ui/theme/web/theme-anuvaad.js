@@ -6,6 +6,11 @@ const themeAnuvaad = createMuiTheme({
     fontWeight: "400",
   },
   overrides: {
+    MuiPopover: {
+      root:{
+        backgroundColor: "rgba(0,0,0,0.2) !important",
+      },
+    },
     MuiTableRow: {
       root: {
         height: "60px",

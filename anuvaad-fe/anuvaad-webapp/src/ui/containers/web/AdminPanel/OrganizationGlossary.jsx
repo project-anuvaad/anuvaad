@@ -356,6 +356,7 @@ class OrganizationGlossary extends React.Component {
           sort: false,
           empty: true,
           download: false,
+          viewColumns: false,
           customBodyRender: (value, tableMeta, updateValue) => {
             if (tableMeta.rowData) {
               return (
@@ -398,7 +399,7 @@ class OrganizationGlossary extends React.Component {
       rowsPerPageOptions: [10],
       count: this.props.glossaryData.count,
       filterType: "checkbox",
-      download: true,
+      download: this.props.glossaryData.result.length > 0 ? true : false,
       print: false,
       fixedHeader: true,
       filter: false,

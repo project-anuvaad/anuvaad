@@ -207,6 +207,7 @@ class SuggestedGlossaryList extends React.Component {
         options: {
           sort: false,
           empty: true,
+          viewColumns: false,
           customBodyRender: (value, tableMeta, updateValue) => {
             if (tableMeta.rowData) {
               return (
