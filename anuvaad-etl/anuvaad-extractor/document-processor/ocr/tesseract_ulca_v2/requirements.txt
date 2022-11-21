@@ -12,7 +12,7 @@ torch==1.9.0
 torchvision==0.10.0
 requests-oauthlib==1.3.0
 kafka-python==2.0.1
-tensorflow==1.13.2
+tensorflow==2.9.3
 layoutparser==0.1.2
 fvcore
 flask==2.1.2
