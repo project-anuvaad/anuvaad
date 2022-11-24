@@ -9,6 +9,7 @@ import SignUp from "./SignUp";
 import Login from "./Login";
 import UpdatePassword from "./UpdatePassword";
 import SetPassword from './SetPassword';
+import Activate from './Activate';
 
 const UserManagement = (props) => {
     const { classes } = props;
@@ -24,6 +25,8 @@ const UserManagement = (props) => {
                 return <UpdatePassword />;
             case "set-password":
                 return <SetPassword />;
+            case "activate":
+                return <Activate />;
             default:
                 return <Login location={props.location} />;
 
