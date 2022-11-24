@@ -32,3 +32,5 @@ class Status(enum.Enum):
     ERROR_WRONG_PASSWORD = {'ok': False, 'http': {'status': 400}, 'why': 'wrong password '}
     USER_ALREADY_EXISTS = {'ok': False, 'http': {'status': 400}, 'why': 'username already exists '}
     FILE_BLANK_ERROR = {'ok': False, 'http': {'status': 400}, 'why': 'Blank File'}
+    #
+    ERROR_FILE_PAGE_BREAK = {'ok': False, 'http': {'status': 413}, 'why': 'file page number is greater than 20'}

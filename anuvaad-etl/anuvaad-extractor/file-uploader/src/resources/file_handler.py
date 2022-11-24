@@ -10,9 +10,11 @@ import os
 import config
 import logging
 import uuid
+# import services.service import private_user
 from datetime import datetime
 from models.user_files import UserFiles
-
+from services.service import page_restrictions_pdf
+from services.service import reduce_page
 from services.service import is_file_empty
 
 ALLOWED_FILE_TYPES = config.ALLOWED_FILE_TYPES
@@ -38,6 +40,8 @@ class FileUploader(Resource):
             file_real_name, file_extension = os.path.splitext(f.filename)
             fileallowed = False
             filename = str(uuid.uuid4()) + file_extension
+            # filename =  filenames + file_extension
+            # log.info(f"TEST-1: filename ={filename}")
             filepath = os.path.join(config.download_folder, filename)
             for allowed_file_extension in ALLOWED_FILE_EXTENSIONS:
                 if file_extension.endswith(allowed_file_extension):
@@ -51,7 +55,9 @@ class FileUploader(Resource):
             if fileallowed:
                 f.save(filepath)
                 file_size = os.stat(filepath).st_size
+                # log.info(f"Test-1: filesize = {file_size}")
                 file_size_in_MB = file_size / (1024 * 1024)
+                # log.info(f"TEST-1: size ={file_size_in_MB}")
                 if file_size_in_MB > eval(str(config.MAX_UPLOAD_SIZE)):
                     os.remove(filepath)
                     res = CustomResponse(Status.ERROR_FILE_SIZE.value, None)
@@ -62,8 +68,18 @@ class FileUploader(Resource):
                     res = CustomResponse(Status.FILE_BLANK_ERROR.value, None)
                     return res.getresjson(), 400
 
+                #print(file_extension)
+                if file_extension == '.pdf' :
+                    page = page_restrictions_pdf(filename)
+                    if page > config.page_limit:
+                        os.remove(filepath)
+                        res = CustomResponse(Status.ERROR_FILE_PAGE_BREAK.value, None)
+                        return res.getresjson(), 413
+                    # files_pager = reduce_page(filename, filepath, file_extension)
+
+
                 userfile = UserFiles(created_by=request.headers.get('x-user-id'),
-                                     filename=filename, file_real_name=file_real_name + file_extension,
+                                     filename=filename, file_real_name=file_real_name + file_extension, 
                                      created_on=datetime.now())
                 userfile.save()
                 log.error("SUCCESS: File Uploaded -- " + str(f.filename))
