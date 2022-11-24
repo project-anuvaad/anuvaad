@@ -57,12 +57,14 @@ class MyGlossary extends React.Component {
             openDeleteSelectedGlossaryConfirmDialogue: false
         }
     }
-    getUserGlossary = () => {
+    getUserGlossary = async () => {
+        let self = this;
         const { APITransport } = this.props
         let userID = JSON.parse(localStorage.getItem("userProfile")).userID;
         let orgID = JSON.parse(localStorage.getItem("userProfile")).orgID;
         let apiObj = new ViewGlossary(userID, orgID);
-        APITransport(apiObj)
+        APITransport(apiObj);
+        this.setState({ loading: false })
     }
     componentDidMount() {
         if (this.props.glossaryData.count === 0) {
@@ -476,6 +478,7 @@ class MyGlossary extends React.Component {
 
 const mapStateToProps = (state) => ({
     glossaryData: state.fetchglossary,
+    apistatus: state.apistatus,
 });
 
 const mapDispatchToProps = (dispatch) =>

@@ -111,6 +111,7 @@ class AppRoutes extends React.Component {
           <Switch>
             {/* UserManagement */}
             <Route exact path={`${process.env.PUBLIC_URL}/user/:page`} component={UserManagement} />
+            <Route path={`${process.env.PUBLIC_URL}/user/:page/:uid/:rid`} component={UserManagement} />
             {/* <Route exact path={`${process.env.PUBLIC_URL}/user/:page`} component={Login} /> */}
             {/* <Route exact path={`${process.env.PUBLIC_URL}/callback`} component={Callback} /> */}
             <Route exact path={`${process.env.PUBLIC_URL}/logout`} component={Logout} />
@@ -204,7 +205,7 @@ class AppRoutes extends React.Component {
 
             />
 
-            <PrivateRoute
+            {/* <PrivateRoute
               path={`${process.env.PUBLIC_URL}/set-password/:uid/:rid`}
               title="Set Password"
               authenticate={() => true}
@@ -212,7 +213,7 @@ class AppRoutes extends React.Component {
               drawer
               dontShowHeader={true}
               currentMenu="set-password"
-            />
+            /> */}
 
             {/* <PrivateRoute
               path={`${process.env.PUBLIC_URL}/interactive-translate`}
