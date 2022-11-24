@@ -434,7 +434,7 @@ class UserDetails extends React.Component {
             </MuiThemeProvider>
           }
         </div>
-        {((this.state.showLoader && this.props.userinfo.data.length < 1) || this.state.status) && < Spinner />}
+        {((this.state.showLoader && !this.props.apistatus.error && this.props.userinfo?.data?.length < 1) || this.state.status) && < Spinner />}
         {
           this.state.isenabled &&
           this.processSnackBar()

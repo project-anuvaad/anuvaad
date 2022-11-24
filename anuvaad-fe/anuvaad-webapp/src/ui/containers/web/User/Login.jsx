@@ -31,6 +31,7 @@ import SignUp from "./SignUp";
 class Login extends React.Component {
   constructor(props) {
     super(props);
+    this.currentPage = this.props.match.params.page;
     this.state = {
       email: "",
       password: "",
@@ -39,7 +40,8 @@ class Login extends React.Component {
       errMessage: "",
       password: "",
       showPassword: false,
-      currentFocusedComponent: "Login"
+      currentFocusedComponent: "Login",
+      reloadPage: false
     };
   }
 
@@ -50,7 +52,7 @@ class Login extends React.Component {
      */
     return null;
   }
-  componentDidUpdate(prevProps, prevState, snapshot) {}
+  componentDidUpdate(prevProps, prevState, snapshot) { }
 
   componentDidMount() {
     localStorage.removeItem("token");
@@ -263,20 +265,24 @@ class Login extends React.Component {
             style={{ display: "flex", justifyContent: "space-between" }}
           >
             <Link
+              id="newaccount"
               onClick={() => {
-                this.handleChangeFocusedComponent("Signup")
-                // history.push(`${process.env.PUBLIC_URL}/signup`);
+                // this.handleChangeFocusedComponent("Signup")
+                history.push(`${process.env.PUBLIC_URL}/user/signup`);
               }}
+              href="#"
               className={classes.forgotPassLink}
             >
               Sign Up
             </Link>
 
             <Link
+              id="newaccount"
               onClick={() => {
-                this.handleChangeFocusedComponent("ForgetPassword")
-                // history.push(`${process.env.PUBLIC_URL}/forgot-password`);
+                // this.handleChangeFocusedComponent("ForgetPassword")
+                history.push(`${process.env.PUBLIC_URL}/user/forget-password`);
               }}
+              href="#"
               className={classes.forgotPassLink}
             >
               Forgot Password?
@@ -296,22 +302,52 @@ class Login extends React.Component {
   };
 
   renderLoginForm = () => {
-    return <form autoComplete="off">{this.renderCardContent()}</form>
+    return <form autoComplete="off" style={{marginLeft: "15rem"}}>{this.renderCardContent()}</form>
   }
 
   renderSignupForm = () => {
-    return <div style={{width: '100%'}}><SignUp navigateToLoginPress={()=>this.handleChangeFocusedComponent('Login')} /></div>
+    return <div style={{ width: '100%' }}>
+      <SignUp
+        navigateToLoginPress={() => {
+          //  this.handleChangeFocusedComponent('Login')
+          history.push(`${process.env.PUBLIC_URL}/user/login`);
+        }
+
+        } />
+    </div>
   }
 
   renderForgetPasswordForm = () => {
-    return <div style={{width: '100%'}}>
-      <UpdatePassword navigateToLoginPress={()=>this.handleChangeFocusedComponent('Login')} />
+    return <div style={{ width: '100%' }}>
+      <UpdatePassword navigateToLoginPress={() => {
+        //  this.handleChangeFocusedComponent('Login')
+        history.push(`${process.env.PUBLIC_URL}/user/login`);
+      }
+
+      } />
     </div>
-    
+
+  }
+
+  renderPage = () => {
+    switch (this.currentPage) {
+      case "login":
+        return this.renderLoginForm();
+
+      case "signup":
+        return this.renderSignupForm();
+
+      case "forget-password":
+        return this.renderForgetPasswordForm();
+
+      default:
+        return this.renderLoginForm();
+    }
   }
 
   handleChangeFocusedComponent = (value) => {
-    this.setState({currentFocusedComponent: value});
+    this.setState({ currentFocusedComponent: value });
+
   }
 
   render() {
@@ -319,7 +355,7 @@ class Login extends React.Component {
     return (
       <MuiThemeProvider theme={ThemeDefault}>
         <Grid container>
-          <Grid
+          {/* <Grid
             item
             xs={12}
             sm={4}
@@ -329,11 +365,12 @@ class Login extends React.Component {
             className={classes.appInfo}
           >
             {this.renderLeftPanel()}
-          </Grid>
+          </Grid> */}
           <Grid item xs={12} sm={9} md={9} lg={9} className={classes.parent}>
-              {this.state.currentFocusedComponent === "Login" && this.renderLoginForm()}
-              {this.state.currentFocusedComponent === "Signup" && this.renderSignupForm()}
-              {this.state.currentFocusedComponent === "ForgetPassword" && this.renderForgetPasswordForm()}
+            {/* {this.renderPage()} */}
+            {this.renderLoginForm()}
+            {/* {this.state.currentFocusedComponent === "Signup" && this.renderSignupForm()}
+            {this.state.currentFocusedComponent === "ForgetPassword" && this.renderForgetPasswordForm()} */}
           </Grid>
         </Grid>
 
