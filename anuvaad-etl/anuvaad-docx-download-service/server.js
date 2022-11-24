@@ -60,7 +60,7 @@ app.post(
     var req = http.request(options, (res) => {
       console.log("res", res, options);
       if (res.statusCode === 200) {
-        console.log("inside Status code 200", res.statusCode);
+        console.log("inside status code 200", res.statusCode);
         res.on("data", (d) => {
           data = data + d.toString();
         });
