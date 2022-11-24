@@ -23,7 +23,9 @@ const UserManagement = (props) => {
             case "forget-password":
                 return <UpdatePassword />;
             case "set-password":
-                return <SetPassword />
+                return <SetPassword />;
+            default:
+                return <Login location={props.location} />;
 
         }
     };
