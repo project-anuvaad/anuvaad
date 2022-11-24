@@ -140,7 +140,7 @@ class AppRoutes extends React.Component {
               currentMenu="instant-translate"
             />
 
-            <PrivateRoute
+            {/* <PrivateRoute
               path={`${process.env.PUBLIC_URL}/activate/:uid/:rid`}
               title="Activate"
               authenticate={() => true}
@@ -148,7 +148,7 @@ class AppRoutes extends React.Component {
               drawer
               dontShowHeader={true}
               currentMenu="activate"
-            />
+            /> */}
 
             <PrivateRoute
               path={`${process.env.PUBLIC_URL}/interactive-document/:jobid/:inputfileid/:modelId/:filename/:workflow/:source_language_code/:target_language_code`}
