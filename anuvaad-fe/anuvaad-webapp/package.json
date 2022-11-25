@@ -67,7 +67,7 @@
     "react-router-redux": "^4.0.8",
     "react-scale-text": "^1.2.2",
     "react-score-indicator": "^2.2.1",
-    "react-scripts": "3.4.3",
+    "react-scripts": "5.0.1",
     "react-scroll": "^1.8.1",
     "react-scroll-to": "^3.0.0-beta.6",
     "react-scrollbar": "^0.5.6",
