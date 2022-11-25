@@ -42,9 +42,12 @@ class FileUploader(Resource):
             fileallowed = False
             filename = str(uuid.uuid4()) + file_extension
             # filename =  filenames + file_extension
-            # log.info(f"TEST-1: filename ={filename}")
+            log.info(f"TEST-1: filename ={filename}")
             filepath = os.path.join(config.download_folder, filename)
            # print(filepath)
+
+            log.info(f"ALLOWED_FILE_EXTENSIONS = {ALLOWED_FILE_EXTENSIONS}")
+            log.info(f"test 31: fileextension = {file_extension}")
             for allowed_file_extension in ALLOWED_FILE_EXTENSIONS:
                 if file_extension.endswith(allowed_file_extension):
                     log.info(f"Test 2: file_extension = {allowed_file_extension}")
