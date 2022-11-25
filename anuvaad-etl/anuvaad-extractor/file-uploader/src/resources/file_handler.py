@@ -2,6 +2,9 @@ from logging.config import dictConfig
 
 from flask_restful import fields, marshal_with, reqparse, Resource
 from flask import request
+from anuvaad_auditor.loghandler import log_error
+from anuvaad_auditor.loghandler import log_info
+from anuvaad_auditor.loghandler import log_exception
 from models.response import CustomResponse
 from models.status import Status
 import werkzeug
@@ -27,30 +30,30 @@ class FileUploader(Resource):
 
     def post(self):
         try:
-            log.info("Uploading file...")
+            log_info("Uploading file...",None)
             parse = reqparse.RequestParser()
             parse.add_argument('file', type=werkzeug.datastructures.FileStorage, location='files',
                                help='File is required', required=True)
             args = parse.parse_args()
             f = args['file']
             mime_type = f.mimetype
-            log.info("Filename: " + str(f.filename))
-            log.info("File MIME Type: " + str(mime_type))
+            log_info("Filename: " + str(f.filename), None)
+            log_info("File MIME Type: " + str(mime_type), None)
 
             file_real_name, file_extension = os.path.splitext(f.filename)
            # print(file_extension)
             fileallowed = False
             filename = str(uuid.uuid4()) + file_extension
             # filename =  filenames + file_extension
-            log.info(f"TEST-1: filename ={filename}")
+            log_info(f"TEST-1: filename ={filename}",None)
             filepath = os.path.join(config.download_folder, filename)
            # print(filepath)
 
-            log.info(f"ALLOWED_FILE_EXTENSIONS = {ALLOWED_FILE_EXTENSIONS}")
-            log.info(f"test 31: fileextension = {file_extension}")
+            log_info(f"ALLOWED_FILE_EXTENSIONS = {ALLOWED_FILE_EXTENSIONS}",None)
+            log_info(f"test 31: fileextension = {file_extension}", None)
             for allowed_file_extension in ALLOWED_FILE_EXTENSIONS:
                 if file_extension.endswith(allowed_file_extension):
-                    log.info(f"Test 2: file_extension = {allowed_file_extension}")
+                    log_info(f"Test 2: file_extension = {allowed_file_extension}", None)
 
                     # print(allowed_file_extension)
                     fileallowed = True
@@ -77,7 +80,7 @@ class FileUploader(Resource):
                     return res.getresjson(), 400
 
                 #print(file_extension)
-                log.info(f"Test 3: file_extension = {allowed_file_extension}")
+                log_info(f"Test 3: file_extension = {allowed_file_extension}", None)
                 if allowed_file_extension == 'pdf' :
                     page = page_restrictions_pdf(filename)
                     if page > config.page_limit:
@@ -91,15 +94,15 @@ class FileUploader(Resource):
                                      filename=filename, file_real_name=file_real_name + file_extension, 
                                      created_on=datetime.now())
                 userfile.save()
-                log.error("SUCCESS: File Uploaded -- " + str(f.filename))
+                log_error("SUCCESS: File Uploaded -- " + str(f.filename), None)
                 res = CustomResponse(Status.SUCCESS.value, filename)
                 return res.getres()
             else:
-                log.error("ERROR: Unsupported File -- " + str(f.filename))
+                log_error("ERROR: Unsupported File -- " + str(f.filename), None)
                 res = CustomResponse(Status.ERROR_UNSUPPORTED_FILE.value, None)
                 return res.getresjson(), 400
         except Exception as e:
-            log.exception("Exception while uploading the file: " + str(e))
+            log_exception("Exception while uploading the file: " + str(e), None)
             res = CustomResponse(Status.FAILURE.value, None)
             return res.getresjson(), 500
 
