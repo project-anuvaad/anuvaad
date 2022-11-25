@@ -228,6 +228,7 @@ class TMXService:
                         tmx_result, fetch = self.get_tmx_with_fallback(tmx_record, tmx_level, tmx_file_cache, ctx)
                         computed += 1
                         if tmx_result:
+                            #log_info(f"Test68 phrase {tmx_record}, result {tmx_result}",None)
                             tmx_phrases.append(tmx_result[0])
                             phrase_list = phrase.split(" ")
                             hopping_pivot += (1 + len(' '.join(phrase_list)))
@@ -258,10 +259,12 @@ class TMXService:
     # Fetches TMX phrases for a sentence from hierarchical cache
     def get_tmx_with_fallback(self, tmx_record, tmx_level, tmx_file_cache, ctx):
         hash_dict = self.get_hash_key_search(tmx_record, tmx_level)
+        #log_info(f"Test68 hash_dict {hash_dict}", None)
         if 'USER' in hash_dict.keys():
             if hash_dict["USER"] not in tmx_file_cache.keys():
                 tmx_result = repo.search([hash_dict["USER"]])
                 if tmx_result:
+                    #log_info(f"Test68 USER tmx_result {tmx_result}", None)
                     tmx_file_cache[hash_dict["USER"]] = tmx_result
                     return tmx_result, True
             else:
@@ -270,6 +273,7 @@ class TMXService:
             if hash_dict["ORG"] not in tmx_file_cache.keys():
                 tmx_result = repo.search([hash_dict["ORG"]])
                 if tmx_result:
+                    #log_info(f"Test68 ORG tmx_result {tmx_result}", None)
                     tmx_file_cache[hash_dict["ORG"]] = tmx_result
                     return tmx_result, True
             else:
@@ -315,6 +319,7 @@ class TMXService:
                 else:
                     log_info("Phrases to Attention API: {} | Total: {}".format(len(tmx_without_nmt_phrases),
                                                                                len(tmx_phrases)), ctx)
+                                                                               
                     tmx_tgt, tmx_replacement = self.replace_with_attention_api(tmx_without_nmt_phrases, src, tgt,
                                                                                tmx_replacement, ctx)
  
@@ -335,6 +340,7 @@ class TMXService:
         nmt_req = [nmt_req]
         api_headers = {'Content-Type': 'application/json'}
         nmt_response = requests.post(url=nmt_labse_align_url, json=nmt_req, headers=api_headers)
+        #log_info(f"NMT Response with Labse API {nmt_response.json}",None)
         if nmt_response:
             if nmt_response.text:
                 nmt_response = json.loads(nmt_response.text)
@@ -374,6 +380,7 @@ class TMXService:
         nmt_req = [nmt_req]
         api_headers = {'Content-Type': 'application/json'}
         nmt_response = requests.post(url=nmt_attention_align_url, json=nmt_req, headers=api_headers)
+        #log_info(f"NMT Response with Attention API {nmt_response.json}",None)
         if nmt_response:
             if nmt_response.text:
                 nmt_response = json.loads(nmt_response.text)
