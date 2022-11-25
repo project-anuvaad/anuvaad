@@ -340,7 +340,7 @@ class TMXService:
         nmt_req = [nmt_req]
         api_headers = {'Content-Type': 'application/json'}
         nmt_response = requests.post(url=nmt_labse_align_url, json=nmt_req, headers=api_headers)
-        log_info(f"NMT Response with Labse API {nmt_response.json}",None)
+        #log_info(f"NMT Response with Labse API {nmt_response.json}",None)
         if nmt_response:
             if nmt_response.text:
                 nmt_response = json.loads(nmt_response.text)
@@ -380,7 +380,7 @@ class TMXService:
         nmt_req = [nmt_req]
         api_headers = {'Content-Type': 'application/json'}
         nmt_response = requests.post(url=nmt_attention_align_url, json=nmt_req, headers=api_headers)
-        log_info(f"NMT Response with Attention API {nmt_response.json}",None)
+        #log_info(f"NMT Response with Attention API {nmt_response.json}",None)
         if nmt_response:
             if nmt_response.text:
                 nmt_response = json.loads(nmt_response.text)
