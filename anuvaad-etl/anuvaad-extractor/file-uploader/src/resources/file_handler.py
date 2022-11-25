@@ -47,7 +47,9 @@ class FileUploader(Resource):
            # print(filepath)
             for allowed_file_extension in ALLOWED_FILE_EXTENSIONS:
                 if file_extension.endswith(allowed_file_extension):
-              #      print(allowed_file_extension)
+                    log.info(f"Test 2: file_extension = {allowed_file_extension}")
+
+                    # print(allowed_file_extension)
                     fileallowed = True
                     break
             if fileallowed is False:
@@ -72,6 +74,7 @@ class FileUploader(Resource):
                     return res.getresjson(), 400
 
                 #print(file_extension)
+                log.info(f"Test 3: file_extension = {allowed_file_extension}")
                 if allowed_file_extension == 'pdf' :
                     page = page_restrictions_pdf(filename)
                     if page > config.page_limit:
