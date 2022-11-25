@@ -38,13 +38,16 @@ class FileUploader(Resource):
             log.info("File MIME Type: " + str(mime_type))
 
             file_real_name, file_extension = os.path.splitext(f.filename)
+           # print(file_extension)
             fileallowed = False
             filename = str(uuid.uuid4()) + file_extension
             # filename =  filenames + file_extension
             # log.info(f"TEST-1: filename ={filename}")
             filepath = os.path.join(config.download_folder, filename)
+           # print(filepath)
             for allowed_file_extension in ALLOWED_FILE_EXTENSIONS:
                 if file_extension.endswith(allowed_file_extension):
+              #      print(allowed_file_extension)
                     fileallowed = True
                     break
             if fileallowed is False:
@@ -69,7 +72,7 @@ class FileUploader(Resource):
                     return res.getresjson(), 400
 
                 #print(file_extension)
-                if file_extension == '.pdf' :
+                if allowed_file_extension == 'pdf' :
                     page = page_restrictions_pdf(filename)
                     if page > config.page_limit:
                         os.remove(filepath)
