@@ -198,7 +198,7 @@ class SignUp extends React.Component {
               </FormControl>
 
               <Typography className={classes.typography1}>{translate('signUp.page.label.allReadyHaveAccount')}
-                <Link id="login" style={{ cursor: 'pointer', color: 'rgba(44, 39, 153, 1)' }} href="#" onClick={() => { this.props.navigateToLoginPress() }}> {translate('signUp.page.label.logIn')}</Link></Typography>
+                <Link id="newaccount" style={{ cursor: 'pointer', color: 'rgba(44, 39, 153, 1)' }} href="#" onClick={() => {  history.push(`${process.env.PUBLIC_URL}/user/login`) }}> {translate('signUp.page.label.logIn')}</Link></Typography>
 
 
               <hr className={classes.hrTag} />

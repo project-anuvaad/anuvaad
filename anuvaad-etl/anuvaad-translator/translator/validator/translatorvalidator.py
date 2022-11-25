@@ -143,6 +143,16 @@ class TranslatorValidator:
                             if 'target_language_code' not in model.keys():
                                 return post_error("TGT_LANG_NOT_FOUND", "Target language code is mandatory.", None)
 
+    def validate_tmx_create(self, input_req):
+        for indx, sentence in enumerate(input_req.get('sentences')):
+            if 'src' not in sentence.keys() or sentence.get('src')=="":
+                return post_error("SRC_NOT_FOUND", "src is mandatory for every translation", None)
+            if 'tgt' not in sentence.keys() or sentence.get('tgt')=="":
+                return post_error("TGT_NOT_FOUND", "tgt is mandatory for every translation", None)
+            if 'locale' not in sentence.keys() or sentence.get('tgt')=="":
+                return post_error("LOCALE_NOT_FOUND", "locale is mandatory for every translation", None)
+            return None
+
     def validate_tmx_search(self, input_req):
         user_roles = str(input_req["metadata"]["roles"]).split(",")
         if 'SUPERADMIN' in user_roles:
@@ -192,11 +202,11 @@ class TranslatorValidator:
                     return post_error("TRANSLATIONS_EMPTY", "Translations cannot be empty", None)
                 else:
                     for translation in input_req["translations"]:
-                        if 'src' not in translation.keys():
+                        if 'src' not in translation.keys() or translation.get('src')=="":
                             return post_error("SRC_NOT_FOUND", "src is mandatory for every translation", None)
-                        if 'tgt' not in translation.keys():
+                        if 'tgt' not in translation.keys() or translation.get('tgt')=="":
                             return post_error("TGT_NOT_FOUND", "tgt is mandatory for every translation", None)
-                        if 'locale' not in translation.keys():
+                        if 'locale' not in translation.keys() or translation.get('locale')=="":
                             return post_error("LOCALE_NOT_FOUND", "locale is mandatory for every translation", None)
                         search_req = {"src": translation["src"], "tgt": translation["tgt"], "orgIDs": [input_req["orgID"]]}
                         search_res = tmx_service.suggestion_box_get(search_req)

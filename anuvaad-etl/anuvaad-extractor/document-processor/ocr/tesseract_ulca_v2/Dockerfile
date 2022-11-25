@@ -67,7 +67,8 @@ RUN apt install tesseract-ocr -y
 RUN apt-get install ffmpeg libsm6 libxext6  -y
 
 RUN apt-get install -y make git
-RUN python -m pip install 'git+https://github.com/facebookresearch/detectron2.git@42c44b622eb7b179576bdac218c84c107fff8eab'
+# RUN python -m pip install 'git+https://github.com/facebookresearch/detectron2.git@42c44b622eb7b179576bdac218c84c107fff8eab'
+RUN python -m pip install 'git+https://github.com/facebookresearch/detectron2.git'
 RUN apt install -y curl
 
 COPY start.sh /usr/bin/start.sh
