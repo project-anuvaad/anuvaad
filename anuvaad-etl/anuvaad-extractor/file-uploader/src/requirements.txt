@@ -9,4 +9,4 @@ python-magic==0.4.18
 mongoengine==0.18.0
 pandas==1.2.4
 openpyxl==3.0.7
-pyPdf == 1.13
+PyPDF2 == 2.10.4
