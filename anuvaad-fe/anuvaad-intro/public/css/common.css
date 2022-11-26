@@ -1,0 +1,44 @@
+* img {
+  -webkit-transition: all 300ms ease-in-out;
+  -moz-transition: all 300ms ease-in-out;
+  transition: all 300ms ease-in-out;
+}
+html, body {
+    max-width: 100%;
+    height: 100%;
+    font-size: 16px;
+
+}
+body {
+    font-family: 'Lato', sans-serif;
+    color: #0C0F0F;
+    background: #ffffff;
+    margin: 0;
+    padding: 0;
+}
+
+:focus,
+button:focus,
+.btn:focus,
+.form-control:focus {
+    outline: none;
+    box-shadow: none;
+}
+ul, li {
+    list-style: none;
+    padding-inline-start: 0;
+    padding: 0;
+    margin: 0;
+}
+a {
+    color: #2754FB;
+    /*     font-size: .875rem; */
+}
+a:hover { 
+   text-decoration: none;
+}
+img {
+  max-width: 100%;
+  height: auto;
+
+}

@@ -15,13 +15,16 @@ const DashboardStyles = theme => ({
     marginTop: theme.spacing(3)
   },
   typographyHeader: {
-    paddingBottom: "12px", paddingTop: "2%"
-
+    paddingBottom: "12px", 
+    paddingTop: "2%",
+    fontfamily: `"Roboto", sans-serif ,sans-serif`,
+    fontSize: "1.35rem",
+    fontWeight: "700"
 
   },
   paper: {
     width: "40%",
-    marginTop: "2%",
+    marginTop: "3%",
     marginBottom: "2%",
     padding: '3%'
   },
@@ -87,7 +90,7 @@ const DashboardStyles = theme => ({
   progress: {
     position: 'relative',
     top: '40%',
-    color: '#1C9AB7'
+    color: '#2C2799'
   },
   progressDiv: {
     position: 'fixed',
@@ -98,6 +101,14 @@ const DashboardStyles = theme => ({
     top: 0,
     left: 0,
     opacity: 0.7
+  },
+  transliterateTextArea: {
+    padding: "1%", 
+    height: '100px', 
+    fontFamily: '"Source Sans Pro", "Arial", sans-serif', 
+    fontSize: "21px", 
+    width: '97.8%', 
+    borderRadius: '4px'
   }
 
 });

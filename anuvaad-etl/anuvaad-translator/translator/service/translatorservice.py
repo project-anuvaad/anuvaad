@@ -307,6 +307,7 @@ class TranslatorService:
             org_id = translate_wf_input["metadata"]["orgID"]
             locale = file["model"]["source_language_code"] + "|" + file["model"]["target_language_code"]
             tmx_entries = tmx_repo.search_tmx_db(user_id, org_id, locale)
+            #log_info(f"Test68 tmx_entries {tmx_entries}", None)
             if tmx_entries:
                 if tmx_entries == "USER":
                     log_info("Only USER level TMX available for this user!", translate_wf_input)
@@ -382,6 +383,7 @@ class TranslatorService:
                     log_error("NMT returned empty response_body!", translate_wf_input, None)
                 else:
                     try:
+                        #log_info(f"Test68 Sentences of the batch {sentences_of_the_batch}",None)
                         self.update_sentences(record_id, sentences_of_the_batch, translate_wf_input)
                         trans_count += len(sentences_of_the_batch)
                     except Exception as e:
@@ -487,6 +489,7 @@ class TranslatorService:
                 locale = file["model"]["source_language_code"] + "|" + file["model"]["target_language_code"]
                 api_input = {"keys": [{"userID": user_id, "src": nmt_res_sentence["src"], "locale": locale}]}
                 response = utils.call_api(fetch_user_translation_url, "POST", api_input, None, user_id)
+                #log_info(f"Test68 Response of NMT {response}",None)
                 if response:
                     if 'data' in response.keys():
                         if response["data"]:
@@ -494,6 +497,7 @@ class TranslatorService:
                                 tgt = json.loads(response["data"][0]["value"][0])
                                 for translation in response["data"][0]["value"]:
                                     translation_obj = json.loads(translation)
+                                    #log_info(f"Test68 translation_obj {translation_obj}, tgt {tgt}", None)
                                     if translation_obj["timestamp"] > tgt["timestamp"]:
                                         tgt = translation_obj
                                 log_info("User Translation | TGT: " + str(nmt_res_sentence["tgt"]) +
@@ -506,24 +510,22 @@ class TranslatorService:
                           nmt_res_sentence["src"], nmt_res_sentence["tgt"], str(len(nmt_res_sentence["tmx_phrases"]))),
                          translate_wf_input)
                 nmt_res_sentence["tgt"], nmt_res_sentence["tmx_replacement"] = tmxservice.replace_nmt_tgt_with_user_tgt(
-                    nmt_res_sentence["tmx_phrases"], nmt_res_sentence["tgt"], translate_wf_input)
+                    nmt_res_sentence["tmx_phrases"], nmt_res_sentence["src"], nmt_res_sentence["tgt"], translate_wf_input)
                 log_info(nmt_res_sentence["tmx_replacement"], translate_wf_input)
-            block_id = node[3]
-            b_index, s_index = None, None
-            sentence_id = nmt_res_sentence["s_id"]
-            for j, block in enumerate(page["text_blocks"]):
-                if str(block["block_id"]) == str(block_id):
-                    b_index = j
-                    break
-            block = page["text_blocks"][b_index]
-            for k, sentence in enumerate(block["tokenized_sentences"]):
-                if str(sentence["s_id"]) == str(sentence_id):
-                    s_index = k
-                    break
-            if b_index is not None and s_index is not None:
+            block_id, b_index, s_index, sentence_id = node[3], None, None, nmt_res_sentence["s_id"]
+            for b_in, block in enumerate(page["text_blocks"]):
+                if block["block_id"] == block_id:
+                    for s_in, sentence in enumerate(block["tokenized_sentences"]):
+                        if str(sentence["s_id"]) == str(sentence_id):
+                            s_index = s_in
+                            b_index = b_in
+                            break
+            if s_index is not None:
                 page_enriched["text_blocks"][b_index]["tokenized_sentences"][s_index] = nmt_res_sentence
             else:
-                log_info("Replace failed, NodeID: {}".format(str(nmt_res_sentence["n_id"])), translate_wf_input)
+                log_info(f'Replace failed for n_id: {str(nmt_res_sentence["n_id"])}, block_id received: {block_id}, '
+                         f'sentence_id received: {sentence_id}, b_index: {b_index}, s_index: {s_index}, '
+                         f'nmt_res_sentence: {nmt_res_sentence}', translate_wf_input)
         query = {"record_id": record_id, "page_no": eval(page_no)}
         repo.update_pages(query, page_enriched)
 

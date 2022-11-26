@@ -132,14 +132,8 @@ class SignUp extends React.Component {
     const { classes } = this.props;
     return (
       <MuiThemeProvider theme={ThemeDefault}>
-
-        <div style={{ height: window.innerHeight }}>
-          <Grid container spacing={8} >
-            <Grid item xs={12} sm={12} lg={5} xl={5} style={{ paddingRight: "0px" }}>
-              <img src="Anuvaad.png" width="100%" height="100%" alt="" />
-            </Grid>
-            <Grid item xs={12} sm={12} lg={7} xl={7} className={classes.signUpPaper} >
-              <Typography align='center' variant='h4' className={classes.typographyHeader}>Sign Up</Typography>
+            {/* <Grid item xs={12} sm={12} lg={7} xl={7} className={classes.signUpPaper} > */}
+              <Typography align='center' variant='h3' className={classes.headingStyle}>Sign Up</Typography>
 
               <FormControl align='center' fullWidth >
                 <TextField value={this.state.firstName} id="first-name" placeholder={translate('signUp.page.label.firstName')}
@@ -182,7 +176,7 @@ class SignUp extends React.Component {
                     <Link href="#" onClick={() => {
                       window.open('/Anuvaad-TnC.html', 'T&C', `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,
                     width=500,height=500`);
-                    }} style={{ color: '#0C8AA9' }}> {translate('signUp.page.label.privacyPolicy')}</Link>
+                    }} style={{ color: 'rgba(44, 39, 153, 1)' }}> {translate('signUp.page.label.privacyPolicy')}</Link>
                   </div>}
                 />
 
@@ -193,7 +187,7 @@ class SignUp extends React.Component {
                     variant="contained" aria-label="edit" style={{
                       width: '50%', marginBottom: '2%', marginTop: '2%', borderRadius: '20px', height: '45px', textTransform: 'initial', fontWeight: '20px',
                       color: 'white',
-                      backgroundColor: this.state.termsAndCondition ? '#1ca9c9' : 'gray'
+                      backgroundColor: this.state.termsAndCondition ? '#2C2799' : 'gray'
                     }} onClick={this.handleSubmit}
                     ref={e => this.SignUpBtn = e}>
                     {translate('singUp.page.label.signUp')}
@@ -204,13 +198,12 @@ class SignUp extends React.Component {
               </FormControl>
 
               <Typography className={classes.typography1}>{translate('signUp.page.label.allReadyHaveAccount')}
-                <Link id="login" style={{ cursor: 'pointer', color: '#0C8AA9' }} href="#" onClick={() => { history.push("/") }}> {translate('signUp.page.label.logIn')}</Link></Typography>
+                <Link id="newaccount" style={{ cursor: 'pointer', color: 'rgba(44, 39, 153, 1)' }} href="#" onClick={() => {  history.push(`${process.env.PUBLIC_URL}/user/login`) }}> {translate('signUp.page.label.logIn')}</Link></Typography>
 
 
               <hr className={classes.hrTag} />
               <Typography align='center' className={classes.typographyFooter}>{translate('signUp.page.label.enterDetailsToReceiveConfirmation')}<br />{translate('signUp.page.label.clickToActivateAccount')}</Typography>
-            </Grid>
-          </Grid>
+            {/* </Grid> */}
           <div className={classes.buttonsDiv} />
           {this.state.openSnackBar &&
             <Snackbar
@@ -222,8 +215,6 @@ class SignUp extends React.Component {
               message={this.state.message}
             />
           }
-        </div>
-
       </MuiThemeProvider>
 
     );

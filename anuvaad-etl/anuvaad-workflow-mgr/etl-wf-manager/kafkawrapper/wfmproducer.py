@@ -12,6 +12,7 @@ from anuvaad_auditor.loghandler import log_exception
 log = logging.getLogger('file')
 topic_partition_map = {}
 
+
 class Producer:
 
     def __init__(self):
@@ -37,7 +38,7 @@ class Producer:
         try:
             if object_in:
                 producer.send(topic, partition=partition, value=object_in)
-                object_in["metadata"]["module"] = module_wfm_name # FOR LOGGING ONLY.
+                object_in["metadata"]["module"] = module_wfm_name  # FOR LOGGING ONLY.
                 log_info("Pushing to TOPIC: " + topic + " | PARTITION: " + str(partition), object_in)
                 return None
             producer.flush()

@@ -82,7 +82,6 @@ class TextTranslationService:
         log_info("Translation fetched from CH! Count: " + str(len(ch_res.keys())), text_translate_input)
         return text_for_nmt, list(ch_res.values())
 
-
     # Method to get body and url based on Model for interactive translation
     def get_nmt_data_interactive(self, text_translate_input, text_for_nmt):
         model = text_translate_input["input"]["model"]

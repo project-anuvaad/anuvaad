@@ -540,9 +540,13 @@ class DocumentEditor extends React.Component {
   renderProgressInformation = () => {
     return (
       <Snackbar
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         open={this.state.apiInProgress}
         message={this.state.snackBarMessage}
+        autoHideDuration={3000}
+        onClose={(e, r) => {
+          this.setState({ apiInProgress: false })
+        }}
       >
         <Alert elevation={6} variant="filled" severity="info">{this.state.snackBarMessage}</Alert>
       </Snackbar>
@@ -552,8 +556,9 @@ class DocumentEditor extends React.Component {
   renderStatusInformation = () => {
     return (
       <Snackbar
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         open={this.state.showStatus}
+        autoHideDuration={3000}
         onClose={(e, r) => {
           this.setState({ showStatus: false })
         }}
@@ -746,6 +751,7 @@ class DocumentEditor extends React.Component {
       <InfiniteScroll height={window.innerHeight - 141} style={{
         maxHeight: window.innerHeight - 141,
         overflowY: "auto",
+        paddingBottom: 141
       }}
         hasMore={(this.props.document_contents.count > this.props.document_contents.pages.length) ? true : false}
         dataLength={pages.length}
@@ -805,7 +811,7 @@ class DocumentEditor extends React.Component {
   }
   render() {
     return (
-      <div style={{ height: window.innerHeight }}>
+      <div style={{ marginTop : 5 }}>
         <div style={{ height: "50px", marginBottom: "13px" }}> <InteractiveDocToolBar docView={this.state.docView} onAction={this.handleDocumentView} onShowPreview={this.showPreview} preview={this.state.preview} /></div>
 
         {!this.state.preview ?
