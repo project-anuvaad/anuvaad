@@ -33,6 +33,17 @@ def write_to_csv(data_list,orgID,filename):
                 print(str(e))
                 pass
 
+def convert_from_ms(milliseconds):
+
+    seconds, millisecond = divmod(milliseconds,1000)
+    minutes, seconds = divmod(seconds, 60)
+    hours, minutes = divmod(minutes, 60)
+    days, hours = divmod(hours, 24)
+    # seconds = seconds + millisecond/1000
+    Total_time = f"{days} days, {hours} hours, {minutes} minutes"
+    # Total_time = str((days)+" "+"days" , (hours) +" "+"hours" , (minutes) +" "+"minutes" , (seconds) +" "+"seconds" )
+    # Total_time_spent=[str(time1[0])+'days'+' '+str(time1[1])+'hours'+' '+str(time1[2])+'minutes'+' '+str(time1[3])+'seconds'   for time1 in   total_time]
+    return Total_time
 
 
 def org_level_csv(file_save,file1,file2):
@@ -50,7 +61,8 @@ def org_level_csv(file_save,file1,file2):
         stats["ORG/HC"] = org
         stats["Total Sentences Translated"]=sub_df1["doc_sent_count"].sum()
         stats["Total Time Spent (millisecond)"]=sub_df1["total_time_spent"].sum()
-        stats["Total Time Spent (minutes)"] = (stats["Total Time Spent (millisecond)"]/(1000*60))%60
+        avg_time= stats["Total Time Spent (millisecond)"]
+        stats["Total Time Spent (D|H|M)"] = convert_from_ms(avg_time)
         bleu_scores=(sub_df2.loc[sub_df2['total_time_spent'] > 0, 'avg_sent_bleu_score']).to_list()
         if not bleu_scores:
             stats["Average Sentence Bleu Score"]= None
@@ -64,7 +76,7 @@ def org_level_csv(file_save,file1,file2):
         output.append(stats)
 
     fieldnames = ['ORG/HC','Total Documents Translated', 'Total Sentences Translated',
-     'Total Time Spent (millisecond)','Total Time Spent (minutes)',
+     'Total Time Spent (millisecond)','Total Time Spent (D|H|M)',
      'Average Sentence Bleu Score', 'Total Saved Sentences']
     with open(config.DOWNLOAD_FOLDER+'/'+file_save, 'a') as output_file:
                     dict_writer = csv.DictWriter(output_file,fieldnames=fieldnames,extrasaction='ignore')
@@ -118,7 +130,8 @@ def org_level_csv_user(file_save,file1,file2):
         stats["is_active"] = sub_df1["is_active"]
         stats["Total Sentences Translated"]=sub_df1["doc_sent_count"].sum()
         stats["Total Time Spent (millisecond)"]=sub_df1["total_time_spent"].sum()
-        stats["Total Time Spent (minutes)"] = (stats["Total Time Spent (millisecond)"]/(1000*60))%60
+        avg_time= stats["Total Time Spent (millisecond)"]
+        stats["Total Time Spent (D|H|M)"] = convert_from_ms(avg_time)
         bleu_scores=(sub_df2.loc[sub_df2['total_time_spent'] > 0, 'avg_sent_bleu_score']).to_list()
         if not bleu_scores:
             stats["Average Sentence Bleu Score"]= None
@@ -132,7 +145,7 @@ def org_level_csv_user(file_save,file1,file2):
         output.append(stats)
 
     fieldnames = ['userName','Org/HC','is_active','Total Documents Translated', 'Total Sentences Translated',
-     'Total Time Spent (millisecond)','Total Time Spent (minutes)',
+     'Total Time Spent (millisecond)','Total Time Spent (D|H|M)',
      'Average Sentence Bleu Score', 'Total Saved Sentences']
     with open(file_save, 'a') as output_file:
                     dict_writer = csv.DictWriter(output_file,fieldnames=fieldnames,extrasaction='ignore')

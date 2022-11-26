@@ -6,7 +6,7 @@ import src.utilities.app_context as app_context
 #from src.services.get_tables import get_text_table_line_df, get_text_from_table_cells
 import config,copy
 from src.utilities.request_parse import get_files, File,get_json
-from src.utilities.pdf_to_image import doc_pre_processing
+# from src.utilities.pdf_to_image import doc_pre_processing
 from src.services.ocr import text_extraction
 
 
@@ -23,8 +23,8 @@ def process_input(app_context,base_dir):
             file_properties = File(file)
             if "page_info" in file.keys():
                 page_paths = file_properties.get_pages()
-            else:
-                page_paths = doc_pre_processing(file['file']['name'],config.BASE_DIR)
+            # else:
+            #     page_paths = doc_pre_processing(file['file']['name'],config.BASE_DIR)
             
             page_res = text_extraction(file_properties,page_paths,file)
             output_files.append(page_res)

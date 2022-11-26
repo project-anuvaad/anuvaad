@@ -34,17 +34,17 @@ const PdfToDocStyles = theme => ({
     paddingTop: '80px',
     minHeight: '363px',
     height: "60px",
-    borderColor: '#1C9AB7',
+    borderColor: '#2C2799',
     backgroundColor: '#F5F9FA',
-    border: '1px dashed #1C9AB7',
-    fontColor: '#1C9AB7',
-    "& svg": { color: '#1C9AB7', },
+    border: '1px dashed #2C2799',
+    fontColor: '#2C2799',
+    "& svg": { color: '#2C2799', },
     "& p": {
       textOverflow: "ellipsis",
       whiteSpace: "nowrap",
       overflow: "hidden",
       fontSize: "19px",
-      color: '#1C9AB7',
+      color: '#2C2799',
 
     },
 

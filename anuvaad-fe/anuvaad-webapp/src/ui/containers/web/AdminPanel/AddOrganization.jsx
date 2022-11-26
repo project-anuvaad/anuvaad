@@ -221,7 +221,7 @@ class CreateUser extends React.Component {
   renderProgressInformation = () => {
     return (
       <Snackbar
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         open={this.state.apiInProgress}
         message={this.state.snackBarMessage}
       >
@@ -233,7 +233,7 @@ class CreateUser extends React.Component {
   renderStatusInformation = () => {
     return (
       <Snackbar
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         open={this.state.showStatus}
         onClose={(e, r) => {
           this.setState({ showStatus: false })
@@ -252,7 +252,7 @@ class CreateUser extends React.Component {
     return (
       <div className={classes.root}>
         <Toolbar />
-        <Typography variant="h4" className={classes.typographyHeader}>
+        <Typography className={classes.typographyHeader}>
           Add Organization
         </Typography>
         <Paper className={classes.paper}>
@@ -277,7 +277,7 @@ class CreateUser extends React.Component {
                 onClick={this.handleReset}
                 aria-label="edit"
                 className={classes.button1}
-                style={{ backgroundColor: "#1ca9c9" }}
+                style={{ backgroundColor: "#2C2799" }}
               >
                 {translate("common.page.button.reset")}
               </Button>
@@ -301,7 +301,7 @@ class CreateUser extends React.Component {
                   className={classes.button1}
                   disabled={this.state.loading}
                   style={{
-                    backgroundColor: this.state.loading ? "grey" : "#1ca9c9",
+                    backgroundColor: this.state.loading ? "grey" : "#2C2799",
                   }}
                 >
                   {this.state.loading && (

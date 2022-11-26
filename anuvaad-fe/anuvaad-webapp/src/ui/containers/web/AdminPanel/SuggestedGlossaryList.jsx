@@ -19,6 +19,8 @@ import FetchSuggestions from "../../../../flux/actions/apis/organization/fetch_g
 import DeleteSuggestedGlossary from "../../../../flux/actions/apis/organization/delete_glossary_suggestion";
 import CreateOrgGlossary from "../../../../flux/actions/apis/organization/create_org_glossary";
 import UpdateSuggestedGlossaryStatus from "../../../../flux/actions/apis/organization/update_glossary_suggestion_status";
+import DataTable from "../../../components/web/common/DataTable";
+import ConfirmBox from "../../../components/web/common/ConfirmBox";
 
 var delete_glossary = require("../../../../utils/deleteSuggestions.operation");
 
@@ -47,7 +49,9 @@ class SuggestedGlossaryList extends React.Component {
       variant: 'success',
       loadMsg: "",
       rowsToDelete: [],
-      openConfirmDialog: false
+      openConfirmDialog: false,
+      openSingleSuggestionDeleteConfirmBox: false,
+      singleDeletionArr: []
     }
   }
 
@@ -74,7 +78,7 @@ class SuggestedGlossaryList extends React.Component {
       this.setState({ loading: false })
     }
     if (prevProps.suggestedGlossaryData.count > this.props.suggestedGlossaryData.count && this.props.suggestedGlossaryData.deleted) {
-      this.state.showMessage && this.setState({ open: true, message: 'Glossary deleted successfully', variant: 'success' }, () => {
+      this.state.showMessage && this.setState({ open: true, message: 'Glossary suggestion deleted successfully', variant: 'success' }, () => {
         setTimeout(() => this.setState({ open: false, message: "", variant: "info" }), 3000)
       })
     }
@@ -99,7 +103,7 @@ class SuggestedGlossaryList extends React.Component {
 }
 
   makeDeleteSuggestionAPICall = (userIds, uuIds, deleteAll, orgIds, status, showMessage) => {
-    this.setState({ open: true, message: 'Glossary deletion in progress...', variant: 'info', openConfirmDialog: false, showMessage })
+    this.setState({ open: true, message: 'Glossary suggestion deletion in progress...', variant: 'info', openConfirmDialog: false, showMessage })
     console.log("userIds, uuIds, deleteAll, orgIds");
     console.log(userIds, uuIds, deleteAll, orgIds);
     let apiObj = new UpdateSuggestedGlossaryStatus( uuIds, status);
@@ -129,6 +133,7 @@ class SuggestedGlossaryList extends React.Component {
     console.log("dataArray", dataArray);
     // let reverseLocale = dataArray[3].split("|").reverse().join("|");
     this.makeDeleteSuggestionAPICall([], [dataArray[6]], false, [this.orgID], "Rejected", true);
+    this.setState({openSingleSuggestionDeleteConfirmBox: false, singleDeletionArr: [] })
   }
 
   handleClose = () => {
@@ -144,6 +149,20 @@ class SuggestedGlossaryList extends React.Component {
     });
 
     this.makeDeleteSuggestionAPICall([], IdArrOfSelectedRows, false, [this.orgID],  "Rejected", true);
+  }
+
+  renderSingleGlossaryConfirmBox = () => {
+    return (
+      <div style={{ textAlign: "end", marginBottom: "1rem" }}>
+        <ConfirmBox
+            open={this.state.openSingleSuggestionDeleteConfirmBox && this.state.singleDeletionArr.length > 0}
+            onClose={() => this.setState({ openSingleSuggestionDeleteConfirmBox: false })}
+            title="Delete glossary"
+            contentText={"Are you sure you want to delete ` " + this.state.singleDeletionArr[0] + " - " + this.state.singleDeletionArr[1] + " ` glossary suggestion?"}
+            onConfirm={() => this.handleDeleteSuggestion(this.state.singleDeletionArr)}
+        />
+      </div>
+    )
   }
 
 
@@ -242,6 +261,7 @@ class SuggestedGlossaryList extends React.Component {
         options: {
           sort: false,
           empty: true,
+          viewColumns: false,
           customBodyRender: (value, tableMeta, updateValue) => {
             if (tableMeta.rowData) {
               return (
@@ -260,7 +280,8 @@ class SuggestedGlossaryList extends React.Component {
                     <IconButton
                       style={{ color: "#233466", padding: "5px" }}
                       component="a"
-                      onClick={() => this.handleDeleteSuggestion(tableMeta.rowData)}
+                      onClick={()=>this.setState({singleDeletionArr: tableMeta.rowData, openSingleSuggestionDeleteConfirmBox: true})}
+                      // onClick={() => this.handleDeleteSuggestion(tableMeta.rowData)}
                     // disabled={tableMeta.rowData[5] === "Organization"}
                     >
                       <DeleteIcon />
@@ -291,7 +312,7 @@ class SuggestedGlossaryList extends React.Component {
       rowsPerPageOptions: [10],
       count: this.props.suggestedGlossaryData.count,
       filterType: "checkbox",
-      download: true,
+      download: this.props.suggestedGlossaryData.result.length > 0 ? true : false,
       print: false,
       fixedHeader: true,
       filter: false,
@@ -307,20 +328,21 @@ class SuggestedGlossaryList extends React.Component {
       }
     };
     return (
-      <div style={{ maxHeight: window.innerHeight, height: window.innerHeight, overflow: "auto" }}>
-        <div style={{ margin: "0% 3% 3% 3%", paddingTop: "7%" }}>
+      <div style={{ }}>
+        <div style={{ margin: "0% 3% 3% 3%", paddingTop: "2%" }}>
           <Header />
           {this.state.loading ?
             <Spinner />
             :
             <MuiThemeProvider theme={getMuiTheme()}>
               {/* {this.renderDeleteAllGlossaryButton()} */}
-              <MUIDataTable
+              <DataTable
                 title={translate("common.page.title.suggestion")}
                 columns={columns}
                 options={options}
                 data={this.props.suggestedGlossaryData.result}
               />
+              {this.renderSingleGlossaryConfirmBox()}
             </MuiThemeProvider>
           }
         </div>
@@ -328,7 +350,7 @@ class SuggestedGlossaryList extends React.Component {
           <Snackbar
             open={this.state.open}
             message={this.state.message}
-            anchorOrigin={{ vertical: "top", horizontal: "right" }}
+            anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
             autoHideDuration={3000}
             onClose={this.handleClose}
             variant={this.state.variant}

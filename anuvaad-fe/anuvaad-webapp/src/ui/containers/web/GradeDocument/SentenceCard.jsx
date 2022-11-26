@@ -148,7 +148,7 @@ class SentenceCard extends React.Component {
     renderNormaModeButtons = () => {
         return (
             <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
-                <Button variant="outlined" color="primary" style={{ marginRight: '10px', border: '1px solid #1C9AB7', color: "#1C9AB7" }}
+                <Button variant="outlined" color="primary" style={{ marginRight: '10px', border: '1px solid #2C2799', color: "#2C2799" }}
                     onClick={() => this.saveRating(this.state.annotationId, this.state.score)} >
                     SAVE
                 </Button>
@@ -204,7 +204,7 @@ class SentenceCard extends React.Component {
     processSnackBar = () => {
         return (
             <Snackbar
-                anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
                 open={this.state.open}
                 autoHideDuration={3000}
                 onClose={this.handleClose}

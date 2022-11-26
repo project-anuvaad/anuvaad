@@ -161,19 +161,26 @@ def FetchJudgementCount():
             file_name1 = str(filename)[:-10]+'_'+str(role)+'_JUD_STATS1'+'.csv'
             file_name2 = str(filename)[:-10]+'_'+str(role)+'_JUD_STATS2'+'.csv'
             file_save = str(filename)[:-10]+'_'+str(role)+'_JUD_Org_level_Statistics.csv'
-
+        if body.get('start_date') and body.get("end_date"):
+            from_date = datetime.strptime(body['start_date'], '%Y-%m-%d')
+            end_date = datetime.strptime(body['end_date'], '%Y-%m-%d')
+        else:
+            from_date = datetime.strptime("2000-01-01", '%Y-%m-%d')
+            now = datetime.now()
+            date_time = now.strftime("%Y-%m-%d")
+            end_date  = datetime.strptime(str(date_time),'%Y-%m-%d')
         try:
             for doc in user_docs:
                 log_info(f'fetching details for {doc["_id"]} users',MODULE_CONTEXT)
                 for user in doc["users"]:
-                    ch_docs       = ch_collection.aggregate([{ '$match': {'$and': [{"created_by": user}, {'data_type':'text_blocks'}]} },
+                    ch_docs       = ch_collection.aggregate([{ '$match':  {'$and': [{"created_by": user,"created_on":{"$gte":from_date,"$lte":end_date}}, {'data_type':'text_blocks'}]} },
                                 { '$unwind': "$data.tokenized_sentences" },
                                     { "$group": {
                                     "_id": "$job_id",
                                     "doc_sent_count": { "$sum": 1 },
                                         "total_time_spent":{"$sum": "$data.tokenized_sentences.time_spent_ms"}}}])
 
-                    saved_docs       = ch_collection.aggregate([{ '$match': {'$and': [{"created_by": user}, {'data_type':'text_blocks'}]} },
+                    saved_docs       = ch_collection.aggregate([{ '$match': {'$and': [{"created_by": user,"created_on":{"$gte":from_date,"$lte":end_date}}, {'data_type':'text_blocks'}]} },
                                             { '$unwind': "$data.tokenized_sentences" },
                                             { '$match': {"data.tokenized_sentences.save":True}},
                                             { "$group": {
@@ -248,6 +255,14 @@ def FetchJudgementCount_user_wise():
             file_name1 = str(filename)[:-10]+'_USER_WISE_JUD_STATS1'+'.csv'
             file_name2 = str(filename)[:-10]+'_USER_WISE_JUD_STATS2'+'.csv'
             file_save = str(filename)[:-10]+'_USER_WISE_JUD_Org_level_Statistics.csv'
+        if body.get('start_date') and body.get("end_date"):
+            from_date = datetime.strptime(body['start_date'], '%Y-%m-%d')
+            end_date = datetime.strptime(body['end_date'], '%Y-%m-%d')
+        else:
+            from_date = datetime.strptime("2000-01-01", '%Y-%m-%d')
+            now = datetime.now()
+            date_time = now.strftime("%Y-%m-%d")
+            end_date  = datetime.strptime(str(date_time),'%Y-%m-%d')
         # else:
         #     role = body['role']
         #     email= body['email']
@@ -260,7 +275,7 @@ def FetchJudgementCount_user_wise():
         try:
             for doc in user_docs:
                 log_info(f'fetching details for {doc} userID',MODULE_CONTEXT)
-                ch_docs       = ch_collection.aggregate([{ '$match': {'$and': [{"created_by": str(doc['userID'])}, {'data_type':'text_blocks'}]} },
+                ch_docs       = ch_collection.aggregate([{ '$match': {'$and': [{"created_by": str(doc['userID']),"created_on":{"$gte":from_date,"$lte":end_date}}, {'data_type':'text_blocks'}]} },
                             { '$unwind': "$data.tokenized_sentences" },
                              { "$group": {
                                 "_id": "$job_id",
@@ -275,7 +290,7 @@ def FetchJudgementCount_user_wise():
                                 "is_active":str(doc['is_active']),
                                 "userId":str(doc['userID'])}}])
 
-                saved_docs       = ch_collection.aggregate([{ '$match': {'$and': [{"created_by": str(doc['userID'])}, {'data_type':'text_blocks'}]} },
+                saved_docs       = ch_collection.aggregate([{ '$match': {'$and': [{"created_by": str(doc['userID']),"created_on":{"$gte":from_date,"$lte":end_date}}, {'data_type':'text_blocks'}]} },
                             { '$unwind': "$data.tokenized_sentences" },
                             { '$match': {"data.tokenized_sentences.save":True}},
                              { "$group": {

@@ -118,6 +118,20 @@ class UserManagementModel(object):
                 log_info("Fetching all verified users from database", MODULE_CONTEXT)
                 out = collections.find({"is_verified":True},exclude)
                 record_count=out.count()
+            elif not user_ids and not user_names and  role_codes and  org_codes :
+                log_info("Fetching verified users from specific org and rolecodes", MODULE_CONTEXT)
+                out = collections.find(
+                {'$and': [
+                    {'roles.roleCode': {'$in': role_codes},'is_verified': True},
+                    {'orgID': {'$in': org_codes},'is_verified': True}
+                ]}, exclude)
+                record_count=out.count()          
+                result = []
+                for record in out:
+                    result.append(record)
+                if not result:
+                    return None
+                return result,record_count
             #fetching users with pagination(skip & limit) when skip_pagination != True
             elif not user_ids and not user_names and not role_codes and not org_codes :
                 log_info("Fetching verified users from database with pagination property", MODULE_CONTEXT)
