@@ -47,79 +47,31 @@ import SuggestedGlossaryList from "./ui/containers/web/AdminPanel/SuggestedGloss
 import MySuggestedGlossary from "./ui/containers/web/UserGlossary/MySuggestedGlossary";
 import UserManagement from "./ui/containers/web/User/UserManagement";
 
-const PrivateRoute = ({ headerAttribute: headerAttribute, component: Component, userRoles, title, drawer, showLogo, forDemo, dontShowLoader, dontShowHeader, currentMenu, authenticate, ...rest }) => {
-  const currentUserRole = localStorage.getItem("roles");
-  let indexComponent;
-  let indexTitle;
-  let indexRedirectLink;
-
-  if (currentUserRole && (currentUserRole === "TRANSLATOR" || currentUserRole === "ANNOTATOR")) {
-    indexComponent = ViewDocument;
-    indexTitle = "Document Translate";
-    indexRedirectLink = "view-document"
-  } else {
-    indexComponent = UserDetails;
-    indexTitle = "User Details";
-    indexRedirectLink = "user-details"
-  }
-
-  const currentPath = window.location.pathname;
-  return <Route
+const PrivateRoute = ({ headerAttribute: headerAttribute, component: Component, userRoles, title, drawer, showLogo, forDemo, dontShowLoader, dontShowHeader, currentMenu, authenticate, ...rest }) => (
+  <Route
     {...rest}
-    render={props => {
-      if ((authenticate && authenticate(userRoles)) || (currentUserRole && indexTitle)) {
-        if (currentPath == "/") {
-          return <Layout
-            dontShowLoader={dontShowLoader}
-            currentMenu={indexRedirectLink}
-            showLogo={showLogo}
-            component={indexComponent}
-            headerAttribute={headerAttribute}
-            title={indexTitle}
-            forDemo={forDemo}
-            drawer={drawer}
-            dontShowHeader={dontShowHeader}
-            {...props}
-          />
-        } else {
-          return <Layout
-            dontShowLoader={dontShowLoader}
-            currentMenu={currentMenu}
-            showLogo={showLogo}
-            component={Component}
-            headerAttribute={headerAttribute}
-            title={title}
-            forDemo={forDemo}
-            drawer={drawer}
-            dontShowHeader={dontShowHeader}
-            {...props}
-          />
-        }
-      } else {
-        return <Redirect to={`${process.env.PUBLIC_URL}/logout`} />
-      }
-    }
+    render={props =>
 
-      // authenticate(userRoles) ? (
+      authenticate(userRoles) ? (
 
-      //   <Layout
-      //     dontShowLoader={dontShowLoader}
-      //     currentMenu={currentMenu}
-      //     showLogo={showLogo}
-      //     component={Component}
-      //     headerAttribute={headerAttribute}
-      //     title={title}
-      //     forDemo={forDemo}
-      //     drawer={drawer}
-      //     dontShowHeader={dontShowHeader}
-      //     {...props}
-      //   />
-      // ) : (
-      //   <Redirect to={`${process.env.PUBLIC_URL}/logout`} />
-      // )
+        <Layout
+          dontShowLoader={dontShowLoader}
+          currentMenu={currentMenu}
+          showLogo={showLogo}
+          component={Component}
+          headerAttribute={headerAttribute}
+          title={title}
+          forDemo={forDemo}
+          drawer={drawer}
+          dontShowHeader={dontShowHeader}
+          {...props}
+        />
+      ) : (
+        <Redirect to={`${process.env.PUBLIC_URL}/logout`} />
+      )
     }
   />
-};
+);
 
 class AppRoutes extends React.Component {
 
@@ -178,11 +130,6 @@ class AppRoutes extends React.Component {
               component={UserProfile}
               authenticate={this.authenticateUser}
               currentMenu="profile"
-            />
-
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/`}
-              exact
             />
 
             <PrivateRoute
@@ -287,23 +234,6 @@ class AppRoutes extends React.Component {
               currentMenu="view-document"
               dontShowHeader={false}
             />
-
-            {/* Index route for Translator and Annotator start */}
-
-            {/* <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/`}
-              dontShowLoader
-              exact
-              title={"Document Translate"}
-              userRoles={["TRANSLATOR", "ANNOTATOR"]}
-              component={ViewDocument}
-              authenticate={this.authenticateUser}
-              currentMenu="view-document"
-              dontShowHeader={false}
-            /> */}
-
-            {/* Index route for Translator and Annotator end */}
-
             <PrivateRoute
               path={`${process.env.PUBLIC_URL}/grading-sentence-card/:taskId`}
               dontShowLoader
@@ -357,32 +287,6 @@ class AppRoutes extends React.Component {
               dontShowHeader={false}
             />
 
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/`}
-              dontShowLoader
-              title={"User Details"}
-              userRoles={["ADMIN", "SUPERADMIN"]}
-              component={UserDetails}
-              authenticate={this.authenticateUser}
-              currentMenu="user-details"
-              dontShowHeader={false}
-            />
-
-            {/* Index route for Admin, super admin start */}
-
-            {/* <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/`}
-              dontShowLoader
-              exact
-              title={"User Details"}
-              userRoles={["ADMIN", "SUPERADMIN"]}
-              component={UserDetails}
-              authenticate={this.authenticateUser}
-              currentMenu="user-details"
-              dontShowHeader={false}
-            /> */}
-
-            {/* Index route for Admin, super admin end */}
 
             <PrivateRoute
               path={`${process.env.PUBLIC_URL}/add-organization`}
