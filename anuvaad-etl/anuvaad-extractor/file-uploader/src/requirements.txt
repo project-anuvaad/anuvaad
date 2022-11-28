@@ -1,8 +1,8 @@
 pip==20.1
 kafka-python==2.0.1
-flask==1.1.2
+flask==2.1.0
 flask-cors==3.0.8
-flask-restful==0.3.8
+flask-restful==0.3.9
 anuvaad-em==0.0.2
 anuvaad-auditor==0.1.6
 python-magic==0.4.18
