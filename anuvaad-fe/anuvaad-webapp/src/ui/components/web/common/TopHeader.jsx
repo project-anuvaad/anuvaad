@@ -23,6 +23,7 @@ import { Link as RouterLink } from "react-router-dom";
 import AnuvaadLogo from "../../../../assets/HeaderTransparentLogo.png";
 import configs from "../../../../configs/configs";
 import headerMenuConfig from "../../../../configs/headerMenuConfig";
+import history from "../../../../web.history";
 
 const useStyles = makeStyles((theme) => ({
     header: {
@@ -37,7 +38,8 @@ const useStyles = makeStyles((theme) => ({
     },
     logo: {
         // height: "2rem",
-        width: "6rem"
+        width: "6rem",
+        cursor: "pointer"
     },
     // ".MuiButton-label":{
     //     letterSpacing: "0.5px"
@@ -344,6 +346,7 @@ export default function TopHeader(props) {
                     src={headerLogoImg} 
                     className={logo}
                     ref={logoRef}
+                    onClick={()=>history.push(`${process.env.PUBLIC_URL}/`)}
                     onError={(({currentTarget})=> {
                         currentTarget.onerror = null;
                         if(!currentTarget.src.includes(AnuvaadLogo)){
