@@ -94,7 +94,7 @@ class FileUploader(Resource):
                                      filename=filename, file_real_name=file_real_name + file_extension, 
                                      created_on=datetime.now())
                 userfile.save()
-                log_error("SUCCESS: File Uploaded -- " + str(f.filename), None)
+                log_info("SUCCESS: File Uploaded -- " + str(f.filename), None)
                 res = CustomResponse(Status.SUCCESS.value, filename)
                 return res.getres()
             else:
@@ -102,7 +102,7 @@ class FileUploader(Resource):
                 res = CustomResponse(Status.ERROR_UNSUPPORTED_FILE.value, None)
                 return res.getresjson(), 400
         except Exception as e:
-            log_exception("Exception while uploading the file: " + str(e), None)
+            log_exception("Exception while uploading the file: ", None, e)
             res = CustomResponse(Status.FAILURE.value, None)
             return res.getresjson(), 500
 
