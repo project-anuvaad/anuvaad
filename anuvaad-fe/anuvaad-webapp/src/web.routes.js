@@ -45,6 +45,7 @@ import UservEventView from './ui/containers/web/AdminPanel/UserEventView';
 import OrganizationGlossary from "./ui/containers/web/AdminPanel/OrganizationGlossary";
 import SuggestedGlossaryList from "./ui/containers/web/AdminPanel/SuggestedGlossaryList";
 import MySuggestedGlossary from "./ui/containers/web/UserGlossary/MySuggestedGlossary";
+import UserManagement from "./ui/containers/web/User/UserManagement";
 
 const PrivateRoute = ({ headerAttribute: headerAttribute, component: Component, userRoles, title, drawer, showLogo, forDemo, dontShowLoader, dontShowHeader, currentMenu, authenticate, ...rest }) => (
   <Route
@@ -108,17 +109,20 @@ class AppRoutes extends React.Component {
       <Router history={history} basename="/dev">
         <div>
           <Switch>
-            <Route exact path={`${process.env.PUBLIC_URL}/`} component={Login} />
+            {/* UserManagement */}
+            <Route exact path={`${process.env.PUBLIC_URL}/user/:page`} component={UserManagement} />
+            <Route path={`${process.env.PUBLIC_URL}/user/:page/:uid/:rid`} component={UserManagement} />
+            {/* <Route exact path={`${process.env.PUBLIC_URL}/user/:page`} component={Login} /> */}
             {/* <Route exact path={`${process.env.PUBLIC_URL}/callback`} component={Callback} /> */}
             <Route exact path={`${process.env.PUBLIC_URL}/logout`} component={Logout} />
-            <Route
+            {/* <Route
               exact
               path={`${process.env.PUBLIC_URL}/signup`}
               title="Sign up"
               component={Signup}
               dontShowHeader={true}
               currentMenu="signup"
-            />
+            /> */}
 
             <PrivateRoute
               path={`${process.env.PUBLIC_URL}/profile`}
@@ -136,7 +140,7 @@ class AppRoutes extends React.Component {
               currentMenu="instant-translate"
             />
 
-            <PrivateRoute
+            {/* <PrivateRoute
               path={`${process.env.PUBLIC_URL}/activate/:uid/:rid`}
               title="Activate"
               authenticate={() => true}
@@ -144,7 +148,7 @@ class AppRoutes extends React.Component {
               drawer
               dontShowHeader={true}
               currentMenu="activate"
-            />
+            /> */}
 
             <PrivateRoute
               path={`${process.env.PUBLIC_URL}/interactive-document/:jobid/:inputfileid/:modelId/:filename/:workflow/:source_language_code/:target_language_code`}
@@ -201,7 +205,7 @@ class AppRoutes extends React.Component {
 
             />
 
-            <PrivateRoute
+            {/* <PrivateRoute
               path={`${process.env.PUBLIC_URL}/set-password/:uid/:rid`}
               title="Set Password"
               authenticate={() => true}
@@ -209,7 +213,7 @@ class AppRoutes extends React.Component {
               drawer
               dontShowHeader={true}
               currentMenu="set-password"
-            />
+            /> */}
 
             {/* <PrivateRoute
               path={`${process.env.PUBLIC_URL}/interactive-translate`}
