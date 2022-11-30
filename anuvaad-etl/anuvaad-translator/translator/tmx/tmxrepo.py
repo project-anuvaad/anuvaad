@@ -143,7 +143,8 @@ class TMXRepository:
 
     def suggestion_box_search(self, query, exclude):
         col = self.instantiate_mongo_suggestion()
-        res = col.find(query, exclude)
+        #Sort Suggestion Box Responses in order of Status (Approved, Pending and Rejected) in descending order of timestamp under each status.
+        res = col.find(query, exclude).sort([("status",pymongo.ASCENDING),("updatedOn",pymongo.DESCENDING)])
         result = []
         for record in res:
             result.append(record)
