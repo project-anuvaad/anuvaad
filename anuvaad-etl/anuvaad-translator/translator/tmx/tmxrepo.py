@@ -49,6 +49,8 @@ class TMXRepository:
     def upsert(self, key, value):
         try:
             client = self.get_redis_instance()
+            #log_info(f"Key to TMX DB: {key}",None)
+            #log_info(f"Value to TMX DB: {value}",None)
             client.set(key, json.dumps(value))
             return 1
         except Exception as e:
