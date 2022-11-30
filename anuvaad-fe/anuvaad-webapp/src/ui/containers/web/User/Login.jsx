@@ -27,6 +27,7 @@ import CustomCard from "../../../components/web/common/Card";
 import Anuvaanlogo from "../../../../assets/Anuvaanlogo.png";
 import UpdatePassword from "./UpdatePassword";
 import SignUp from "./SignUp";
+import CircularProgressWithLabel from "../../../components/web/common/CircularLoader";
 
 class Login extends React.Component {
   constructor(props) {
@@ -95,6 +96,7 @@ class Login extends React.Component {
           let resData = rsp_data && rsp_data.data;
           localStorage.setItem("token", resData.token);
           this.fetchUserProfileDetails(resData.token);
+          this.setState({ error: false, loading: false });
         }
       })
       .catch((error) => {
@@ -355,6 +357,7 @@ class Login extends React.Component {
     return (
       <MuiThemeProvider theme={ThemeDefault}>
         <Grid container>
+          {this.state.loading && <CircularProgressWithLabel value={100} />}
           {/* <Grid
             item
             xs={12}

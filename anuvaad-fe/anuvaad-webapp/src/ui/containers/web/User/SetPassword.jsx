@@ -93,7 +93,7 @@ class SetPassword extends React.Component {
                                 variant="contained" aria-label="edit" style={{
                                     width: '50%', marginTop: '1%', borderRadius: "20px 20px 20px 20px", height: '45px',
                                     backgroundColor: this.state.confirmPassword && !this.state.loading ? '#2C2799' : 'gray', color: 'white',
-                                }} onClick={()=>this.handleSubmit.bind(this)}>
+                                }} onClick={this.handleSubmit.bind(this)}>
                                 {this.state.loading && <CircularProgress size={24} className={'success'} className={classes.buttonProgress} />}
                                 Create Password
                                 </Button>
