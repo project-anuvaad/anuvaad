@@ -109,10 +109,10 @@ class TMXService:
                         repo.upsert(tmx_record["hash"], tmx_record)
             self.push_tmx_metadata(tmx_input, None)
             log_info("Translations pushed to TMX!", None)
-            return {"message": "created", "status": "SUCCESS"}
+            return {"message": "Glossary entry created", "status": "SUCCESS"}
         except Exception as e:
             log_exception("Exception while pushing to TMX: " + str(e), None, e)
-            return {"message": "creation failed", "status": "FAILED"}
+            return {"message": "Glossary entry creation failed", "status": "FAILED"}
 
     # Method to push tmx related metadata
     def push_tmx_metadata(self, tmx_record, file_path):
