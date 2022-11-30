@@ -15,6 +15,7 @@ const ConfirmBox = (props) => {
             onClose={() => onClose()}
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
+            PaperProps={{elevation: 0}}
             {...props}
         >
             <DialogTitle id="alert-dialog-title">{title}</DialogTitle>

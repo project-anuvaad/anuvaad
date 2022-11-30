@@ -12,6 +12,7 @@ import NewCorpusStyle from "../../../styles/web/Newcorpus";
 import Header from './SuggestedGlossaryListHeader';
 import APITransport from "../../../../flux/actions/apitransport/apitransport";
 import DeleteIcon from "@material-ui/icons/Delete";
+import CloseIcon from '@material-ui/icons/Close';
 import CheckIcon from '@material-ui/icons/Check';
 import Spinner from "../../../components/web/common/Spinner";
 import Snackbar from "../../../components/web/common/Snackbar";
@@ -276,7 +277,7 @@ class SuggestedGlossaryList extends React.Component {
                       <CheckIcon />
                     </IconButton>
                   </Tooltip>
-                  <Tooltip title="Delete Glossary" placement="left">
+                  <Tooltip title="Reject Glossary" placement="left">
                     <IconButton
                       style={{ color: "#233466", padding: "5px" }}
                       component="a"
@@ -284,7 +285,7 @@ class SuggestedGlossaryList extends React.Component {
                       // onClick={() => this.handleDeleteSuggestion(tableMeta.rowData)}
                     // disabled={tableMeta.rowData[5] === "Organization"}
                     >
-                      <DeleteIcon />
+                      <CloseIcon />
                     </IconButton>
                   </Tooltip>
                 </div>
