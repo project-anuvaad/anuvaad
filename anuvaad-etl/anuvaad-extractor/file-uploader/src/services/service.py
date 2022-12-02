@@ -9,9 +9,10 @@ from pathlib import Path
 
 from datetime import datetime
 import PyPDF2
-
+import subprocess
 from models.user_files import UserFiles
 from PyPDF2 import PdfFileReader, PdfFileWriter
+# from resources.file_handler import FileUploader
 # from resources.file_handler import FileUploader
 
 def is_file_empty(file_bfr, file_path):
@@ -39,15 +40,36 @@ def is_file_empty(file_bfr, file_path):
 #                             filename=filename, file_real_name=file_real_name + file_extension,
 #                             created_on=datetime.now())
 
+
 def page_restrictions_pdf(filename):
     # file = open(config.download_folder + filename) 
-    file = open(config.download_folder +'/'+ filename, "rb")
+    filepath = config.download_folder
+    file = open(filepath +'/'+ filename, "rb")
     pdfReader = PyPDF2.PdfFileReader(file)
     page_number = pdfReader.numPages
     return page_number
 
-# def upload_per_day(filename):
+def upload_doc(filename):
+     # '/home/test/Downloads/Canals on Mars.docx'
+    filepath = config.download_folder
+    file_Ext = filename.split('.')[1]
+    # filename = filename.split('.')[0]
+    # print('test:6',file_Ext)
+    args = ["libreoffice", '--headless', '--convert-to', 'pdf', '--outdir', filepath,
+                    filepath+'/'+filename]
+    s = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    # print("test5:",s)
+    filename = filename.split('.')[0]
+    filename = filename+'.pdf'
+    # print('test7:',filename)
+    file = open(filepath +'/'+ filename, "rb")
+    # print(file)
+    pdfReader = PyPDF2.PdfFileReader(file)
+    page_number = pdfReader.numPages
+    return page_number
     
+    
+    # return (filepath, filename)
 
 ## this function is to reduce the number of pages. currently not in use
 def reduce_page(filenames,filepath,file_extension):

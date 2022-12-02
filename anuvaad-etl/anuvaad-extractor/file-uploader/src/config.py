@@ -34,4 +34,4 @@ MONGO_DB = os.environ.get(MONGO_DB_IDENTIFIER, DEFAULT_MONGO_DB_IDENTIFIER)
 
 # Application configuration
 MAX_UPLOAD_SIZE = os.environ.get('MAX_FILE_UPLOAD_SIZE', 100)
-page_limit = 200
+page_limit = 80
