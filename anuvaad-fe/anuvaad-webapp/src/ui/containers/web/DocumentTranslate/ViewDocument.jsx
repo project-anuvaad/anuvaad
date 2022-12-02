@@ -755,6 +755,7 @@ class ViewDocument extends React.Component {
               <TableRow>
                 <TableCell colSpan={12}>
                   <div style={{ textAlign: "end", justifyContent: "space-evenly" }}>
+                  <Typography variant="caption" style={{ fontSize: "0.9rem", fontWeight: "600", float: 'left',padding: '10px'}}>Total Documents - <b>{this.props.job_details.count}</b></Typography>
                     <Typography variant="caption" style={{ fontSize: "0.9rem", fontWeight: "600" }}>Page No. - </Typography>
                     <TextField
                       type="number"
@@ -789,7 +790,7 @@ class ViewDocument extends React.Component {
                       disabled={this.state.currentPageIndex == 0}>
                       <ChevronLeftIcon />
                     </IconButton>
-                    <Typography variant="caption" style={{ fontSize: "0.9rem", fontWeight: "600" }}> {parseInt(this.state.currentPageIndex + 1)} of {parseInt(totalPageCount)} </Typography>
+                    <Typography variant="caption" style={{ fontSize: "0.9rem", fontWeight: "600" }}>Page {parseInt(this.state.currentPageIndex + 1)} of {parseInt(totalPageCount)} </Typography>
                     <IconButton
                       onClick={() => {
                         this.setState({ currentPageIndex: this.state.currentPageIndex + 1 })
