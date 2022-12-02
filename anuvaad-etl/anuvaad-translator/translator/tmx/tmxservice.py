@@ -1,7 +1,7 @@
 import hashlib
 import json
 import time
-
+from datetime import datetime
 import uuid
 import xlrd
 from anuvaad_auditor.loghandler import log_exception, log_info
@@ -79,6 +79,7 @@ class TMXService:
             for sentence in tmx_input["sentences"]:
                 tmx_records = []
                 sentence_types, i = self.fetch_diff_flavors_of_sentence(sentence["src"]), 0
+                current_time = datetime.now().strftime('%s')
                 for sent in sentence_types:
                     tmx_record_pair = {"src": sent, "locale": sentence["locale"], "nmt_tgt": [],
                                        "user_tgt": sentence["tgt"], "context": tmx_input["context"]}
@@ -88,6 +89,7 @@ class TMXService:
                         tmx_record_pair["orgID"] = tmx_input["orgID"]
                     if i == 0:
                         tmx_record_pair["original"] = True
+                    tmx_record_pair['timestamp'] = current_time
                     tmx_records.append(tmx_record_pair)
                     i += 1
                 reverse_locale_array = str(sentence["locale"]).split("|")
@@ -98,6 +100,7 @@ class TMXService:
                     tmx_record_reverse_pair["userID"] = tmx_input["userID"]
                 if 'orgID' in tmx_input.keys():
                     tmx_record_reverse_pair["orgID"] = tmx_input["orgID"]
+                tmx_record_reverse_pair['timestamp'] = current_time
                 tmx_records.append(tmx_record_reverse_pair)
                 for tmx_record in tmx_records:
                     hash_dict = self.get_hash_key(tmx_record)
@@ -106,10 +109,10 @@ class TMXService:
                         repo.upsert(tmx_record["hash"], tmx_record)
             self.push_tmx_metadata(tmx_input, None)
             log_info("Translations pushed to TMX!", None)
-            return {"message": "created", "status": "SUCCESS"}
+            return {"message": "Glossary entry created", "status": "SUCCESS"}
         except Exception as e:
             log_exception("Exception while pushing to TMX: " + str(e), None, e)
-            return {"message": "creation failed", "status": "FAILED"}
+            return {"message": "Glossary entry creation failed", "status": "FAILED"}
 
     # Method to push tmx related metadata
     def push_tmx_metadata(self, tmx_record, file_path):
@@ -415,6 +418,14 @@ class TMXService:
         else:
             return tgt, tmx_replacement
 
+
+    def sort_redis_records_timestamp(self,record):
+        if 'timestamp' in record.keys():
+            return eval(record['timestamp'])
+        else:
+            return 0
+
+    
     # Method to fetch all keys from the redis db
     def get_tmx_data(self, req):
         log_info(f"Searching TMX for: {req}", None)
@@ -450,7 +461,8 @@ class TMXService:
                         log_info(f'No TMX entries found with the original key set to True', None)
                         redis_records = []
             log_info(f'Count of final TMX to be returned: {len(redis_records)}', None)
-            return redis_records
+            sorted_redis_records = sorted(redis_records, key=self.sort_redis_records_timestamp, reverse=True)
+            return sorted_redis_records
         except Exception as e:
             log_exception("Exception while returning TMX data: {}".format(e), None, None)
             return []

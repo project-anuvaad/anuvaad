@@ -110,4 +110,5 @@ log_msg_start = " process started."
 log_msg_end = " process ended."
 log_msg_error = " has encountered an exception, job ended."
 
-
+#Order of Suggestion Box Glossary to be shown
+suggestion_box_order={"Pending":0, "Approved":1, "Rejected":2}
