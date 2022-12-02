@@ -17,7 +17,7 @@ DATA_OUTPUT_DIR  = os.environ.get('DOC_EXPORTER_OUTPUT_FOLDER','upload')
 
 
 # internal url
-CONTENT_HANDLER_ENDPOINT    = os.environ.get('CONTENT_HANDLER_SERVER_URL', 'http://gateway_anuvaad-content-handler:5001')
+CONTENT_HANDLER_ENDPOINT    = os.environ.get('CONTENT_HANDLER_SERVER_URL', 'http://gateway_anuvaad-content-handler:5001/')
 FILE_CONVERTER_ENDPOINT     = os.environ.get('FILE_CONVERTER_SERVER_URL', 'http://gateway_anuvaad-file-converter:5001/')
 
 
