@@ -695,6 +695,7 @@ class ViewDocumentDigitization extends React.Component {
                             <TableRow>
                                 <TableCell colSpan={12}>
                                     <div style={{ textAlign: "end", justifyContent: "space-evenly" }}>
+                                    <Typography variant="caption" style={{ fontSize: "0.9rem", fontWeight: "600", float: 'left',padding: '10px'}}>Total Documents - <b>{this.props.digitizeddocument.count}</b></Typography>
                                         <Typography variant="caption" style={{ fontSize: "0.9rem", fontWeight: "600" }}>Page No. - </Typography>
                                         <TextField
                                             type="number"
