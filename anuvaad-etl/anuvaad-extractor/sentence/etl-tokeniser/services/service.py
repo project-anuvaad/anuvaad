@@ -112,7 +112,7 @@ class Tokenisation(object):
     # precleaning before tokenisation
     def remove_extra_spaces(self,text):
         text = text.strip()
-        text = text.replace(' . ','.')
+        text = text.replace(' . ','. ')
         text = text.replace("\\", '')
         text = re.sub('\u200d|\u200c|\n|\r\n', '', text)
         text = re.sub('[\s]{1,}', ' ', text)
