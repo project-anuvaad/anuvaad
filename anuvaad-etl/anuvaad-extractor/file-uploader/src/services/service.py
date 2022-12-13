@@ -49,7 +49,7 @@ def page_restrictions_pdf(filename):
     page_number = pdfReader.numPages
     return page_number
 
-def upload_doc(filename):
+def upload_doc(filename, timeout=None):
      # '/home/test/Downloads/Canals on Mars.docx'
     filepath = config.download_folder
     file_Ext = filename.split('.')[1]
@@ -57,7 +57,7 @@ def upload_doc(filename):
     # print('test:6',file_Ext)
     args = ["libreoffice", '--headless', '--convert-to', 'pdf', '--outdir', filepath,
                     filepath+'/'+filename]
-    s = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    s = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=timeout)
     # print("test5:",s)
     filename = filename.split('.')[0]
     filename = filename+'.pdf'

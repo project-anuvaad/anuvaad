@@ -83,7 +83,7 @@ class FileUploader(Resource):
                 #print(file_extension)
                 log_info(f"Test 4: file_extension = {allowed_file_extension}", None)
                 if allowed_file_extension == 'docx':
-                    page = upload_doc(filename)
+                    page = upload_doc(filename,timeout=60)
                     # print("test8:", filepath)
                     remove_pdf_ext = filepath.split('.')[0]
                     filepath = remove_pdf_ext + '.pdf'
