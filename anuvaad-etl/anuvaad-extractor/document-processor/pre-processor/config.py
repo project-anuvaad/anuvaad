@@ -2,12 +2,12 @@ import logging
 import os
 import time
 
-DEBUG = True
+DEBUG = False
 API_URL_PREFIX = "/anuvaad/anuvaad-etl/pre-processor"
 HOST = '0.0.0.0'
 PORT = 5002
 
-ENABLE_CORS = False
+ENABLE_CORS = True
 
 # folders and file path
 download_folder = 'upload'
