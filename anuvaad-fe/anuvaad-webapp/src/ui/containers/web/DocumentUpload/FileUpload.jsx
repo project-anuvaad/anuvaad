@@ -40,19 +40,19 @@ const theme = createMuiTheme({
         width: "98%",
         minHeight: "320px",
         height: "85%",
-        borderColor: "#1C9AB7",
+        borderColor: "#2C2799",
         backgroundColor: "#F5F9FA",
-        border: "1px dashed #1C9AB7",
-        fontColor: "#1C9AB7",
+        border: "1px dashed #2C2799",
+        fontColor: "#2C2799",
         marginTop: "3%",
         marginLeft: "1%",
-        "& svg": { color: "#1C9AB7" },
+        "& svg": { color: "#2C2799" },
         "& p": {
           textOverflow: "ellipsis",
           whiteSpace: "nowrap",
           overflow: "hidden",
           fontSize: "19px",
-          color: "#1C9AB7",
+          color: "#2C2799",
         },
       },
     },
@@ -406,7 +406,14 @@ class PdfUpload extends Component {
     return (
       <Grid item xs={12} sm={12} lg={12} xl={12} style={{ marginTop: "3%" }}>
         <Grid item xs={12} sm={12} lg={12} xl={12}>
-          <Typography value="" variant="h5">
+          <Typography 
+            style={{
+              fontSize: "0.9rem",
+              fontWeight: "600",
+              fontFamily: "Roboto",
+              marginBottom: 2
+            }}
+          >
             {translate("common.page.label.sourceLang")}{" "}
           </Typography>
         </Grid>
@@ -430,6 +437,7 @@ class PdfUpload extends Component {
               <MenuItem
                 id={lang.language_name}
                 key={lang.language_code}
+                style={{fontSize: "16px", fontFamily: "Roboto"}}
                 value={lang.language_code + ""}
               >
                 {lang.language_name}
@@ -447,7 +455,14 @@ class PdfUpload extends Component {
     return (
       <Grid item xs={12} sm={12} lg={12} xl={12}>
         <Grid item xs={12} sm={12} lg={12} xl={12}>
-          <Typography value="" variant="h5">
+          <Typography 
+            style={{
+              fontSize: "0.9rem",
+              fontWeight: "600",
+              fontFamily: "Roboto",
+              marginBottom: 2
+            }}
+          >
             {translate("common.page.label.targetLang")}&nbsp;
           </Typography>
         </Grid>
@@ -472,6 +487,7 @@ class PdfUpload extends Component {
               <MenuItem
                 id={lang.language_name}
                 key={lang.language_code}
+                style={{fontSize: "16px", fontFamily: "Roboto"}}
                 value={lang.language_code + ""}
               >
                 {lang.language_name}
@@ -486,24 +502,23 @@ class PdfUpload extends Component {
   render() {
     const { classes } = this.props;
     return (
-      <div style={{ height: window.innerHeight }}>
+      <div style={{  }}>
         <Toolbar />
 
-        <div className={classes.div}>
+        <div className={classes.div} style={{paddingTop: "2%", fontSize: "19px", fontWeight: "500"}}>
           <Typography
-            value=""
-            variant="h4"
+            // variant="h4"
             className={classes.typographyHeader}
           >
             {this.state.uploadType ? "Document Translate" : "Data Collection"}
           </Typography>
           <br />
           {this.state.uploadType ? (
-            <Typography variant="h6" className={classes.note}>
+            <Typography variant="subtitle1" style={{fontSize: "1rem"}} className={classes.note}>
               {translate("pdf_upload.page.label.uploadMessage")}
             </Typography>
           ) : (
-            <Typography className={classes.typographySubHeader}>
+            <Typography variant="subtitle1" style={{fontSize: "1rem"}} className={classes.typographySubHeader}>
               "Upload file that you want to collect data."
             </Typography>
           )}
@@ -548,7 +563,14 @@ class PdfUpload extends Component {
 
                 <Grid item xs={12} sm={12} lg={12} xl={12}>
                   <Grid item xs={12} sm={12} lg={12} xl={12}>
-                    <Typography variant="h5">Enter File Description</Typography>
+                    <Typography 
+                      style={{
+                        fontSize: "0.9rem",
+                        fontWeight: "600",
+                        fontFamily: "Roboto",
+                        marginBottom: 2
+                      }}
+                    >Enter File Description</Typography>
                   </Grid>
                   <Grid item xs={12} sm={12} lg={12} xl={12}>
                     <TextField
@@ -612,7 +634,7 @@ class PdfUpload extends Component {
             {this.state.formatWarning && this.renderDialog()}
             {this.state.open && (
               <Snackbar
-                anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
                 open={this.state.open}
                 autoHideDuration={6000}
                 onClose={this.handleClose}

@@ -1,6 +1,7 @@
 import json
 import logging
 import os
+import re
 import time
 
 import requests
@@ -99,5 +100,11 @@ class TranslatorUtils:
                 if log:
                     log_info("UTM Disabled for this user!", translate_wf_input)
         return tmx_enabled, utm_enabled
+
+    # Method to simultaneously replace multiple strings in a sentence
+    def multiple_replace(self, sentence, replacement_dict):
+        pattern = re.compile("|".join([re.escape(k) for k in sorted(replacement_dict, key=len, reverse=True)]),
+                             flags=re.DOTALL)
+        return pattern.sub(lambda x: replacement_dict[x.group(0)], sentence)
 
 

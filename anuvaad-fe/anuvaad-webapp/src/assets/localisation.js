@@ -1,14 +1,14 @@
 const localization_EN_Data = {
   "common.page.label.active": "Active",
   "common.page.button.reset": 'Reset',
-  "dashboard.page.heading.title": "Translate sentence",
+  "dashboard.page.heading.title": "Translate Sentence",
   "create.user.page.heading.title": "Create User",
   "common.page.label.sourceLang": "Select Source Language",
   "common.page.label.targetLang": "Select Target Language",
-  "common.page.button.submit": "submit",
+  "common.page.button.submit": "Submit",
   "common.page.court.name": "Court Location",
   "common.page.roles": "Role",
-  "common.page.button.clear": "clear",
+  "common.page.button.clear": "Clear",
   "dashboard.page.checkbox.mt": "Machine Translated",
   "dashboard.page.checkbox.splitted": "Show , splitted",
   "dashboard.page.checkbox.ioSubwords": "Input and Output Subwords",
@@ -93,8 +93,10 @@ const localization_EN_Data = {
   "common.page.label.timeStamp": "Timestamp",
   "commonCorpus.page.button.corpus": "Corpus",
   "common.page.title.document": "Documents",
-  "common.page.title.glossary": "Glossary Details",
+  "common.page.title.glossary": "Glossary List",
   "common.page.title.userdetails": "User Details",
+  "common.page.title.suggestion": "Glossary Suggestions",
+  "common.page.title.mySuggestion": "Glossary Suggestions Pending For Approval",
   "viewCorpus.title.viewSentence": "View Sentence",
   "common.page.title.gradeSentence": "Grade Sentence",
   "viewCorpus.title.editSentence": "Edit Sentence",
@@ -437,7 +439,8 @@ const localization_EN_Data = {
   "common.page.label.TOKEN_EXPIRED": 'Session Expired, Redirecting to login page',
   "common.page.label.glossaryUpload": "Glossary Upload",
   "common.page.title.orgList": "Organization List",
-  "digitize_upload.page.label.uploadMessage": 'Upload file that you want to digitize'
+  "digitize_upload.page.label.uploadMessage": 'Upload file that you want to digitize',
+  "digitize_upload.page.label.addDropDocument": "Drag & Drop file,Image/PDF (recommended)",
   // 'newCorpus.page.array.addFileTargetAndDetails':["Add Source file", 'Add target file', 'Add file details']
 };
 

@@ -137,6 +137,14 @@
             "description":"API for deactivating users"
         },
         {
+            "id":"6ec79e2c-fc83-4cc6-a7f3-c9034e3ca6e5",
+            "uri":"/anuvaad/user-mgmt/v1/extension/users/get/token",
+            "module":"USER-MANAGEMENT-SYSTEM",
+            "active":true,
+            "whiteList":true,
+            "description":"API for registering extension users"
+        },
+        {
             "id":"76952b3b-6017-4d58-86e2-246a16b1c952",
             "uri":"/anuvaad/user-mgmt/v1/org/upsert",
             "module":"USER-MANAGEMENT-SYSTEM",
@@ -202,107 +210,35 @@
         },
         {
             "id":"c5e9002e-4784-453d-b5dc-3dbafb09bc1c",
-            "uri":"/anuvaad-etl/translator/v1/glossary/create",
+            "uri":"/anuvaad-etl/translator/v1/suggested-tmx/create",
             "module":"ANUVAAD-TRANSLATOR",
             "active":true,
             "whiteList":false,
-            "description":"API to create glossary"
+            "description":"API to create TMX suggestion box entries"
+        },
+        {
+            "id":"0cf59821-0258-4c5a-9c4e-6178c074764a",
+            "uri":"/anuvaad-etl/translator/v1/suggested-tmx/update",
+            "module":"ANUVAAD-TRANSLATOR",
+            "active":true,
+            "whiteList":false,
+            "description":"API to update TMX suggestion box entries"
         },
         {
             "id":"36a3d56e-34b4-4d66-90cd-dea526f70f0b",
-            "uri":"/anuvaad-etl/translator/v1/glossary/delete",
+            "uri":"/anuvaad-etl/translator/v1/suggested-tmx/delete",
             "module":"ANUVAAD-TRANSLATOR",
             "active":true,
             "whiteList":false,
-            "description":"API to delete glossary"
+            "description":"API to delete TMX suggestion box entries"
         },
         {
             "id":"588efe49-4f9d-4101-b274-aa9755717b52",
-            "uri":"/anuvaad-etl/translator/v1/glossary/get",
+            "uri":"/anuvaad-etl/translator/v1/suggested-tmx/get",
             "module":"ANUVAAD-TRANSLATOR",
             "active":true,
             "whiteList":false,
-            "description":"API to fetch glossary data"
-        },
-        {
-            "id":"e5d0b999-a2bb-41af-a267-2494b15fb6a5",
-            "uri":"/nmt-inference/v1/fetch-models/*",
-            "module":"ANUVAAD-NMT",
-            "active":true,
-            "whiteList":false,
-            "description":"API to fetch NMT models"
-        },
-        {
-            "id":"f08cb87c-9e10-4b23-9de5-52c6ff70d405",
-            "uri":"/nmt-inference/v3/translate-anuvaad",
-            "module":"ANUVAAD-NMT",
-            "active":true,
-            "whiteList":false,
-            "description":"API for doc translation"
-        },
-        {
-            "id":"75a424ae-ae00-44da-86f8-3809dd9a6458",
-            "uri":"/nmt-inference/v2/interactive-translation",
-            "module":"ANUVAAD-NMT",
-            "active":true,
-            "whiteList":false,
-            "description":"API for interactive translation"
-        },
-        {
-            "id":"400772fd-15c1-4c89-9ab2-ad6b577916c4",
-            "uri":"/nmt-inference/v1/create-models",
-            "module":"ANUVAAD-NMT",
-            "active":true,
-            "whiteList":false,
-            "description":"API to create NMT models"
-        },
-        {
-            "id":"cdbd4630-a2cd-4f32-a167-ebc734e43421",
-            "uri":"/nmt-inference/v1/update-models/*",
-            "module":"ANUVAAD-NMT",
-            "active":true,
-            "whiteList":false,
-            "description":"API to update NMT models"
-        },
-        {
-            "id":"ecda9694-e636-4211-aa85-4b146a9a543c",
-            "uri":"/nmt-inference/v1/delete-models/*",
-            "module":"ANUVAAD-NMT",
-            "active":true,
-            "whiteList":false,
-            "description":"API to delete NMT models"
-        },
-        {
-            "id":"5b5ca44a-ddd8-4576-88d5-e370a48c368e",
-            "uri":"/nmt-inference/v2/fetch-models/*",
-            "module":"ANUVAAD-NMT",
-            "active":true,
-            "whiteList":false,
-            "description":"API to fetch NMT models"
-        },
-        {
-            "id":"433f58d2-de6f-4027-8689-43eee482c3ec",
-            "uri":"/nmt-inference/v4/translate",
-            "module":"ANUVAAD-NMT",
-            "active":true,
-            "whiteList":false,
-            "description":"API for machine translation"
-        },
-        {
-            "id":"fe0decb2-78de-4f53-8ca7-c073ab2b1396",
-            "uri":"/nmt-inference/v3/interactive-translation",
-            "module":"ANUVAAD-NMT",
-            "active":true,
-            "whiteList":false,
-            "description":"API for interactive translation"
-        },
-        {
-            "id":"752bff69-e7ed-44bd-9218-ee65f4febb8c",
-            "uri":"/nmt-inference/v1/labse-aligner",
-            "module":"ANUVAAD-NMT",
-            "active":true,
-            "whiteList":false,
-            "description":"API for LABSE alignment"
+            "description":"API to fetch TMX suggestion box entries"
         },
         {
             "id":"b0c793d1-215c-4de6-8d88-714f8394e75a",
@@ -497,6 +433,14 @@
             "description":"API tokenise paragraphs from a text file"
         },
         {
+            "id":"724f7f09-2d6a-43c3-8155-8acc779dc833",
+            "uri":"/anuvaad-etl/tokeniser/v0/paragraphs-tokenisation-wf",
+            "module":"TOKENISER",
+            "active":true,
+            "whiteList":false,
+            "description":"API tokenise paragraph from a list of paragraphs"
+        },
+        {
             "id":"5eeecf48-65e7-4c3e-a455-0bd29b0e0838",
             "uri":"/anuvaad-etl/tokeniser/v0/tokenisation",
             "module":"TOKENISER",
@@ -577,6 +521,14 @@
             "description":"API for AIB NMT"
         },
         {
+            "id":"9467457b-d12e-4a8c-8aab-471c65a0d2e2",
+            "uri":"/aai4b-nmt-inference/v0/translate",
+            "module":"AIB-NMT",
+            "active":true,
+            "whiteList":true,
+            "description":"API for AIB NMT for ULCA"
+        },
+        {
             "id":"5e2c99cf-b6e2-41e4-a183-23b011e56d6f",
             "uri":"/aai4b-nmt-inference/v0/interactive-translation",
             "module":"AIB-NMT",
@@ -598,7 +550,31 @@
             "module":"ANUVAAD-DOCX-DOWNLOADER",
             "active":true,
             "whiteList":true,
-            "description":"API for docx download"
+            "description":"API for converting fetch-content response to docx"
+        },
+        {
+            "id":"65af21b8-e7fc-4d3a-9f9b-9ee779441b06",
+            "uri":"/anuvaad-etl/anuvaad-docx-downloader/ocr/v0/download-docx",
+            "module":"ANUVAAD-DOCX-DOWNLOADER",
+            "active":true,
+            "whiteList":true,
+            "description":"API for converting fetch-document (ocr) response to docx"
+        },
+        {
+            "id":"074d7840-5340-4881-9143-b3ecb9775265",
+            "uri":"/anuvaad-etl/file-translator/v0/download-wf",
+            "module":"ANUVAAD-TRANSLATED-FILE-DOWNLOADER",
+            "active":true,
+            "whiteList":false,
+            "description":"API for translated file download"
+        },
+        {
+            "id":"52021bff-bdb8-47a3-8e0b-b09590d4a4bd",
+            "uri":"/anuvaad-etl/file-translator/v0/transform-wf",
+            "module":"ANUVAAD-TRANSFORM-FILE-TO-JSON",
+            "active":true,
+            "whiteList":false,
+            "description":"API for transform file to json format"
         },
         {
             "id":"1162882f-4096-4d8a-8905-ef68b34bfbbc",
@@ -617,21 +593,92 @@
             "description":"ANUVAAD-CH-S3 URL FETCH"
         },
         {
-            "id":"074d7840-5340-4881-9143-b3ecb9775265",
-            "uri":"/anuvaad-etl/file-translator/v0/download-wf",
-            "module":"ANUVAAD-TRANSLATED-FILE-DOWNLOADER",
+            "id":"51ccb837-e34d-4fd4-843d-96291107c178",
+            "uri":"/anuvaad/ocr/v0/ulca-ocr",
+            "module":"ANUVAAD-ULCA-OCR",
             "active":true,
-            "whiteList":false,
-            "description":"API for translated file download"
-        }
-        ,
+            "whiteList":true,
+            "description":"API for ANUVAAD OCR to be used by ULCA"
+        },
         {
-            "id":"52021bff-bdb8-47a3-8e0b-b09590d4a4bd",
-            "uri":"/anuvaad-etl/file-translator/v0/transform-wf",
-            "module":"ANUVAAD-TRANSFORM-FILE-TO-JSON",
+            "id": "dae2209d-e3ac-4ed2-9789-c1bb03bdf913",
+            "uri": "/anuvaad-nmt-models/v0/fetch-models/*",
+            "module": "ANUVAAD-NMT-MODELS",
+            "active": true,
+            "whiteList": false,
+            "description": "API to fetch NMT models"
+        },
+        {
+            "id": "f13e0c81-b559-444d-bb57-8d0360f7a2e8",
+            "uri": "/anuvaad-nmt-models/v0/create-models",
+            "module": "ANUVAAD-NMT-MODELS",
+            "active": true,
+            "whiteList": false,
+            "description": "API to create NMT models"
+        },
+        {
+            "id": "4851c243-bb56-4faf-9290-a46740e5c00e",
+            "uri": "/anuvaad-nmt-models/v0/update-models/*",
+            "module": "ANUVAAD-NMT-MODELS",
+            "active": true,
+            "whiteList": false,
+            "description": "API to update NMT models"
+        },
+        {
+            "id":"56a5003c-38f4-4885-acc5-04920a379609",
+            "uri":"/aai4b-nmt-inference/v2/fetch-models/*",
+            "module":"AIB-NMT",
+            "active":true,
+            "whiteList":true,
+            "description":"API for AIB NMT fetch models GET"
+        },
+        {
+            "id":"a090659f-c79d-4507-9cb7-afaff6ac6e8f",
+            "uri":"/aai4b-nmt-inference/v1/create-models",
+            "module":"AIB-NMT",
+            "active":true,
+            "whiteList":true,
+            "description":"API for AIB NMT create model"
+        },
+        {
+            "id":"5b603b31-ecfe-4cf8-b199-c979ad46302e",
+            "uri":"/aai4b-nmt-inference/v1/update-models/*",
+            "module":"AIB-NMT",
             "active":true,
             "whiteList":false,
-            "description":"API for transform file to json format"
+            "description":"API for AIB NMT update models"
+        },
+        {
+            "id":"43c6bb3a-2e58-4fe7-b9df-bd1a1d02660a",
+            "uri":"/aai4b-nmt-inference/v1/delete-models/*",
+            "module":"AIB-NMT",
+            "active":true,
+            "whiteList":false,
+            "description":"API for AIB NMT delete models"
+        },
+        {
+            "id":"cad20323-2d89-41c8-a20c-aee6df03830e",
+            "uri":"/aai4b-nmt-inference/v3/fetch-models",
+            "module":"AIB-NMT",
+            "active":true,
+            "whiteList":true,
+            "description":"API for AIB NMT fetch models POST"
+        },
+        {
+            "id":"b060c86c-8ab0-449a-a915-ab6e9c4ad544",
+            "uri":"/aai4b-nmt-inference/v1/labse-aligner",
+            "module":"AIB-NMT",
+            "active":true,
+            "whiteList":true,
+            "description":"API for getting labse alignments"
+        },
+        {
+            "id":"fd5b5fb6-fe99-4384-8de2-25f9dfe1d27e",
+            "uri":"/aai4b-nmt-inference/health",
+            "module":"AIB-NMT",
+            "active":true,
+            "whiteList":true,
+            "description":"API for AIB NMT health endpoint"
         }
     ]
 }

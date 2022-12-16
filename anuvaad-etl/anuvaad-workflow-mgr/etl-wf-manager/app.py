@@ -11,8 +11,6 @@ from anuvaad_auditor.loghandler import log_exception
 from configs.wfmconfig import app_host
 from configs.wfmconfig import app_port
 
-
-
 log = logging.getLogger('file')
 
 
@@ -33,7 +31,6 @@ def start_consumer():
 if __name__ == '__main__':
     start_consumer()
     wfmapp.run(host=app_host, port=eval(str(app_port)), threaded=True)
-
 
 # Log config
 dictConfig({

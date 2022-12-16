@@ -34,20 +34,20 @@ export default class SimpleDialog extends React.Component {
                     <DialogContent style={{minWidth: "500px"}}>
                         {this.props.type && this.props.type !== "warning"?
                             <div>
-                                <div style={{ display: "flex", flexDirection: "row" }}><Typography style={{ fontWeight: "bold" }}>Job ID: </Typography><Typography>&nbsp; {message.jobID}</Typography></div>
-                                <div style={{ display: "flex", flexDirection: "row" }}><Typography style={{ fontWeight: "bold" }}>Status: </Typography><Typography>&nbsp; {message.status}</Typography></div>
-                                {message.errorMessage && <div style={{ display: "flex", flexDirection: "row" }}><Typography style={{ fontWeight: "bold" }}>Error: </Typography><Typography>&nbsp; {message.errorMessage}</Typography></div>}
+                                <div style={{ display: "flex", flexDirection: "row" }}><Typography style={{ fontWeight: "bold", fontSize: "15px" }}>Job ID: </Typography><Typography style={{fontSize: "15px" }}>&nbsp; {message.jobID}</Typography></div>
+                                <div style={{ display: "flex", flexDirection: "row" }}><Typography style={{ fontWeight: "bold", fontSize: "15px" }}>Status: </Typography><Typography style={{fontSize: "15px" }}>&nbsp; {message.status}</Typography></div>
+                                {message.errorMessage && <div style={{ display: "flex", flexDirection: "row" }}><Typography style={{ fontWeight: "bold", fontSize: "15px" }}>Error: </Typography><Typography style={{fontSize: "15px" }}>&nbsp; {message.errorMessage}</Typography></div>}
                                  {message.timelines && Array.isArray(message.timelines) && message.timelines.length > 0 &&
                                     <div>
                                         <div>&nbsp;</div>
-                                        <Typography style={{ fontWeight: "bold", fontSize: "18px" }}>Completed Tasks:</Typography>
+                                        <Typography style={{ fontWeight: "bold", fontSize: "15px" }}>Completed Tasks:</Typography>
                                         {
                                             message.timelines.map((task, i) => {
                                                 return (
                                                     <div key={i}>
                                                         <div>&nbsp;</div>
-                                                        <div style={{ display: "flex", flexDirection: "row" }}><Typography style={{ fontWeight: "bold" }}>State: </Typography><Typography>&nbsp; {task.module}</Typography></div>
-                                                        <div style={{ display: "flex", flexDirection: "row" }}><Typography style={{ fontWeight: "bold" }}>Status: </Typography><Typography>&nbsp; {task.status}</Typography></div>
+                                                        <div style={{ display: "flex", flexDirection: "row" }}><Typography style={{ fontWeight: "bold", fontSize: "15px" }}>State: </Typography><Typography style={{fontSize: "15px" }}>&nbsp; {task.module}</Typography></div>
+                                                        <div style={{ display: "flex", flexDirection: "row" }}><Typography style={{ fontWeight: "bold", fontSize: "15px" }}>Status: </Typography><Typography style={{fontSize: "15px" }}>&nbsp; {task.status}</Typography></div>
                                                     </div>
                                                 )
                                             })

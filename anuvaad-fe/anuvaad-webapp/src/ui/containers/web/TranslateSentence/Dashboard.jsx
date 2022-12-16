@@ -20,6 +20,9 @@ import { translate } from "../../../../assets/localisation";
 import DashboardStyles from "../../../styles/web/DashboardStyles";
 import InstantTranslateAPI from "../../../../flux/actions/apis/translate_sentence/instant_translate";
 
+import { IndicTransliterate } from "@ai4bharat/indic-transliterate";
+import "@ai4bharat/indic-transliterate/dist/index.css";
+
 const { v4 } = require('uuid');
 const LANG_MODEL = require('../../../../utils/language.model')
 
@@ -88,7 +91,7 @@ class Dashboard extends React.Component {
   renderProgressInformation = () => {
     return (
       <Snackbar
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         open={this.state.showStatus}
         message={this.state.message}
       >
@@ -198,7 +201,14 @@ class Dashboard extends React.Component {
     return (
       <Grid item xs={12} sm={12} lg={12} xl={12} className={this.props.classes.rowData} style={{ marginTop: "0%" }}>
         <Grid item xs={6} sm={6} lg={8} xl={8} className={this.props.classes.label}>
-          <Typography value="" variant="h5">
+          <Typography
+            style={{
+              fontSize: "0.9rem",
+              fontWeight: "600",
+              fontFamily: "Roboto",
+              marginBottom: 2
+            }}
+          >
             {translate("common.page.label.sourceLang")}&nbsp;<span style={{ color: "red" }}>*</span>
           </Typography>
         </Grid>
@@ -212,12 +222,13 @@ class Dashboard extends React.Component {
               value={this.state.source_language_code}
               style={{
                 fullWidth: true,
-                float: 'right'
+                float: 'right',
+                textAlign: "left"
               }}
             >
               {
                 this.state.source_languages.map(lang =>
-                  <MenuItem key={lang.language_code} value={lang.language_code + ''}>{lang.language_name}</MenuItem>)
+                  <MenuItem key={lang.language_code} value={lang.language_code + ''} style={{ fontSize: "16px", fontFamily: "Roboto" }}>{lang.language_name}</MenuItem>)
               }
             </Select>
           </FormControl>
@@ -230,7 +241,14 @@ class Dashboard extends React.Component {
     return (
       <Grid item xs={12} sm={12} lg={12} xl={12} className={this.props.classes.rowData} style={{ paddingTop: "20px" }}>
         <Grid item xs={6} sm={6} lg={8} xl={8} className={this.props.classes.label}>
-          <Typography value="" variant="h5">
+          <Typography
+            style={{
+              fontSize: "0.9rem",
+              fontWeight: "600",
+              fontFamily: "Roboto",
+              marginBottom: 2
+            }}
+          >
             {translate("common.page.label.targetLang")}&nbsp;<span style={{ color: "red" }}>*</span>
           </Typography>
         </Grid>
@@ -244,12 +262,13 @@ class Dashboard extends React.Component {
               value={this.state.target_language_code}
               style={{
                 fullWidth: true,
-                float: 'right'
+                float: 'right',
+                textAlign: "left"
               }}
             >
               {
                 this.state.target_languages.map(lang =>
-                  <MenuItem key={lang.language_code} value={lang.language_code + ''}>{lang.language_name}</MenuItem>)
+                  <MenuItem key={lang.language_code} value={lang.language_code + ''} style={{ fontSize: "16px", fontFamily: "Roboto" }}>{lang.language_name}</MenuItem>)
               }
             </Select>
           </FormControl>
@@ -258,14 +277,33 @@ class Dashboard extends React.Component {
     )
   }
 
+  renderCustomTextArea = (assignedClass , props) => {
+    return (
+      <textarea
+        id="standard-multiline-static"
+        // style={{ padding: "1%", height: '100px', fontFamily: '"Source Sans Pro", "Arial", sans-serif', fontSize: "21px", width: '97.8%', borderRadius: '4px' }}
+        className={assignedClass}
+        rows="3"
+        value={this.state.text}
+        disabled={this.state.anuvaadAPIInProgress || this.state.autoMLAPIInProgress}
+        placeholder={translate("dashboard.page.alternatetext.enterTextHere")}
+        // cols="50"
+        onChange={event => {
+          this.handleTextChange("text", event);
+        }}
+      {...props}
+      />
+    )
+  }
+
   render() {
     const { classes } = this.props;
 
     return (
       <div className={classes.root}>
-        <Typography variant="h4" className={classes.typographyHeader}>
+        {/* <Typography style={{ fontSize: "19px", fontWeight: "500" }} className={classes.typographyHeader}>
           {translate("dashboard.page.heading.title")}
-        </Typography>
+        </Typography> */}
         <Paper className={classes.paper}>
           <Grid container >
 
@@ -273,19 +311,16 @@ class Dashboard extends React.Component {
             {this.renderTargetLanguagesItems()}
 
             <Grid item xs={12} sm={12} lg={12} xl={12} className={classes.grid} style={{ paddingTop: "20px" }}>
-              <textarea
-                id="standard-multiline-static"
-                style={{ padding: "1%", height: '100px', fontFamily: '"Source Sans Pro", "Arial", sans-serif', fontSize: "21px", width: '97.8%', borderRadius: '4px' }}
-                className="noter-text-area"
-                rows="3"
+              {this.state.source_language_code && this.state.source_language_code !== "en" ? <IndicTransliterate
+                renderComponent={(props) => this.renderCustomTextArea(classes.transliterateTextArea, props)
+                }
                 value={this.state.text}
-                disabled={this.state.anuvaadAPIInProgress || this.state.autoMLAPIInProgress}
-                placeholder={translate("dashboard.page.alternatetext.enterTextHere")}
-                // cols="50"
-                onChange={event => {
-                  this.handleTextChange("text", event);
+                onChangeText={(text) => {
+                  this.setState({ text: text })
                 }}
-              />
+                lang={this.state.source_language_code}
+              /> : this.renderCustomTextArea(classes.transliterateTextArea)}
+
             </Grid>
 
             <Grid item xs={12} sm={12} lg={12} xl={12} className={classes.grid} style={{ display: "flex", flexDirection: "row" }}>

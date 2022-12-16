@@ -49,19 +49,19 @@ const theme = createMuiTheme({
         width: '100%',
         minHeight: '380px',
         height: "85%",
-        borderColor: '#1C9AB7',
+        borderColor: '#2C2799',
         backgroundColor: '#F5F9FA',
-        border: '1px dashed #1C9AB7',
-        fontColor: '#1C9AB7',
+        border: '1px dashed #2C2799',
+        fontColor: '#2C2799',
         marginTop: "3%",
         marginLeft: '1%',
-        "& svg": { color: '#1C9AB7', },
+        "& svg": { color: '#2C2799', },
         "& p": {
           textOverflow: "ellipsis",
           whiteSpace: "nowrap",
           overflow: "hidden",
           fontSize: "19px",
-          color: '#1C9AB7',
+          color: '#2C2799',
 
         }
       },
@@ -205,7 +205,7 @@ class CreateUser extends React.Component {
   renderProgressInformation = () => {
     return (
       <Snackbar
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         open={this.state.apiInProgress}
         message={this.state.snackBarMessage}
       >
@@ -217,7 +217,7 @@ class CreateUser extends React.Component {
   renderStatusInformation = () => {
     return (
       <Snackbar
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         open={this.state.showStatus}
         onClose={(e, r) => {
           this.setState({ showStatus: false })
@@ -283,7 +283,14 @@ class CreateUser extends React.Component {
     const { classes } = this.props
     return (<Grid item xs={12} sm={12} lg={12} xl={12} className={this.props.classes.rowData}>
       <Grid item xs={6} sm={6} lg={8} xl={8} className={this.props.classes.label} style={{ marginTop: '2%' }}>
-        <Typography value="" variant="h5">
+        <Typography
+          style={{
+            fontSize: "0.9rem",
+            fontWeight: "600",
+            fontFamily: "Roboto",
+            marginBottom: 2
+          }}
+        >
           {translate("common.page.label.sourceLang")}{" "}
         </Typography>
       </Grid>
@@ -307,7 +314,7 @@ class CreateUser extends React.Component {
         >
           {
             this.state.source_languages.map(lang =>
-              <MenuItem id={lang.language_name} key={lang.language_code} value={lang.language_code + ''}>{lang.language_name}</MenuItem>)
+              <MenuItem id={lang.language_name} key={lang.language_code} style={{fontSize: "16px", fontFamily: "Roboto"}} value={lang.language_code + ''}>{lang.language_name}</MenuItem>)
           }
         </Select>
       </Grid>
@@ -319,7 +326,14 @@ class CreateUser extends React.Component {
     const { classes } = this.props
     return (<Grid item xs={12} sm={12} lg={12} xl={12} className={this.props.classes.rowData}>
       <Grid item xs={6} sm={6} lg={8} xl={8} className={this.props.classes.label} style={{ marginTop: '2%' }}>
-        <Typography value="" variant="h5">
+        <Typography
+            style={{
+              fontSize: "0.9rem",
+              fontWeight: "600",
+              fontFamily: "Roboto",
+              marginBottom: 2
+            }}
+          >
           {translate("common.page.label.targetLang")}{" "}
         </Typography>
       </Grid>
@@ -343,7 +357,7 @@ class CreateUser extends React.Component {
         >
           {
             this.state.target_languages.map(lang =>
-              <MenuItem key={lang.language_code} value={lang.language_code}>{lang.language_name}</MenuItem>)
+              <MenuItem key={lang.language_code} value={lang.language_code} style={{fontSize: "16px", fontFamily: "Roboto"}}>{lang.language_name}</MenuItem>)
           }
         </Select>
       </Grid>
@@ -355,7 +369,14 @@ class CreateUser extends React.Component {
     const { classes } = this.props
     return (<Grid item xs={12} sm={12} lg={12} xl={12} className={this.props.classes.rowData}>
       <Grid item xs={6} sm={6} lg={8} xl={8} className={this.props.classes.label} style={{ marginTop: '2%' }}>
-        <Typography value="" variant="h5">
+        <Typography
+          style={{
+            fontSize: "0.9rem",
+            fontWeight: "600",
+            fontFamily: "Roboto",
+            marginBottom: 2
+          }}
+        >
           Select model
         </Typography>
       </Grid>
@@ -380,7 +401,7 @@ class CreateUser extends React.Component {
           {
 
             this.state.modelList.map(model =>
-              <MenuItem key={model.uuid} value={model}>{model.model_name}</MenuItem>)
+              <MenuItem key={model.uuid} value={model} style={{fontSize: "16px", fontFamily: "Roboto"}}>{model.model_name}</MenuItem>)
           }
         </Select>
       </Grid>
@@ -469,7 +490,14 @@ class CreateUser extends React.Component {
   renderExistingUser = () => {
     return <Grid item xs={12} sm={12} lg={12} xl={12} className={this.props.classes.rowData}>
       <Grid item xs={6} sm={6} lg={8} xl={8} className={this.props.classes.label} style={{ marginTop: '2%' }}>
-        <Typography variant="h5">
+        <Typography
+          style={{
+            fontSize: "0.9rem",
+            fontWeight: "600",
+            fontFamily: "Roboto",
+            marginBottom: 2
+          }}
+        >
           Existing Users
         </Typography>
       </Grid>
@@ -491,7 +519,14 @@ class CreateUser extends React.Component {
         roles !== 'TRANSLATOR' &&
         <>
           <Grid item xs={6} sm={6} lg={8} xl={8} className={this.props.classes.label} style={{ marginTop: '2%' }}>
-            <Typography variant="h5">
+            <Typography
+              style={{
+                fontSize: "0.9rem",
+                fontWeight: "600",
+                fontFamily: "Roboto",
+                marginBottom: 2
+              }}
+            >
               Assign Users
             </Typography>
           </Grid>
@@ -545,13 +580,28 @@ class CreateUser extends React.Component {
     return (
       <Grid container style={{ marginTop: '4%' }}>
         <Grid item xs={6} sm={6} lg={8} xl={8} className={this.props.classes.label}>
-          <Typography value="" variant="h5">
+          <Typography
+            style={{
+              fontSize: "0.9rem",
+              fontWeight: "600",
+              fontFamily: "Roboto",
+              marginBottom: 2
+            }}
+          >
             {"Current Active Model"}{" "}
           </Typography>
         </Grid>
 
         <Grid item xs={6} sm={6} lg={4} xl={4} >
-          <Typography variant="h5" className={this.props.classes.label}>
+          <Typography 
+            style={{
+              fontSize: "1rem",
+              fontWeight: "700",
+              fontFamily: "Roboto",
+              marginBottom: 2
+            }} 
+            className={this.props.classes.label}
+          >
             {this.state.modelName}
           </Typography>
         </Grid>
@@ -563,9 +613,9 @@ class CreateUser extends React.Component {
     const { classes } = this.props;
     let roles = localStorage.getItem('roles')
     return (
-      <div className={classes.root} style={{ marginTop: '7%', marginBottom: '5%', height: window.innerHeight - 230 }}>
+      <div className={classes.root}>
         <Toolbar />
-        <Typography variant="h4" className={classes.typographyHeader}>
+        <Typography className={classes.typographyHeader} style={{paddingTop: "2%", fontSize: "19px", fontWeight: "500"}}>
           Assign NMT Model
         </Typography>
         <Paper className={classes.paper}>
@@ -593,7 +643,7 @@ class CreateUser extends React.Component {
                 onClick={this.processClearButton}
                 aria-label="edit"
                 className={classes.button1}
-                style={{ backgroundColor: '#1ca9c9' }}
+                style={{ backgroundColor: '#2C2799' }}
               >
                 {translate("common.page.button.reset")}
               </Button>
@@ -612,7 +662,7 @@ class CreateUser extends React.Component {
                   className={classes.button1}
                   disabled={this.state.loading}
                   style={{
-                    backgroundColor: this.state.loading ? 'grey' : '#1ca9c9',
+                    backgroundColor: this.state.loading ? 'grey' : '#2C2799',
                   }}
                 >
                   {this.state.loading && <CircularProgress size={24} className={'success'} style={{

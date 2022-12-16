@@ -28,12 +28,18 @@ import JobStatus from "../../../../flux/actions/apis/view_document/translation.p
 import { clearJobEntry } from "../../../../flux/actions/users/async_job_management";
 import DownloadFile from "../../../../flux/actions/apis/download/download_file";
 import fetchpageno from '../../../../flux/actions/apis/view_document/fetch_page_no';
+import DataTable from "../../../components/web/common/DataTable";
+import { Button, TableCell, TableRow, TextField, TableFooter, Typography } from "@material-ui/core";
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 
 const TELEMETRY = require("../../../../utils/TelemetryManager");
 
 class ViewDocument extends React.Component {
   constructor(props) {
     super(props);
+    this.tableRef = React.createRef();
+    this.pageInputRef = React.createRef()
     this.state = {
       role: localStorage.getItem("roles"),
       showInfo: false,
@@ -44,6 +50,8 @@ class ViewDocument extends React.Component {
       dialogMessage: null,
       timeOut: 3000,
       variant: "info",
+      isInputActive: false,
+      inputPageNumber: 1,
     };
   }
 
@@ -75,6 +83,29 @@ class ViewDocument extends React.Component {
       );
     }
     this.makeAPICallDocumentsTranslationProgress();
+
+    window.addEventListener("keydown", (e) => this.keyPress(e));
+    return () => {
+      window.removeEventListener("keydown", (e) => this.keyPress(e));
+    }
+  }
+
+  keyPress = (e) => {
+    // e.preventDefault();
+    if (e.code === "Enter" && this.state.isInputActive) {
+      e.preventDefault();
+      // handleTransliterationModelClose();
+      console.log("enter key press.");
+      this.onChangePageMAnually();
+    }
+  };
+
+  onChangePageMAnually = () => {
+    // console.log("offset", 0);
+    // console.log("limit (Number(this.state.inputPageNumber)-1)*10 ---> ", this.props.job_details.count);
+    // this.makeAPICallJobsBulkSearch(0, (Number(this.state.inputPageNumber)-1)*10, false, false, true)
+    this.tableRef.current.changePage(Number(this.state.inputPageNumber) - 1);
+    this.setState({ currentPageIndex: this.state.inputPageNumber - 1 });
   }
 
   componentWillUnmount() {
@@ -167,7 +198,7 @@ class ViewDocument extends React.Component {
     const { APITransport } = this.props;
     const apiObj = new FetchDocument(
       offset,
-      limit,
+      this.props.job_details.count,
       jobIds,
       searchForNewJob,
       searchNextPage,
@@ -203,6 +234,7 @@ class ViewDocument extends React.Component {
    * helper methods
    */
   getJobsSortedByTimestamp = () => {
+    console.log("this.props.job_details.documents ======== ", this.props.job_details.documents);
     let jobs = this.props.job_details.documents.sort((a, b) => {
       if (a.created_on < b.created_on) {
         return 1;
@@ -284,9 +316,8 @@ class ViewDocument extends React.Component {
     let role = localStorage.getItem("roles")
     let job = this.getJobIdDetail(jobId);
     if (status === "COMPLETED") {
-
       history.push(
-        `${process.env.PUBLIC_URL}/interactive-document/${job.recordId}/${job.converted_filename}/${job.model_id}/${job.filename}/${workflowCode}`,
+        `${process.env.PUBLIC_URL}/interactive-document/${job.recordId}/${job.converted_filename}/${job.model_id}/${job.filename}/${workflowCode}/${job.source_language_code}/${job.target_language_code}`,
         this.state
       );
 
@@ -302,7 +333,7 @@ class ViewDocument extends React.Component {
       this.setState({
         dialogMessage: "Document conversion failed!",
         timeOut: 3000,
-        variant: "info",
+        variant: "error",
       });
       this.handleMessageClear();
     }
@@ -318,7 +349,7 @@ class ViewDocument extends React.Component {
     return (
       <div>
         <Snackbar
-          anchorOrigin={{ vertical: "top", horizontal: "right" }}
+          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
           open={!this.state.timeOut}
           autoHideDuration={this.state.timeOut}
           variant={this.state.variant}
@@ -336,7 +367,7 @@ class ViewDocument extends React.Component {
     });
     let job = this.getJobIdDetail(jobId);
     let user_profile = JSON.parse(localStorage.getItem("userProfile"));
-    console.log(job.converted_filename,user_profile.userID)
+    console.log(job.converted_filename, user_profile.userID)
     let obj = new DownloadFile(job.converted_filename, user_profile.userID);
 
     const apiReq1 = fetch(obj.apiEndPoint(), {
@@ -348,7 +379,7 @@ class ViewDocument extends React.Component {
           this.setState({
             dialogMessage: "Failed to download file...",
             timeOut: 3000,
-            variant: "info",
+            variant: "error",
           });
           console.log("api failed");
         } else {
@@ -371,7 +402,7 @@ class ViewDocument extends React.Component {
         this.setState({
           dialogMessage: "Failed to download file...",
           timeOut: 3000,
-          variant: "info",
+          variant: "error",
         });
         console.log("api failed because of server or network", error);
       });
@@ -393,7 +424,8 @@ class ViewDocument extends React.Component {
        */
       this.props.fetchpageno()
       this.makeAPICallJobsBulkSearch(
-        this.state.offset + this.state.limit,
+        page * this.state.limit,
+        // this.state.offset + this.state.limit,
         this.state.limit,
         false,
         false,
@@ -401,10 +433,22 @@ class ViewDocument extends React.Component {
       );
       this.setState({
         currentPageIndex: page,
-        offset: this.state.offset + this.state.limit,
+        offset: page * this.state.limit,
       });
     }
   };
+
+  handleInputPageChange = (event, totalPageCount) => {
+    if (event.target.value <= totalPageCount) {
+      this.setState({ inputPageNumber: event.target.value })
+    } else if (event.target.value > totalPageCount) {
+      this.setState({ inputPageNumber: totalPageCount })
+    } else if (event.target.value == 0) {
+      this.setState({ inputPageNumber: 1 })
+    } else if (event.target.value < 0) {
+      this.setState({ inputPageNumber: 1 })
+    }
+  }
 
   render() {
     const columns = [
@@ -414,6 +458,11 @@ class ViewDocument extends React.Component {
         options: {
           filter: false,
           sort: false,
+          setCellProps: () => ({
+            style: {
+              wordBreak: "break-word"
+            }
+          }),
         },
       },
       {
@@ -552,9 +601,10 @@ class ViewDocument extends React.Component {
         name: "Action",
         label: translate("common.page.label.action"),
         options: {
-          filter: true,
+          filter: false,
           sort: false,
           empty: true,
+          viewColumns: false,
           customBodyRender: (value, tableMeta, updateValue) => {
             if (tableMeta.rowData) {
               return (
@@ -648,31 +698,34 @@ class ViewDocument extends React.Component {
         },
         options: { sortDirection: "desc" },
       },
-      onChangeRowsPerPage: (limit) => {
-        let diffValue = limit - this.state.limit;
-        if (diffValue > 0) {
-          this.makeAPICallJobsBulkSearch(this.state.offset + diffValue, limit - this.state.limit, false, false, true)
-        }
+      // jumpToPage: true,
+      // onChangeRowsPerPage: (limit) => {
+      //   // console.log("onChangeRowsPerPage is being called")
+      //   let diffValue = limit - this.state.limit;
+      //   if (diffValue > 0) {
+      //     this.makeAPICallJobsBulkSearch(this.state.offset + diffValue, limit - this.state.limit, false, false, true)
+      //   }
 
-        this.setState({ limit })
+      //   this.setState({ limit })
 
-      },
+      // },
       rowsPerPageOptions: [10],
 
-      onTableChange: (action, tableState) => {
-        switch (action) {
-          case "changePage":
-            this.processTableClickedNextOrPrevious(
-              tableState.page,
-              tableState.sortOrder
-            );
-            break;
-          default:
-        }
-      },
+      // onTableChange: (action, tableState) => {
+      //   switch (action) {
+      //     case "changePage":
+      //       // console.log("tableState",tableState);
+      //       this.processTableClickedNextOrPrevious(
+      //         tableState.page,
+      //         tableState.sortOrder
+      //       );
+      //       break;
+      //     default:
+      //   }
+      // },
       count: this.props.job_details.count,
       filterType: "checkbox",
-      download: true,
+      download: this.getJobsSortedByTimestamp()?.length > 0 ? true : false,
       print: false,
       fixedHeader: true,
       filter: false,
@@ -682,19 +735,92 @@ class ViewDocument extends React.Component {
         direction: "desc",
       },
       page: this.state.currentPageIndex,
+      customFooter: (
+        count,
+        page,
+        rowsPerPage,
+        changeRowsPerPage,
+        changePage
+      ) => {
+        const startIndex = page * rowsPerPage;
+        const endIndex = (page + 1) * rowsPerPage;
+        const totalPageCount = Math.ceil(this.props.job_details.count / 10);
+        // totalPageCount = totalPageCount > 0 && 
+        // console.log("this.state.currentPageIndex", this.state.currentPageIndex);
+        // console.log("totalPageCount", totalPageCount);
+        return (
+
+          <TableFooter>
+            {totalPageCount > 0 &&
+              <TableRow>
+                <TableCell colSpan={12}>
+                  <div style={{ textAlign: "end", justifyContent: "space-evenly" }}>
+                  <Typography variant="caption" style={{ fontSize: "0.9rem", fontWeight: "600", float: 'left',padding: '10px'}}>Total Documents - <b>{this.props.job_details.count}</b></Typography>
+                    <Typography variant="caption" style={{ fontSize: "0.9rem", fontWeight: "600" }}>Page No. - </Typography>
+                    <TextField
+                      type="number"
+                      style={{ width: "4%", marginRight: "1%", marginLeft: "1%" }}
+                      ref={this.pageInputRef}
+                      onFocus={() => this.setState({ isInputActive: true })}
+                      onBlur={() => this.setState({ isInputActive: false })}
+                      InputProps={{
+
+                        inputProps: {
+                          style: { textAlign: "center" },
+                          max: totalPageCount, min: 1
+                        }
+                      }}
+                      onChange={(event) => this.handleInputPageChange(event, totalPageCount)}
+                      value={this.state.inputPageNumber}
+                    />
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      style={{ borderRadius: "15%" }}
+                      onClick={() => {
+                        this.onChangePageMAnually()
+                      }}
+                    >Go</Button>
+                    <IconButton
+                      onClick={() => {
+                        this.setState({ currentPageIndex: this.state.currentPageIndex - 1 })
+                        this.tableRef.current.changePage(Number(this.state.currentPageIndex - 1))
+                      }}
+                      tabIndex={this.state.currentPageIndex - 1}
+                      disabled={this.state.currentPageIndex == 0}>
+                      <ChevronLeftIcon />
+                    </IconButton>
+                    <Typography variant="caption" style={{ fontSize: "0.9rem", fontWeight: "600" }}>Page {parseInt(this.state.currentPageIndex + 1)} of {parseInt(totalPageCount)} </Typography>
+                    <IconButton
+                      onClick={() => {
+                        this.setState({ currentPageIndex: this.state.currentPageIndex + 1 })
+                        this.tableRef.current.changePage(Number(this.state.currentPageIndex + 1))
+                      }}
+                      tabIndex={this.state.currentPageIndex + 1}
+                      disabled={this.state.currentPageIndex == totalPageCount}>
+                      <ChevronRightIcon />
+                    </IconButton>
+                  </div>
+                </TableCell>
+              </TableRow>}
+          </TableFooter>
+
+        );
+      }
     };
 
     return (
-      <div style={{ maxHeight: window.innerHeight, height: window.innerHeight, overflow: "auto" }}>
-        <div style={{ margin: "0% 3% 3% 3%", paddingTop: "7%" }}>
+      <div style={{}}>
+        <div style={{ margin: "0% 3% 3% 3%", paddingTop: "2%" }}>
           <ToolBar />
           {!this.state.showLoader && (
             <MuiThemeProvider theme={this.getMuiTheme()}>
-              <MUIDataTable
+              <DataTable
                 title={translate("common.page.title.document")}
                 data={this.getJobsSortedByTimestamp()}
                 columns={columns}
                 options={options}
+                innerRef={this.tableRef}
               />
             </MuiThemeProvider>
           )}

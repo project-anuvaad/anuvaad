@@ -72,6 +72,7 @@ class WFMUtils:
     # Converts the configs into dict, makes it available for the entire app.
     def read_all_configs(self):
         try:
+            log_info(f"Reading WF Configs from: {config_file_url}", None)
             file = requests.get(config_file_url, allow_redirects=True)
             file_path = yaml_file_loc + yam_file_path_delimiter + yaml_file_name
             open(file_path, 'wb').write(file.content)
@@ -81,6 +82,7 @@ class WFMUtils:
                 for obj in configs:
                     key = obj['workflowCode']
                     configs_global[key] = obj
+            log_info(f"WF Configs: {configs_global.keys()}", None)
         except Exception as exc:
             log_exception("Exception while reading configs: " +
                           str(exc), None, exc)

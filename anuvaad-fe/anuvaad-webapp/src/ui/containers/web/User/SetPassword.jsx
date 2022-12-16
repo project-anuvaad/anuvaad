@@ -21,6 +21,7 @@ import APITransport from "../../../../flux/actions/apitransport/apitransport";
 class SetPassword extends React.Component {
     constructor(props) {
         super(props);
+        console.log("props url ----- ", this.props.match.params);
         this.state = {
 
             password: "",
@@ -72,14 +73,13 @@ class SetPassword extends React.Component {
         return (
             <MuiThemeProvider theme={ThemeDefault}>
 
-                <div style={{ height: window.innerHeight, overflow: 'hidden' }}>
+                <div style={{overflow: 'hidden' }}>
                     <Grid container spacing={8}>
-                        <Grid item xs={12} sm={4} lg={5} xl={5} style={{ paddingRight: "0px", paddingBottom: "0px", width: "100%", height: "100%" }}>
+                        {/* <Grid item xs={12} sm={4} lg={5} xl={5} style={{ paddingRight: "0px", paddingBottom: "0px", width: "100%", height: "100%" }}>
                             <img src="\Anuvaad.png" width="100%" height="100%" alt="" />
-                        </Grid>
-                        <Grid item xs={12} sm={8} lg={7} xl={7} style={{ backgroundColor: '#f1f5f7', textAlign: "center" }} >
-                            <Typography align='center' style={{ marginTop: '25%', marginBottom: '5%', fontSize: '33px', fontfamily: 'Trebuchet MS, sans-serif	', color: '#003366' }}>Set Password</Typography>
-
+                        </Grid> */}
+                        <Grid item xs={12} sm={8} lg={10} xl={10} style={{ marginLeft: "5rem", backgroundColor: '#ffffff', textAlign: "center" }} >
+                            <Typography align='center' variant='h3' className={classes.headingStyle}>Set Password</Typography>
                             <TextField value={this.state.password} id="password" type="password" placeholder="Enter password(Min length 6)*"
                                 margin="normal" varient="outlined" style={{ width: '50%', marginBottom: '2%', backgroundColor: 'white' }}
                                 onChange={this.handleInputReceived('password')}
@@ -91,8 +91,8 @@ class SetPassword extends React.Component {
                             <Button
                                 disabled={!this.state.confirmPassword}
                                 variant="contained" aria-label="edit" style={{
-                                    width: '50%', marginTop: '2%', borderRadius: "20px 20px 20px 20px", height: '45px',
-                                    backgroundColor: this.state.confirmPassword && !this.state.loading ? '#1ca9c9' : 'gray', color: 'white',
+                                    width: '50%', marginTop: '1%', borderRadius: "20px 20px 20px 20px", height: '45px',
+                                    backgroundColor: this.state.confirmPassword && !this.state.loading ? '#2C2799' : 'gray', color: 'white',
                                 }} onClick={this.handleSubmit.bind(this)}>
                                 {this.state.loading && <CircularProgress size={24} className={'success'} className={classes.buttonProgress} />}
                                 Create Password

@@ -96,7 +96,7 @@ class DocumentEditor extends React.Component {
       const apiModel = new FetchModel();
       this.props.APITransport(apiModel);
     } else {
-      let model = LANG_MODEL.fetchModel(parseInt(this.props.match.params.modelId), this.props.fetch_models)
+      let model = LANG_MODEL.fetchModel(parseInt(this.props.match.params.modelId), this.props.fetch_models, this.props.match.params.source_language_code, this.props.match.params.target_language_code)
       if (model && model.hasOwnProperty('source_language_name') && model.hasOwnProperty('target_language_name')) {
         TELEMETRY.startTranslatorFlow(model.source_language_name, model.target_language_name, this.props.match.params.inputfileid, jobId)
       }
@@ -149,7 +149,7 @@ class DocumentEditor extends React.Component {
 
     if (prevProps.fetch_models !== this.props.fetch_models) {
       let jobId = this.props.match.params.jobid ? this.props.match.params.jobid.split("|")[0] : ""
-      let model = LANG_MODEL.fetchModel(parseInt(this.props.match.params.modelId), this.props.fetch_models)
+      let model = LANG_MODEL.fetchModel(parseInt(this.props.match.params.modelId), this.props.fetch_models, this.props.match.params.source_language_code, this.props.match.params.target_language_code)
       if (model && model.hasOwnProperty('source_language_name') && model.hasOwnProperty('target_language_name')) {
         TELEMETRY.startTranslatorFlow(model.source_language_name, model.target_language_name, this.props.match.params.inputfileid, jobId)
       }
@@ -242,7 +242,7 @@ class DocumentEditor extends React.Component {
     let initial_sentences = sentences.map(sentence => sentence.src);
     let final_sentence = updated_blocks['blocks'][0].tokenized_sentences[0].src;
     TELEMETRY.mergeSentencesEvent(initial_sentences, final_sentence)
-    let model = LANG_MODEL.fetchModel(parseInt(this.props.match.params.modelId), this.props.fetch_models)
+    let model = LANG_MODEL.fetchModel(parseInt(this.props.match.params.modelId), this.props.fetch_models, this.props.match.params.source_language_code, this.props.match.params.target_language_code)
     this.informUserProgress(translate('common.page.label.SENTENCE_MERGED'))
     let apiObj = new WorkFlowAPI("WF_S_TR", updated_blocks.blocks, this.props.match.params.jobid, model.source_language_code,
       '', '', model, sentence_ids)
@@ -277,7 +277,7 @@ class DocumentEditor extends React.Component {
   async makeAPICallSaveSentence(sentence, pageNumber, score, eventArray) {
 
     this.informUserProgress(translate('common.page.label.SENTENCE_SAVED'))
-    let model = LANG_MODEL.fetchModel(parseInt(this.props.match.params.modelId), this.props.fetch_models)
+    let model = LANG_MODEL.fetchModel(parseInt(this.props.match.params.modelId), this.props.fetch_models, this.props.match.params.source_language_code, this.props.match.params.target_language_code)
     sentence["src_lang"] = model.source_language_code
     sentence['tgt_lang'] = model.target_language_code
     let apiObj = new SaveSentenceAPI(sentence)
@@ -312,14 +312,16 @@ class DocumentEditor extends React.Component {
   makeAPICallReTranslateSentence = (sentences, pageNumber) => {
     let sentence_ids = sentences.s_id
     let updated_blocks = BLOCK_OPS.do_sentence_retranslation(this.props.document_contents.pages, sentence_ids);
+    console.log("updated_blocks", updated_blocks);
     /**
      * telemetry information.
      */
     // let initial_sentences = sentences.map(sentence => sentence.src);
     // let final_sentence = updated_blocks['blocks'][0].tokenized_sentences[0].src;
     // TELEMETRY.mergeSentencesEvent(initial_sentences, final_sentence)
-    let model = LANG_MODEL.fetchModel(parseInt(this.props.match.params.modelId), this.props.fetch_models)
-    this.informUserProgress(translate('common.page.label.RETRANSLATE_SENTENCE'))
+    let model = LANG_MODEL.fetchModel(parseInt(this.props.match.params.modelId), this.props.fetch_models, this.props.match.params.source_language_code, this.props.match.params.target_language_code, this.props.match.params.source_language_code, this.props.match.params.target_language_code)
+    this.informUserProgress(translate('common.page.label.RETRANSLATE_SENTENCE'));
+    console.log("model in retranslation === ", model);
     let apiObj = new WorkFlowAPI("WF_S_TR", updated_blocks, this.props.match.params.jobid, model.source_language_code,
       '', '', model, [sentence_ids], "", "", [], "", true)
     const apiReq = fetch(apiObj.apiEndPoint(), {
@@ -354,7 +356,7 @@ class DocumentEditor extends React.Component {
 
     let updated_blocks = BLOCK_OPS.do_sentence_splitting_v1(this.props.document_contents.pages, sentence.block_identifier, sentence, startIndex, endIndex);
     TELEMETRY.splitSentencesEvent(sentence.src, updated_blocks.splitted_sentences)
-    let model = LANG_MODEL.fetchModel(parseInt(this.props.match.params.modelId), this.props.fetch_models)
+    let model = LANG_MODEL.fetchModel(parseInt(this.props.match.params.modelId), this.props.fetch_models, this.props.match.params.source_language_code, this.props.match.params.target_language_code)
     this.informUserProgress(translate('common.page.label.SENTENCE_SPLITTED'))
     let apiObj = new WorkFlowAPI("WF_S_TR", updated_blocks.blocks, this.props.match.params.jobid, model.source_language_code,
       '', '', model, updated_blocks.selected_sentence_ids)
@@ -387,7 +389,7 @@ class DocumentEditor extends React.Component {
 
   async makeAPICallSourceSaveSentence(sentence, pageNumber) {
     this.informUserProgress(translate('common.page.label.SOURCE_SENTENCE_SAVED'))
-    let model = LANG_MODEL.fetchModel(parseInt(this.props.match.params.modelId), this.props.fetch_models)
+    let model = LANG_MODEL.fetchModel(parseInt(this.props.match.params.modelId), this.props.fetch_models, this.props.match.params.source_language_code, this.props.match.params.target_language_code)
 
     let apiObj = new WorkFlowAPI("WF_S_TKTR", sentence, this.props.match.params.jobid, model.source_language_code,
       '', '', model)
@@ -538,9 +540,13 @@ class DocumentEditor extends React.Component {
   renderProgressInformation = () => {
     return (
       <Snackbar
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         open={this.state.apiInProgress}
         message={this.state.snackBarMessage}
+        autoHideDuration={3000}
+        onClose={(e, r) => {
+          this.setState({ apiInProgress: false })
+        }}
       >
         <Alert elevation={6} variant="filled" severity="info">{this.state.snackBarMessage}</Alert>
       </Snackbar>
@@ -550,8 +556,9 @@ class DocumentEditor extends React.Component {
   renderStatusInformation = () => {
     return (
       <Snackbar
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         open={this.state.showStatus}
+        autoHideDuration={3000}
         onClose={(e, r) => {
           this.setState({ showStatus: false })
         }}
@@ -744,6 +751,7 @@ class DocumentEditor extends React.Component {
       <InfiniteScroll height={window.innerHeight - 141} style={{
         maxHeight: window.innerHeight - 141,
         overflowY: "auto",
+        paddingBottom: 141
       }}
         hasMore={(this.props.document_contents.count > this.props.document_contents.pages.length) ? true : false}
         dataLength={pages.length}
@@ -754,7 +762,7 @@ class DocumentEditor extends React.Component {
             return < div key={sentence.s_id} ref={sentence.s_id} > <SentenceCard key={sentence.s_id}
               pageNumber={page.page_no}
               recordId={this.props.match.params.jobid}
-              model={LANG_MODEL.fetchModel(parseInt(this.props.match.params.modelId), this.props.fetch_models)}
+              model={LANG_MODEL.fetchModel(parseInt(this.props.match.params.modelId), this.props.fetch_models, this.props.match.params.source_language_code, this.props.match.params.target_language_code)}
               jobId={jobId}
               sentence={sentence}
               onAction={this.processSentenceAction} />
@@ -803,7 +811,7 @@ class DocumentEditor extends React.Component {
   }
   render() {
     return (
-      <div style={{ height: window.innerHeight }}>
+      <div style={{ marginTop : 5 }}>
         <div style={{ height: "50px", marginBottom: "13px" }}> <InteractiveDocToolBar docView={this.state.docView} onAction={this.handleDocumentView} onShowPreview={this.showPreview} preview={this.state.preview} /></div>
 
         {!this.state.preview ?

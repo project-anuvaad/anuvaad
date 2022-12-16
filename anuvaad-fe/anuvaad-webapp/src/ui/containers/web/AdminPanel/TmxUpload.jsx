@@ -33,20 +33,20 @@ const theme = createMuiTheme({
         width: '98%', 
         minHeight: '220px',
         height: "45%",
-        borderColor: '#1C9AB7',
+        borderColor: '#2C2799',
         backgroundColor: '#F5F9FA',
-        border: '1px dashed #1C9AB7',
-        fontColor: '#1C9AB7',
+        border: '1px dashed #2C2799',
+        fontColor: '#2C2799',
         marginTop: "3%",
         marginLeft: '1%',
-        "& svg": { color: '#1C9AB7',marginTop:'-20px' },
+        "& svg": { color: '#2C2799',marginTop:'-20px' },
         "& p": {
           textOverflow: "ellipsis",
           whiteSpace: "nowrap",
           overflow: "hidden",
           fontSize: "17px",
           paddingTop:'-50px',
-          color: '#1C9AB7',
+          color: '#2C2799',
 
         }
       },
@@ -73,6 +73,7 @@ class TmxUpload extends Component {
       workspaceName: "",
       path: "",
       orgName:'',
+      orgDropDownDisabled: false,
       cleared: false
     };
   }
@@ -106,6 +107,19 @@ class TmxUpload extends Component {
     // TELEMETRY.pageLoadCompleted('');
     this.setState({ showLoader: true })
     this.props.organizationList.length<1 && this.processFetchBulkOrganizationAPI()
+
+    let role = [localStorage.getItem("roles")];
+    let useRole = [];
+    role.map((item, value) => {
+      useRole.push(item); value !== role.length - 1 && useRole.push(", ")
+      return true;
+    });
+
+    if(role && Array.isArray(role) && role.includes("ADMIN")){
+      let orgID = JSON.parse(localStorage.getItem("userProfile")).orgID;
+      console.log("orgID", orgID);
+      this.setState({orgName : orgID, orgDropDownDisabled : true})
+    }
   }
 
   handleSelectChange = event => {
@@ -158,7 +172,14 @@ class TmxUpload extends Component {
     return (
       <Grid item xs={12} sm={12} lg={12} xl={12} className={this.props.classes.rowData}>
         <Grid item xs={12} sm={12} lg={12} xl={12} className={this.props.classes.label}>
-          <Typography value="" variant="h5">
+          <Typography
+            style={{
+              fontSize: "0.9rem",
+              fontWeight: "600",
+              fontFamily: "Roboto",
+              marginBottom: 2
+            }}
+          >
             Organization
           </Typography>
         </Grid>
@@ -178,6 +199,7 @@ class TmxUpload extends Component {
               labelId="demo-simple-select-outlined-label"
               id="roles"
               onChange={this.handleSelectChange}
+              disabled={this.state.orgDropDownDisabled}
               value={this.state.orgName}
               name= "orgName"
               style={{
@@ -185,7 +207,7 @@ class TmxUpload extends Component {
               }}
             >
               {
-                this.props.organizationList.map((id, i) => <MenuItem id={i} key={i} value={id}>{id}</MenuItem>)
+                this.props.organizationList.map((id, i) => <MenuItem id={i} key={i} style={{fontSize: "16px", fontFamily: "Roboto"}} value={id}>{id}</MenuItem>)
               }
             </Select>
           </FormControl>
@@ -224,9 +246,13 @@ class TmxUpload extends Component {
   renderProgressInformation = () => {
     return (
       <Snackbar
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         open={this.state.apiInProgress}
         message={this.state.snackBarMessage}
+        autoHideDuration={4000}
+        onClose={(e, r) => {
+          this.setState({ apiInProgress: false })
+        }}
       >
         <Alert elevation={6} variant="filled" severity="info">{this.state.snackBarMessage}</Alert>
       </Snackbar>
@@ -236,8 +262,9 @@ class TmxUpload extends Component {
   renderStatusInformation = () => {
     return (
       <Snackbar
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         open={this.state.showStatus}
+        autoHideDuration={4000}
         onClose={(e, r) => {
           this.setState({ showStatus: false })
         }}
@@ -269,7 +296,7 @@ class TmxUpload extends Component {
         
         return Promise.reject('');
       } else {
-        this.setState({orgName:'',files: [], key:this.state.key+1 })
+        this.setState({files: [], key:this.state.key+1 })
         if(rsp_data.status== "SUCCESS"){
             this.informUserStatus("Glossary uploaded.", true)
         }
@@ -294,10 +321,10 @@ class TmxUpload extends Component {
       <div>
 
 
-        <div className={classes.div}>
-        <Typography value="" variant="h4" className={classes.typographyHeader}>
+        <div className={classes.div} style={{paddingTop: "3%", fontSize: "19px", fontWeight: "500"}}>
+        {/* <Typography className={classes.typographyHeader}>
             {translate("common.page.label.glossaryUpload")}
-          </Typography>
+          </Typography> */}
           <Paper elevation={3} style={{minHeight:'255px'}} className={classes.paper}>
             <Grid container spacing={8}>
 
@@ -329,7 +356,7 @@ class TmxUpload extends Component {
                     // className={classes.button1} 
                     style={{
                       width: "100%",
-                      backgroundColor: '#1C9AB7',
+                      backgroundColor: '#2C2799',
                       borderRadius: "20px 20px 20px 20px",
                       color: "#FFFFFF",
                       height: '46px',
@@ -347,7 +374,7 @@ class TmxUpload extends Component {
                   size="large" onClick={this.handleBack.bind(this)}
                   style={{
                     width: "100%",
-                    backgroundColor: '#1C9AB7',
+                    backgroundColor: '#2C2799',
                     borderRadius: "20px 20px 20px 20px",
                     color: "#FFFFFF",
                     height: '46px',

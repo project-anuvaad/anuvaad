@@ -88,7 +88,11 @@ class DocumentConversion(object):
                     text_value = []
                     for processed_text in text['tokenized_sentences']:
                         if 'tgt' in processed_text:
-                            text_value.append(processed_text['tgt'])
+                            if processed_text['tgt'] != None:
+                                # print(processed_text['tgt'],"tgtttttttttttttttttttt")
+                                text_value.append(processed_text['tgt'])
+                            else:
+                                text_value.append("This line is Not Translated")
                         else:
                             text_value.append(processed_text['src'])
                     if text_value:

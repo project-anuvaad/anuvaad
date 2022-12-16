@@ -16,6 +16,16 @@ import ViewGlossary from '../../../../flux/actions/apis/user_glossary/fetch_user
 import Spinner from "../../../components/web/common/Spinner";
 import DeleteGlossary from '../../../../flux/actions/apis/user_glossary/delete_glossary';
 import Snackbar from "../../../components/web/common/Snackbar";
+import { Button, Grid } from "@material-ui/core";
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DeleteTmx from "../../../../flux/actions/apis/tmx/tmxDelete";
+import DataTable from "../../../components/web/common/DataTable";
+import history from "../../../../web.history";
+import ConfirmBox from "../../../components/web/common/ConfirmBox";
 
 var delete_glossary = require("../../../../utils/deleteGlossary.operation");
 
@@ -40,14 +50,21 @@ class MyGlossary extends React.Component {
             message: "",
             variant: 'success',
             loadMsg: "",
-            rowsToDelete: []
+            rowsToDelete: [],
+            openConfirmDialog: false,
+            openSingleGlossaryDeleteConfirmBox: false,
+            singleDeletionArr: [],
+            openDeleteSelectedGlossaryConfirmDialogue: false
         }
     }
-    getUserGlossary = () => {
+    getUserGlossary = async () => {
+        let self = this;
         const { APITransport } = this.props
-        let userID = JSON.parse(localStorage.getItem("userProfile")).userID
-        let apiObj = new ViewGlossary(userID)
-        APITransport(apiObj)
+        let userID = JSON.parse(localStorage.getItem("userProfile")).userID;
+        let orgID = JSON.parse(localStorage.getItem("userProfile")).orgID;
+        let apiObj = new ViewGlossary(userID, orgID);
+        APITransport(apiObj);
+        this.setState({ loading: false })
     }
     componentDidMount() {
         if (this.props.glossaryData.count === 0) {
@@ -66,18 +83,23 @@ class MyGlossary extends React.Component {
         }
     }
 
-    makeDeleteGlossaryAPICall = (userId, src, tgt, locale, reverseLocale, context, bulkDelete = false, deletionArray = []) => {
+    makeDeleteGlossaryAPICall = (userId, orgID, src, tgt, locale, reverseLocale, context, bulkDelete = false, deletionArray = []) => {
+        console.log(`userId, src, tgt, locale, reverseLocale, context, bulkDelete = false, deletionArray = []`);
+        console.log(userId, src, tgt, locale, reverseLocale, context, bulkDelete, deletionArray);
         this.setState({ open: true, message: 'Glossary deletion in progress...', variant: 'info' })
-        let apiObj = new DeleteGlossary(userId, src, tgt, locale, reverseLocale, context, bulkDelete, deletionArray)
+        // let orgID = JSON.parse(localStorage.getItem("userProfile")).orgID;
+        let apiObj = new DeleteGlossary(userId, orgID, src, tgt, locale, reverseLocale, context, bulkDelete, deletionArray);
+        let payloadObj = apiObj.getBody();
+        payloadObj.orgID && delete payloadObj.orgID;
         fetch(apiObj.apiEndPoint(), {
             method: 'post',
             headers: apiObj.getHeaders().headers,
-            body: JSON.stringify(apiObj.getBody())
+            body: JSON.stringify(payloadObj)
         })
             .then(async res => {
                 if (res.ok) {
                     this.setState({ open: false })
-                    let apiObj = new ViewGlossary(userId)
+                    let apiObj = new ViewGlossary(userId, orgID)
                     let { APITransport } = this.props
                     APITransport(apiObj)
                     return true;
@@ -88,9 +110,135 @@ class MyGlossary extends React.Component {
             })
     }
 
+    makeDeleteAllGlossaryAPICall = (userObj, context) => {
+        this.setState({ open: true, message: 'Glossary deletion in progress...', variant: 'info', openConfirmDialog: false })
+        let apiObj = new DeleteTmx(userObj, context)
+        // console.log("apiObj.getBody()", apiObj.getBody());
+        let userID = JSON.parse(localStorage.getItem("userProfile")).userID;
+        let orgID = JSON.parse(localStorage.getItem("userProfile")).orgID;
+        fetch(apiObj.apiEndPoint(), {
+            method: 'post',
+            headers: apiObj.getHeaders().headers,
+            body: JSON.stringify(apiObj.getBody())
+        })
+            .then(async res => {
+                if (res.ok) {
+                    this.setState({ open: false })
+                    let apiObj = new ViewGlossary(userID, orgID)
+                    let { APITransport } = this.props
+                    APITransport(apiObj)
+                    return true;
+                } else {
+                    this.setState({ open: true, message: 'Glossary deletion failed', variant: 'error' })
+                    return false;
+                }
+            })
+    }
+
+    handleDeleteAllGlossary = () => {
+        console.log("handleDeleteAllGlossary")
+        this.setState({ openConfirmDialog: true })
+    }
+
+    handleCloseConfirmBox = () => {
+        this.setState({ openConfirmDialog: false })
+    }
+
+    renderDeleteAllGlossaryButton = () => {
+        return (
+            <div style={{ textAlign: "end", marginBottom: "1rem" }}>
+                <Button
+                    onClick={() => this.handleDeleteAllGlossary()}
+                    variant="contained"
+                    color="primary"
+                    style={{
+                        borderRadius: "10px",
+                        color: "#FFFFFF",
+                        backgroundColor: "#D32F2F",
+                        height: "35px",
+                        fontSize: "16px",
+                        textTransform: "none",
+                    }}
+                    size="small"
+                >
+                    Delete All Glossary
+                </Button>
+                <ConfirmBox
+                    open={this.state.openConfirmDialog}
+                    onClose={() => this.handleCloseConfirmBox()}
+                    title="Delete all glossary"
+                    contentText="Are you sure you want to delete all glossary?"
+                    onConfirm={() => this.makeDeleteAllGlossaryAPICall({ userID: JSON.parse(localStorage.getItem("userProfile")).userID }, "JUDICIARY")}
+                />
+                {/* <Dialog
+                    open={this.state.openConfirmDialog}
+                    onClose={() => this.handleCloseConfirmBox()}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                >
+                    <DialogTitle id="alert-dialog-title">{"Delete all glossary"}</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText id="alert-dialog-description">
+                            Are you sure you want to delete all glossary?
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={() => this.makeDeleteAllGlossaryAPICall({ userID: JSON.parse(localStorage.getItem("userProfile")).userID }, "JUDICIARY")} style={{textTransform: "none"}} color="primary">
+                            Confirm
+                        </Button>
+                        <Button onClick={() => this.handleCloseConfirmBox()} style={{textTransform: "none"}} color="primary" autoFocus>
+                            Cancel
+                        </Button>
+                    </DialogActions>
+                </Dialog> */}
+            </div>
+        )
+    }
+
+    handleDeleteSelectedGlossaryBox = () => {
+        this.setState({ openDeleteSelectedGlossaryConfirmDialogue: false })
+    }
+
+    renderDeleteSelectedGlossaryConfirmBox = () => {
+        return (
+            <div style={{ textAlign: "end", marginBottom: "1rem" }}>
+                <ConfirmBox
+                    open={this.state.openDeleteSelectedGlossaryConfirmDialogue}
+                    onClose={() => this.handleDeleteSelectedGlossaryBox()}
+                    title="Delete Selected glossary"
+                    contentText="Are you sure you want to delete selected glossary?"
+                    onConfirm={() => this.deleteMultipleRows()}
+                />
+                {/* <Dialog
+                    open={this.state.openDeleteSelectedGlossaryConfirmDialogue}
+                    onClose={() => this.handleDeleteSelectedGlossaryBox()}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                >
+                    <DialogTitle id="alert-dialog-title">{"Delete Selected glossary"}</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText id="alert-dialog-description">
+                            Are you sure you want to delete selected glossary?
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={() => this.deleteMultipleRows()} color="primary">
+                            Confirm
+                        </Button>
+                        <Button onClick={() => this.handleDeleteSelectedGlossaryBox()} color="primary" autoFocus>
+                            Cancel
+                        </Button>
+                    </DialogActions>
+                </Dialog> */}
+            </div>
+        )
+    }
+
     handleDeleteGlossary = (dataArray) => {
         let reverseLocale = dataArray[3].split("|").reverse().join("|");
-        this.makeDeleteGlossaryAPICall(dataArray[2], dataArray[0], dataArray[1], dataArray[3], reverseLocale, dataArray[4])
+        let orgID = JSON.parse(localStorage.getItem("userProfile")).orgID;
+        this.makeDeleteGlossaryAPICall(dataArray[2], orgID, dataArray[0], dataArray[1], dataArray[3], reverseLocale, dataArray[4]);
+        this.setState({ openSingleGlossaryDeleteConfirmBox: false });
     }
 
     handleClose = () => {
@@ -99,10 +247,12 @@ class MyGlossary extends React.Component {
 
     deleteMultipleRows = () => {
         let isOrg = delete_glossary.isOrg(this.props.glossaryData, this.state.rowsToDelete)
+        this.handleDeleteSelectedGlossaryBox()
         if (!isOrg) {
             let userId = JSON.parse(localStorage.getItem("userProfile")).userID
-            let rowsToBeDeleted = delete_glossary.getBulkDeletionArray(this.props.glossaryData, this.state.rowsToDelete)
-            this.makeDeleteGlossaryAPICall(userId, "", "", "", "", "JUDICIARY", true, rowsToBeDeleted)
+            let rowsToBeDeleted = delete_glossary.getBulkDeletionArray(this.props.glossaryData, this.state.rowsToDelete);
+            let orgID = JSON.parse(localStorage.getItem("userProfile")).orgID;
+            this.makeDeleteGlossaryAPICall(userId, orgID, "", "", "", "", "JUDICIARY", true, rowsToBeDeleted)
         } else {
             this.setState({ open: true, message: "Cannot delete glossary of type Organization..", variant: "error" })
         }
@@ -135,7 +285,8 @@ class MyGlossary extends React.Component {
                 options: {
                     filter: false,
                     sort: false,
-                    display: 'excluded'
+                    display: 'excluded',
+                    download: false
                 },
             },
             {
@@ -171,6 +322,8 @@ class MyGlossary extends React.Component {
                 options: {
                     sort: false,
                     empty: true,
+                    download: false,
+                    viewColumns: false,
                     customBodyRender: (value, tableMeta, updateValue) => {
                         if (tableMeta.rowData) {
                             return (
@@ -179,12 +332,56 @@ class MyGlossary extends React.Component {
                                         <IconButton
                                             style={{ color: tableMeta.rowData[5] === "Organization" ? "grey" : "#233466", padding: "5px" }}
                                             component="a"
-                                            onClick={() => this.handleDeleteGlossary(tableMeta.rowData)}
+                                            onClick={() => { this.setState({ openSingleGlossaryDeleteConfirmBox: true, singleDeletionArr: tableMeta.rowData }) }}
                                             disabled={tableMeta.rowData[5] === "Organization"}
                                         >
                                             <DeleteIcon />
                                         </IconButton>
                                     </Tooltip>
+                                    <ConfirmBox
+                                        open={this.state.openSingleGlossaryDeleteConfirmBox && this.state.singleDeletionArr.length > 0}
+                                        onClose={() => this.setState({ openSingleGlossaryDeleteConfirmBox: false })}
+                                        title="Delete glossary"
+                                        contentText={"Are you sure you want to delete " + this.state.singleDeletionArr[0] + " - " + this.state.singleDeletionArr[1] + " glossary?"}
+                                        onConfirm={() => this.handleDeleteGlossary(this.state.singleDeletionArr)}
+                                        BackdropProps={{
+                                            style: {
+                                                backgroundColor: 'rgba(0,0,0,0.15)',
+                                                boxShadow: '2px 2px 2px 1px rgb(0 0 0 / 2%)',
+                                            }
+                                        }}
+                                    />
+                                    {/* <Dialog
+                                        open={this.state.openSingleGlossaryDeleteConfirmBox && this.state.singleDeletionArr.length > 0}
+                                        onClose={() => this.setState({ openSingleGlossaryDeleteConfirmBox: false })}
+                                        aria-labelledby="alert-dialog-title"
+                                        aria-describedby="alert-dialog-description"
+                                        BackdropProps={{
+                                            style:{
+                                                backgroundColor: 'rgba(0,0,0,0.2)',
+                                                boxShadow: 'none',
+                                            }
+                                        }}                  
+                                    >
+                                        <DialogTitle id="alert-dialog-title">{"Delete glossary"}</DialogTitle>
+                                        <DialogContent>
+                                            <DialogContentText id="alert-dialog-description">
+                                                Are you sure you want to delete {this.state.singleDeletionArr[0]} - {this.state.singleDeletionArr[1]} glossary?
+                                            </DialogContentText>
+                                        </DialogContent>
+                                        <DialogActions>
+                                            <Button onClick={() => {
+                                                // console.log("confirm tableMeta.rowData", this.state.singleDeletionArr);
+                                                this.handleDeleteGlossary(this.state.singleDeletionArr)
+                                            }}
+                                                style={{fontWeight: "400", color: "#3f51b5", textTransform: "none"}}>
+                                                Confirm
+                                            </Button>
+                                            <Button onClick={() => this.setState({ openSingleGlossaryDeleteConfirmBox: false })} style={{fontWeight: "400", color: "#3f51b5", textTransform: "none"}}>
+                                                Cancel
+                                            </Button>
+                                        </DialogActions>
+                                    </Dialog> */}
                                 </div>
                             );
                         }
@@ -210,7 +407,7 @@ class MyGlossary extends React.Component {
             rowsPerPageOptions: [10],
             count: this.props.glossaryData.count,
             filterType: "checkbox",
-            download: true,
+            download: this.props.glossaryData.result.length > 0 ? true : false,
             print: false,
             fixedHeader: true,
             filter: false,
@@ -222,18 +419,40 @@ class MyGlossary extends React.Component {
                 this.setState({ rowsToDelete: allRowsSelected })
             },
             onRowsDelete: () => {
-                this.deleteMultipleRows()
+                this.setState({ openDeleteSelectedGlossaryConfirmDialogue: true })
             }
         };
         return (
-            <div style={{ maxHeight: window.innerHeight, height: window.innerHeight, overflow: "auto" }}>
-                <div style={{ margin: "0% 3% 3% 3%", paddingTop: "7%" }}>
-                    <Header />
+            <div style={{}}>
+                <div style={{ margin: "0% 3% 3% 3%", paddingTop: "2%" }}>
+                    {/* <Header /> */}
                     {this.state.loading ?
                         <Spinner />
                         :
                         <MuiThemeProvider theme={getMuiTheme()}>
-                            <MUIDataTable
+                            <Grid container direction="row" justify="flex-end">
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    style={{
+                                        borderRadius: "10px",
+                                        color: "#FFFFFF",
+                                        backgroundColor: "#2C2799",
+                                        height: "35px",
+                                        fontSize: "16px",
+                                        textTransform: "none",
+                                        marginRight: 5
+                                    }}
+                                    size="small"
+                                    onClick={() => history.push(`${process.env.PUBLIC_URL}/user-glossary-upload`)}
+                                >
+                                    Create Glossary
+                                </Button>
+                                {this.renderDeleteAllGlossaryButton()}
+                            </Grid>
+
+                            {this.renderDeleteSelectedGlossaryConfirmBox()}
+                            <DataTable
                                 title={translate("common.page.title.glossary")}
                                 columns={columns}
                                 options={options}
@@ -246,7 +465,7 @@ class MyGlossary extends React.Component {
                     <Snackbar
                         open={this.state.open}
                         message={this.state.message}
-                        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
                         autoHideDuration={3000}
                         onClose={this.handleClose}
                         variant={this.state.variant}
@@ -259,6 +478,7 @@ class MyGlossary extends React.Component {
 
 const mapStateToProps = (state) => ({
     glossaryData: state.fetchglossary,
+    apistatus: state.apistatus,
 });
 
 const mapDispatchToProps = (dispatch) =>

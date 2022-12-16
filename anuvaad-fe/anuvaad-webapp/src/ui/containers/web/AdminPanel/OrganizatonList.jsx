@@ -18,6 +18,9 @@ import Snackbar from '@material-ui/core/Snackbar';
 import Alert from '@material-ui/lab/Alert';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import AddOrg from "../../../../flux/actions/apis/organization/addOrganization";
+import Visibility from "@material-ui/icons/Visibility";
+import history from "../../../../web.history";
+import DataTable from "../../../components/web/common/DataTable";
 
 
 const TELEMETRY = require('../../../../utils/TelemetryManager')
@@ -26,13 +29,13 @@ class OrganizationList extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      
-      
+
+
       offset: 0,
       limit: 10,
       currentPageIndex: 0,
-      
-      showLoader:false,
+
+      showLoader: false,
       status: false,
     };
 
@@ -48,9 +51,29 @@ class OrganizationList extends React.Component {
     );
   }
 
-    /**
-   * progress information for user from API
-   */
+  viewOrgGlossaries = (orgId) => {
+    return (
+      <Tooltip title="View Org Glossaries" placement="right">
+        <IconButton style={{ color: '#233466', padding: '5px' }} component="a" onClick={() => this.onViewGlossaryClick(orgId)}>
+          <Visibility />
+        </IconButton>
+      </Tooltip>
+    )
+  }
+
+  viewOrgGlossarySuggestion = (orgId) => {
+    return (
+      <Tooltip title="View Org Glossaries" placement="right">
+        <IconButton style={{ color: '#233466', padding: '5px' }} component="a" onClick={() => this.onViewGlossarySuggestionClick(orgId)}>
+          <Visibility />
+        </IconButton>
+      </Tooltip>
+    )
+  }
+
+  /**
+ * progress information for user from API
+ */
   informUserProgress = (message) => {
     this.setState({
       apiInProgress: true,
@@ -68,9 +91,9 @@ class OrganizationList extends React.Component {
   }
 
   async handleDeleteOrg(orgId) {
-    
+
     // TELEMETRY.addOrganization(this.state.name, this.state.description)
-      let apiObj = new AddOrg(orgId, "", false)
+    let apiObj = new AddOrg(orgId, "", false)
     this.informUserProgress("Deactivating organization");
     const apiReq = fetch(apiObj.apiEndPoint(), {
       method: 'post',
@@ -80,55 +103,63 @@ class OrganizationList extends React.Component {
       const rsp_data = await response.json();
       if (!response.ok) {
         TELEMETRY.log("delete-organization", JSON.stringify(rsp_data))
-        if(Number(response.status)===401){
+        if (Number(response.status) === 401) {
           this.handleRedirect()
         }
-        else{
-          this.informUserStatus(rsp_data.message ? rsp_data.message: rsp_data.why ? rsp_data.why : "failed", false)
+        else {
+          this.informUserStatus(rsp_data.message ? rsp_data.message : rsp_data.why ? rsp_data.why : "failed", false)
         }
-        
+
         return Promise.reject('');
       } else {
-        if(rsp_data.http.status== 200){
-            this.informUserStatus( rsp_data.why ? rsp_data.why : orgId + "Deactivated", true)
-            this.processFetchBulkOrganizationAPI()
-            
+        if (rsp_data.http.status == 200) {
+          this.informUserStatus(rsp_data.why ? rsp_data.why : orgId + "Deactivated", true)
+          this.processFetchBulkOrganizationAPI()
+
         }
-        else{
-            this.informUserStatus(rsp_data.why ? rsp_data.why : "Deactivation Failed.", false)
+        else {
+          this.informUserStatus(rsp_data.why ? rsp_data.why : "Deactivation Failed.", false)
         }
-        
-        
+
+
 
       }
     })
-};
+  };
 
-renderProgressInformation = () => {
-  return (
-    <Snackbar
-      anchorOrigin={{ vertical: "top", horizontal: "right" }}
-      open={this.state.apiInProgress}
-      message={this.state.snackBarMessage}
-    >
-      <Alert elevation={6} variant="filled" severity="info">{this.state.snackBarMessage}</Alert>
-    </Snackbar>
-  )
-}
+  onViewGlossaryClick = (orgId) => {
+    history.push(`${process.env.PUBLIC_URL}/organization-glossary/${orgId}`);
+  }
 
-renderStatusInformation = () => {
-  return (
-    <Snackbar
-      anchorOrigin={{ vertical: "top", horizontal: "right" }}
-      open={this.state.showStatus}
-      onClose={(e, r) => {
-        this.setState({ showStatus: false })
-      }}
-    >
-      <Alert elevation={6} variant="filled" severity={this.state.snackBarVariant}>{this.state.snackBarMessage}</Alert>
-    </Snackbar>
-  )
-}
+  onViewGlossarySuggestionClick = (orgId) => {
+    history.push(`${process.env.PUBLIC_URL}/suggestion-list/${orgId}`);
+  }
+
+  renderProgressInformation = () => {
+    return (
+      <Snackbar
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        open={this.state.apiInProgress}
+        message={this.state.snackBarMessage}
+      >
+        <Alert elevation={6} variant="filled" severity="info">{this.state.snackBarMessage}</Alert>
+      </Snackbar>
+    )
+  }
+
+  renderStatusInformation = () => {
+    return (
+      <Snackbar
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        open={this.state.showStatus}
+        onClose={(e, r) => {
+          this.setState({ showStatus: false })
+        }}
+      >
+        <Alert elevation={6} variant="filled" severity={this.state.snackBarVariant}>{this.state.snackBarMessage}</Alert>
+      </Snackbar>
+    )
+  }
 
 
   processFetchBulkOrganizationAPI = (offset, limit) => {
@@ -146,7 +177,7 @@ renderStatusInformation = () => {
   }
 
   componentDidUpdate(prevProps) {
-    
+
     if (prevProps.organizationList !== this.props.organizationList) {
       this.setState({ showLoader: false, status: false })
     }
@@ -170,7 +201,7 @@ renderStatusInformation = () => {
 
   render() {
     const columns = [
-      
+
       {
         name: "code",
         label: "Organization Name",
@@ -198,12 +229,46 @@ renderStatusInformation = () => {
         }
       },
       {
+        name: "view-glossary",
+        label: "View Glossary",
+        options: {
+          filter: true,
+          sort: true,
+          empty: true,
+          customBodyRender: (value, tableMeta, updateValue) => {
+            if (tableMeta.rowData) {
+              return (
+                this.viewOrgGlossaries(tableMeta.rowData[0]) //userId, userName, roleCodes, isactive
+              );
+            }
+          }
+        }
+      },
+      {
+        name: "view-suggestions",
+        label: "View Suggestions",
+        options: {
+          filter: true,
+          sort: true,
+          empty: true,
+          viewColumns: false,
+          customBodyRender: (value, tableMeta, updateValue) => {
+            if (tableMeta.rowData) {
+              return (
+                this.viewOrgGlossarySuggestion(tableMeta.rowData[0]) //userId, userName, roleCodes, isactive
+              );
+            }
+          }
+        }
+      },
+      {
         name: "reset-password",
         label: "Deactivate",
         options: {
           filter: true,
           sort: true,
           empty: true,
+          viewColumns: false,
           customBodyRender: (value, tableMeta, updateValue) => {
             if (tableMeta.rowData) {
               return (
@@ -230,9 +295,9 @@ renderStatusInformation = () => {
         },
         // options: { sortDirection: 'asc' }
       },
-      
+
       count: this.props.count,
-      rowsPerPageOptions: [10,20,50],
+      rowsPerPageOptions: [10, 20, 50],
       filterType: "checkbox",
       download: false,
       print: false,
@@ -243,20 +308,20 @@ renderStatusInformation = () => {
     };
 
     return (
-      <div style={{ maxHeight: window.innerHeight, height: window.innerHeight, overflow: "auto" }}>
+      <div style={{ }}>
 
-        <div style={{ margin: '0% 3% 3% 3%', paddingTop: "7%" }}>
-          <ToolBar/>
+        <div style={{ margin: '0% 3% 3% 3%', paddingTop: "2%" }}>
+          <ToolBar />
           {
             (!this.state.showLoader || this.props.count) &&
             <MuiThemeProvider theme={this.getMuiTheme()}>
-              <MUIDataTable title={translate("common.page.title.orgList")}
+              <DataTable title={translate("common.page.title.orgList")}
                 columns={columns} options={options} data={this.props.organizationList} />
             </MuiThemeProvider>
           }
           {(this.state.showLoader) && <Spinner />}
           {this.state.apiInProgress ? this.renderProgressInformation() : <div />}
-        {this.state.showStatus ? this.renderStatusInformation() : <div />}
+          {this.state.showStatus ? this.renderStatusInformation() : <div />}
         </div>
       </div >
     );

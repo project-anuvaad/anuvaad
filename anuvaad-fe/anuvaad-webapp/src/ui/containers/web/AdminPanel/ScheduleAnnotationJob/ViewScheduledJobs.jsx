@@ -24,6 +24,7 @@ import MarkInactive from "../../../../../flux/actions/apis/view_document/markina
 import JobStatus from "../../../../../flux/actions/apis/view_document/translation.progress";
 import { clearJobEntry } from "../../../../../flux/actions/users/async_job_management";
 import fetchpageno from '../../../../../flux/actions/apis/view_document/fetch_page_no';
+import DataTable from "../../../../components/web/common/DataTable";
 
 const TELEMETRY = require("../../../../../utils/TelemetryManager");
 
@@ -292,7 +293,7 @@ class ViewScheduledJobs extends React.Component {
         return (
             <div>
                 <Snackbar
-                    anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                    anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
                     open={!this.state.timeOut}
                     autoHideDuration={this.state.timeOut}
                     variant={this.state.variant}
@@ -531,12 +532,12 @@ class ViewScheduledJobs extends React.Component {
         };
 
         return (
-            <div style={{ maxHeight: window.innerHeight, height: window.innerHeight, overflow: "auto" }}>
-                <div style={{ margin: "0% 3% 3% 3%", paddingTop: "7%" }}>
+            <div style={{ }}>
+                <div style={{ margin: "0% 3% 3% 3%", paddingTop: "2%" }}>
                     <ToolBar />
                     {!this.state.showLoader && (
                         <MuiThemeProvider theme={this.getMuiTheme()}>
-                            <MUIDataTable
+                            <DataTable
                                 title={translate("common.page.title.document")}
                                 data={this.getJobsSortedByTimestamp()}
                                 columns={columns}

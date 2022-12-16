@@ -37,19 +37,19 @@ const theme = createMuiTheme({
                 width: '100%',
                 minHeight: '380px',
                 height: "85%",
-                borderColor: '#1C9AB7',
+                borderColor: '#2C2799',
                 backgroundColor: '#F5F9FA',
-                border: '1px dashed #1C9AB7',
-                fontColor: '#1C9AB7',
+                border: '1px dashed #2C2799',
+                fontColor: '#2C2799',
                 marginTop: "3%",
                 marginLeft: '1%',
-                "& svg": { color: '#1C9AB7', },
+                "& svg": { color: '#2C2799', },
                 "& p": {
                     textOverflow: "ellipsis",
                     whiteSpace: "nowrap",
                     overflow: "hidden",
                     fontSize: "19px",
-                    color: '#1C9AB7',
+                    color: '#2C2799',
 
                 }
             },
@@ -84,13 +84,15 @@ class ScheduleJob extends React.Component {
             target_languages: [],
             description: '',
             array_of_users: [],
-            variant: 'success'
+            variant: 'success',
+            assignedOrgId: JSON.parse(localStorage.getItem("userProfile"))?.orgID,
         }
     }
 
     processFetchBulkUserDetailAPI = (offset, limit, updateExisiting = false, updateUserDetail = false, userIDs = [], userNames = [], roleCodes = []) => {
         const token = localStorage.getItem("token");
-        const userObj = new FetchUserDetails(offset, limit, token, updateExisiting, updateUserDetail, userIDs, userNames, roleCodes)
+        const assignedOrgIdArr = [this.state.assignedOrgId];
+        const userObj = new FetchUserDetails(offset, limit, token, updateExisiting, updateUserDetail, userIDs, userNames, roleCodes, assignedOrgIdArr);
         this.props.APITransport(userObj)
     }
 
@@ -161,7 +163,14 @@ class ScheduleJob extends React.Component {
         const { classes } = this.props
         return (<Grid item xs={12} sm={12} lg={12} xl={12} style={{ marginTop: "1.5%" }}>
             <Grid item xs={12} sm={12} lg={12} xl={12}>
-                <Typography value="" variant="h5">
+                <Typography 
+                    style={{
+                        fontSize: "0.9rem",
+                        fontWeight: "600",
+                        fontFamily: "Roboto",
+                        marginBottom: 2
+                    }}
+                >
                     {translate("common.page.label.sourceLang")}{" "}
                 </Typography>
             </Grid>
@@ -185,7 +194,7 @@ class ScheduleJob extends React.Component {
                 >
                     {
                         this.state.source_languages.map(lang =>
-                            <MenuItem id={lang.language_name} key={lang.language_code} value={lang.language_code + ''}>{lang.language_name}</MenuItem>)
+                            <MenuItem id={lang.language_name} key={lang.language_code} style={{fontSize: "16px", fontFamily: "Roboto"}} value={lang.language_code + ''}>{lang.language_name}</MenuItem>)
                     }
                 </Select>
             </Grid>
@@ -235,7 +244,14 @@ class ScheduleJob extends React.Component {
         const { classes } = this.props
         return (<Grid item xs={12} sm={12} lg={12} xl={12} style={{ marginTop: "1.5%" }}>
             <Grid item xs={12} sm={12} lg={12} xl={12}>
-                <Typography value="" variant="h5">
+                <Typography 
+                    style={{
+                        fontSize: "0.9rem",
+                        fontWeight: "600",
+                        fontFamily: "Roboto",
+                        marginBottom: 2
+                    }}
+                >
                     {translate("common.page.label.targetLang")}{" "}
                 </Typography>
             </Grid>
@@ -259,7 +275,7 @@ class ScheduleJob extends React.Component {
                 >
                     {
                         this.state.target_languages.map(lang =>
-                            <MenuItem key={lang.language_code} value={lang.language_code + ''}>{lang.language_name}</MenuItem>)
+                            <MenuItem key={lang.language_code} style={{fontSize: "16px", fontFamily: "Roboto"}} value={lang.language_code + ''}>{lang.language_name}</MenuItem>)
                     }
                 </Select>
             </Grid>
@@ -282,12 +298,12 @@ class ScheduleJob extends React.Component {
             <div style={{ height: window.innerHeight, overflow: 'auto' }}>
                 <Toolbar />
 
-                <div className={classes.div}>
-                    <Typography value="" variant="h4" className={classes.typographyHeader}>
+                <div className={classes.div} style={{paddingTop: "2%", fontSize: "19px", fontWeight: "500"}}>
+                    <Typography className={classes.typographyHeader}>
                         Schedule Job
                     </Typography>
                     <br />
-                    <Typography className={classes.typographySubHeader}>{"Upload file that you want to annotate."}</Typography>
+                    <Typography variant="subtitle1" style={{fontSize: "1rem"}}  className={classes.typographySubHeader}>{"Upload file that you want to annotate."}</Typography>
                     <br />
                     <Paper elevation={3} className={classes.paper}>
                         <Grid container spacing={8}>
@@ -315,7 +331,14 @@ class ScheduleJob extends React.Component {
 
                                 <Grid item xs={12} sm={12} lg={12} xl={12}>
                                     <Grid item xs={12} sm={12} lg={12} xl={12}>
-                                        <Typography variant="h5">
+                                        <Typography
+                                            style={{
+                                                fontSize: "0.9rem",
+                                                fontWeight: "600",
+                                                fontFamily: "Roboto",
+                                                marginBottom: 2
+                                              }}
+                                        >
                                             Enter Job Description
                                         </Typography>
                                     </Grid>
@@ -335,7 +358,14 @@ class ScheduleJob extends React.Component {
                                 </Grid>
                                 <Grid item xs={12} sm={12} lg={12} xl={12} style={{ marginTop: '1.5%' }}>
                                     <Grid item xs={12} sm={12} lg={12} xl={12}>
-                                        <Typography variant="h5">
+                                        <Typography 
+                                            style={{
+                                                fontSize: "0.9rem",
+                                                fontWeight: "600",
+                                                fontFamily: "Roboto",
+                                                marginBottom: 2
+                                              }}
+                                        >
                                             Search Users
                                         </Typography>
                                     </Grid>
@@ -365,7 +395,7 @@ class ScheduleJob extends React.Component {
                                     }
                                     style={{
                                         width: "100%",
-                                        backgroundColor: '#1C9AB7',
+                                        backgroundColor: '#2C2799',
                                         borderRadius: "20px 20px 20px 20px",
                                         color: "#FFFFFF",
                                         height: '46px'
@@ -381,7 +411,7 @@ class ScheduleJob extends React.Component {
                                         variant="contained" color="primary"
                                         style={{
                                             width: "100%",
-                                            backgroundColor: '#1C9AB7',
+                                            backgroundColor: '#2C2799',
                                             borderRadius: "20px 20px 20px 20px",
                                             color: "#FFFFFF",
                                             height: '46px'

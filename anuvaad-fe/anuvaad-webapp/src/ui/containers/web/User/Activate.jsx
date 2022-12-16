@@ -64,11 +64,11 @@ class Activate extends React.Component {
                 headers: apiObj.getHeaders().headers
             }).then(async response => {
                 if (response.ok) {
-                    history.push(`${process.env.PUBLIC_URL}`);
+                    history.push(`${process.env.PUBLIC_URL}/user/login`);
                 } else {
                     this.setState({ open: true, message: 'Oops! Something went wrong. You will be redirected to login page' });
                     setTimeout(async () => {
-                        const loginPage = await history.push(process.env.PUBLIC_URL);
+                        const loginPage = await history.push(`${process.env.PUBLIC_URL}/user/login`);
                     }, 6000);
                 }
             })
@@ -97,22 +97,22 @@ class Activate extends React.Component {
             <MuiThemeProvider theme={ThemeDefault}>
                 <div>
                     <Grid container>
-                        <Grid item xs={12} sm={4} lg={5} xl={5} >
+                        {/* <Grid item xs={12} sm={4} lg={5} xl={5} >
                             <img src="/Anuvaad.png" width="100%" alt="" />
-                        </Grid>
-                        <Grid item xs={12} sm={8} lg={7} xl={7} style={{ backgroundColor: '#f1f5f7' }} >
+                        </Grid> */}
+                        <Grid item xs={12} sm={8} lg={10} xl={10} style={{marginLeft: "5rem", backgroundColor: '#fffff', textAlign: "center" }} >
                             {/* <ValidatorForm
                             ref="form"
                             onSubmit={this.handleSubmit}
                             onError={errors => console.log(errors)}
                         > */}
-                            <Typography align='center' style={{ marginTop: '45%', marginBottom: '5%', fontSize: '25px', fontfamily: 'Arial, Helvetica, sans-serif', color: '#003366' }}>{translate('activate.page.label.waitWhileWeActivateAccount')}</Typography>
+                            <Typography align='center' style={{ marginTop: '5%', marginBottom: '5%', fontSize: '25px', fontfamily: 'Arial, Helvetica, sans-serif', color: '#003366' }}>{translate('activate.page.label.waitWhileWeActivateAccount')}</Typography>
                         </Grid>
                     </Grid>
                     <div className={classes.buttonsDiv} />
                     {this.state.open && (
                         <Snackbar
-                            anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                            anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
                             open={this.state.open}
                             autoHideDuration={6000}
                             onClose={this.handleClose}

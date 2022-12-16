@@ -22,6 +22,7 @@ import CloudDownloadIcon from "@material-ui/icons/CloudDownload";
 import DownloadFile from "../../../../flux/actions/apis/download/download_file";
 import EventIcon from '@material-ui/icons/Event';
 import clearEvent from '../../../../flux/actions/apis/admin/clear_user_event_report';
+import DataTable from "../../../components/web/common/DataTable";
 
 
 const TELEMETRY = require("../../../../utils/TelemetryManager");
@@ -175,8 +176,10 @@ class UserReport extends React.Component {
         }
        
         if (recordIds.length > 0) {
+            const uniqueIDs = recordIds.filter((val,id,array) => array.indexOf(val) == id);
             const { APITransport } = this.props;
-            const apiObj = new JobStatus(recordIds, true);
+            const apiObj = new JobStatus(uniqueIDs, true);
+            // const apiObj = new JobStatus(recordIds, true);
             APITransport(apiObj);
             this.setState({ showProgress: true, searchToken: false });
         }
@@ -196,7 +199,8 @@ class UserReport extends React.Component {
     };
 
     getJobsAsPerPageAndLimit = (page, limit) => {
-        if(limit === 0) {  
+        if(limit === 0) {
+            // limit = 10  
             this.setState({ limit: 10 });
         }
         return this.getJobsSortedByTimestamp().slice(
@@ -289,7 +293,7 @@ class UserReport extends React.Component {
         return (
             <div>
                 <Snackbar
-                    anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                    anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
                     open={!this.state.timeOut}
                     autoHideDuration={this.state.timeOut}
                     variant={this.state.variant}
@@ -308,7 +312,7 @@ class UserReport extends React.Component {
         return date.toISOString().substr(11, 8);
     }
 
-    processTableClickedNextOrPrevious = (page, sortOrder) => {
+    processTableClickedNextOrPrevious = (page) => {
         if (this.state.currentPageIndex < page) {
             /**
              * user wanted to load next set of records
@@ -320,6 +324,7 @@ class UserReport extends React.Component {
                 false,
                 this.state.userID,
             );
+            // this.makeAPICallDocumentsTranslationProgress();
             this.setState({
                 currentPageIndex: page,
                 offset: this.state.offset + this.state.limit,
@@ -497,6 +502,7 @@ class UserReport extends React.Component {
                 name: "bleu_score",
                 label: "Average Bleu",
                 options: {
+                    hint: "Total bleu score / Total saved sentence",
                     sort: false
                 }
             }, {
@@ -561,6 +567,7 @@ class UserReport extends React.Component {
                     filter: true,
                     sort: false,
                     empty: true,
+                    viewColumns: false,
                     customBodyRender: (value, tableMeta, updateValue) => {
                         if (tableMeta.rowData) {
                             return (
@@ -596,13 +603,13 @@ class UserReport extends React.Component {
                 switch (action) {
                     case "changePage":
                         this.processTableClickedNextOrPrevious(
-                            tableState.page,
-                            tableState.sortOrder
+                            tableState.page
                         );
+                        this.setState({ showLoader: true, limit: tableState.rowsPerPage })
                         break;
                     case "changeRowsPerPage":
+                        this.setState({ showLoader: true, limit: tableState.rowsPerPage, currentPageIndex: tableState.page  })
                         this.makeAPICallDocumentsTranslationProgress(tableState.rowsPerPage);
-                        this.setState({ showLoader: true })
                         break;
                     default:
                 }
@@ -626,7 +633,7 @@ class UserReport extends React.Component {
                     <UserReportHeader />
                     {/* {!this.state.showLoader && ( */}
                     <MuiThemeProvider theme={this.getMuiTheme()}>
-                        <MUIDataTable
+                        <DataTable
                             title={`${this.props.match.params.name}'s Detail`}
                             data={this.getJobsSortedByTimestamp()}
                             columns={columns}

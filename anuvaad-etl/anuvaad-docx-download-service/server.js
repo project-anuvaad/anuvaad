@@ -10,8 +10,23 @@ const { refactorSourceJSON } = require("./generate-docx/utils");
 const { refactorSourceJSONnew } = require("./generate-docx/utilsnew");
 const bodyParser = require("body-parser");
 const path = require("path");
-const { HOSTNAME } = require("./config/end-point-config");
+const { CH,OCR_CH } = require("./config/end-point-config");
+// const HOSTNAME = process.env.NODE_HOSTNAME || "anuvad"
 // const  cors = require("cors")
+// const axios = require('axios')
+// app.use(cors());
+// app.use(function(req, res, next) {
+//   res.setHeader('Access-Control-Allow-Origin', '*');
+//   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+//   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+//   res.setHeader('Access-Control-Allow-Credentials', true);
+//   next();
+// });
+
+// if(HOSTNAME === 'anuvad') {
+//   console.log("Node hostname is not found");
+// }
+
 console.log("server.js called");
 app.use(bodyParser.json());
 
@@ -30,19 +45,19 @@ app.post(
     console.log(jobName);
     let data = "";
     var options = {
-      hostname: "auth.anuvaad.org",
+      host: CH,
       path: `/anuvaad/content-handler/v0/fetch-content?record_id=${jobId}&start_page=0&end_page=0`,
       method: "GET",
       headers: {
         "Content-Type": "application/json",
         "auth-token": authToken,
       },
-      // port: "5001",
+      port: "5001",
     };
     console.log("calling content-handler");
     console.log("options", options);
 
-    var req = https.request(options, (res) => {
+    var req = http.request(options, (res) => {
       console.log("res", res, options);
       if (res.statusCode === 200) {
         console.log("inside Status code 200", res.statusCode);
@@ -124,7 +139,8 @@ app.post(
     const job = `${jobId}|${jobName}`;
     let data = "";
     var options = {
-      hostname: "auth.anuvaad.org",
+      // http://172.31.44.87:5009
+      hostname: OCR_CH,
       path: `/anuvaad/ocr-content-handler/v0/ocr/fetch-document?recordID=${encodeURI(
         job
       )}&start_page=0&end_page=0`,
@@ -133,19 +149,18 @@ app.post(
         "Content-Type": "application/json",
         "auth-token": authToken,
       },
-      // port: "5001",
+      port: "5009",
     };
-
-    var req = https.request(options, (res) => {
-      console.log("res", res.statusCode, res.statusMessage);
+    console.log('options', options)
+    var req = http.request(options, (res) => {
+      console.log("res.statusCode", res.statusCode);
       if (res.statusCode === 200) {
-        console.log("inside Status code 200", res.statusCode);
+        // console.log(res)
         res.on("data", (d) => {
           data = data + d.toString();
         });
 
         res.on("end", (e) => {
-          console.log("finished reading data");
           data = JSON.stringify(refactorSourceJSONnew(JSON.parse(data).data));
           console.log("saving response to file");
 
@@ -160,7 +175,6 @@ app.post(
                   data.page_width
                 );
                 jobName = jobName.substr(0, jobName.lastIndexOf("."));
-                console.log("jobName --------", jobName);
                 fs.readFile(
                   `./upload/${jobName}_${fname}`,
                   { encoding: "utf-8" },
@@ -217,4 +231,3 @@ app.post(
   }
 );
 app.listen(5001);
-console.log("listening on port 5001");

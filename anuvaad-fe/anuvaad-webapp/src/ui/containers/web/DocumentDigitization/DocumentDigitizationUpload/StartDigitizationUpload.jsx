@@ -33,19 +33,19 @@ const theme = createMuiTheme({
                 width: '98%',
                 minHeight: '330px',
                 height: "85%",
-                borderColor: '#1C9AB7',
+                borderColor: '#2C2799',
                 backgroundColor: '#F5F9FA',
-                border: '1px dashed #1C9AB7',
-                fontColor: '#1C9AB7',
+                border: '1px dashed #2C2799',
+                fontColor: '#2C2799',
                 marginTop: "3%",
                 marginLeft: '1%',
-                "& svg": { color: '#1C9AB7', },
+                "& svg": { color: '#2C2799', },
                 "& p": {
                     textOverflow: "ellipsis",
                     whiteSpace: "nowrap",
                     overflow: "hidden",
                     fontSize: "19px",
-                    color: '#1C9AB7',
+                    color: '#2C2799',
 
                 }
             },
@@ -55,6 +55,7 @@ const theme = createMuiTheme({
 });
 const LANG_MODEL = require('../../../../../utils/language.model')
 const TELEMETRY = require('../../../../../utils/TelemetryManager')
+
 
 class StartDigitizationUpload extends React.Component {
     constructor() {
@@ -67,6 +68,7 @@ class StartDigitizationUpload extends React.Component {
             modelLanguage: [],
             name: "",
             message: "File uplaoded successfully",
+            variant: "success",
             showComponent: false,
             workflow: localStorage.getItem("roles") === "TRANSLATOR" ? "WF_A_FCWDLDBSOD15GVOTK" : "",
             worflow_codes: [{
@@ -160,8 +162,8 @@ class StartDigitizationUpload extends React.Component {
 
     handleChange = files => {
         if (files.length > 0) {
-            let path = files[0].name.split('.')
-            let fileType = path[path.length - 1]
+            let path = files[0].name.split('.');
+            let fileType = path[path.length - 1];
             let fileName = path.splice(0, path.length - 1).join('.')
             this.setState({
                 files,
@@ -182,7 +184,14 @@ class StartDigitizationUpload extends React.Component {
         const { classes } = this.props
         return (<Grid item xs={12} sm={12} lg={12} xl={12} style={{ marginTop: "1.5%" }}>
             <Grid item xs={12} sm={12} lg={12} xl={12}>
-                <Typography value="" variant="h5">
+                <Typography
+                    style={{
+                        fontSize: "0.9rem",
+                        fontWeight: "600",
+                        fontFamily: "Roboto",
+                        marginBottom: 2
+                      }}
+                >
                     {translate("common.page.label.sourceLang")}{" "}
                 </Typography>
             </Grid>
@@ -206,7 +215,12 @@ class StartDigitizationUpload extends React.Component {
                 >
                     {
                         this.state.source_languages.map(lang =>
-                            <MenuItem id={lang.language_name} key={lang.language_code} value={lang.language_code + ''}>{lang.language_name}</MenuItem>)
+                            <MenuItem 
+                                id={lang.language_name} 
+                                key={lang.language_code} 
+                                style={{fontSize: "16px", fontFamily: "Roboto"}} 
+                                value={lang.language_code + ''}
+                            >{lang.language_name}</MenuItem>)
                     }
                 </Select>
             </Grid>
@@ -219,7 +233,14 @@ class StartDigitizationUpload extends React.Component {
         const { classes } = this.props
         return (<Grid item xs={12} sm={12} lg={12} xl={12} style={{ marginTop: "1.5%" }}>
             <Grid item xs={12} sm={12} lg={12} xl={12}>
-                <Typography value="" variant="h5">
+                <Typography
+                    style={{
+                        fontSize: "0.9rem",
+                        fontWeight: "600",
+                        fontFamily: "Roboto",
+                        marginBottom: 2
+                      }}
+                >
                     {translate("Version")}{" "}
                 </Typography>
             </Grid>
@@ -243,7 +264,11 @@ class StartDigitizationUpload extends React.Component {
                 >
                     {
                         this.state.worflow_codes.map((code, index) =>
-                            <MenuItem id={code.code} key={code.code} value={code.code + ''}>{code.version}</MenuItem>)
+                            <MenuItem 
+                                id={code.code} 
+                                key={code.code} 
+                                style={{fontSize: "16px", fontFamily: "Roboto"}}
+                                value={code.code + ''}>{code.version}</MenuItem>)
                     }
                 </Select>
             </Grid>
@@ -254,7 +279,14 @@ class StartDigitizationUpload extends React.Component {
     renderTextField = () => {
         return <Grid item xs={12} sm={12} lg={12} xl={12}>
             <Grid item xs={12} sm={12} lg={12} xl={12}>
-                <Typography variant="h5">
+                <Typography 
+                    style={{
+                        fontSize: "0.9rem",
+                        fontWeight: "600",
+                        fontFamily: "Roboto",
+                        marginBottom: 2
+                      }}
+                >
                     {translate("common.page.label.filename")}
                 </Typography>
             </Grid>
@@ -303,15 +335,15 @@ class StartDigitizationUpload extends React.Component {
     render() {
         const { classes } = this.props
         return (
-            <div style={{ height: window.innerHeight - 141 }}>
+            <div style={{}}>
                 <Header />
 
-                <div className={classes.div}>
-                    <Typography value="" variant="h4" className={classes.typographyHeader}>
+                <div className={classes.div} style={{paddingTop: "2%", fontSize: "19px", fontWeight: "500"}}>
+                    <Typography className={classes.typographyHeader}>
                         {translate("common.page.label.uploadFile")}
                     </Typography>
                     <br />
-                    <Typography className={classes.typographySubHeader}>{translate("doc_upload.page.label.uploadMessage")}</Typography>
+                    <Typography variant="subtitle1" style={{fontSize: "1rem"}}  className={classes.typographySubHeader}>{translate("doc_upload.page.label.uploadMessage")}</Typography>
                     <br />
                     <Paper elevation={3} className={classes.paper}>
                         <Grid container spacing={8}>
@@ -323,8 +355,8 @@ class StartDigitizationUpload extends React.Component {
                                         acceptedFiles={[".txt,audio/*,.ods,.pptx,image/*,.psd,.pdf,.xlsm,.xltx,.xltm,.xla,.xltm,.docx,.rtf", ".txt", ".pdf", ".doc", ".ppt", ".excel", ".xlsx", ".xls", ".log", ".xlsb"]}
                                         onChange={this.handleChange.bind(this)}
                                         filesLimit={1}
-                                        maxFileSize={200000000000}
-                                        dropzoneText={translate("common.page.label.addDropDocument")}
+                                        maxFileSize={100000000}
+                                        dropzoneText={translate("digitize_upload.page.label.addDropDocument")}
                                         onDelete={this.handleDelete.bind(this)}
                                     />
                                 </MuiThemeProvider>
@@ -341,7 +373,7 @@ class StartDigitizationUpload extends React.Component {
                                     size="large" onClick={this.processBackButton}
                                     style={{
                                         width: "100%",
-                                        backgroundColor: '#1C9AB7',
+                                        backgroundColor: '#2C2799',
                                         borderRadius: "20px 20px 20px 20px",
                                         color: "#FFFFFF",
                                         height: '46px'
@@ -358,7 +390,7 @@ class StartDigitizationUpload extends React.Component {
                                         // className={classes.button1} 
                                         style={{
                                             width: "100%",
-                                            backgroundColor: '#1C9AB7',
+                                            backgroundColor: '#2C2799',
                                             borderRadius: "20px 20px 20px 20px",
                                             color: "#FFFFFF",
                                             height: '46px'
@@ -372,11 +404,11 @@ class StartDigitizationUpload extends React.Component {
                         </Grid>
                         {this.state.open && (
                             <Snackbar
-                                anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                                anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
                                 open={this.state.open}
                                 autoHideDuration={6000}
                                 onClose={this.handleClose}
-                                variant="success"
+                                variant={this.state.variant}
                                 message={this.state.message}
                             />
                         )}

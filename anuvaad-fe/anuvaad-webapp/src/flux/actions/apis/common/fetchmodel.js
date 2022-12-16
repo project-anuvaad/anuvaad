@@ -7,7 +7,7 @@ import ENDPOINTS from "../../../../configs/apiendpoints";
 
 export default class FetchModel extends API {
   constructor(timeout = 200000) {
-    super("GET", timeout, false);
+    super("POST", timeout, false);
     this.type = C.FETCH_MODEL;
     this.fetch_model = null;
     this.endpoint = `${super.apiEndPointAuto()}${ENDPOINTS.fetchmodel}`;
@@ -19,6 +19,7 @@ export default class FetchModel extends API {
 
   processResponse(res) {
     super.processResponse(res);
+    console.log("user model data--- ", res.data)
     this.fetch_model = res.data;
   }
 

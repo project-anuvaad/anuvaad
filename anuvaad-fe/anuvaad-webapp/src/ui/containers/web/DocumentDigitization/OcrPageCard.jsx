@@ -12,6 +12,7 @@ import Modal from '@material-ui/core/Modal';
 import set_crop_size from '../../../../flux/actions/apis/view_digitized_document/set_crop_size';
 import UpdateWord from '../../../../flux/actions/apis/view_digitized_document/update_word';
 import APITransport from "../../../../flux/actions/apitransport/apitransport";
+import Snackbar from "../../../components/web/common/Snackbar";
 
 
 const PAGE_OPS = require("../../../../utils/page.operations");
@@ -37,6 +38,8 @@ class OcrPageCard extends React.Component {
             url: '',
             event: false,
             isOpen: false,
+            error : false,
+            errorMessage : ""
         };
         this.handleTextChange = this.handleTextChange.bind(this);
         this.action = null
@@ -110,11 +113,12 @@ class OcrPageCard extends React.Component {
     }
 
     renderTable = (word, line, region) => {
+        console.log("printing the word", word);
         return (
             <div
                 style={{
                     position: "absolute",
-                    fontSize: word.font && `min(max(${word.font.size}px),${this.props.fontSize}px)`,
+                    fontSize: word.font ? `min(max(${word.font.size}px),${this.props.fontSize}px)` : `min(max(${this.props.fontSize}px),${this.props.fontSize/1.7}px)`,
                     top: word.boundingBox.vertices[0].y - line.boundingBox.vertices[0].y + 'px',
                     left: word.boundingBox.vertices[0].x - line.boundingBox.vertices[0].x + 'px',
                     maxWidth: word.boundingBox.vertices[1].x - word.boundingBox.vertices[0].x + 'px',
@@ -141,7 +145,7 @@ class OcrPageCard extends React.Component {
         }
         return word.text
     }
-    renderTextSpan = (word, line,region) => {
+    renderTextSpan = (word, line, region) => {
         return (
             <div
                 style={{
@@ -174,7 +178,20 @@ class OcrPageCard extends React.Component {
         let { jobId, filename } = this.props.match.params
         let originalWord = this.state.text;
         let changedWord = word
-        if (changedWord !== originalWord) {
+        if (!changedWord) {
+            this.setState({
+                isOpen : false,
+                error : true,
+                errorMessage : `Type a word to replace ${originalWord}.`
+            },()=>{
+                setTimeout(()=>{
+                    this.setState({
+                        error : false,
+                        errorMessage : ``
+                    })
+                },6000)
+            })
+        } else if (changedWord !== originalWord) {
             this.setState({ loading: true })
             let apiObj = new UpdateWord(`${jobId}|${filename}`, regionID, wordID, changedWord, this.props.page.page_no)
             APITransport(apiObj);
@@ -358,11 +375,28 @@ class OcrPageCard extends React.Component {
         )
     }
 
+    handleCloseSnackbar = () => {
+        this.setState({
+            error : false,
+            errorMessage : ``
+        })
+    }
+
     render() {
         return (
             <>
                 <span style={{ zoom: `${this.props.zoomPercent}%` }}>{this.renderPage(this.props.page, this.props.image)}</span>
                 {this.renderModal()}
+                {this.state.error && (
+                    <Snackbar
+                        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+                        open={this.state.error}
+                        autoHideDuration={6000}
+                        onClose={this.handleCloseSnackbar}
+                        variant={"error"}
+                        message={this.state.errorMessage}
+                    />
+                )}
             </>
         )
     }

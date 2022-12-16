@@ -1,17 +1,19 @@
 import hashlib
 import json
 import time
-
+from datetime import datetime
 import uuid
 import xlrd
 from anuvaad_auditor.loghandler import log_exception, log_info
 import requests
 from .tmxrepo import TMXRepository
+from utilities.translatorutils import TranslatorUtils
 from configs.translatorconfig import nmt_labse_align_url, download_folder, tmx_global_enabled, tmx_org_enabled, \
-    tmx_user_enabled, tmx_word_length
+    tmx_user_enabled, tmx_word_length, is_attention_based_alignment_enabled, nmt_attention_align_url
 from anuvaad_auditor.errorhandler import post_error
 
 repo = TMXRepository()
+utils = TranslatorUtils()
 
 
 class TMXService:
@@ -77,6 +79,7 @@ class TMXService:
             for sentence in tmx_input["sentences"]:
                 tmx_records = []
                 sentence_types, i = self.fetch_diff_flavors_of_sentence(sentence["src"]), 0
+                current_time = datetime.now().strftime('%s')
                 for sent in sentence_types:
                     tmx_record_pair = {"src": sent, "locale": sentence["locale"], "nmt_tgt": [],
                                        "user_tgt": sentence["tgt"], "context": tmx_input["context"]}
@@ -86,6 +89,7 @@ class TMXService:
                         tmx_record_pair["orgID"] = tmx_input["orgID"]
                     if i == 0:
                         tmx_record_pair["original"] = True
+                    tmx_record_pair['timestamp'] = current_time
                     tmx_records.append(tmx_record_pair)
                     i += 1
                 reverse_locale_array = str(sentence["locale"]).split("|")
@@ -96,6 +100,7 @@ class TMXService:
                     tmx_record_reverse_pair["userID"] = tmx_input["userID"]
                 if 'orgID' in tmx_input.keys():
                     tmx_record_reverse_pair["orgID"] = tmx_input["orgID"]
+                tmx_record_reverse_pair['timestamp'] = current_time
                 tmx_records.append(tmx_record_reverse_pair)
                 for tmx_record in tmx_records:
                     hash_dict = self.get_hash_key(tmx_record)
@@ -104,52 +109,81 @@ class TMXService:
                         repo.upsert(tmx_record["hash"], tmx_record)
             self.push_tmx_metadata(tmx_input, None)
             log_info("Translations pushed to TMX!", None)
-            return {"message": "created", "status": "SUCCESS"}
+            return {"message": "Glossary entry created", "status": "SUCCESS"}
         except Exception as e:
             log_exception("Exception while pushing to TMX: " + str(e), None, e)
-            return {"message": "creation failed", "status": "FAILED"}
+            return {"message": "Glossary entry creation failed", "status": "FAILED"}
 
     # Method to push tmx related metadata
     def push_tmx_metadata(self, tmx_record, file_path):
         locale, length = tmx_record["sentences"][0]["locale"], len(tmx_record["sentences"])
         db_record = tmx_record
-        db_record["sentences"], db_record["file"], db_record["timeStamp"] = length, file_path, eval(str(time.time()).replace('.', '')[0:13])
+        db_record["sentences"], db_record["file"], db_record["timeStamp"] = length, file_path, eval(
+            str(time.time()).replace('.', '')[0:13])
         db_record["locale"], db_record["id"] = locale, str(uuid.uuid4())
         repo.tmx_create(db_record)
         db_record_reverse = tmx_record
         reverse_locale_array = str(locale).split("|")
         reverse_locale = str(reverse_locale_array[1]) + "|" + str(reverse_locale_array[0])
         db_record_reverse["sentences"], db_record_reverse["file"], = length, file_path
-        db_record_reverse["timeStamp"], db_record_reverse["locale"], db_record["id"] = eval(str(time.time()).replace('.', '')[0:13]), reverse_locale, str(uuid.uuid4())
+        db_record_reverse["timeStamp"], db_record_reverse["locale"], db_record["id"] = eval(
+            str(time.time()).replace('.', '')[0:13]), reverse_locale, str(uuid.uuid4())
         repo.tmx_create(db_record_reverse)
 
     # Method to delete records from TMX store.
     def delete_from_tmx_store(self, tmx_input):
-        log_info("Deleting to TMX......", None)
-        if "ADMIN" not in str(tmx_input["metadata"]["roles"]).split(","):
-            if 'orgID' in tmx_input.keys():
-                return {"message": "Only an ADMIN can delete ORG-level TMX", "status": "FAILED"}
-        try:
-            for sentence in tmx_input["sentences"]:
+        log_info("Deleting to Glossary......", None)
+        hashes = []
+        if "sentences" not in tmx_input.keys():
+            try:
+                if 'orgID' in tmx_input.keys():
+                    search_req = {"orgID": tmx_input["orgID"], "userID": "userID", "allUserKeys": True}
+                    tmx_to_be_deleted = self.get_tmx_data(search_req)
+                else:
+                    search_req = {"userID": tmx_input["userID"], "orgID": "orgID", "allUserKeys": True}
+                    tmx_to_be_deleted = self.get_tmx_data(search_req)
+                if tmx_to_be_deleted:
+                    for tmx_del in tmx_to_be_deleted:
+                        hashes.append(tmx_del["hash"])
+                    repo.delete(hashes)
+                    log_info("Glossary deleted!", None)
+                    return {"message": "Glossary DELETED!", "status": "SUCCESS"}
+                else:
+                    log_info("No Glossary Available!", None)
+                    return {"message": "No Glossary Available!", "status": "SUCCESS"}
+            except Exception as e:
+                log_exception("Exception while deleting Glossary by orgID/userID: " + str(e), None, e)
+                return {"message": "deletion of Glossary by orgID/userID failed", "status": "FAILED"}
+        else:
+            if not tmx_input["sentences"]:
+                log_info("No sentences sent for deletion!", None)
+                return {"message": "No sentences sent for deletion!", "status": "SUCCESS"}
+            try:
                 tmx_records = []
-                sentence_types = self.fetch_diff_flavors_of_sentence(sentence["src"])
-                for sent in sentence_types:
-                    tmx_record_pair = {"src": sent, "locale": sentence["locale"], "nmt_tgt": [],
-                                       "user_tgt": sentence["tgt"], "context": tmx_input["context"]}
-                    if 'userID' in tmx_input.keys():
-                        tmx_record_pair["userID"] = tmx_input["userID"]
-                    if 'orgID' in tmx_input.keys():
-                        tmx_record_pair["orgID"] = tmx_input["orgID"]
-                    tmx_records.append(tmx_record_pair)
+                for sentence in tmx_input["sentences"]:
+                    sentence_list = [sentence]
+                    rev_locale = f'{str(sentence["locale"]).split("|")[1]}|{str(sentence["locale"]).split("|")[0]}'
+                    rev_pair = {"src": sentence["tgt"], "tgt": sentence["src"], "locale": rev_locale}
+                    sentence_list.append(rev_pair)
+                    for tmx in sentence_list:
+                        sentence_types = self.fetch_diff_flavors_of_sentence(tmx["src"])
+                        for sent in sentence_types:
+                            tmx_record_pair = {"src": sent, "locale": tmx["locale"], "nmt_tgt": [],
+                                               "user_tgt": tmx["tgt"], "context": tmx_input["context"]}
+                            if 'userID' in tmx_input.keys():
+                                tmx_record_pair["userID"] = tmx_input["userID"]
+                            if 'orgID' in tmx_input.keys():
+                                tmx_record_pair["orgID"] = tmx_input["orgID"]
+                            tmx_records.append(tmx_record_pair)
                 for tmx_record in tmx_records:
                     hash_dict = self.get_hash_key(tmx_record)
-                    for hash_key in hash_dict.keys():
-                        repo.delete(hash_dict[hash_key])
-            log_info("TMX deleted!", None)
-            return {"message": "DELETED", "status": "SUCCESS"}
-        except Exception as e:
-            log_exception("Exception while deleting TMX: " + str(e), None, e)
-            return {"message": "deletion failed", "status": "FAILED"}
+                    hashes.extend(hash_dict.values())
+                repo.delete(hashes)
+                log_info("Glossary deleted!", None)
+                return {"message": "Glossary DELETED!", "status": "SUCCESS"}
+            except Exception as e:
+                log_exception("Exception while deleting Glossary one by one: " + str(e), None, e)
+                return {"message": "deletion of Glossary one by one failed", "status": "FAILED"}
 
     # Method to fetch tmx phrases for a given src
     def get_tmx_phrases(self, user_id, org_id, context, locale, sentence, tmx_level, tmx_file_cache, ctx):
@@ -197,6 +231,7 @@ class TMXService:
                         tmx_result, fetch = self.get_tmx_with_fallback(tmx_record, tmx_level, tmx_file_cache, ctx)
                         computed += 1
                         if tmx_result:
+                            #log_info(f"Test68 phrase {tmx_record}, result {tmx_result}",None)
                             tmx_phrases.append(tmx_result[0])
                             phrase_list = phrase.split(" ")
                             hopping_pivot += (1 + len(' '.join(phrase_list)))
@@ -227,10 +262,12 @@ class TMXService:
     # Fetches TMX phrases for a sentence from hierarchical cache
     def get_tmx_with_fallback(self, tmx_record, tmx_level, tmx_file_cache, ctx):
         hash_dict = self.get_hash_key_search(tmx_record, tmx_level)
+        #log_info(f"Test68 hash_dict {hash_dict}", None)
         if 'USER' in hash_dict.keys():
             if hash_dict["USER"] not in tmx_file_cache.keys():
                 tmx_result = repo.search([hash_dict["USER"]])
                 if tmx_result:
+                    #log_info(f"Test68 USER tmx_result {tmx_result}", None)
                     tmx_file_cache[hash_dict["USER"]] = tmx_result
                     return tmx_result, True
             else:
@@ -239,6 +276,7 @@ class TMXService:
             if hash_dict["ORG"] not in tmx_file_cache.keys():
                 tmx_result = repo.search([hash_dict["ORG"]])
                 if tmx_result:
+                    #log_info(f"Test68 ORG tmx_result {tmx_result}", None)
                     tmx_file_cache[hash_dict["ORG"]] = tmx_result
                     return tmx_result, True
             else:
@@ -254,9 +292,10 @@ class TMXService:
         return None, False
 
     # Replaces TMX phrases in NMT tgt using TMX NMT phrases and LaBSE alignments
-    def replace_nmt_tgt_with_user_tgt(self, tmx_phrases, tgt, ctx):
+    def replace_nmt_tgt_with_user_tgt(self, tmx_phrases, src, tgt, ctx):
         tmx_without_nmt_phrases, tmx_tgt, tmx_replacement = [], None, []
         try:
+            tmx_replace_dict = {}
             for tmx_phrase in tmx_phrases:
                 if tmx_phrase["nmt_tgt"]:
                     found = False
@@ -264,18 +303,32 @@ class TMXService:
                         if nmt_tgt_phrase in tgt:
                             tmx_replacement.append({"src_phrase": tmx_phrase["src"], "tmx_tgt": tmx_phrase["user_tgt"],
                                                     "tgt": str(nmt_tgt_phrase), "type": "NMT"})
-                            tgt = tgt.replace(nmt_tgt_phrase, tmx_phrase["user_tgt"])
+                            tmx_replace_dict[nmt_tgt_phrase] = tmx_phrase["user_tgt"]
                             found = True
                             break
                     if not found:
                         tmx_without_nmt_phrases.append(tmx_phrase)
                 else:
                     tmx_without_nmt_phrases.append(tmx_phrase)
+            if tmx_replace_dict:
+                tgt = utils.multiple_replace(tgt, tmx_replace_dict)
             tmx_tgt = tgt
             if tmx_without_nmt_phrases:
-                log_info("Phrases to LaBSE: {} | Total: {}".format(len(tmx_without_nmt_phrases), len(tmx_phrases)), ctx)
-                tmx_tgt, tmx_replacement = self.replace_with_labse_alignments(tmx_without_nmt_phrases, tgt,
-                                                                              tmx_replacement, ctx)
+                    log_info("Phrases to LaBSE: {} | Total: {}".format(len(tmx_without_nmt_phrases), len(tmx_phrases)),
+                            ctx)
+                    tmx_tgt, tmx_replacement = self.replace_with_labse_alignments(tmx_without_nmt_phrases, tgt,
+                                                                                tmx_replacement, ctx)
+                # if not is_attention_based_alignment_enabled:
+                #     log_info("Phrases to LaBSE: {} | Total: {}".format(len(tmx_without_nmt_phrases), len(tmx_phrases)),
+                #              ctx)
+                #     tmx_tgt, tmx_replacement = self.replace_with_labse_alignments(tmx_without_nmt_phrases, tgt,
+                #                                                                   tmx_replacement, ctx)
+                # else:
+                #     log_info("Phrases to Attention API: {} | Total: {}".format(len(tmx_without_nmt_phrases),
+                #                                                                len(tmx_phrases)), ctx)
+                                                                               
+                #     tmx_tgt, tmx_replacement = self.replace_with_attention_api(tmx_without_nmt_phrases, src, tgt,
+                #                                                               tmx_replacement, ctx)
             if tmx_tgt:
                 return tmx_tgt, tmx_replacement
             else:
@@ -286,13 +339,14 @@ class TMXService:
 
     # Replaces phrases in tgt with user tgts using labse alignments and updates nmt_tgt in TMX
     def replace_with_labse_alignments(self, tmx_phrases, tgt, tmx_replacement, ctx):
-        tmx_phrase_dict = {}
+        tmx_phrase_dict, tmx_replace_dict = {}, {}
         for tmx_phrase in tmx_phrases:
             tmx_phrase_dict[tmx_phrase["src"]] = tmx_phrase
         nmt_req = {"src_phrases": list(tmx_phrase_dict.keys()), "tgt": tgt}
         nmt_req = [nmt_req]
         api_headers = {'Content-Type': 'application/json'}
         nmt_response = requests.post(url=nmt_labse_align_url, json=nmt_req, headers=api_headers)
+        #log_info(f"NMT Response with Labse API {nmt_response.json}",None)
         if nmt_response:
             if nmt_response.text:
                 nmt_response = json.loads(nmt_response.text)
@@ -307,11 +361,13 @@ class TMXService:
                             phrase = tmx_phrase_dict[aligned_phrase]
                             tmx_replacement.append({"src_phrase": phrase["src"], "tmx_tgt": phrase["user_tgt"],
                                                     "tgt": str(nmt_aligned_phrases[aligned_phrase]), "type": "LaBSE"})
-                            tgt = tgt.replace(nmt_aligned_phrases[aligned_phrase], phrase["user_tgt"])
+                            tmx_replace_dict[nmt_aligned_phrases[aligned_phrase]] = phrase["user_tgt"]
                             modified_nmt_tgt = phrase["nmt_tgt"]
                             modified_nmt_tgt.append(nmt_aligned_phrases[aligned_phrase])
                             phrase["nmt_tgt"] = modified_nmt_tgt
                             repo.upsert(phrase["hash"], phrase)
+                        if tmx_replace_dict:
+                            tgt = utils.multiple_replace(tgt, tmx_replace_dict)
                     else:
                         log_info("No LaBSE alignments found!", ctx)
                         log_info("LaBSE - " + str(nmt_req), ctx)
@@ -321,8 +377,58 @@ class TMXService:
         else:
             return tgt, tmx_replacement
 
+    # Replaces phrases in tgt with user tgts using labse alignments and updates nmt_tgt in TMX
+    def replace_with_attention_api(self, tmx_phrases, src, tgt, tmx_replacement, ctx):
+        tmx_phrase_dict, tmx_replace_dict = {}, {}
+        for tmx_phrase in tmx_phrases:
+            tmx_phrase_dict[tmx_phrase["src"]] = tmx_phrase
+        nmt_req = {"src": src, "src_phrases": list(tmx_phrase_dict.keys()), "tgt": tgt}
+        nmt_req = [nmt_req]
+        api_headers = {'Content-Type': 'application/json'}
+        nmt_response = requests.post(url=nmt_attention_align_url, json=nmt_req, headers=api_headers)
+        #log_info(f"NMT Response with Attention API {nmt_response.json}",None)
+        if nmt_response:
+            if nmt_response.text:
+                nmt_response = json.loads(nmt_response.text)
+            if 'status' in nmt_response.keys():
+                if nmt_response["status"]["statusCode"] != 200:
+                    log_info("Attention API Error: {}".format(nmt_response["status"]["message"]), ctx)
+                    return tgt, tmx_replacement
+                else:
+                    nmt_aligned_phrases = nmt_response["response_body"][0]["aligned_phrases"]
+                    if nmt_aligned_phrases:
+                        for aligned_phrase in nmt_aligned_phrases.keys():
+                            phrase = tmx_phrase_dict[aligned_phrase]
+                            tmx_replacement.append({"src_phrase": phrase["src"], "tmx_tgt": phrase["user_tgt"],
+                                                    "tgt": str(nmt_aligned_phrases[aligned_phrase]),
+                                                    "type": "Attention API"})
+                            tmx_replace_dict[nmt_aligned_phrases[aligned_phrase]] = phrase["user_tgt"]
+                            modified_nmt_tgt = phrase["nmt_tgt"]
+                            modified_nmt_tgt.append(nmt_aligned_phrases[aligned_phrase])
+                            phrase["nmt_tgt"] = modified_nmt_tgt
+                            repo.upsert(phrase["hash"], phrase)
+                        if tmx_replace_dict:
+                            tgt = utils.multiple_replace(tgt, tmx_replace_dict)
+                    else:
+                        log_info("No Attention API alignments found!", ctx)
+                        log_info("Attention API - " + str(nmt_req), ctx)
+                    return tgt, tmx_replacement
+            else:
+                return tgt, tmx_replacement
+        else:
+            return tgt, tmx_replacement
+
+
+    def sort_redis_records_timestamp(self,record):
+        if 'timestamp' in record.keys():
+            return eval(record['timestamp'])
+        else:
+            return 0
+
+    
     # Method to fetch all keys from the redis db
     def get_tmx_data(self, req):
+        log_info(f"Searching TMX for: {req}", None)
         if "keys" in req.keys():
             if req["keys"]:
                 return repo.get_all_records(req["keys"])
@@ -332,7 +438,7 @@ class TMXService:
         try:
             redis_records = repo.get_all_records([])
             log_info(f'No of tmx entries fetched: {len(redis_records)}', None)
-            user_id, org_id = req["metadata"]["userID"], req["metadata"]["orgID"]
+            user_id, org_id = req["userID"], req["orgID"]
             if redis_records:
                 filtered = filter(lambda record: self.filter_user_records(record, user_id, org_id), redis_records)
                 if filtered:
@@ -345,6 +451,7 @@ class TMXService:
                     if "allUserKeys" in req.keys():
                         if req["allUserKeys"]:
                             log_info(f'Returning all the keys...', None)
+                            log_info(f'Count of final TMX to be returned: {len(redis_records)}', None)
                             return redis_records
                     filtered = filter(lambda record: self.filter_original_keys(record), redis_records)
                     if filtered:
@@ -354,7 +461,8 @@ class TMXService:
                         log_info(f'No TMX entries found with the original key set to True', None)
                         redis_records = []
             log_info(f'Count of final TMX to be returned: {len(redis_records)}', None)
-            return redis_records
+            sorted_redis_records = sorted(redis_records, key=self.sort_redis_records_timestamp, reverse=True)
+            return sorted_redis_records
         except Exception as e:
             log_exception("Exception while returning TMX data: {}".format(e), None, None)
             return []
@@ -368,7 +476,6 @@ class TMXService:
             else:
                 return False
         except Exception as e:
-            log_exception(f'RECORD: {record}', None, None)
             log_exception(f'Exception while filtering on org and user: {e}', None, e)
             return False
 
@@ -426,84 +533,99 @@ class TMXService:
             hash_dict["ORG"] = hashlib.sha256(org_hash.encode('utf-16')).hexdigest()
         return hash_dict
 
-    # API to create glossary in the system.
-    def glossary_create(self, object_in):
+    # Method creates entry to the suggestion box, admin pulls these suggestions once in a while and selects which
+    # must go to ORG level TMX.
+    def suggestion_box_create(self, object_in):
         try:
-            if 'org' not in object_in.keys():
-                return post_error("ORG_NOT_FOUND", "org is mandatory", None)
-            if 'context' not in object_in.keys():
-                return post_error("CONTEXT_NOT_FOUND", "context is mandatory", None)
-            else:
-                if 'translations' not in object_in.keys():
-                    return post_error("TRANSLATIONS_NOT_FOUND", "Translations are mandatory", None)
-                else:
-                    if not object_in["translations"]:
-                        return post_error("TRANSLATIONS_EMPTY", "Translations cannot be empty", None)
-                    else:
-                        for translation in object_in["translations"]:
-                            if 'src' not in translation.keys():
-                                return post_error("SRC_NOT_FOUND", "src is mandatory for every translation", None)
-                            if 'tgt' not in translation.keys():
-                                return post_error("TGT_NOT_FOUND", "tgt is mandatory for every translation", None)
-                            if 'locale' not in translation.keys():
-                                return post_error("LOCALE_NOT_FOUND", "locale is mandatory for every translation", None)
+            suggested_translations = []
             for translation in object_in["translations"]:
-                translation["id"] = uuid.uuid4()
-                translation["org"] = object_in["org"]
-                translation["uploaded_by"] = object_in["userID"]
-                translation["created_on"] = eval(str(time.time()).replace('.', '')[0:13])
-                repo.glossary_create(translation)
-            return {"message": "Glossary created successfully", "status": "SUCCESS"}
+                translation["id"], translation["orgID"] = str(uuid.uuid4()), object_in["orgID"]
+                translation["uploadedBy"] = object_in["metadata"]["userID"]
+                translation["createdOn"] = eval(str(time.time()).replace('.', '')[0:13])
+                translation["updatedOn"] = eval(str(time.time()).replace('.', '')[0:13])
+                translation["status"] = "Pending"
+                suggested_translations.append(translation)
+            if suggested_translations:
+                inserts = repo.suggestion_box_create(suggested_translations)
+                log_info(f"Insert IDS: {inserts}", None)
+                return {"message": "Suggestions created successfully", "status": "SUCCESS"}
+            return {"message": "No Suggestions created!", "status": "SUCCESS"}
         except Exception as e:
-            return post_error("GLOSSARY_CREATION_FAILED",
-                              "Glossary creation failed due to exception: {}".format(str(e)), None)
+            return post_error("SUGGESTION_BOX_CREATION_FAILED",
+                              "Suggestions creation failed due to exception: {}".format(str(e)), None)
 
-    # Method to delete glossary from the db
-    def glossary_delete(self, delete_req):
+    # Method updates entry to the suggestion box
+    def suggestion_box_update(self, object_in):
+        try:
+            find_condition = {"id": {"$in": object_in["ids"]}}
+            set_clause = {"status": object_in["status"], "updatedOn": eval(str(time.time()).replace('.', '')[0:13])}
+            repo.suggestion_box_update(find_condition, {"$set": set_clause})
+            return {"message": "Suggestions Updated !", "status": "SUCCESS"}
+        except Exception as e:
+            return post_error("SUGGESTION_BOX_UPDATE_FAILED",
+                              "Suggestions update failed due to exception: {}".format(str(e)), None)
+
+    # Method to delete suggestions from the db
+    def suggestion_box_delete(self, delete_req):
         query = {}
-        if 'deleteAll' in delete_req:
+        if 'deleteAll' in delete_req.keys():
             if delete_req["deleteAll"] is True:
-                repo.glossary_delete(query)
-                return {"message": "Glossary DB cleared successfully", "status": "SUCCESS"}
-        if 'ids' in delete_req:
+                repo.suggestion_box_delete(query)
+                return {"message": "Suggestion Box DB cleared successfully", "status": "SUCCESS"}
+        if 'ids' in delete_req.keys():
             if delete_req["ids"]:
                 query = {"id": {"$in": delete_req["ids"]}}
-        if 'userIDs' in delete_req:
+        if 'userIDs' in delete_req.keys():
             if delete_req["userIDs"]:
-                query = {"uploaded_by": {"$in": delete_req["userIDs"]}}
-        if 'startDate' in delete_req:
-            query["created_on"] = {"$gte": delete_req["startDate"]}
-        if 'endDate' in delete_req:
-            query["created_on"] = {"$lte": delete_req["endDate"]}
-        repo.glossary_delete(query)
-        return {"message": "Glossary deleted successfully", "status": "SUCCESS"}
+                query["uploadedBy"] = {"$in": delete_req["userIDs"]}
+        if 'orgIDs' in delete_req.keys():
+            if delete_req["orgIDs"]:
+                query["orgID"] = {"$in": delete_req["orgIDs"]}
+        if 'startDate' in delete_req.keys():
+            query["createdOn"] = {"$gte": delete_req["startDate"]}
+        if 'endDate' in delete_req.keys():
+            query["createdOn"] = {"$lte": delete_req["endDate"]}
+        if query:
+            query["status"] = "Pending"
+            log_info(f"Delete Query: {query}", None)
+            del_count = repo.suggestion_box_delete(query)
+            if del_count > 0:
+                return {"message": "Suggestions pending for approval deleted successfully", "status": "SUCCESS"}
+        return {"message": "No Suggestions deleted", "status": "SUCCESS"}
 
-    # Method to search glossary from the glossay db.
-    def glossary_get(self, searc_req):
+    # Method to search suggestions from the suggestions db.
+    def suggestion_box_get(self, search_req):
         query, exclude = {}, {'_id': False}
-        if 'fetchAll' in searc_req:
-            if searc_req["fetchAll"] is True:
-                return repo.glossary_search(query, exclude)
-        if 'ids' in searc_req:
-            if searc_req["ids"]:
-                query = {"id": {"$in": searc_req["ids"]}}
-        if 'src' in searc_req:
-            if searc_req["src"]:
-                query["src"] = {"$in": searc_req["src"]}
-        if 'tgt' in searc_req:
-            if searc_req["tgt"]:
-                query["tgt"] = {"$in": searc_req["tgt"]}
-        if 'locale' in searc_req:
-            if searc_req["locale"]:
-                query["locale"] = {"$in": searc_req["locale"]}
-        if 'org' in searc_req:
-            if searc_req["org"]:
-                query["org"] = {"$in": searc_req["org"]}
-        if 'userID' in searc_req:
-            if searc_req["userIDs"]:
-                query["uploaded_by"] = {"$in": searc_req["userIDs"]}
-        if 'startDate' in searc_req:
-            query["created_on"] = {"$gte": searc_req["startDate"]}
-        if 'endDate' in searc_req:
-            query["created_on"] = {"$lte": searc_req["endDate"]}
-        return repo.glossary_search(query, exclude)
+        if 'fetchAll' in search_req.keys():
+            if search_req["fetchAll"] is True:
+                return repo.suggestion_box_search(query, exclude)
+        if 'ids' in search_req.keys():
+            if search_req["ids"]:
+                query = {"id": {"$in": search_req["ids"]}}
+        if 'src' in search_req.keys():
+            if search_req["src"]:
+                query["src"] = search_req["src"]
+        if 'tgt' in search_req.keys():
+            if search_req["tgt"]:
+                query["tgt"] = search_req["tgt"]
+        if 'locale' in search_req.keys():
+            if search_req["locale"]:
+                query["locale"] = search_req["locale"]
+        if 'orgIDs' in search_req.keys():
+            if search_req["orgIDs"]:
+                query["orgID"] = {"$in": search_req["orgIDs"]}
+        if 'userIDs' in search_req.keys():
+            if search_req["userIDs"]:
+                query["uploadedBy"] = {"$in": search_req["userIDs"]}
+        if 'statuses' in search_req.keys():
+            if search_req["statuses"]:
+                query["status"] = {"$in": search_req["statuses"]}
+        if 'startDate' in search_req.keys():
+            query["createdOn"] = {"$gte": search_req["startDate"]}
+        if 'endDate' in search_req.keys():
+            query["createdOn"] = {"$lte": search_req["endDate"]}
+        if query:
+            log_info(f"Search Query: {query}", None)
+            return repo.suggestion_box_search(query, exclude)
+        else:
+            return []

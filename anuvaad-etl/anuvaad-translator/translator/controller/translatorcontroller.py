@@ -61,6 +61,7 @@ def interactive_translate():
         log_exception("Something went wrong: " + str(e), None, e)
         return {"status": "FAILED", "message": "Something went wrong"}, 400
 
+
 # REST endpoint to initiate the workflow.
 @translatorapp.route(context_path + '/v1/sentences/workflow/translate', methods=["POST"])
 def sentence_translate():
@@ -97,66 +98,100 @@ def tmx_create_bulk():
 def tmx_create():
     service = TMXService()
     data = request.get_json()
-    response = service.push_to_tmx_store(data)
-    if response["status"] == "FAILED":
+    validator = TranslatorValidator()
+    validated =validator.validate_tmx_create(data)
+    try:
+        if not validated:
+            response = service.push_to_tmx_store(data)
+            if response["status"] == "FAILED":
+                return jsonify(response), 400
+            else:
+                return jsonify(response), 200
+        else:
+            return jsonify(validated), 400
+    except Exception as e:
+        response = {"message": "Something went wrong.", "status": "FAILED"}
         return jsonify(response), 400
-    else:
-        return jsonify(response), 200
 
 @translatorapp.route(context_path + '/v1/tmx/delete', methods=["POST"])
 def tmx_delete():
-    service = TMXService()
-    data = request.get_json()
+    service, data, validator = TMXService(), request.get_json(), TranslatorValidator()
     try:
         data = add_headers(data, request)
-        response = service.delete_from_tmx_store(data)
-        if response["status"] == "FAILED":
-            return jsonify(response), 400
+        validated = validator.validate_tmx_delete(data)
+        if not validated:
+            response = service.delete_from_tmx_store(data)
+            if response["status"] == "FAILED":
+                return jsonify(response), 400
+            else:
+                return jsonify(response), 200
         else:
-            return jsonify(response), 200
+            return jsonify(validated), 400
     except Exception as e:
         response = {"message": "Something went wrong.", "status": "FAILED"}
         return jsonify(response), 400
+
 
 @translatorapp.route(context_path + '/v1/tmx/get-all-keys', methods=["POST"])
 def tmx_get_all_keys():
-    service = TMXService()
-    data = request.get_json()
+    service, data, validator = TMXService(), request.get_json(), TranslatorValidator()
     try:
         data = add_headers(data, request)
-        return jsonify(service.get_tmx_data(data)), 200
+        validated = validator.validate_tmx_search(data)
+        if not validated:
+            return jsonify(service.get_tmx_data(data)), 200
+        else:
+            return jsonify(validated), 400
     except Exception as e:
         response = {"message": "Something went wrong.", "status": "FAILED"}
         return jsonify(response), 400
 
-@translatorapp.route(context_path + '/v1/glossary/create', methods=["POST"])
-def glossary_create():
-    service = TMXService()
-    data = request.get_json()
-    data["userID"] = request.headers["x-user-id"]
-    response = service.glossary_create(data)
+
+@translatorapp.route(context_path + '/v1/suggested-tmx/create', methods=["POST"])
+def suggestion_tmx_box_create():
+    service, data, validator = TMXService(), request.get_json(), TranslatorValidator()
+    data = add_headers(data, request)
+    error = validator.validate_suggestion_box_create(data)
+    if error:
+        return jsonify(error), 400
+    response = service.suggestion_box_create(data)
     if "errorID" in response.keys():
         return jsonify(response), 400
-    else:
-        return jsonify(response), 200
-
-@translatorapp.route(context_path + '/v1/glossary/delete', methods=["POST"])
-def glossary_delete():
-    service = TMXService()
-    data = request.get_json()
-    response = service.glossary_delete(data)
-    if "errorID" in response.keys():
-        return jsonify(response), 400
-    else:
-        return jsonify(response), 200
-
-@translatorapp.route(context_path + '/v1/glossary/get', methods=["POST"])
-def glossary_get():
-    service = TMXService()
-    data = request.get_json()
-    response = service.glossary_get(data)
     return jsonify(response), 200
 
+
+@translatorapp.route(context_path + '/v1/suggested-tmx/update', methods=["POST"])
+def suggestion_tmx_box_update():
+    service, data, validator = TMXService(), request.get_json(), TranslatorValidator()
+    data = add_headers(data, request)
+    error = validator.validate_suggestion_box_update(data)
+    if error:
+        return jsonify(error), 400
+    response = service.suggestion_box_update(data)
+    if "errorID" in response.keys():
+        return jsonify(response), 400
+    return jsonify(response), 200
+
+
+@translatorapp.route(context_path + '/v1/suggested-tmx/delete', methods=["POST"])
+def suggestion_tmx_box_delete():
+    service = TMXService()
+    data = request.get_json()
+    data = add_headers(data, request)
+    response = service.suggestion_box_delete(data)
+    if "errorID" in response.keys():
+        return jsonify(response), 400
+    else:
+        return jsonify(response), 200
+
+
+@translatorapp.route(context_path + '/v1/suggested-tmx/get', methods=["POST"])
+def suggestion_tmx_box_get():
+    service = TMXService()
+    data = request.get_json()
+    data = add_headers(data, request)
+    response = service.suggestion_box_get(data)
+    return jsonify(response), 200
 
 
 # Fetches required headers from the request and adds it to the body.

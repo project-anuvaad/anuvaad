@@ -640,7 +640,7 @@ class UserUtils:
                     "register_mail_template.html",
                     ui_link=mail_ui_link,
                     activation_link=mail_ui_link
-                    + "activate/{}/{}/{}".format(
+                    + "user/activate/{}/{}/{}".format(
                         email, user_id, eval(str(time.time()).replace(".", "")[0:13])
                     ),
                 )
@@ -675,7 +675,7 @@ class UserUtils:
                 "reset_mail_template.html",
                 ui_link=mail_ui_link,
                 reset_link=mail_ui_link
-                + "set-password/{}/{}/{}".format(
+                + "user/set-password/{}/{}/{}".format(
                     email, rand_id, eval(str(time.time()).replace(".", "")[0:13])
                 ),
             )

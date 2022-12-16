@@ -1,8 +1,4 @@
-
-
-from configs.wfmconfig import tool_ocrgooglevision
-from configs.wfmconfig import tool_blocksegmenter
-
+from configs.wfmconfig import tool_ocrgooglevision, tool_blocksegmenter, tool_worddetector
 
 class OCRGV:
 
@@ -40,7 +36,7 @@ class OCRGV:
     # Returns a json of the format accepted by OCR-GV based on a predecessor.
     def get_ogv_input(self, task_output, predecessor):
         files = []
-        if predecessor == tool_blocksegmenter:
+        if predecessor in [tool_blocksegmenter, tool_worddetector]:
             output = task_output["output"]
             for op_file in output:
                 obj = {

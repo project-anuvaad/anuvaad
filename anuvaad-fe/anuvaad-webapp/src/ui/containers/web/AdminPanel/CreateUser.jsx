@@ -25,12 +25,13 @@ import OutlinedInput from '@material-ui/core/OutlinedInput';
 import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
 import InputAdornment from '@material-ui/core/InputAdornment';
-import ADMINCONFIG from "../../../../configs/adminConfig";
 import FetchOrganizationList from "../../../../flux/actions/apis/organization/organization-list";
+import adminConfig from "../../../../configs/adminConfig";
 const TELEMETRY = require("../../../../utils/TelemetryManager");
 
-const roles = ADMINCONFIG.roles;
+// const roles = localStorage.getItem("roles") == "SUPERADMIN" ? adminConfig.superAdminConfig.roles : adminConfig.adminConfig.roles;
 
+// console.log("roles",roles);
 
 class CreateUser extends React.Component {
   constructor(props) {
@@ -46,7 +47,9 @@ class CreateUser extends React.Component {
       message: '',
       loading: false,
       showPassword: false,
-      orgName: ''
+      orgName: '',
+      orgDropDownDisabled : false,
+      roles: localStorage.getItem("roles") == "SUPERADMIN" ? adminConfig.superAdminConfig.roles : adminConfig.adminConfig.roles,
     };
   }
 
@@ -92,6 +95,19 @@ class CreateUser extends React.Component {
     // TELEMETRY.pageLoadCompleted('');
     this.setState({ showLoader: true })
     this.props.organizationList.length<1 && this.processFetchBulkOrganizationAPI()
+
+    let role = [localStorage.getItem("roles")];
+    let useRole = [];
+    role.map((item, value) => {
+      useRole.push(item); value !== role.length - 1 && useRole.push(", ")
+      return true;
+    });
+
+    if(role && Array.isArray(role) && role.includes("ADMIN")){
+      let orgID = JSON.parse(localStorage.getItem("userProfile")).orgID;
+      console.log("orgID", orgID);
+      this.setState({orgName : orgID, orgDropDownDisabled : true})
+    }
   }
 
   renderEmaiIdItems = () => {
@@ -193,10 +209,11 @@ class CreateUser extends React.Component {
               value={this.state.roleCode}
               style={{
                 fullWidth: true,
+                textAlign: "left"
               }}
             >
               {
-                roles.map((role, i) => <MenuItem id={role.roleCode} key={role.roleCode} value={role.roleCode}>{role.roleCode}</MenuItem>)
+                this.state.roles.map((role, i) => <MenuItem id={role.roleCode} key={role.roleCode} value={role.roleCode}>{role.roleCode}</MenuItem>)
               }
             </Select>
           </FormControl>
@@ -229,8 +246,10 @@ class CreateUser extends React.Component {
               id="roles"
               onChange={this.handleOrg}
               value={this.state.orgName}
+              disabled={this.state.orgDropDownDisabled}
               style={{
                 fullWidth: true,
+                textAlign: "left"
               }}
             >
               {
@@ -249,7 +268,7 @@ class CreateUser extends React.Component {
 
 
   processOnSelect = (e) => {
-    const roleInfo = roles.filter(role => {
+    const roleInfo = this.state.roles.filter(role => {
       return role["roleCode"].includes(e.target.value)
     });
     this.setState({ roleCode: e.target.value, roleInfo: roleInfo })
@@ -357,7 +376,7 @@ class CreateUser extends React.Component {
     return (
       <div className={classes.root}>
         <Toolbar />
-        <Typography variant="h4" className={classes.typographyHeader}>
+        <Typography className={classes.typographyHeader}>
           {translate("create.user.page.heading.title")}
         </Typography>
         <Paper className={classes.paper}>
@@ -380,7 +399,7 @@ class CreateUser extends React.Component {
                 onClick={this.processClearButton}
                 aria-label="edit"
                 className={classes.button1}
-                style={{ backgroundColor: '#1ca9c9' }}
+                style={{ backgroundColor: '#2C2799' }}
               >
                 {translate("common.page.button.reset")}
               </Button>
@@ -399,7 +418,7 @@ class CreateUser extends React.Component {
                   className={classes.button1}
                   disabled={this.state.loading}
                   style={{
-                    backgroundColor: this.state.loading ? 'grey' : '#1ca9c9',
+                    backgroundColor: this.state.loading ? 'grey' : '#2C2799',
                   }}
                 >
                   {this.state.loading && <CircularProgress size={24} className={'success'} style={{

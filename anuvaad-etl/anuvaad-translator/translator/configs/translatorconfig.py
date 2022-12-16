@@ -26,6 +26,7 @@ nmt_fetch_models_url = str(os.environ.get('NMT_HOST', 'http://172.30.0.234:5001'
 nmt_translate_url = str(os.environ.get('NMT_HOST', 'http://172.30.0.234:5001')) + str(os.environ.get('NMT_TRANSLATE_ENDPOINT', '/nmt-inference/v4/translate'))
 nmt_it_url = str(os.environ.get('NMT_HOST', 'http://172.30.0.234:5001')) + str(os.environ.get('NMT_IT_ENDPOINT', '/nmt-inference/v3/interactive-translation'))
 nmt_labse_align_url = str(os.environ.get('NMT_HOST', 'http://172.30.0.234:5001')) + str(os.environ.get('NMT_LABSE_ALIGN_ENDPOINT', '/nmt-inference/v1/labse-aligner'))
+nmt_attention_align_url = str(os.environ.get('NMT_HOST', 'http://172.30.0.234:5001')) + str(os.environ.get('NMT_ATTN_ALIGN_ENDPOINT', '/aai4b-nmt-inference/v1/labse-aligner-attention'))
 
 
 
@@ -70,8 +71,13 @@ if isinstance(user_translation_enabled, str):
 orgs_nmt_disable = os.environ.get('ORGS_NMT_DISABLE', 'NONMT')
 tmx_disable_roles = os.environ.get('ROLES_TMX_DISABLE', 'ANNOTATOR')
 utm_disable_roles = os.environ.get('ROLES_UTM_DISABLE', 'ANNOTATOR')
-
-
+suggestion_statuses = ["Pending", "Approved", "Rejected"]
+is_attention_based_alignment_enabled = os.environ.get('IS_ATTN_BASED_ALIGNMENT_ENABLED', True)
+if isinstance(is_attention_based_alignment_enabled, str):
+    if is_attention_based_alignment_enabled == "TRUE":
+        is_attention_based_alignment_enabled = True
+    else:
+        is_attention_based_alignment_enabled = False
 
 #nmt-machine-topics
 anu_nmt_input_topic = os.environ.get('KAFKA_NMT_TRANSLATION_INPUT_TOPIC', 'anuvaad-nmt-translate')
@@ -85,7 +91,6 @@ anu_translator_nonmt_topic = os.environ.get('KAFKA_ANUVAAD_TRANSLATOR_NONMT_TOPI
 anu_translator_consumer_grp = os.environ.get('KAFKA_ANUVAAD_ETL_TRANSLATOR_CONSUMER_GRP', 'anuvaad-etl-translator-consumer-group')
 translator_cons_no_of_partitions = 1
 translator_nmt_cons_no_of_partitions = 1
-#total_no_of_partitions = os.environ.get('KAFKA_PARTITIONS_PER_TOPIC', 6)
 total_no_of_partitions = 6
 
 
@@ -95,7 +100,7 @@ mongo_translator_collection = os.environ.get('MONGO_TRANSLATOR_CONTENT_COL', 'an
 mongo_trans_pages_collection = os.environ.get('MONGO_TRANSLATOR_PAGES_COL', 'anuvaad-etl-translator-pages-collection')
 mongo_trans_batch_collection = os.environ.get('MONGO_TRANSLATOR_BATCH_COL', 'anuvaad-etl-translator-batch-collection')
 mongo_tmx_collection = os.environ.get('MONGO_TMX_COL', 'anuvaad-tmx-collection')
-mongo_glossary_collection = os.environ.get('MONGO_GLOS_COL', 'anuvaad-glossary-collection')
+mongo_suggestion_box_collection = os.environ.get('MONGO_SUGGESTIONS_COL', 'anuvaad-tmx-suggestion-box-collection')
 
 #module-configs
 context_path = os.environ.get('ANUVAAD_ETL_TRANSLATOR_CONTEXT_PATH', '/anuvaad-etl/translator')
@@ -105,4 +110,5 @@ log_msg_start = " process started."
 log_msg_end = " process ended."
 log_msg_error = " has encountered an exception, job ended."
 
-
+#Order of Suggestion Box Glossary to be shown
+suggestion_box_order={"Pending":0, "Approved":1, "Rejected":2}
