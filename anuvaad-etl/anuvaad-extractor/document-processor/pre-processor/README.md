@@ -1,6 +1,6 @@
 # PRE-PROCESSOR
 
-This Service pre processes files by removing noice and adjusting tilt correction.
+This service pre processes files by removing noice and adjusting tilt correction.
 
 ## Prerequisites
 - python 3.7
