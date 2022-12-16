@@ -1,17 +1,13 @@
 import os
-import json
 import config
-import glob
 import csv
 import pandas as pd
-import uuid
 
 def write_to_csv(data_list,orgID,filename):
         if not data_list:
             return
         else:
             try: 
-                #/opt/jud_stats.csv
                 fieldnames = ["orgID","_id","doc_sent_count","avg_sent_bleu_score","total_time_spent","saved_sent_count"]
                 if not os.path.exists(filename ):
                     f_output = open(filename ,'w')
@@ -21,11 +17,7 @@ def write_to_csv(data_list,orgID,filename):
                     f_output = open(filename ,'a')
                     dict_writer = csv.DictWriter(f_output, fieldnames=fieldnames)
 
-                # with open(filename, 'a') as output_file:
-                #     dict_writer = csv.DictWriter(output_file,fieldnames=fieldnames,extrasaction='ignore')
-                #     dict_writer.writeheader()
                 for data in data_list:
-                    # print(data,"**")
                     data["orgID"] =orgID
                     dict_writer.writerow(data)
                 return
@@ -90,7 +82,6 @@ def write_to_csv_user(data_list,filename):
             return
     else:
         try: 
-            #/opt/jud_stats.csv
             fieldnames = [ "_id","created_on","src_lang","tgt_lang","orgID","userName","name","is_active","userId","doc_sent_count","avg_sent_bleu_score","total_time_spent","saved_sent_count"]
             if not os.path.exists(filename ):
                 f_output = open(filename ,'w')
@@ -100,11 +91,7 @@ def write_to_csv_user(data_list,filename):
                 f_output = open(filename ,'a')
                 dict_writer = csv.DictWriter(f_output, fieldnames=fieldnames)
 
-            # with open(filename, 'a') as output_file:
-            #     dict_writer = csv.DictWriter(output_file,fieldnames=fieldnames,extrasaction='ignore')
-            #     dict_writer.writeheader()
             for data in data_list:
-#                 data["orgID"] =orgID
                 dict_writer.writerow(data)
             return
         except Exception as e:
@@ -116,9 +103,7 @@ def write_to_csv_user(data_list,filename):
 def org_level_csv_user(file_save,file1,file2):
     df = pd.read_csv(file1)
     df2 =pd.read_csv(file2)
-    #print(df.columns)
     orgs1 =(df['userName'].value_counts()).to_dict()
-    print(orgs1)
     #orgs2 =(df2['orgID'].value_counts()).to_dict()
     output =[]
     for i,org in enumerate(orgs1):

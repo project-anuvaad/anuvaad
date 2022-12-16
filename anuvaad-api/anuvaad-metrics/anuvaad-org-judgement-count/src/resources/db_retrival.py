@@ -2,7 +2,7 @@ from datetime import datetime
 import threading
 import pandas as pd
 import pytz
-from models import CustomResponse, Status
+from models import CustomResponse, Status,jud_stats
 from flask import  request
 from utilities import MODULE_CONTEXT
 from anuvaad_auditor.loghandler import log_info, log_exception
@@ -17,7 +17,7 @@ import uuid
 from flask_mail import Mail, Message
 from flask import render_template
 IST = pytz.timezone('Asia/Kolkata')
-from flask import Flask
+from flask import Flask,jsonify
 import csv
 import requests
 
@@ -26,6 +26,9 @@ app  = Flask(__name__,template_folder='../templates')
 app.config.update(config.MAIL_SETTINGS)
 #creating an instance of Mail class
 mail=Mail(app)
+
+stats = jud_stats()
+usr_collection,ch_collection = stats.mongo_connection()
 
 @app.route(config.API_URL_PREFIX + '/anuvaad-data/usr', methods=["POST"])
 def get_user_org_details():
@@ -139,56 +142,30 @@ def FetchJudgementCount():
     body = request.get_json()
     def FetchJudgementCountRole_org_Wise():
         log_info("FetchJudgementCount api called",MODULE_CONTEXT)
-        mongo_connection = connectmongo()
-        usr_collection = mongo_connection[config.USER_DB][config.USER_COLLECTION]
-        ch_collection = mongo_connection[config.PREPROCESSING_DB][config.FILE_CONTENT_COLLECTION]
         filename = uuid.uuid4().hex 
+        file_name1 = str(filename)[:-10]+'_JUD_STATS1'+'.csv'
+        file_name2 = str(filename)[:-10]+'_JUD_STATS2'+'.csv'
+        file_save = str(filename)[:-10]+'_JUD_Org_level_Statistics.csv'
 
         if body.get('org'):
             org = body['org']
             role = body['role']
             email= body['email']
-            user_docs=  usr_collection.aggregate([{'$match': {"is_active" : True,"roles.roleCode":role,'orgID':org}},{ "$group":{"_id": "$orgID",'users':{ "$addToSet": '$userID' }}}])
+            user_docs = stats.get_user_role_org_wise(usr_collection,role,org)
             log_info(f"Data returned from {config.USER_COLLECTION} collection",MODULE_CONTEXT)      
-            file_name1 = str(filename)[:-10]+'_'+str(role)+'_'+str(org)+'_JUD_STATS1'+'.csv'
-            file_name2 = str(filename)[:-10]+'_'+str(role)+'_'+str(org)+'_JUD_STATS2'+'.csv'
-            file_save = str(filename)[:-10]+'_'+str(role)+'_'+str(org)+'_JUD_Org_level_Statistics.csv'
         else:
             role = body['role']
             email= body['email']
-            user_docs=  usr_collection.aggregate([{'$match': {"is_active" : True,"roles.roleCode":role,}},{ "$group":{"_id": "$orgID",'users':{ "$addToSet": '$userID' }}}])
+            user_docs=  stats.get_user_role_wise(usr_collection,role)
             log_info(f"Data returned from {config.USER_COLLECTION} collection",MODULE_CONTEXT)   
-            file_name1 = str(filename)[:-10]+'_'+str(role)+'_JUD_STATS1'+'.csv'
-            file_name2 = str(filename)[:-10]+'_'+str(role)+'_JUD_STATS2'+'.csv'
-            file_save = str(filename)[:-10]+'_'+str(role)+'_JUD_Org_level_Statistics.csv'
-        if body.get('start_date') and body.get("end_date"):
-            from_date = datetime.strptime(body['start_date'], '%Y-%m-%d')
-            end_date = datetime.strptime(body['end_date'], '%Y-%m-%d')
-        else:
-            from_date = datetime.strptime("2000-01-01", '%Y-%m-%d')
-            now = datetime.now()
-            date_time = now.strftime("%Y-%m-%d")
-            end_date  = datetime.strptime(str(date_time),'%Y-%m-%d')
+            
         try:
+            from_date,end_date =stats.get_time_frame(body)
             for doc in user_docs:
                 log_info(f'fetching details for {doc["_id"]} users',MODULE_CONTEXT)
                 for user in doc["users"]:
-                    ch_docs       = ch_collection.aggregate([{ '$match':  {'$and': [{"created_by": user,"created_on":{"$gte":from_date,"$lte":end_date}}, {'data_type':'text_blocks'}]} },
-                                { '$unwind': "$data.tokenized_sentences" },
-                                    { "$group": {
-                                    "_id": "$job_id",
-                                    "doc_sent_count": { "$sum": 1 },
-                                        "total_time_spent":{"$sum": "$data.tokenized_sentences.time_spent_ms"}}}])
-
-                    saved_docs       = ch_collection.aggregate([{ '$match': {'$and': [{"created_by": user,"created_on":{"$gte":from_date,"$lte":end_date}}, {'data_type':'text_blocks'}]} },
-                                            { '$unwind': "$data.tokenized_sentences" },
-                                            { '$match': {"data.tokenized_sentences.save":True}},
-                                            { "$group": {
-                                                "_id": "$job_id",
-                                                "saved_sent_count": { "$sum": 1 },
-                                                "total_time_spent":{"$sum": "$data.tokenized_sentences.time_spent_ms"},
-                                                "avg_sent_bleu_score":{"$avg": "$data.tokenized_sentences.bleu_score"}}}])
-
+                    ch_docs = stats.fetch_data_machine_trans_tokenised(ch_collection,user,from_date,end_date)
+                    saved_docs = stats.fetch_data_user_trans_tokenized(ch_collection,user,from_date,end_date)
                     log_info(f'Details collected for for userID : {user}, in org {doc["_id"]} ',MODULE_CONTEXT)
                     ch_docs =[x for x in ch_docs]
                     write_to_csv(ch_docs,doc["_id"],(config.DOWNLOAD_FOLDER+'/'+file_name1))
@@ -243,72 +220,21 @@ def FetchJudgementCount_user_wise():
     body = request.get_json()
     def FetchJudgementCountRole_user_org_Wise():
         log_info("FetchJudgementCount api called",MODULE_CONTEXT)
-        mongo_connection = connectmongo()
-        usr_collection = mongo_connection[config.USER_DB][config.USER_COLLECTION]
-        ch_collection = mongo_connection[config.PREPROCESSING_DB][config.FILE_CONTENT_COLLECTION]
         filename = uuid.uuid4().hex 
+        file_name1 = str(filename)[:-10]+'_USER_WISE_JUD_STATS1'+'.csv'
+        file_name2 = str(filename)[:-10]+'_USER_WISE_JUD_STATS2'+'.csv'
+        file_save = str(filename)[:-10]+'_USER_WISE_JUD_Org_level_Statistics.csv'
 
         if body.get('email'):
             email= body['email']
-            user_docs=  usr_collection.find({"is_active":{"$in":[True,False]}},{"userID":1,"name":1,"userName":1,"orgID":1,"is_active":1,"_id":0})
+            user_docs=  stats.get_all_users_active_inactive(usr_collection)
             log_info(f"Data returned from {config.USER_COLLECTION} collection",MODULE_CONTEXT)      
-            file_name1 = str(filename)[:-10]+'_USER_WISE_JUD_STATS1'+'.csv'
-            file_name2 = str(filename)[:-10]+'_USER_WISE_JUD_STATS2'+'.csv'
-            file_save = str(filename)[:-10]+'_USER_WISE_JUD_Org_level_Statistics.csv'
-        if body.get('start_date') and body.get("end_date"):
-            from_date = datetime.strptime(body['start_date'], '%Y-%m-%d')
-            end_date = datetime.strptime(body['end_date'], '%Y-%m-%d')
-        else:
-            from_date = datetime.strptime("2000-01-01", '%Y-%m-%d')
-            now = datetime.now()
-            date_time = now.strftime("%Y-%m-%d")
-            end_date  = datetime.strptime(str(date_time),'%Y-%m-%d')
-        # else:
-        #     role = body['role']
-        #     email= body['email']
-        #     user_docs=  usr_collection.aggregate([{'$match': {"is_active" : True,"roles.roleCode":role,}},{ "$group":{"_id": "$orgID",'users':{ "$addToSet": '$userID' }}}])
-        #     log_info(f"Data returned from {config.USER_COLLECTION} collection",MODULE_CONTEXT)   
-        #     file_name1 = str(filename)[:-10]+'_'+str(role)+'_JUD_STATS1'+'.csv'
-        #     file_name2 = str(filename)[:-10]+'_'+str(role)+'_JUD_STATS2'+'.csv'
-        #     file_save = str(filename)[:-10]+'_'+str(role)+'_JUD_Org_level_Statistics.csv'
-
         try:
+            from_date,end_date =stats.get_time_frame(body)
             for doc in user_docs:
                 log_info(f'fetching details for {doc} userID',MODULE_CONTEXT)
-                ch_docs       = ch_collection.aggregate([{ '$match': {'$and': [{"created_by": str(doc['userID']),"created_on":{"$gte":from_date,"$lte":end_date}}, {'data_type':'text_blocks'}]} },
-                            { '$unwind': "$data.tokenized_sentences" },
-                             { "$group": {
-                                "_id": "$job_id",
-                                "created_on":{"$first":"$created_on"},
-                                "src_lang":{"$first":"$src_lang"},
-                                "tgt_lang":{"$first":"$tgt_lang"},
-                                "doc_sent_count": { "$sum": 1 },
-                                "total_time_spent":{"$sum": "$data.tokenized_sentences.time_spent_ms"}}},
-                               {"$addFields":{"orgID":str(doc.get('orgID')),
-                                "userName":str(doc['userName']),
-                                "name":str(doc['name']),
-                                "is_active":str(doc['is_active']),
-                                "userId":str(doc['userID'])}}])
-
-                saved_docs       = ch_collection.aggregate([{ '$match': {'$and': [{"created_by": str(doc['userID']),"created_on":{"$gte":from_date,"$lte":end_date}}, {'data_type':'text_blocks'}]} },
-                            { '$unwind': "$data.tokenized_sentences" },
-                            { '$match': {"data.tokenized_sentences.save":True}},
-                             { "$group": {
-                                "_id": "$job_id",
-                                "created_on":{"$first":"$created_on"},
-                                "src_lang":{"$first":"$src_lang"},
-                                "tgt_lang":{"$first":"$tgt_lang"},
-                                # "doc_sent_count": { "$sum": 1 },
-                                "total_time_spent":{"$sum": "$data.tokenized_sentences.time_spent_ms"},
-                                "avg_sent_bleu_score":{"$avg": "$data.tokenized_sentences.bleu_score"},
-                                "saved_sent_count": { "$sum": 1 }}},
-                                {"$addFields":{"orgID":str(doc.get('orgID')),
-                                "userName":str(doc['userName']),
-                                "name":str(doc['name']),
-                                "is_active":str(doc['is_active']),
-                                "userId":str(doc['userID']),
-                                }}])
-
+                ch_docs = stats.fetch_data_for_userwise_trans_tokenized(ch_collection,doc,from_date,end_date)
+                saved_docs = stats.fetch_data_for_userwise_trans_user_tokenized(ch_collection,doc,from_date,end_date)
                 log_info(f'Details collected for for userID : {doc} ',MODULE_CONTEXT)
                 ch_docs =[x for x in ch_docs]
                 write_to_csv_user(ch_docs,(config.DOWNLOAD_FOLDER+'/'+file_name1))
@@ -357,3 +283,37 @@ def FetchJudgementCount_user_wise():
     threading.Thread(target=FetchJudgementCountRole_user_org_Wise).start()
     out = CustomResponse(Status.ACCEPTED.value, {"msg":"please check your email after some time for requested Stats"})                  
     return out.getres()
+
+#no of documents count wrt to src and tgt language with org.
+@app.route(config.API_URL_PREFIX + '/anuvaad-data/lang_count', methods=["POST"])
+def anuvaad_chart_org_doc():
+    body = request.get_json()
+    result,status = stats.file_validation()
+    if status == False :
+        return {'msg':result}
+    else:
+        if body.get('src_lang'):
+            org_doc = result.groupby('orgID').agg(total_doc=('_id', 'count'),doc_sent_count=('doc_sent_count', 'sum'),verified_sentence=('saved_sent_count','sum'),org=('orgID','first'))
+            org_doc = org_doc.sort_values(by=['total_doc','doc_sent_count','verified_sentence'], ascending=False)
+            org_doc = org_doc.to_dict('records')
+
+            lang = result.groupby(['src_lang'])
+            gb_groups = lang.groups
+            gb_groups.keys()
+            ddf = result.loc[gb_groups[body['src_lang']]]  #body
+            keyss = ddf.groupby([ 'tgt_lang']).agg(total_doc=('_id', 'count'),doc_sent_count=('doc_sent_count', 'sum'),verified_sentence=('saved_sent_count','sum'),org=('orgID','first'),src_lang=('src_lang','first'),tgt_lang=('tgt_lang','first'))
+            keyss = keyss.to_dict('records')
+
+            return jsonify({'msgg':keyss})
+#no of documents wrt org having src and tgt lang
+@app.route(config.API_URL_PREFIX + '/anuvaad-data/src_tgt_org', methods=["GET"])
+def anuvaad_chart_lang_org():
+    result,status = stats.file_validation()
+    if status == False :
+        return {'msg':result}
+    else:
+        org_lang = result.groupby(['src_lang','tgt_lang']).agg(total_doc=('_id', 'count'),doc_sent_count=('doc_sent_count', 'sum'),verified_sentence=('saved_sent_count','sum'),org=('orgID','first'),src_lang=('src_lang','first'),tgt_lang=('tgt_lang','first'),created_on=('created_on','first'))
+        org_lang = org_lang.sort_values(by=['total_doc','doc_sent_count','verified_sentence'], ascending=False)
+        keyss = org_lang.to_dict('records')
+
+        return jsonify({'msgg':keyss})
