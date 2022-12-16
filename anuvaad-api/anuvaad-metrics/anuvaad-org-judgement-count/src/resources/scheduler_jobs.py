@@ -14,7 +14,7 @@ log_info("Mongo connected",MODULE_CONTEXT)
 
 
 # class get_data:
-@schedule_job.scheduled_job('interval',id='get_data_from_db', seconds=10)
+@schedule_job.scheduled_job('interval',id='get_data_from_db', hours=12)
 def get_trans_user_data_from_db():
     log_info("fetch data started",MODULE_CONTEXT)
     # filename = uuid.uuid4().hex 
