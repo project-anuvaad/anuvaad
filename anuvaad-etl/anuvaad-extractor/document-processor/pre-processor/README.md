@@ -1,6 +1,6 @@
-# FILE Handler
+# PRE-PROCESSOR
 
-This Service uploads and downloads file.
+This Service pre processes files by removing noice and adjusting tilt correction.
 
 ## Prerequisites
 - python 3.7
@@ -16,6 +16,6 @@ After successful installation of prerequisites, you will have to run app.py
 ```bash
 python app.py
 ```
-For more information about api documentation, please check @ ```https://github.com/project-anuvaad/anuvaad/blob/dev-sentence/anuvaad-etl/anuvaad-extractor/file-uploader/docs/file-handler-api-contract.yml```
+For more information about api documentation, please check @ ```https://github.com/project-anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/pre-processor/docs/pre-processor-api-contract.yml```
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
