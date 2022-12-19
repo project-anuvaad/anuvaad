@@ -5,7 +5,7 @@ import time
 DEBUG = False
 API_URL_PREFIX = "/anuvaad/anuvaad-etl/pre-processor"
 HOST = '0.0.0.0'
-PORT = 5002
+PORT = 5001
 
 ENABLE_CORS = True
 
