@@ -4,4 +4,4 @@ from src.resources.pre_processor import PreProcessor
 
 PRE_PROCESSOR_BLUEPRINT = Blueprint("pre_processor", __name__)
 api = Api(PRE_PROCESSOR_BLUEPRINT)
-api.add_resource(PreProcessor, "/vo/pre-process")
+api.add_resource(PreProcessor, "/v0/pre-process")
