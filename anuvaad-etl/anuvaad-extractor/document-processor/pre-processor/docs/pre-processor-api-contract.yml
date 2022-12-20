@@ -1,8 +1,8 @@
 swagger: "2.0"
 info:
   version: 1.0.0
-  title: Anuvaad File Handler - API Contract
-  description: A python based microservice to trigger and orchestrate the file handler part of anuvaad-extractor.
+  title: Anuvaad Document Pre-Processor - API Contract
+  description: A python based microservice to trigger and orchestrate the document preprocess part of anuvaad-extractor.
   contact:
     name: Kumar Deepak
     email: kumar.deepak@tarento.com
@@ -80,7 +80,7 @@ definitions:
       
 
         
-  FileUploaderResponse:
+  PreProcessorResponse:
     type: object
     properties:        
       data:
