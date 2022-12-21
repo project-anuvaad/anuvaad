@@ -6,9 +6,12 @@ import config
 from utilities import MODULE_CONTEXT
 
 if config.ENABLE_CORS:
-    cors    = CORS(app, resources={r"/api/*": {"origins": "*"}})
+    cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 if __name__ == "__main__":
-    log_info('starting server at {} at port {}'.format(config.HOST, config.PORT), MODULE_CONTEXT)
+    log_info(
+        "starting server at {} at port {}".format(config.HOST, config.PORT),
+        MODULE_CONTEXT,
+    )
     schedule_job
     app.run(host=config.HOST, port=config.PORT, debug=config.DEBUG)
