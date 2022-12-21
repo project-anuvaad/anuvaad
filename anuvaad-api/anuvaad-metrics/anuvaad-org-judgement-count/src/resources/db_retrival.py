@@ -284,17 +284,24 @@ def anuvaad_chart_org_doc():
                 total_verified_sentence_count,
                 keyss,
             ) = stats.doc_count(result, body)
-            out = CustomResponse(
-                Status.SUCCESS.value,
-                {
+            # out = CustomResponse(
+            #     Status.ACCEPTED.value,
+            #     {
+            #         "total_document_sentence_count": int(total_documemt_sentence_count),
+            #         "total_verified_sentence_count": int(total_verified_sentence_count),
+            #         "total_documents": int(total_docs),
+            #         "language_counts": keyss,
+            #     },
+            # )
+            # return out.getres()
+            return jsonify(
+                {"data":{
                     "total_document_sentence_count": int(total_documemt_sentence_count),
                     "total_verified_sentence_count": int(total_verified_sentence_count),
                     "total_documents": int(total_docs),
                     "language_counts": keyss,
-                },
+                }}
             )
-            return out.getres()
-            # return jsonify({'msgg':keyss})
     except Exception as e:
         log_exception("Error in FetchJudgementCount: {}".format(e), MODULE_CONTEXT, e)
         status = Status.SYSTEM_ERR.value
