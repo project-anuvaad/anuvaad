@@ -1,4 +1,5 @@
 from datetime import datetime
+import json
 import threading
 import pandas as pd
 import pytz
@@ -367,3 +368,13 @@ def anuvaad_chart_verfied_sentence():
         status["message"] = str(e)
         out = CustomResponse(status, None)
         return out.getres()
+
+
+@app.route(config.API_URL_PREFIX + "/anuvaad-data/languages", methods=["GET"])
+def dropdown_lang():
+    supported_languages = "./models/language.json"
+    with open(supported_languages, "r") as f:
+        data = json.load(f)
+    out = CustomResponse(Status.SUCCESS.value, data)
+    return out.getres()
+    # return jsonify(data), 200
