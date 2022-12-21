@@ -334,17 +334,17 @@ class jud_stats(object):
         total_documemt_sentence_count = result["doc_sent_count"].sum()
         total_verified_sentence_count = result["saved_sent_count"].sum()
         if body.get("src_lang"):
-            org_doc = result.groupby("orgID").agg(
-                total_doc=("_id", "count"),
-                doc_sent_count=("doc_sent_count", "sum"),
-                verified_sentence=("saved_sent_count", "sum"),
-                org=("orgID", "first"),
-            )
-            org_doc = org_doc.sort_values(
-                by=["total_doc", "doc_sent_count", "verified_sentence"],
-                ascending=False,
-            )
-            org_doc = org_doc.to_dict("records")
+            # org_doc = result.groupby("orgID").agg(
+            #     total_doc=("_id", "count"),
+            #     doc_sent_count=("doc_sent_count", "sum"),
+            #     verified_sentence=("saved_sent_count", "sum"),
+            #     org=("orgID", "first"),
+            # )
+            # org_doc = org_doc.sort_values(
+            #     by=["total_doc", "doc_sent_count", "verified_sentence"],
+            #     ascending=False,
+            # )
+            # org_doc = org_doc.to_dict("records")
 
             lang = result.groupby(["src_lang"])
             gb_groups = lang.groups

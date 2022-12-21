@@ -69,4 +69,5 @@ LANG_MAPPING = {
     "grt": "Garo",
     "si": "Sinhalese",
     "njz": "Nishi",
+    "as": "Assamese",
 }
