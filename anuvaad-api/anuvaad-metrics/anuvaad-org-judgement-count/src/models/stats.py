@@ -349,28 +349,51 @@ class jud_stats(object):
             lang = result.groupby(["src_lang"])
             gb_groups = lang.groups
             gb_groups.keys()
-            ddf = result.loc[gb_groups[body["src_lang"]]]  # body
-            keyss = ddf.groupby(["tgt_lang"]).agg(
-                total_doc=("_id", "count"),
-                doc_sent_count=("doc_sent_count", "sum"),
-                verified_sentence=("saved_sent_count", "sum"),
-                org=("orgID", "first"),
-                src_lang=("src_lang", "first"),
-                tgt_lang=("tgt_lang", "first"),
-            )
-            keyss = keyss.to_dict("records")
-            for i, j in enumerate(keyss):
-                if keyss[i]["src_lang"] in config.LANG_MAPPING.keys():
-                    keyss[i]["src_label"] = config.LANG_MAPPING[keyss[i]["src_lang"]]
+            check_none = result[result["src_lang"] == body["src_lang"]]
+            if check_none.empty == True:
+                keyss = {
+                    "doc_sent_count": None,
+                    "org": None,
+                    "src_label": body["src_lang"],
+                    "src_lang": body["src_lang"],
+                    "tgt_label": None,
+                    "tgt_lang": None,
+                    "total_doc": None,
+                    "verified_sentence": None,
+                }
+                return (
+                    total_docs,
+                    total_documemt_sentence_count,
+                    total_verified_sentence_count,
+                    keyss,
+                )
+            else:
+                ddf = result.loc[gb_groups[body["src_lang"]]]  # body
+                keyss = ddf.groupby(["tgt_lang"]).agg(
+                    total_doc=("_id", "count"),
+                    doc_sent_count=("doc_sent_count", "sum"),
+                    verified_sentence=("saved_sent_count", "sum"),
+                    org=("orgID", "first"),
+                    src_lang=("src_lang", "first"),
+                    tgt_lang=("tgt_lang", "first"),
+                )
+                keyss = keyss.to_dict("records")
+                for i, j in enumerate(keyss):
+                    if keyss[i]["src_lang"] in config.LANG_MAPPING.keys():
+                        keyss[i]["src_label"] = config.LANG_MAPPING[
+                            keyss[i]["src_lang"]
+                        ]
 
-                if keyss[i]["tgt_lang"] in config.LANG_MAPPING.keys():
-                    keyss[i]["tgt_label"] = config.LANG_MAPPING[keyss[i]["tgt_lang"]]
-            return (
-                total_docs,
-                total_documemt_sentence_count,
-                total_verified_sentence_count,
-                keyss,
-            )
+                    if keyss[i]["tgt_lang"] in config.LANG_MAPPING.keys():
+                        keyss[i]["tgt_label"] = config.LANG_MAPPING[
+                            keyss[i]["tgt_lang"]
+                        ]
+                return (
+                    total_docs,
+                    total_documemt_sentence_count,
+                    total_verified_sentence_count,
+                    keyss,
+                )
 
     def verified_doc(self, result):
         total_docs = len(result)

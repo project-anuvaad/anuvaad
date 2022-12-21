@@ -270,7 +270,7 @@ def FetchJudgementCount_user_wise():
 
 
 # no of documents count wrt to src and tgt language with org.
-@app.route(config.API_URL_PREFIX + "/anuvaad-data/doc_count", methods=["POST"])
+@app.route(config.API_URL_PREFIX + "/anuvaad-data/lang_count", methods=["POST"])
 def anuvaad_chart_org_doc():
     body = request.get_json()
     result, status = stats.file_validation()
@@ -312,7 +312,7 @@ def anuvaad_chart_org_doc():
 
 
 # no of documents wrt org having src and tgt lang
-@app.route(config.API_URL_PREFIX + "/anuvaad-data/lang_count", methods=["GET"])
+@app.route(config.API_URL_PREFIX + "/anuvaad-data/doc_count", methods=["GET"])
 def anuvaad_chart_lang_org():
     result, status = stats.file_validation()
     if status == False:
