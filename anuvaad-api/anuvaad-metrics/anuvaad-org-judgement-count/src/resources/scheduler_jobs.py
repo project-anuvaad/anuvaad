@@ -17,7 +17,7 @@ usr_collection, ch_collection = stats.mongo_connection()
 log_info("Mongo connected", MODULE_CONTEXT)
 
 
-@schedule_job.scheduled_job("interval", id="get_data_from_db", hours=6)
+@schedule_job.scheduled_job("interval", id="get_data_from_db", hours=config.cron_time)
 def get_trans_user_data_from_db():
     users = ["srihari.nagaraj@tarento.com"]
     log_info("fetch data started", MODULE_CONTEXT)
