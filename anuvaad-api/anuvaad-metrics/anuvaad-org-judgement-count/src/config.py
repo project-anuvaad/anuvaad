@@ -15,6 +15,8 @@ USER_DB = os.environ.get("MONGO_DB_IDENTIFIER", "usermanagement")
 WFM_DB = os.environ.get("MONGO_WFM_DB", "anuvaad-etl-wfm-db")
 PREPROCESSING_DB = os.environ.get("MONGO_CH_DB", "preprocessing")
 
+cron_time = os.environ.get("ANUVAAD_METRICS_CRON",6)
+
 
 USER_COLLECTION = "sample"
 WFM_COLLECTION = "anuvaad-etl-wfm-jobs-collection"
