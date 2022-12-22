@@ -4,7 +4,7 @@ import threading
 import pandas as pd
 import pytz
 from models import CustomResponse, Status, jud_stats
-from flask import request
+from flask import request, make_response
 from utilities import MODULE_CONTEXT
 from anuvaad_auditor.loghandler import log_info, log_exception
 import config
@@ -297,16 +297,29 @@ def anuvaad_chart_org_doc():
                 total_verified_sentence_count,
                 keyss,
             ) = stats.lang_count(result, body)
-            out = CustomResponse(
-                Status.ACCEPTED.value,
-                {
+            response = make_response(
+                jsonify(
+                    {"data": {
                     "total_document_sentence_count": int(total_documemt_sentence_count),
                     "total_verified_sentence_count": int(total_verified_sentence_count),
                     "total_documents": int(total_docs),
                     "language_counts": keyss,
-                },
+                }, "severity": "danger"}
+                ),
+                200,
             )
-            return out.getres()
+            response.headers["Content-Type"] = "application/json"
+            return response
+            # out = CustomResponse(
+            #     Status.ACCEPTED.value,
+            #     {
+            #         "total_document_sentence_count": int(total_documemt_sentence_count),
+            #         "total_verified_sentence_count": int(total_verified_sentence_count),
+            #         "total_documents": int(total_docs),
+            #         "language_counts": keyss,
+            #     },
+            # )
+            # return out.getres()
 
     except Exception as e:
         log_exception("Error in FetchJudgementCount: {}".format(e), MODULE_CONTEXT, e)
