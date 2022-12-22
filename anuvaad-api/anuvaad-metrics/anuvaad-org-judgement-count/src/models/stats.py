@@ -283,6 +283,8 @@ class jud_stats(object):
     def file_validation(self):
         file_name1 = "language_wise_JUD_STATS1.csv"
         file_name2 = "language_wise_JUD_STATS2.csv"
+        # file_name2 = "/home/sriharimn/Downloads/language_wise_JUD_STATS2.csv"
+        # file_name1 = "/home/sriharimn/Downloads/language_wise_JUD_STATS1.csv"
         file_name1 = os.path.join(config.DOWNLOAD_FOLDER, file_name1)
         file_name2 = os.path.join(config.DOWNLOAD_FOLDER, file_name2)
         if not os.path.exists(file_name1) and os.path.exists(file_name2):
@@ -299,29 +301,29 @@ class jud_stats(object):
             result = result.sort_values(by=["orgID"], ascending=True)
             return result, True
 
-    def org_lang(self, result):
-        total_docs = len(result)
-        total_documemt_sentence_count = result["doc_sent_count"].sum()
-        total_verified_sentence_count = result["saved_sent_count"].sum()
-        org_langs = result.groupby(["src_lang", "tgt_lang"]).agg(
+    def doc_count(self, result):
+        # total_docs = len(result)
+        # total_documemt_sentence_count = result["doc_sent_count"].sum()
+        # total_verified_sentence_count = result["saved_sent_count"].sum()
+        doc_counts = result.groupby("orgID").agg(
             total_doc=("_id", "count"),
             doc_sent_count=("doc_sent_count", "sum"),
             verified_sentence=("saved_sent_count", "sum"),
             org=("orgID", "first"),
-            src_lang=("src_lang", "first"),
-            tgt_lang=("tgt_lang", "first"),
-            created_on=("created_on", "first"),
         )
-        org_langs = org_langs.sort_values(
+        doc_counts = doc_counts.sort_values(
             by=["total_doc", "doc_sent_count", "verified_sentence"], ascending=False
         )
-        keyss = org_langs.to_dict("records")
-        for i, j in enumerate(keyss):
-            if keyss[i]["src_lang"] in config.LANG_MAPPING.keys():
-                keyss[i]["src_label"] = config.LANG_MAPPING[keyss[i]["src_lang"]]
+        keyss = doc_counts.to_dict("records")
+        # for i, j in enumerate(keyss):
+        #     if keyss[i]["src_lang"] in config.LANG_MAPPING.keys():
+        #         keyss[i]["src_label"] = config.LANG_MAPPING[keyss[i]["src_lang"]]
 
-            if keyss[i]["tgt_lang"] in config.LANG_MAPPING.keys():
-                keyss[i]["tgt_label"] = config.LANG_MAPPING[keyss[i]["tgt_lang"]]
+        #     if keyss[i]["tgt_lang"] in config.LANG_MAPPING.keys():
+        #         keyss[i]["tgt_label"] = config.LANG_MAPPING[keyss[i]["tgt_lang"]]
+        total_docs = sum(c["total_doc"] for c in keyss)
+        total_documemt_sentence_count = sum(c["doc_sent_count"] for c in keyss)
+        total_verified_sentence_count = sum(c["verified_sentence"] for c in keyss)
         return (
             total_docs,
             total_documemt_sentence_count,
@@ -329,11 +331,11 @@ class jud_stats(object):
             keyss,
         )
 
-    def doc_count(self, result, body):
-        total_docs = len(result)
-        total_documemt_sentence_count = result["doc_sent_count"].sum()
-        total_verified_sentence_count = result["saved_sent_count"].sum()
-        if body.get("src_lang"):
+    def lang_count(self, result, body):
+        # total_docs = len(result)
+        # total_documemt_sentence_count = result["doc_sent_count"].sum()
+        # total_verified_sentence_count = result["saved_sent_count"].sum()
+        if body["src_lang"]:
             # org_doc = result.groupby("orgID").agg(
             #     total_doc=("_id", "count"),
             #     doc_sent_count=("doc_sent_count", "sum"),
@@ -361,6 +363,9 @@ class jud_stats(object):
                     "total_doc": None,
                     "verified_sentence": None,
                 }
+                total_docs = 0
+                total_documemt_sentence_count = 0
+                total_verified_sentence_count = 0
                 return (
                     total_docs,
                     total_documemt_sentence_count,
@@ -378,6 +383,11 @@ class jud_stats(object):
                     tgt_lang=("tgt_lang", "first"),
                 )
                 keyss = keyss.to_dict("records")
+                total_docs = sum(c["total_doc"] for c in keyss)
+                total_documemt_sentence_count = sum(c["doc_sent_count"] for c in keyss)
+                total_verified_sentence_count = sum(
+                    c["verified_sentence"] for c in keyss
+                )
                 for i, j in enumerate(keyss):
                     if keyss[i]["src_lang"] in config.LANG_MAPPING.keys():
                         keyss[i]["src_label"] = config.LANG_MAPPING[
@@ -396,9 +406,9 @@ class jud_stats(object):
                 )
 
     def verified_doc(self, result):
-        total_docs = len(result)
-        total_documemt_sentence_count = result["doc_sent_count"].sum()
-        total_verified_sentence_count = result["saved_sent_count"].sum()
+        # total_docs = len(result)
+        # total_documemt_sentence_count = result["doc_sent_count"].sum()
+        # total_verified_sentence_count = result["saved_sent_count"].sum()
         lang = result.groupby("tgt_lang").agg(
             total_doc=("_id", "count"),
             doc_sent_count=("doc_sent_count", "sum"),
@@ -416,6 +426,9 @@ class jud_stats(object):
 
             if keyss[i]["tgt_lang"] in config.LANG_MAPPING.keys():
                 keyss[i]["tgt_label"] = config.LANG_MAPPING[keyss[i]["tgt_lang"]]
+        total_docs = sum(c["total_doc"] for c in keyss)
+        total_documemt_sentence_count = sum(c["doc_sent_count"] for c in keyss)
+        total_verified_sentence_count = sum(c["verified_sentence"] for c in keyss)
         return (
             total_docs,
             total_documemt_sentence_count,

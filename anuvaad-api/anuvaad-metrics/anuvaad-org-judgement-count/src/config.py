@@ -43,7 +43,7 @@ LANG_MAPPING = {
     "en": "English",
     "kn": "Kannada",
     "gu": "Gujrati",
-    "or": "Oriya",
+    "or": "Odia",
     "hi": "Hindi",
     "bn": "Bengali",
     "mr": "Marathi",
@@ -71,3 +71,5 @@ LANG_MAPPING = {
     "njz": "Nishi",
     "as": "Assamese",
 }
+
+jud = os.environ.get('ANUVAAD_JUD_METRICS','https://developers.anuvaad.org')

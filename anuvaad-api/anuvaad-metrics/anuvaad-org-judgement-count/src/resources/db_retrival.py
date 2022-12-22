@@ -17,6 +17,7 @@ from utilities import (
     send_email,
 )
 import uuid
+import requests
 
 # from flask_mail import Mail, Message
 # from flask import render_template
@@ -271,9 +272,20 @@ def FetchJudgementCount_user_wise():
 
 
 # no of documents count wrt to src and tgt language with org.
-@app.route(config.API_URL_PREFIX + "/anuvaad-data/lang_count", methods=["POST"])
+@app.route(config.API_URL_PREFIX + "/anuvaad-data/lang_count", methods=["GET", "POST"])
 def anuvaad_chart_org_doc():
     body = request.get_json()
+    if "env" in body.keys():
+        url = generate_url(config.jud, "lang_count")
+        headers = headers = {"Content-Type": "application/json"}
+        payload = json.dumps(
+            {
+                "src_lang": body["src_lang"],
+            }
+        )
+        datas = requests.post(url, data=payload, headers=headers)
+        datas = datas.json()
+        return datas
     result, status = stats.file_validation()
     try:
         if status == False:
@@ -284,7 +296,7 @@ def anuvaad_chart_org_doc():
                 total_documemt_sentence_count,
                 total_verified_sentence_count,
                 keyss,
-            ) = stats.doc_count(result, body)
+            ) = stats.lang_count(result, body)
             out = CustomResponse(
                 Status.ACCEPTED.value,
                 {
@@ -295,14 +307,6 @@ def anuvaad_chart_org_doc():
                 },
             )
             return out.getres()
-            # return {
-            #     "data": {
-            #         "total_document_sentence_count": int(total_documemt_sentence_count),
-            #         "total_verified_sentence_count": int(total_verified_sentence_count),
-            #         "total_documents": int(total_docs),
-            #         "language_counts": keyss,
-            #     }
-            # }
 
     except Exception as e:
         log_exception("Error in FetchJudgementCount: {}".format(e), MODULE_CONTEXT, e)
@@ -312,9 +316,19 @@ def anuvaad_chart_org_doc():
         return out.getres()
 
 
+def generate_url(url_pre, end_point):
+    url_modified = url_pre + "/anuvaad-metrics/anuvaad-data/" + end_point
+    return url_modified
+
+
 # no of documents wrt org having src and tgt lang
-@app.route(config.API_URL_PREFIX + "/anuvaad-data/doc_count", methods=["GET"])
+@app.route(config.API_URL_PREFIX + "/anuvaad-data/doc_count", methods=["POST", "GET"])
 def anuvaad_chart_lang_org():
+    if request.method == "POST":
+        url = generate_url(config.jud, "doc_count")
+        data = requests.get(url)
+        data = data.json()
+        return data
     result, status = stats.file_validation()
     if status == False:
         return result
@@ -324,7 +338,7 @@ def anuvaad_chart_lang_org():
             total_documemt_sentence_count,
             total_verified_sentence_count,
             keyss,
-        ) = stats.org_lang(result)
+        ) = stats.doc_count(result)
         out = CustomResponse(
             Status.SUCCESS.value,
             {
@@ -337,9 +351,16 @@ def anuvaad_chart_lang_org():
         return out.getres()
 
 
-@app.route(config.API_URL_PREFIX + "/anuvaad-data/verified_count", methods=["GET"])
+@app.route(
+    config.API_URL_PREFIX + "/anuvaad-data/verified_count", methods=["POST", "GET"]
+)
 def anuvaad_chart_verfied_sentence():
     # body = request.get_json()
+    if request.method == "POST":
+        url = generate_url(config.jud, "verified_count")
+        data = requests.get(url)
+        data = data.json()
+        return data
     result, status = stats.file_validation()
     try:
         if status == False:
@@ -370,11 +391,10 @@ def anuvaad_chart_verfied_sentence():
         return out.getres()
 
 
-@app.route(config.API_URL_PREFIX + "/anuvaad-data/languages", methods=["GET"])
+@app.route(config.API_URL_PREFIX + "/anuvaad-data/languages", methods=["POST", "GET"])
 def dropdown_lang():
     supported_languages = "./models/language.json"
     with open(supported_languages, "r") as f:
         data = json.load(f)
     out = CustomResponse(Status.SUCCESS.value, data)
     return out.getres()
-    # return jsonify(data), 200
