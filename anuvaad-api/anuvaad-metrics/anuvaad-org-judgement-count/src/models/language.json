@@ -1,0 +1,69 @@
+{
+    "languages": [
+      {
+        "code": "en",
+        "label": "English",
+        "active": true
+      },
+      {
+        "code": "hi",
+        "label": "Hindi",
+        "active": true
+      },
+      {
+        "code": "mr",
+        "label": "Marathi",
+        "active": true
+      },
+      {
+        "code": "ta",
+        "label": "Tamil",
+        "active": true
+      },
+      {
+        "code": "te",
+        "label": "Telugu",
+        "active": true
+      },
+      {
+        "code": "kn",
+        "label": "Kannada",
+        "active": true
+      },
+      {
+        "code": "gu",
+        "label": "Gujarati",
+        "active": true
+      },
+      {
+        "code": "pa",
+        "label": "Punjabi",
+        "active": true
+      },
+      {
+        "code": "bn",
+        "label": "Bengali",
+        "active": true
+      },
+      {
+        "code": "ml",
+        "label": "Malayalam",
+        "active": true
+      },
+      {
+        "code": "as",
+        "label": "Assamese",
+        "active": true
+      },
+      {
+        "code": "ne",
+        "label": "Nepali",
+        "active": true
+      },
+      {
+        "code": "or",
+        "label": "Odia",
+        "active": true
+      }
+    ]
+  }
