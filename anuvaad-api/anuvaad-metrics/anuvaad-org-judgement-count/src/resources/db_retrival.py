@@ -304,7 +304,7 @@ def anuvaad_chart_org_doc():
                     "total_verified_sentence_count": int(total_verified_sentence_count),
                     "total_documents": int(total_docs),
                     "language_counts": keyss,
-                }, "severity": "danger"}
+                }}
                 ),
                 200,
             )
