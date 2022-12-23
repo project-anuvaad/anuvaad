@@ -306,7 +306,7 @@ def anuvaad_chart_org_doc():
                     "language_counts": keyss,
                 }}
                 ),
-                200,
+                202,
             )
             response.headers["Content-Type"] = "application/json"
             return response
