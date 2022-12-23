@@ -5,8 +5,8 @@ from resources.scheduler_jobs import schedule_job
 import config
 from utilities import MODULE_CONTEXT
 
-if config.ENABLE_CORS:
-    cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
+# if config.ENABLE_CORS:
+#     cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 if __name__ == "__main__":
     log_info(
