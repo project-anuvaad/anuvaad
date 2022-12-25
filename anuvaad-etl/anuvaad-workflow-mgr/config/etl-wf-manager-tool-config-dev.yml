@@ -109,3 +109,9 @@ ToolConfigs:
     description: tokenises the text blocks.
     api-details:
     - uri: http://gateway_anuvaad-etl-translator:5001/anuvaad-etl/tokeniser/v0/paragraphs-tokenisation-wf
+
+  - name: SYNC-DOCUMENT-PREPROCESS
+    description: Pre-process the document to check for tilt correction and watermark removal.
+    api-details:
+    - uri: http://gateway_anuvaad-etl-translator:5001/anuvaad/anuvaad-etl/pre-processor/v0/pre-process
+

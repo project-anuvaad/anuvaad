@@ -7,7 +7,7 @@ import time
 
 import requests
 import yaml
-from configs.wfmconfig import config_file_url, tool_config_url, tool_sync_sentence_translator, tool_sync_paragraph_translator, tool_blockmerger, tool_tokeniser, tool_fileconverter, tool_aligner, tool_translator
+from configs.wfmconfig import config_file_url, tool_config_url, tool_sync_sentence_translator, tool_sync_paragraph_translator, tool_blockmerger, tool_tokeniser, tool_fileconverter, tool_aligner, tool_translator, tool_doc_pre_processor
 from configs.wfmconfig import tool_worddetector, tool_layoutdetector, tool_ch, tool_nmt, tool_ocrgooglevision, tool_ocrtesseract, tool_annotator
 from configs.wfmconfig import tool_blocksegmenter, tool_syncfiletranslator, tool_ocrdd10googlevision, tool_ocrdd15googlevision, \
     jobid_random_str_length, tool_ocrtokeniser, tool_sync_block_translator, tool_filetranslator, tool_imageocr, tool_ocrdd20tesseract
@@ -33,7 +33,7 @@ from tools.annotator import Annotator
 from tools.file_translator import FileTranslator
 from tools.image_ocr import ImageOCR
 from tools.ocr_dd20 import OCRDD20
-
+from tools.doc_preprocessor import Doc_Preprocessor
 
 aligner = Aligner()
 tokeniser = Tokeniser()
@@ -55,12 +55,14 @@ annotator = Annotator()
 file_translator = FileTranslator()
 image_ocr = ImageOCR()
 wfmrepo = WFMRepository()
+doc_preprocessor = Doc_Preprocessor()
 
 log = logging.getLogger('file')
 configs_global = {}
 tools_global = {}
 
 yaml_file_loc = "/app/configs"
+#yaml_file_loc = "configs"
 yam_file_path_delimiter = "/"
 #yaml_file_name = "wfconfig.yml"
 yaml_workflow_config_file_name = "wfconfig.yml"
@@ -303,6 +305,8 @@ class WFMUtils:
                 tool_input = nmt.get_nmt_it_req(wf_input)
             if current_tool in [tool_filetranslator,tool_syncfiletranslator]:
                 tool_input = file_translator.get_ft_input_wf(wf_input)
+            if current_tool == tool_doc_pre_processor:
+                tool_input = doc_preprocessor.get_ft_input_wf(wf_input)
         return tool_input
 
     # Util method to make an API call and fetch the result

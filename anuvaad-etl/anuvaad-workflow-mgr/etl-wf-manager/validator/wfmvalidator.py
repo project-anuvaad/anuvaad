@@ -34,15 +34,21 @@ class WFMValidator:
             config = configs["workflowCodes"][workflowCode]
             if config["type"] != "SYNC":
                 return post_error("UNSUPPORTED_WF_CODE", "This workflow is NOT of the SYNC type.", None)
-            if config["translation"] not in ["BLOCK", "SENTENCE", "DOWNLOAD"]:
+            if config["translation"] not in ["BLOCK", "SENTENCE", "DOWNLOAD","PREPROCESS"]:
                 return post_error("UNSUPPORTED_SYNC_WF", "This workflow is NOT of the VALID SYNC type.", None)
             if config["translation"] == "BLOCK":
                 return self.validate_sync_block(data, workflowCode)
             elif config["translation"] == "SENTENCE":
                 return self.validate_sync_sentence(data)
+            elif config["translation"] == "PREPROCESS":
+                return self.validate_sync_preprocess(data,workflowCode)
         else:
             return post_error("WORKFLOW_TYPE_DISABLED",
                               "This workflow belongs to SYNC type, which is currently disabled.", None)
+
+    def validate_sync_preprocess(self,data,workflowCode):
+        #TODO ADDITION OF PREPROCESS VALIDATION
+        return None
 
     def validate_sync_block(self, data, workflowCode):
         if 'recordID' not in data.keys():

@@ -37,6 +37,7 @@ tool_filetranslator = "FILE-TRANSLATOR"
 tool_filetranslator_download = "FILE-TRANSLATOR-DOWNLOAD"
 tool_syncfiletranslator = "SYNC-FILE-TRANSLATOR"
 tool_imageocr = "IMAGE-OCR"
+tool_doc_pre_processor = "SYNC-DOCUMENT-PREPROCESS"
 is_sync_flow_enabled = True
 is_async_flow_enabled = True
 page_default_limit = os.environ.get('WFM_PAGE_DEFAULT_LIMIT', 20)

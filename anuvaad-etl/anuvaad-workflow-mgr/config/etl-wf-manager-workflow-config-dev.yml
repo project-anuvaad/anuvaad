@@ -584,6 +584,16 @@ WorkflowConfigs:
           - name: SYNC-SENTENCE-TRANSLATOR
           endState: true
 
+      - workflowCode: WF_S_DPP
+        type: SYNC
+        translation: PREPROCESS
+        description: Tokenises the list of paragraph to sentences and Translates them.
+        useCase: WF_S_DPP
+        sequence:
+        - order: 0
+          tool:
+          - name: SYNC-DOCUMENT-PREPROCESS
+          endState: true
 
 # Conventions:
 # WF - prefix for Workflow
