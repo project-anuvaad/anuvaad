@@ -727,6 +727,14 @@
             "active":true,
             "whiteList":true,
             "description":"API for Aanuvaad-Metrics languages drop down chart api"
+        },
+        {
+            "id":"7aec74a1-7feb-45c7-900b-a6a4458a4fef",
+            "uri":"/anuvaad-etl/pre-processor/v0/pre-process",
+            "module":"PRE-PROCESSOR",
+            "active":true,
+            "whiteList":false,
+            "description":"API for Aanuvaad-Doc-Preprocessor"
         }
     ]
 }
