@@ -8,7 +8,7 @@ import os
 import cv2
 import config
 from src.utilities import app_context
-from src.utilities.model_response import FileOutput
+from src.utilities.model_response import FileOutput, Page
 from src.services.remove_watermark import clean_image
 from src.services.extract_images import extract_images
 from src.utilities.request_parse import get_files, File
@@ -62,6 +62,10 @@ def get_response(files, images):
                 else:
                     path = []
                     filename = []
+                page_properties = Page(page)
+                print(page_properties.get_page())
+                file_prperties.set_page(page_properties.get_page())
+                file_prperties.set_page_info(page)
             file_prperties.set_staus(True)
 
         except Exception as e:
