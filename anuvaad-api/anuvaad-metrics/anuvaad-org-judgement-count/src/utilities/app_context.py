@@ -1,4 +1,4 @@
-MODULE_CONTEXT = {'metadata':{'module':'ANUVAAD-DB-DATA'}}
+MODULE_CONTEXT = {'metadata':{'module':'ANUVAAD-METRICS'}}
 
 def init():
     global app_context

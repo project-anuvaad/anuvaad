@@ -1,7 +1,7 @@
 certifi==2020.12.5
-flask==1.1.2
+flask==2.1.0
 flask-cors==3.0.9
-flask-restful==0.3.8
+flask-restful==0.3.9
 requests==2.24.0
 pandas==1.1.2
 pdftotext==2.1.5
