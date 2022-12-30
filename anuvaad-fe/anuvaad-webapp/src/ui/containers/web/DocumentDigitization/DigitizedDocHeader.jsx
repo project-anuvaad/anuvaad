@@ -164,6 +164,7 @@ class DigitizedDocHeader extends React.Component {
                     anchorEl: null,
                     showStatus: true,
                     message: "Downloading failed...",
+                    variant: "error"
                 });
             }
         });

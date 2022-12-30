@@ -104,6 +104,13 @@ const headerMenuConfig = [
         menuType : menuTypes[2]
     },
     {
+        id : "analytics",
+        title: "Analytics",
+        onclick : (assignedOrgId)=>history.push(`${process.env.PUBLIC_URL}/analytics`),
+        rolesAllowed : userRoles,
+        menuType : menuTypes[2]
+    },
+    {
         id : "logout",
         title: translate('header.page.heading.logout'),
         onclick : (assignedOrgId)=>history.push(`${process.env.PUBLIC_URL}/logout`),
