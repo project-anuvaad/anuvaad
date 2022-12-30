@@ -113,12 +113,12 @@ const DocumentCountByLang = (props) => {
                     container
                     direction="row"
                     alignItems={'center'}
-                    style={{ textAlign: 'left', margin: { xs: 2, md: 5 } }}
+                    style={{ textAlign: 'left', margin: "40px"}}
                 >
                     <Typography variant='h6'>
                         Number of Documents processed per language with
                     </Typography>
-                    <Box style={{ marginLeft: 10 }}>
+                    <Box style={{ marginLeft: 40 }}>
                         <FormControl variant="standard" style={{ m: 1, minWidth: 200 }}>
                             <InputLabel id="demo-simple-select-helper-label">Source Language</InputLabel>
                             <Select
