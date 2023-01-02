@@ -36,7 +36,7 @@ class PreProcessor(Resource):
         app_context.init()
         app_context.application_context = json_data
         log_info("pre-processor service started", app_context.application_context)
-        task_id = str("BM-" + str(time.time()).replace('.', '')[0:13])
+        task_id = str("PP-" + str(time.time()).replace('.', '')[0:13])
         task_starttime  =  eval(str(time.time()).replace('.', '')[0:13])
         #json_data = request.get_json(force = True)
         try:
