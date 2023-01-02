@@ -42,7 +42,7 @@ is_sync_flow_enabled = True
 is_async_flow_enabled = True
 page_default_limit = os.environ.get('WFM_PAGE_DEFAULT_LIMIT', 20)
 jobid_random_str_length = os.environ.get('WFM_JOBID_RANDOM_STR_LEN', 5)
-
+app_context = {"metadata" : {"module" : "WORKFLOW-MANAGER"}}
 
 #kafka-configs
 anu_etl_wfm_core_topic = os.environ.get('KAFKA_ANUVAAD_ETL_WFM_CORE_TOPIC', 'anuvaad-etl-wf-initiate-v3')

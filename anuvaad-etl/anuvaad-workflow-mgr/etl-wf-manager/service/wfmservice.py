@@ -10,6 +10,7 @@ from configs.wfmconfig import anu_etl_wfm_core_topic, log_msg_start, log_msg_end
     anu_etl_notifier_input_topic, total_no_of_partitions
 from anuvaad_auditor.errorhandler import post_error_wf, post_error, log_exception
 from anuvaad_auditor.loghandler import log_info, log_error
+from configs.wfmconfig import app_context
 
 log = logging.getLogger('file')
 producer = Producer()
@@ -117,9 +118,9 @@ class WFMService:
                     tool_input = wfmutils.get_tool_input_sync(tool_details["name"], None, None, wf_input)
                 else:
                     tool_input = wfmutils.get_tool_input_sync(tool_details["name"], previous_tool, tool_output, None)
-                log_info(f'Sync Call API Params: {wfmutils.get_tool_config_details(tool_details["name"])["api-details"][0]["uri"]} tool_input: {tool_input} userid: {wf_input["metadata"]["userID"]}',ctx)
+                log_info(f'Sync Call API Params: {wfmutils.get_tool_config_details(tool_details["name"])["api-details"][0]["uri"]} tool_input: {tool_input} userid: {wf_input["metadata"]["userID"]}',app_context)
                 response = wfmutils.call_api(wfmutils.get_tool_config_details(tool_details["name"])["api-details"][0]["uri"], tool_input, wf_input["metadata"]["userID"])
-                log_info(f'Sync Call API Response: {response}',ctx)
+                log_info(f'Sync Call API Response: {response}',app_context)
                 error = self.validate_tool_response(response, tool_details, wf_input)
                 if error:
                     return error
