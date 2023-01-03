@@ -207,7 +207,7 @@ class AppRoutes extends React.Component {
               path={`${process.env.PUBLIC_URL}/glossary-upload`}
               dontShowLoader
               title={"Glossary Upload"}
-              userRoles={["ADMIN", "SUPERADMIN"]}
+              userRoles={["SUPERADMIN"]}
               component={TmxUpload}
               authenticate={this.authenticateUser}
               currentMenu="glossary-upload"
