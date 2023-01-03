@@ -58,7 +58,7 @@ const headerMenuConfig = [
         id : "glossary-upload",
         title: "Glossary Upload",
         onclick : ()=>history.push(`${process.env.PUBLIC_URL}/glossary-upload`),
-        rolesAllowed : [userRoles[2], userRoles[3]],
+        rolesAllowed : [userRoles[3]],
         menuType : menuTypes[2]
     },
     {
@@ -101,6 +101,13 @@ const headerMenuConfig = [
         title: "View Annotation Job",
         onclick : (assignedOrgId)=>history.push(`${process.env.PUBLIC_URL}/view-annotation-job`),
         rolesAllowed : [userRoles[1]],
+        menuType : menuTypes[2]
+    },
+    {
+        id : "analytics",
+        title: "Analytics",
+        onclick : (assignedOrgId)=>history.push(`${process.env.PUBLIC_URL}/analytics`),
+        rolesAllowed : userRoles,
         menuType : menuTypes[2]
     },
     {
