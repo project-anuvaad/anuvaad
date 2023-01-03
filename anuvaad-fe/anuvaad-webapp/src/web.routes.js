@@ -46,6 +46,7 @@ import OrganizationGlossary from "./ui/containers/web/AdminPanel/OrganizationGlo
 import SuggestedGlossaryList from "./ui/containers/web/AdminPanel/SuggestedGlossaryList";
 import MySuggestedGlossary from "./ui/containers/web/UserGlossary/MySuggestedGlossary";
 import UserManagement from "./ui/containers/web/User/UserManagement";
+import Analytics from "./ui/containers/web/Analytics/Analytics";
 
 const PrivateRoute = ({ headerAttribute: headerAttribute, component: Component, userRoles, title, drawer, showLogo, forDemo, dontShowLoader, dontShowHeader, currentMenu, authenticate, ...rest }) => (
   <Route
@@ -123,6 +124,14 @@ class AppRoutes extends React.Component {
               dontShowHeader={true}
               currentMenu="signup"
             /> */}
+
+            <PrivateRoute
+              path={`${process.env.PUBLIC_URL}/analytics`}
+              title={translate('webroutes.page.title.profile')}
+              component={Analytics}
+              authenticate={this.authenticateUser}
+              currentMenu="analytics"
+            />
 
             <PrivateRoute
               path={`${process.env.PUBLIC_URL}/profile`}

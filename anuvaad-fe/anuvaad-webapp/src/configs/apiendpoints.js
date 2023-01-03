@@ -54,7 +54,11 @@ const endpoints = {
   getUserReport: '/dashboard/getUserReport',
   downloadDocxFile: '/anuvaad-etl/anuvaad-docx-downloader/v0/download-docx',
   downloadOcrDocxFile: '/anuvaad-etl/anuvaad-docx-downloader/ocr/v0/download-docx',
-  fetchDigitalDocLink: '/anuvaad/content-handler/v0/ref-link/fetch'
+  fetchDigitalDocLink: '/anuvaad/content-handler/v0/ref-link/fetch',
+  getTranslatedAndVerifiedSetenceCount: "/anuvaad-metrics/anuvaad-data/verified_count",
+  getLangCount: "/anuvaad-metrics/anuvaad-data/lang_count",
+  getDocumentCountPerOrg: "/anuvaad-metrics/anuvaad-data/doc_count",
+  getAllSupportedLangList: "/anuvaad-metrics/anuvaad-data/languages",
 };
 
 export default endpoints;

@@ -679,6 +679,62 @@
             "active":true,
             "whiteList":true,
             "description":"API for AIB NMT health endpoint"
+        },
+        {
+            "id":"7b68675e-0084-4a84-acad-b949622fce05",
+            "uri":"/anuvaad-metrics/anuvaad-data",
+            "module":"ANUVAAD-METRICS",
+            "active":true,
+            "whiteList":true,
+            "description":"API for Aanuvaad-Metrics fetch all translator jobs"
+        },
+        {
+            "id":"bbe4c9d4-976d-4ce6-acdf-19cccaea69f1",
+            "uri":"/anuvaad-metrics/anuvaad-data/user",
+            "module":"ANUVAAD-METRICS",
+            "active":true,
+            "whiteList":true,
+            "description":"API for Aanuvaad-Metrics fetch all users jobs and counts"
+        },
+        {
+            "id":"19e7c620-d44d-4010-897a-7971b0128784",
+            "uri":"/anuvaad-metrics/anuvaad-data/lang_count",
+            "module":"ANUVAAD-METRICS",
+            "active":true,
+            "whiteList":true,
+            "description":"API for Aanuvaad-Metrics language count chart api"
+        },
+        {
+            "id":"9b602a8e-0ecc-418e-9240-b8f4a4922fcc",
+            "uri":"/anuvaad-metrics/anuvaad-data/doc_count",
+            "module":"ANUVAAD-METRICS",
+            "active":true,
+            "whiteList":true,
+            "description":"API for Aanuvaad-Metrics doc count chart api"
+        },
+        {
+            "id":"787bab14-d6ba-41b1-8096-06f21e2e9413",
+            "uri":"/anuvaad-metrics/anuvaad-data/verified_count",
+            "module":"ANUVAAD-METRICS",
+            "active":true,
+            "whiteList":true,
+            "description":"API for Aanuvaad-Metrics verified sentence count chart api"
+        },
+        {
+            "id":"40176689-dd58-49bb-a42d-6aec51355bca",
+            "uri":"/anuvaad-metrics/anuvaad-data/languages",
+            "module":"ANUVAAD-METRICS",
+            "active":true,
+            "whiteList":true,
+            "description":"API for Aanuvaad-Metrics languages drop down chart api"
+        },
+        {
+            "id":"7aec74a1-7feb-45c7-900b-a6a4458a4fef",
+            "uri":"/anuvaad-etl/pre-processor/v0/pre-process",
+            "module":"PRE-PROCESSOR",
+            "active":true,
+            "whiteList":false,
+            "description":"API for Aanuvaad-Doc-Preprocessor"
         }
     ]
 }

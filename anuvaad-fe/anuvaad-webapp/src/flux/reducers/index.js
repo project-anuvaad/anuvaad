@@ -68,6 +68,10 @@ import fetchSuggestedGlossaryList from './organization/fetch_glossary_suggestion
 import getUserReport from './admin/get_user_event_report';
 import getHtmlLink from './editor/getHtmlLink';
 import getViewOptions from './editor/getViewOptions';
+import getTranslatedAndVerifiedSetenceCount from './analytics/getTranslatedAndVerifiedSetenceCount';
+import getCountByLang from './analytics/getCountByLang';
+import getDocumentCountPerOrg from './analytics/getDocumentCountPerOrg'
+import getAnuvaadSupportedLanguages from './analytics/getSupportedLangList'
 
 export default {
     login,
@@ -138,5 +142,9 @@ export default {
     getHtmlLink,
     getViewOptions,
     fetchOrgGlossary,
-    fetchSuggestedGlossaryList
+    fetchSuggestedGlossaryList,
+    getTranslatedAndVerifiedSetenceCount,
+    getCountByLang,
+    getDocumentCountPerOrg,
+    getAnuvaadSupportedLanguages
 };

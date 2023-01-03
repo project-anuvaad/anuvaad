@@ -214,6 +214,14 @@ const constants = {
     /**
      * action for switching docx view
      */
-    SWITCH_DOCX_VIEW: 'SWITCH_DOCX_VIEW'
+    SWITCH_DOCX_VIEW: 'SWITCH_DOCX_VIEW',
+
+    /**
+     * Analytics Chart
+     */
+     GET_TRANSLATED_AND_VERIFIED_SETENCE_COUNT: "GET_TRANSLATED_AND_VERIFIED_SETENCE_COUNT",
+     GET_COUNT_BY_LANG: "GET_COUNT_BY_LANG",
+     GET_DOCUMENT_COUNT_PER_ORG: "GET_DOCUMENT_COUNT_PER_ORG",
+     GET_ALL_SUPPORTED_LANG_LIST: "GET_ALL_SUPPORTED_LANG_LIST"
 }
 export default constants;
