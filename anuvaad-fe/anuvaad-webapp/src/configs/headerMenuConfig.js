@@ -58,7 +58,7 @@ const headerMenuConfig = [
         id : "glossary-upload",
         title: "Glossary Upload",
         onclick : ()=>history.push(`${process.env.PUBLIC_URL}/glossary-upload`),
-        rolesAllowed : [userRoles[2], userRoles[3]],
+        rolesAllowed : [userRoles[3]],
         menuType : menuTypes[2]
     },
     {
