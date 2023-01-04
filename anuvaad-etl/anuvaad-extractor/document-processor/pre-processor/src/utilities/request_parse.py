@@ -38,6 +38,6 @@ class File:
 
 
 def get_files(application_context):
-    files = copy.deepcopy(application_context['input']['inputs'])
+    files = copy.deepcopy(application_context['input']['files'])
     return files
 
