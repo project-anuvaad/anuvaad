@@ -6,6 +6,9 @@ import config
 import pandas as pd
 from flask import request
 from pathlib import Path
+# from docx2pdf import convert
+
+# from libreoffice import LibreOffice
 
 from datetime import datetime
 import PyPDF2
@@ -28,17 +31,6 @@ def is_file_empty(file_bfr, file_path):
     else:
         return False
 
-##check for private users
-
-
-# value = 2
-
-# def private_user(filename, file_path):
-#     file = filename
-#     file_path = os.path.join(config.download_folder, filename)
-#     userfile = UserFiles(created_by=request.headers.get('x-user-id'),
-#                             filename=filename, file_real_name=file_real_name + file_extension,
-#                             created_on=datetime.now())
 
 
 def page_restrictions_pdf(filename):
@@ -49,27 +41,28 @@ def page_restrictions_pdf(filename):
     page_number = pdfReader.numPages
     return page_number
 
-def upload_doc(filename, timeout=None):
-     # '/home/test/Downloads/Canals on Mars.docx'
+def upload_doc(filename): #, timeout=None
     filepath = config.download_folder
     file_Ext = filename.split('.')[1]
-    # filename = filename.split('.')[0]
-    # print('test:6',file_Ext)
+    print(filepath+'/'+filename)
+    # args = ['unoconv','-f', 'pdf', filepath+'/'+filename]
+    # print('args',args)
     args = ["libreoffice", '--headless', '--convert-to', 'pdf', '--outdir', filepath,
                     filepath+'/'+filename]
-    s = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=timeout)
-    # print("test5:",s)
+    s = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE) #, timeout=timeout
+    print("test5:",s)
+    print(filename)
     filename = filename.split('.')[0]
     filename = filename+'.pdf'
-    # print('test7:',filename)
-    file = open(filepath +'/'+ filename, "rb")
-    # print(file)
+    print('test7:',filepath+'/'+filename)
+#    if filename in filepath:
+    print('fi-------:', filename)
+    file = open(filepath + '/' + filename, "rb")
+    print(file)
     pdfReader = PyPDF2.PdfFileReader(file)
-    page_number = pdfReader.numPages
+    page_number = pdfReader.numPages #len(pdfReader.pages)
+    print(page_number)
     return page_number
-    
-    
-    # return (filepath, filename)
 
 ## this function is to reduce the number of pages. currently not in use
 def reduce_page(filenames,filepath,file_extension):

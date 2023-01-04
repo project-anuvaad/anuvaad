@@ -83,14 +83,14 @@ class FileUploader(Resource):
                 #print(file_extension)
                 log_info(f"Test 4: file_extension = {allowed_file_extension}", None)
                 if allowed_file_extension == 'docx':
-                    page = upload_doc(filename,timeout=60)
-                    # print("test8:", filepath)
+                    page = upload_doc(filename)  #,timeout=60
+                    print("test8:", filepath)
                     remove_pdf_ext = filepath.split('.')[0]
                     filepath = remove_pdf_ext + '.pdf'
                     if filepath.endswith('.pdf'):
                         os.remove(filepath)
                     filepath = remove_pdf_ext+file_extension
-                    # print('test11:', filepath)
+                    print('test11:', filepath)
 
                     if page > config.page_limit:
                         os.remove(filepath)
