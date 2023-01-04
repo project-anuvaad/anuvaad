@@ -32,11 +32,11 @@ class PreProcessor(Resource):
         # with open('data.json', 'w') as f:
         #     json.dump(body, f)
         upload_id = str(uuid4())
-        filename = json_data['input']['inputs'][0]['file']['path']
+        filename = json_data['input']['files'][0]['file']['path']
         app_context.init()
         app_context.application_context = json_data
         log_info("pre-processor service started", app_context.application_context)
-        task_id = str("BM-" + str(time.time()).replace('.', '')[0:13])
+        task_id = str("PP-" + str(time.time()).replace('.', '')[0:13])
         task_starttime  =  eval(str(time.time()).replace('.', '')[0:13])
         #json_data = request.get_json(force = True)
         try:

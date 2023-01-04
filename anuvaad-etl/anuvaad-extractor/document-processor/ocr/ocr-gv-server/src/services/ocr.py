@@ -12,6 +12,7 @@ from src.utilities.model_response import set_bg_image
 from src.utilities.request_parse import MapKeys,UpdateKeys
 from src.services.overlap_remove import RemoveOverlap,merger_lines_words
 from src.services.dynamic_adjustment import coord_adjustment
+from src.services.remove_watermark import clean_image
 import json
 from src.db.connection_manager import get_redis
 # from src.utilities.app_context import  app_context
@@ -28,7 +29,17 @@ breaks = vision.enums.TextAnnotation.DetectedBreak.BreakType
 def get_text(page_c_lines,file,path,page_dict,page_regions,page_c_words,font_info,file_properties,idx):
     
     #path = config.BASE_DIR+path
-    with io.open(path, 'rb') as image_file:
+    # watermark_img = file_properties.get_watermark_remove_config()
+    if config.WATERMARK_REMOVE:
+        img = cv2.imread(path)
+        # img[175 < img ] = 255
+        img = clean_image(img)
+        masked_path = path.split('.jpg')[0]+"_watermark-removed.jpg"
+        cv2.imwrite(masked_path,img)
+    else:
+        masked_path = path
+
+    with io.open(masked_path, 'rb') as image_file:
         content = image_file.read()
     image = vision.types.Image(content=content)
     response = client.document_text_detection(image=image)

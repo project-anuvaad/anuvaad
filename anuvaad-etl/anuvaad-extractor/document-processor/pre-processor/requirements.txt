@@ -15,3 +15,4 @@ anuvaad-auditor==0.1.6
 opencv-python==4.4.0.40
 imutils==0.5.4
 scikit-image==0.19.3
+imagesize==1.4.1
