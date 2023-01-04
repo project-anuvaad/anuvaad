@@ -27,6 +27,8 @@ from config import (
 )
 from base64 import b64decode
 from nacl.secret import SecretBox
+from utilities.email_notification import send_email, generate_email_notification
+from email.mime.text import MIMEText
 
 SECRET_KEY = secrets.token_bytes()
 ex_secret_key = config.SECRET_KEY
@@ -128,7 +130,10 @@ class UserUtils:
                 hours=token_life
             )
             # creating payload for token
-            payload = {"user": str(userdetails["user_name"]).split('@')[0], "exp": time_limit}
+            payload = {
+                "user": str(userdetails["user_name"]).split("@")[0],
+                "exp": time_limit,
+            }
             # generating token
             token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
             log_info(
@@ -631,20 +636,34 @@ class UserUtils:
             for user in users:
                 email = user["userName"]
                 user_id = user["userID"]
-                msg = Message(
-                    subject="Welcome to Anuvaad",
-                    sender="anuvaad.support@tarento.com",
-                    recipients=[email],
+                message = generate_email_notification(email)
+                message["Subject"] = f" ANUVAAD - Verify Email {email} "
+                filename = "./templates/register_mail_template.html"
+                ui_link = mail_ui_link
+                activation_link = mail_ui_link + "user/activate/{}/{}/{}".format(
+                    email, user_id, eval(str(time.time()).replace(".", "")[0:13])
                 )
-                msg.html = render_template(
-                    "register_mail_template.html",
-                    ui_link=mail_ui_link,
-                    activation_link=mail_ui_link
-                    + "user/activate/{}/{}/{}".format(
-                        email, user_id, eval(str(time.time()).replace(".", "")[0:13])
-                    ),
-                )
-                mail.send(msg)
+                html_ = open(filename).read()
+                html_ = html_.replace("{{ui_link}}", ui_link)
+                html_ = html_.replace("{{activation_link}}", activation_link)
+                html_ = MIMEText(html_, "html")
+                message.add_alternative(html_, subtype="html")
+                send_email(message)
+
+                # msg = Message(
+                #     subject="Welcome to Anuvaad",
+                #     sender="anuvaad.support@tarento.com",
+                #     recipients=[email],
+                # )
+                # msg.html = render_template(
+                #     "register_mail_template.html",
+                #     ui_link=mail_ui_link,
+                #     activation_link=mail_ui_link
+                #     + "user/activate/{}/{}/{}".format(
+                #         email, user_id, eval(str(time.time()).replace(".", "")[0:13])
+                #     ),
+                # )
+                # mail.send(msg)
                 log_info(
                     "Generated email notification for user registration ",
                     MODULE_CONTEXT,
@@ -666,20 +685,33 @@ class UserUtils:
     def generate_email_reset_password(user_name, rand_id):
         try:
             email = user_name
-            msg = Message(
-                subject="[Anuvaad] Please reset your Password ",
-                sender="anuvaad.support@tarento.com",
-                recipients=[email],
+            message = generate_email_notification(email)
+            message["Subject"] = f" ANUVAAD - Reset Password for {email} "
+            filename = "./templates/reset_mail_template.html"
+            ui_link = mail_ui_link
+            reset_link = mail_ui_link + "user/set-password/{}/{}/{}".format(
+                email, rand_id, eval(str(time.time()).replace(".", "")[0:13])
             )
-            msg.html = render_template(
-                "reset_mail_template.html",
-                ui_link=mail_ui_link,
-                reset_link=mail_ui_link
-                + "user/set-password/{}/{}/{}".format(
-                    email, rand_id, eval(str(time.time()).replace(".", "")[0:13])
-                ),
-            )
-            mail.send(msg)
+            html_ = open(filename).read()
+            html_ = html_.replace("{{ui_link}}", ui_link)
+            html_ = html_.replace("{{reset_link}}", reset_link)
+            html_ = MIMEText(html_, "html")
+            message.add_alternative(html_, subtype="html")
+            send_email(message)
+            # msg = Message(
+            #     subject="[Anuvaad] Please reset your Password ",
+            #     sender="anuvaad.support@tarento.com",
+            #     recipients=[email],
+            # )
+            # msg.html = render_template(
+            #     "reset_mail_template.html",
+            #     ui_link=mail_ui_link,
+            #     reset_link=mail_ui_link
+            #     + "user/set-password/{}/{}/{}".format(
+            #         email, rand_id, eval(str(time.time()).replace(".", "")[0:13])
+            #     ),
+            # )
+            # mail.send(msg)
             log_info(
                 "Generated email notification for {} on reset password".format(email),
                 MODULE_CONTEXT,
