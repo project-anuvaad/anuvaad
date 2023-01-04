@@ -1,7 +1,7 @@
-FROM python:3.7-slim
+FROM python:3.8-slim
 COPY / /app
 WORKDIR /app
-RUN apt-get update
+RUN apt update
 
 RUN pip3 install -r requirements.txt
 # RUN yes | apt update && apt install --no-install-recommends libreoffice-writer-nogui -y
