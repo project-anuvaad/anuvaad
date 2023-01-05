@@ -10,6 +10,10 @@ import DocumentCountByLang from "../../../components/web/Analytics/DocumentCount
 import TranslatedAndVarifiedSentenceByLang from "../../../components/web/Analytics/TranslatedAndVarifiedSentenceByLang";
 import DocumentCountByOrg from "../../../components/web/Analytics/DocumentCountByOrg";
 import getAnuvaadSupportedLanguages from "../../../../flux/actions/apis/analytics/getSupportedLangList";
+import { Button, Grid, Typography } from "@material-ui/core";
+import ImageTwoTone from "@material-ui/icons/ImageTwoTone";
+import PictureAsPdfOutlined from "@material-ui/icons/PictureAsPdfOutlined";
+import downloadReportClick from "../../../../utils/downloadChart";
 
 
 const Analytics = () => {
@@ -46,11 +50,69 @@ const Analytics = () => {
     }, [])
 
     return (
-        <div>
-            <DocumentCountByLang incomingData={documentCountByLang} onLanguageChange={getCountByLang} />
-            <TranslatedAndVarifiedSentenceByLang />
-            <DocumentCountByOrg />
-        </div>
+        <>
+            <Grid
+                container
+                direction="row"
+                justifyContent="end"
+                alignItems="center"
+                style={{
+                    placeContent:"end",
+                    marginTop: 30,
+                    paddingLeft: 110,
+                    paddingRight: 110
+                }}
+            >
+                {/* <Grid item>
+                    <Typography>Download As - </Typography>
+                </Grid> */}
+                <Grid item>
+                    <Button
+                        // title="Export as Image"
+                        onClick={() => { downloadReportClick(true, "img", ["analytics-charts"], "Anuvaad-Analytics") }}
+                        // variant="outlined"
+                        color="primary"
+                    >
+                        {/* Export As */}
+                        Donwload Full Report As Image 
+                        <ImageTwoTone fontSize="large" />
+                    </Button>
+                </Grid>
+                <Grid item>
+                    <Button
+                        // title="Export as PDF"
+                        onClick={() => { downloadReportClick(true, "pdf", ["documentCountByLang", "translatedAndVarifiedSentenceByLang", "documentCountByOrg"], "Anuvaad-Analytics") }}
+                        // variant="outlined"
+                        color="primary"
+                        style={{marginLeft: 5}}
+                    >
+                        {/* Export As */}
+                        Donwload Full Report As PDF
+                        <PictureAsPdfOutlined fontSize="large" />
+                    </Button>
+                </Grid>
+            </Grid>
+            <div id="analytics-charts">
+                <div id={"documentCountByLang"}>
+                    <DocumentCountByLang 
+                        incomingData={documentCountByLang} 
+                        onLanguageChange={getCountByLang} 
+                        onDownloadReportClick={downloadReportClick}
+                    />
+                </div>
+                <div id={"translatedAndVarifiedSentenceByLang"}>
+                    <TranslatedAndVarifiedSentenceByLang 
+                        onDownloadReportClick={downloadReportClick}
+                    />
+                </div>
+                <div id={"documentCountByOrg"}>
+                    <DocumentCountByOrg 
+                        onDownloadReportClick={downloadReportClick}
+                    />
+                </div>
+            </div>
+        </>
+
     );
 };
 
