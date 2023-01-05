@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 //import themeDefault from "../../../theme/theme";
-import { Grid, ThemeProvider, Box, Typography, Paper } from "@material-ui/core";
+import { Grid, ThemeProvider, Box, Typography, Paper, Button } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
 import {
     BarChart,
@@ -19,10 +19,12 @@ import {
 import ResponsiveChartContainer from "../common/ResponsiveChartContainer";
 import ChartStyles from "../../../styles/web/ChartStyles";
 import { withStyles } from "@material-ui/core/styles";
+import ImageTwoTone from "@material-ui/icons/ImageTwoTone";
+import PictureAsPdfOutlined from "@material-ui/icons/PictureAsPdfOutlined";
 
 
 function TranslatedAndVarifiedSentenceByLang(props) {
-    const { classes } = props;
+    const { classes, onDownloadReportClick } = props;
     // const classes = ChartStyles();
     const dispatch = useDispatch();
     const sourceData = useSelector(state => state.getTranslatedAndVerifiedSetenceCount.data?.data)
@@ -103,6 +105,27 @@ function TranslatedAndVarifiedSentenceByLang(props) {
                                         sourceData?.total_verified_sentence_count
                                     )}
                             </Typography>
+                        </Box>
+                        <Box className="exportButtons" displayPrint="none" style={{ flexDirection: "row", alignItems: "center", placeContent: "end", width: "25%", display: "flex" }}>
+                            <Typography style={{ fontSize: "0.875rem", fontWeight: "400" }}>Download As - </Typography>
+                            <Button
+                                title="Download as Image"
+                                onClick={() => { onDownloadReportClick(true, "img", ["translatedAndVarifiedSentenceByLang"], "Anuvaad-Analytics") }}
+                                // variant="outlined"
+                                color="primary"
+                            >
+                                <ImageTwoTone />
+                                {/* Export Image */}
+                            </Button>
+                            <Button
+                                title="Download as PDF"
+                                onClick={() => { onDownloadReportClick(true, "pdf", ["translatedAndVarifiedSentenceByLang"], "Anuvaad-Analytics") }}
+                                // variant="outlined"
+                                color="primary"
+                            >
+                                {/* Export PDF */}
+                                <PictureAsPdfOutlined />
+                            </Button>
                         </Box>
                         {/* <Box className={classes.topBarInnerBox}>
                         <Typography style={{ fontSize: "0.875rem", fontWeight: "400" }}>

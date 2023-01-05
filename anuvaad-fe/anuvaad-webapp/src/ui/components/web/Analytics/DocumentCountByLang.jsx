@@ -1,6 +1,6 @@
 // DocumentCountByLang
 
-import { Box, CircularProgress, FormControl, Grid, InputLabel, MenuItem, Paper, Select, Typography } from "@material-ui/core";
+import { Box, CircularProgress, FormControl, Grid, InputLabel, MenuItem, Paper, Select, Typography, Button } from "@material-ui/core";
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import {
@@ -17,6 +17,9 @@ import {
 import ChartStyles from "../../../styles/web/ChartStyles";
 import ResponsiveChartContainer from "../common/ResponsiveChartContainer";
 import { withStyles } from "@material-ui/core/styles";
+import ArrowDownwardOutlined from "@material-ui/icons/ArrowDownwardOutlined";
+import ImageTwoTone from "@material-ui/icons/ImageTwoTone";
+import PictureAsPdfOutlined from "@material-ui/icons/PictureAsPdfOutlined";
 const LANG_MODEL = require('../../../../utils/language.model')
 
 const colors = [
@@ -36,7 +39,7 @@ const colors = [
 const DocumentCountByLang = (props) => {
     // const classes = ChartStyles();
 
-    const { incomingData, loadingChart, classes } = props;
+    const { incomingData, loadingChart, classes, onDownloadReportClick } = props;
     const [selectedSourceLang, setSelectedSourceLang] = useState('en');
     const [sourceData, setSourceData] = useState();
     const [axisValue, setAxisValue] = useState({
@@ -108,12 +111,31 @@ const DocumentCountByLang = (props) => {
                                 : 0}
                         </Typography>
                     </Box>
+                    <Box className="exportButtons" displayPrint="none" style={{ flexDirection: "row", alignItems: "center", placeContent: "end", width: "50%", display: "flex" }}>
+                    <Typography style={{ fontSize: "0.875rem", fontWeight: "400" }}>Download As - </Typography>
+                        <Button
+                            title="Export as Image"
+                            onClick={() => { onDownloadReportClick(true, "img", ["documentCountByLang"], "Anuvaad-Analytics") }}
+                            color="primary"
+                        >
+                            {/* Export Image */}
+                            <ImageTwoTone />
+                        </Button>
+                        <Button
+                            title="Export as PDF"
+                            onClick={() => { onDownloadReportClick(true, "pdf", ["documentCountByLang"], "Anuvaad-Analytics") }}
+                            color="primary"
+                        >
+                            {/* Export PDF */}
+                            <PictureAsPdfOutlined />
+                        </Button>
+                    </Box>
                 </Box>
                 <Grid
                     container
                     direction="row"
                     alignItems={'center'}
-                    style={{ textAlign: 'left', margin: "40px"}}
+                    style={{ textAlign: 'left', margin: "40px" }}
                 >
                     <Typography variant='h6'>
                         Number of Documents processed per language with

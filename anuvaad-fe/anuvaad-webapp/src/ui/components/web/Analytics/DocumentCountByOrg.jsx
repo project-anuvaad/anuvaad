@@ -1,4 +1,4 @@
-import { Box, CircularProgress, Paper, Typography } from "@material-ui/core";
+import { Box, Button, CircularProgress, Paper, Typography } from "@material-ui/core";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import {
@@ -15,6 +15,8 @@ import {
 import ResponsiveChartContainer from "../common/ResponsiveChartContainer";
 import ChartStyles from "../../../styles/web/ChartStyles";
 import { withStyles } from "@material-ui/core/styles";
+import ImageTwoTone from "@material-ui/icons/ImageTwoTone";
+import PictureAsPdfOutlined from "@material-ui/icons/PictureAsPdfOutlined";
 
 const colors = [
   "188efc",
@@ -33,8 +35,8 @@ const colors = [
 const DocumentCountByOrg = (props) => {
   // const classes = ChartStyles();
 
-  const { loadingChart, classes } = props;
-  const sourceData = useSelector(state=>state.getDocumentCountPerOrg.data?.data);
+  const { loadingChart, classes, onDownloadReportClick } = props;
+  const sourceData = useSelector(state => state.getDocumentCountPerOrg.data?.data);
   const [axisValue, setAxisValue] = useState({
     yAxis: "Count",
     xAxis: "Organization",
@@ -55,7 +57,7 @@ const DocumentCountByOrg = (props) => {
         >
           {payload.value &&
             payload.value.substr(0, 14) +
-              (payload.value.length > 14 ? "..." : "")}
+            (payload.value.length > 14 ? "..." : "")}
         </text>
       </g>
     );
@@ -84,6 +86,25 @@ const DocumentCountByOrg = (props) => {
                 ? new Intl.NumberFormat("en").format(sourceData?.total_documents)
                 : 0}
             </Typography>
+          </Box>
+          <Box className="exportButtons" displayPrint="none" style={{ flexDirection: "row", alignItems: "center", placeContent: "end", width: "50%", display: "flex" }}>
+            <Typography style={{ fontSize: "0.875rem", fontWeight: "400" }}>Download As - </Typography>
+            <Button
+              title="Export as Image"
+              onClick={() => { onDownloadReportClick(true, "img", ["documentCountByOrg"], "Anuvaad-Analytics") }}
+              color="primary"
+            >
+              {/* Export Image */}
+              <ImageTwoTone />
+            </Button>
+            <Button
+              title="Export as PDF"
+              onClick={() => { onDownloadReportClick(true, "pdf", ["documentCountByOrg"], "Anuvaad-Analytics") }}
+              color="primary"
+            >
+              {/* Export PDF */}
+              <PictureAsPdfOutlined />
+            </Button>
           </Box>
         </Box>
 
