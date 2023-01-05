@@ -74,7 +74,7 @@ const Analytics = () => {
                         color="primary"
                     >
                         {/* Export As */}
-                        Donwload Full Report As Image 
+                        Download Full Report As Image 
                         <ImageTwoTone fontSize="large" />
                     </Button>
                 </Grid>
@@ -87,7 +87,7 @@ const Analytics = () => {
                         style={{marginLeft: 5}}
                     >
                         {/* Export As */}
-                        Donwload Full Report As PDF
+                        Download Full Report As PDF
                         <PictureAsPdfOutlined fontSize="large" />
                     </Button>
                 </Grid>
