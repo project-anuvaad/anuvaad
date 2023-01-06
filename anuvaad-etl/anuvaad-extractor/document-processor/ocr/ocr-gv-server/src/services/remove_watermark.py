@@ -37,7 +37,7 @@ def clean_image(image):
      # clean = clean_image(gray)
      gray = cv2.cvtColor(gray, cv2.COLOR_GRAY2BGR)
      image_id=str(uuid.uuid4())
-     cv2.imwrite(f"/home/test/Tarento/anuvaad/anuvaad-etl/anuvaad-extractor/block-merger/upload/cleaned{image_id}.png", gray)
+     #cv2.imwrite(f"/home/test/Tarento/anuvaad/anuvaad-etl/anuvaad-extractor/block-merger/upload/cleaned{image_id}.png", gray)
      return gray
 
 # def clean_image(image):
