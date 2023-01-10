@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 //import themeDefault from "../../../theme/theme";
-import { Grid, ThemeProvider, Box, Typography, Paper, Button } from "@material-ui/core";
+import { Grid, ThemeProvider, Box, Typography, Paper, Button, Popover } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
 import {
     BarChart,
@@ -19,8 +19,7 @@ import {
 import ResponsiveChartContainer from "../common/ResponsiveChartContainer";
 import ChartStyles from "../../../styles/web/ChartStyles";
 import { withStyles } from "@material-ui/core/styles";
-import ImageTwoTone from "@material-ui/icons/ImageTwoTone";
-import PictureAsPdfOutlined from "@material-ui/icons/PictureAsPdfOutlined";
+import GetAppIcon from '@material-ui/icons/GetApp';
 
 
 function TranslatedAndVarifiedSentenceByLang(props) {
@@ -28,6 +27,9 @@ function TranslatedAndVarifiedSentenceByLang(props) {
     // const classes = ChartStyles();
     const dispatch = useDispatch();
     const sourceData = useSelector(state => state.getTranslatedAndVerifiedSetenceCount.data?.data)
+
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const showExportPopover = Boolean(anchorEl);
 
     console.log(sourceData, "sourceData")
 
@@ -107,25 +109,55 @@ function TranslatedAndVarifiedSentenceByLang(props) {
                             </Typography>
                         </Box>
                         <Box className="exportButtons" displayPrint="none" style={{ flexDirection: "row", alignItems: "center", placeContent: "end", width: "25%", display: "flex" }}>
-                            <Typography style={{ fontSize: "0.875rem", fontWeight: "400" }}>Download As - </Typography>
                             <Button
-                                title="Download as Image"
-                                onClick={() => { onDownloadReportClick(true, "img", ["translatedAndVarifiedSentenceByLang"], "Anuvaad-Analytics") }}
-                                // variant="outlined"
-                                color="primary"
+                                onClick={(e) => setAnchorEl(e.currentTarget)}
                             >
-                                <ImageTwoTone />
-                                {/* Export Image */}
+                                <GetAppIcon />
                             </Button>
-                            <Button
-                                title="Download as PDF"
-                                onClick={() => { onDownloadReportClick(true, "pdf", ["translatedAndVarifiedSentenceByLang"], "Anuvaad-Analytics") }}
-                                // variant="outlined"
-                                color="primary"
+                            <Popover
+                                id={"simple-popover"}
+                                open={showExportPopover}
+                                anchorEl={anchorEl}
+                                onClose={() => setAnchorEl(null)}
+                                anchorOrigin={{
+                                    vertical: 'bottom',
+                                    horizontal: 'left',
+                                }}
+                                transformOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'center',
+                                }}
                             >
-                                {/* Export PDF */}
-                                <PictureAsPdfOutlined />
-                            </Button>
+                                <Grid
+                                    container
+                                    direction="column"
+                                    style={{ overflow: "hidden", padding: 10 }}
+                                >
+                                    <Button
+                                        fullWidth
+                                        onClick={() => {
+                                            setAnchorEl(null)
+                                            onDownloadReportClick(true, "img", ["translatedAndVarifiedSentenceByLang"], "Anuvaad-Analytics")
+                                        }}
+                                    >
+                                        <Grid style={{ display: "flex", width: "100%", justifyContent: "flex-start", alignItems: "center" }}>
+                                            <Typography variant="button">Image</Typography>
+                                        </Grid>
+                                    </Button>
+                                    <Button
+                                        fullWidth
+                                        onClick={() => {
+                                            setAnchorEl(null)
+                                            onDownloadReportClick(true, "pdf", ["translatedAndVarifiedSentenceByLang"], "Anuvaad-Analytics")
+                                        }}
+                                    >
+                                        <Grid style={{ display: "flex", width: "100%", justifyContent: "flex-start", alignItems: "center" }}>
+                                            <Typography variant="button">PDF</Typography>
+                                        </Grid>
+                                    </Button>
+                                </Grid>
+                            </Popover>
+
                         </Box>
                         {/* <Box className={classes.topBarInnerBox}>
                         <Typography style={{ fontSize: "0.875rem", fontWeight: "400" }}>
