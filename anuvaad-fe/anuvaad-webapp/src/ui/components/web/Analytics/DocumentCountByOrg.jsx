@@ -1,4 +1,4 @@
-import { Box, Button, CircularProgress, Paper, Typography } from "@material-ui/core";
+import { Box, Button, CircularProgress, Grid, Paper, Popover, Typography } from "@material-ui/core";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import {
@@ -15,8 +15,7 @@ import {
 import ResponsiveChartContainer from "../common/ResponsiveChartContainer";
 import ChartStyles from "../../../styles/web/ChartStyles";
 import { withStyles } from "@material-ui/core/styles";
-import ImageTwoTone from "@material-ui/icons/ImageTwoTone";
-import PictureAsPdfOutlined from "@material-ui/icons/PictureAsPdfOutlined";
+import GetAppIcon from '@material-ui/icons/GetApp';
 
 const colors = [
   "188efc",
@@ -41,6 +40,9 @@ const DocumentCountByOrg = (props) => {
     yAxis: "Count",
     xAxis: "Organization",
   });
+
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const showExportPopover = Boolean(anchorEl);
 
   const CustomizedAxisTick = (props) => {
     const { x, y, payload } = props;
@@ -88,23 +90,54 @@ const DocumentCountByOrg = (props) => {
             </Typography>
           </Box>
           <Box className="exportButtons" displayPrint="none" style={{ flexDirection: "row", alignItems: "center", placeContent: "end", width: "50%", display: "flex" }}>
-            <Typography style={{ fontSize: "0.875rem", fontWeight: "400" }}>Download As - </Typography>
             <Button
-              title="Export as Image"
-              onClick={() => { onDownloadReportClick(true, "img", ["documentCountByOrg"], "Anuvaad-Analytics") }}
-              color="primary"
+              onClick={(e) => setAnchorEl(e.currentTarget)}
             >
-              {/* Export Image */}
-              <ImageTwoTone />
+              <GetAppIcon />
             </Button>
-            <Button
-              title="Export as PDF"
-              onClick={() => { onDownloadReportClick(true, "pdf", ["documentCountByOrg"], "Anuvaad-Analytics") }}
-              color="primary"
+            <Popover
+              id={"simple-popover"}
+              open={showExportPopover}
+              anchorEl={anchorEl}
+              onClose={() => setAnchorEl(null)}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'left',
+              }}
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'center',
+              }}
             >
-              {/* Export PDF */}
-              <PictureAsPdfOutlined />
-            </Button>
+              <Grid
+                container
+                direction="column"
+                style={{ overflow: "hidden", padding: 10 }}
+              >
+                <Button
+                  fullWidth
+                  onClick={() => { 
+                    setAnchorEl(null)
+                    onDownloadReportClick(true, "img", ["documentCountByOrg"], "Anuvaad-Analytics") 
+                  }}
+                >
+                  <Grid style={{ display: "flex", width: "100%", justifyContent: "flex-start", alignItems: "center" }}>
+                    <Typography variant="button">Image</Typography>
+                  </Grid>
+                </Button>
+                <Button
+                  fullWidth
+                  onClick={() => { 
+                    setAnchorEl(null)
+                    onDownloadReportClick(true, "pdf", ["documentCountByOrg"], "Anuvaad-Analytics") 
+                  }}
+                >
+                  <Grid style={{ display: "flex", width: "100%", justifyContent: "flex-start", alignItems: "center" }}>
+                    <Typography variant="button">PDF</Typography>
+                  </Grid>
+                </Button>
+              </Grid>
+            </Popover>
           </Box>
         </Box>
 

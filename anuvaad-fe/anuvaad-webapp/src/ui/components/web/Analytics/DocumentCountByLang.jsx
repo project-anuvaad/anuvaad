@@ -1,6 +1,6 @@
 // DocumentCountByLang
 
-import { Box, CircularProgress, FormControl, Grid, InputLabel, MenuItem, Paper, Select, Typography, Button } from "@material-ui/core";
+import { Box, CircularProgress, FormControl, Grid, InputLabel, MenuItem, Paper, Select, Typography, Button, Popover } from "@material-ui/core";
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import {
@@ -17,9 +17,7 @@ import {
 import ChartStyles from "../../../styles/web/ChartStyles";
 import ResponsiveChartContainer from "../common/ResponsiveChartContainer";
 import { withStyles } from "@material-ui/core/styles";
-import ArrowDownwardOutlined from "@material-ui/icons/ArrowDownwardOutlined";
-import ImageTwoTone from "@material-ui/icons/ImageTwoTone";
-import PictureAsPdfOutlined from "@material-ui/icons/PictureAsPdfOutlined";
+import GetAppIcon from '@material-ui/icons/GetApp';
 const LANG_MODEL = require('../../../../utils/language.model')
 
 const colors = [
@@ -46,6 +44,9 @@ const DocumentCountByLang = (props) => {
         yAxis: "Count",
         xAxis: "Language",
     });
+
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const showExportPopover = Boolean(anchorEl);
 
     const handleSrcLangChange = (event) => {
         setSelectedSourceLang(event.target.value);
@@ -112,23 +113,54 @@ const DocumentCountByLang = (props) => {
                         </Typography>
                     </Box>
                     <Box className="exportButtons" displayPrint="none" style={{ flexDirection: "row", alignItems: "center", placeContent: "end", width: "50%", display: "flex" }}>
-                    <Typography style={{ fontSize: "0.875rem", fontWeight: "400" }}>Download As - </Typography>
                         <Button
-                            title="Export as Image"
-                            onClick={() => { onDownloadReportClick(true, "img", ["documentCountByLang"], "Anuvaad-Analytics") }}
-                            color="primary"
+                            onClick={(e) => setAnchorEl(e.currentTarget)}
                         >
-                            {/* Export Image */}
-                            <ImageTwoTone />
+                            <GetAppIcon />
                         </Button>
-                        <Button
-                            title="Export as PDF"
-                            onClick={() => { onDownloadReportClick(true, "pdf", ["documentCountByLang"], "Anuvaad-Analytics") }}
-                            color="primary"
+                        <Popover
+                            id={"simple-popover"}
+                            open={showExportPopover}
+                            anchorEl={anchorEl}
+                            onClose={() => setAnchorEl(null)}
+                            anchorOrigin={{
+                                vertical: 'bottom',
+                                horizontal: 'left',
+                            }}
+                            transformOrigin={{
+                                vertical: 'top',
+                                horizontal: 'center',
+                            }}
                         >
-                            {/* Export PDF */}
-                            <PictureAsPdfOutlined />
-                        </Button>
+                            <Grid
+                                container
+                                direction="column"
+                                style={{ overflow: "hidden", padding: 10 }}
+                            >
+                                <Button
+                                    fullWidth
+                                    onClick={() => { 
+                                        setAnchorEl(null)
+                                        onDownloadReportClick(true, "img", ["documentCountByLang"], "Anuvaad-Analytics") 
+                                    }}
+                                >
+                                    <Grid style={{ display: "flex", width: "100%", justifyContent: "flex-start", alignItems: "center" }}>
+                                        <Typography variant="button">Image</Typography>
+                                    </Grid>
+                                </Button>
+                                <Button
+                                    fullWidth
+                                    onClick={() => { 
+                                        setAnchorEl(null)
+                                        onDownloadReportClick(true, "pdf", ["documentCountByLang"], "Anuvaad-Analytics") 
+                                    }}
+                                >
+                                    <Grid style={{ display: "flex", width: "100%", justifyContent: "flex-start", alignItems: "center" }}>
+                                        <Typography variant="button">PDF</Typography>
+                                    </Grid>
+                                </Button>
+                            </Grid>
+                        </Popover>
                     </Box>
                 </Box>
                 <Grid

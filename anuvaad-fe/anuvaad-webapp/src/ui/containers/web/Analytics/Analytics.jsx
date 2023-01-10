@@ -13,12 +13,18 @@ import getAnuvaadSupportedLanguages from "../../../../flux/actions/apis/analytic
 import { Button, Grid, Typography } from "@material-ui/core";
 import ImageTwoTone from "@material-ui/icons/ImageTwoTone";
 import PictureAsPdfOutlined from "@material-ui/icons/PictureAsPdfOutlined";
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import downloadReportClick from "../../../../utils/downloadChart";
+import GetAppIcon from '@material-ui/icons/GetApp';
+import { Popover } from "@material-ui/core"
 
 
 const Analytics = () => {
     //   const classes = GlobalStyles();
     const dispatch = useDispatch();
+
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const showExportPopover = Boolean(anchorEl);
 
     const documentCountByLang = useSelector(state => state.getCountByLang?.data?.data)
 
@@ -51,62 +57,84 @@ const Analytics = () => {
 
     return (
         <>
-            <Grid
+            {/* <Grid
                 container
                 direction="row"
                 justifyContent="end"
                 alignItems="center"
                 style={{
-                    placeContent:"end",
+                    placeContent: "end",
                     marginTop: 30,
-                    paddingLeft: 110,
-                    paddingRight: 110
+                    // paddingLeft: 110,
+                    paddingRight: 60
                 }}
-            >
-                {/* <Grid item>
-                    <Typography>Download As - </Typography>
-                </Grid> */}
-                <Grid item>
-                    <Button
-                        // title="Export as Image"
-                        onClick={() => { downloadReportClick(true, "img", ["analytics-charts"], "Anuvaad-Analytics") }}
-                        // variant="outlined"
-                        color="primary"
+            ></Grid> */}
+            <div style={{ textAlign: "end", marginTop: 30, paddingRight: 60 }}>
+                <Button
+                    endIcon={<ExpandMoreIcon />}
+                    onClick={(e) => setAnchorEl(e.currentTarget)}
+                >Export Full Report</Button>
+                <Popover
+                    id={"simple-popover"}
+                    open={showExportPopover}
+                    anchorEl={anchorEl}
+                    onClose={() => setAnchorEl(null)}
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'center',
+                    }}
+                    transformOrigin={{
+                        vertical: 'top',
+                        horizontal: 'center',
+                    }}
+                >
+                    <Grid
+                        container
+                        direction="column"
+                        style={{ overflow: "hidden", padding: 10 }}
                     >
-                        {/* Export As */}
-                        Download Full Report As Image 
-                        <ImageTwoTone fontSize="large" />
-                    </Button>
-                </Grid>
-                <Grid item>
-                    <Button
-                        // title="Export as PDF"
-                        onClick={() => { downloadReportClick(true, "pdf", ["documentCountByLang", "translatedAndVarifiedSentenceByLang", "documentCountByOrg"], "Anuvaad-Analytics") }}
-                        // variant="outlined"
-                        color="primary"
-                        style={{marginLeft: 5}}
-                    >
-                        {/* Export As */}
-                        Download Full Report As PDF
-                        <PictureAsPdfOutlined fontSize="large" />
-                    </Button>
-                </Grid>
-            </Grid>
+                        <Button
+                            onClick={() => {
+                                setAnchorEl(null);
+                                downloadReportClick(true, "img", ["analytics-charts"], "Anuvaad-Analytics")
+                            }}
+                        >
+                            <Grid style={{ width: 100, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                                <Typography variant="button">Image</Typography>
+                                <GetAppIcon />
+                            </Grid>
+                        </Button>
+                        <Button
+                            onClick={() => {
+                                setAnchorEl(null);
+                                downloadReportClick(true, "pdf", ["documentCountByLang", "translatedAndVarifiedSentenceByLang", "documentCountByOrg"], "Anuvaad-Analytics")
+                            }}
+                        >
+                            <Grid style={{ width: 100, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+
+                                <Typography variant="button">PDF</Typography>
+                                <GetAppIcon />
+                            </Grid>
+                        </Button>
+                    </Grid>
+                </Popover>
+            </div>
+
             <div id="analytics-charts">
                 <div id={"documentCountByLang"}>
-                    <DocumentCountByLang 
-                        incomingData={documentCountByLang} 
-                        onLanguageChange={getCountByLang} 
+                    <DocumentCountByLang
+                        incomingData={documentCountByLang}
+                        onLanguageChange={getCountByLang}
                         onDownloadReportClick={downloadReportClick}
                     />
                 </div>
                 <div id={"translatedAndVarifiedSentenceByLang"}>
-                    <TranslatedAndVarifiedSentenceByLang 
+                    <TranslatedAndVarifiedSentenceByLang
                         onDownloadReportClick={downloadReportClick}
                     />
                 </div>
                 <div id={"documentCountByOrg"}>
-                    <DocumentCountByOrg 
+                    <DocumentCountByOrg
                         onDownloadReportClick={downloadReportClick}
                     />
                 </div>
