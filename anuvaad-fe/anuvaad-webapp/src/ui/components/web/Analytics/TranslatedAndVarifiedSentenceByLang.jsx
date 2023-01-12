@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 //import themeDefault from "../../../theme/theme";
-import { Grid, ThemeProvider, Box, Typography, Paper } from "@material-ui/core";
+import { Grid, ThemeProvider, Box, Typography, Paper, Button, Popover } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
 import {
     BarChart,
@@ -19,13 +19,17 @@ import {
 import ResponsiveChartContainer from "../common/ResponsiveChartContainer";
 import ChartStyles from "../../../styles/web/ChartStyles";
 import { withStyles } from "@material-ui/core/styles";
+import GetAppIcon from '@material-ui/icons/GetApp';
 
 
 function TranslatedAndVarifiedSentenceByLang(props) {
-    const { classes } = props;
+    const { classes, onDownloadReportClick } = props;
     // const classes = ChartStyles();
     const dispatch = useDispatch();
     const sourceData = useSelector(state => state.getTranslatedAndVerifiedSetenceCount.data?.data)
+
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const showExportPopover = Boolean(anchorEl);
 
     console.log(sourceData, "sourceData")
 
@@ -103,6 +107,57 @@ function TranslatedAndVarifiedSentenceByLang(props) {
                                         sourceData?.total_verified_sentence_count
                                     )}
                             </Typography>
+                        </Box>
+                        <Box className="exportButtons" displayPrint="none" style={{ flexDirection: "row", alignItems: "center", placeContent: "end", width: "25%", display: "flex" }}>
+                            <Button
+                                onClick={(e) => setAnchorEl(e.currentTarget)}
+                            >
+                                <GetAppIcon />
+                            </Button>
+                            <Popover
+                                id={"simple-popover"}
+                                open={showExportPopover}
+                                anchorEl={anchorEl}
+                                onClose={() => setAnchorEl(null)}
+                                anchorOrigin={{
+                                    vertical: 'bottom',
+                                    horizontal: 'left',
+                                }}
+                                transformOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'center',
+                                }}
+                            >
+                                <Grid
+                                    container
+                                    direction="column"
+                                    style={{ overflow: "hidden", padding: 10 }}
+                                >
+                                    <Button
+                                        fullWidth
+                                        onClick={() => {
+                                            setAnchorEl(null)
+                                            onDownloadReportClick(true, "img", ["translatedAndVarifiedSentenceByLang"], "Anuvaad-Analytics")
+                                        }}
+                                    >
+                                        <Grid style={{ display: "flex", width: "100%", justifyContent: "flex-start", alignItems: "center" }}>
+                                            <Typography variant="button">Image</Typography>
+                                        </Grid>
+                                    </Button>
+                                    <Button
+                                        fullWidth
+                                        onClick={() => {
+                                            setAnchorEl(null)
+                                            onDownloadReportClick(true, "pdf", ["translatedAndVarifiedSentenceByLang"], "Anuvaad-Analytics")
+                                        }}
+                                    >
+                                        <Grid style={{ display: "flex", width: "100%", justifyContent: "flex-start", alignItems: "center" }}>
+                                            <Typography variant="button">PDF</Typography>
+                                        </Grid>
+                                    </Button>
+                                </Grid>
+                            </Popover>
+
                         </Box>
                         {/* <Box className={classes.topBarInnerBox}>
                         <Typography style={{ fontSize: "0.875rem", fontWeight: "400" }}>

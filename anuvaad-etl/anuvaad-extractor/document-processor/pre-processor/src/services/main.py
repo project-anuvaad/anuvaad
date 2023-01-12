@@ -8,7 +8,7 @@ import os
 import cv2
 import config
 from src.utilities import app_context
-from src.utilities.model_response import FileOutput
+from src.utilities.model_response import FileOutput, Page
 from src.services.remove_watermark import clean_image
 from src.services.extract_images import extract_images
 from src.utilities.request_parse import get_files, File
@@ -21,13 +21,17 @@ def tilt_align(files, file_index, img):
     # PDF to image
     # images = extract_images(app_context, base_dir)
     # if align_img is not None and align_img == 'True' :
-
-    image, angle = Orientation(img, File(files[file_index]),).re_orient_east()
-    image_id = str(uuid.uuid4())
-    base_dir = config.download_folder+'/'+img.split('/')[1]
-    cv2.imwrite(os.path.join(base_dir, f"images/tilt-aligned_{image_id}.jpg"), image)
-    # print(image,"***",angle)
-    return image
+    try:
+        image, angle = Orientation(img, File(files[file_index]),).re_orient_east()
+        image_id = str(uuid.uuid4())
+        base_dir = config.download_folder+'/'+img.split('/')[1]
+        cv2.imwrite(os.path.join(base_dir, f"images/tilt-aligned_{image_id}.jpg"), image)
+        # print(image,"***",angle)
+        log_info("orientation correction successfully completed", app_context.application_context)
+        return image
+    except Exception as e:
+        log_exception("Error occured during orientation correction", app_context.application_context, e)
+        return [None]
 
 
 def watermark(image_path):
@@ -36,16 +40,21 @@ def watermark(image_path):
     #     print(image_path)
     # print(image_path)
     # if type(image_path) == str:
-    base_dir = config.download_folder+'/'+image_path.split('/')[1]
-    print(base_dir)
-    image = cv2.imread(image_path)
-    # else:
-    #     image = image_path
+    try:
+        base_dir = config.download_folder+'/'+image_path.split('/')[1]
+        print(base_dir)
+        image = cv2.imread(image_path)
+        # else:
+        #     image = image_path
 
-    image = clean_image(image)
-    image_id = str(uuid.uuid4())
-    cv2.imwrite(os.path.join(base_dir, f"images/watermark-removed_{image_id}.jpg"), image)
-    return image
+        image = clean_image(image)
+        image_id = str(uuid.uuid4())
+        cv2.imwrite(os.path.join(base_dir, f"images/watermark-removed_{image_id}.jpg"), image)
+        log_info("watermark removal successfully completed", app_context.application_context)
+        return image
+    except Exception as e:
+        log_exception("Error occured during watermark removal", app_context.application_context, e)
+        return [None]
 
 
 def get_response(files, images):
@@ -62,6 +71,10 @@ def get_response(files, images):
                 else:
                     path = []
                     filename = []
+                page_properties = Page(page)
+                print(page_properties.get_page())
+                file_prperties.set_page(page_properties.get_page())
+                file_prperties.set_page_info(page)
             file_prperties.set_staus(True)
 
         except Exception as e:
@@ -73,7 +86,7 @@ def get_response(files, images):
         output.append(file_prperties.get_file())
 
     app_context.application_context['outputs'] = output
-
+    log_info("successfully completed", None)
     return app_context.application_context
 
 
@@ -99,4 +112,9 @@ def preprocess(app_context, base_dir):
         }
 
     except Exception as e:
-        print(e)
+        log_exception("Error occured during pre-processing  ",  app_context.application_context, e)
+        return {
+            'code': 400,
+            'message': 'Error occured during pre-processing',
+            'rsp': None
+            }

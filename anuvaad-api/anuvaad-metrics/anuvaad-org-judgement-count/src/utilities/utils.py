@@ -2,6 +2,8 @@ import os
 import config
 import csv
 import pandas as pd
+from anuvaad_auditor import log_info
+from utilities import MODULE_CONTEXT
 
 
 def write_to_csv(data_list, orgID, filename):
@@ -121,11 +123,66 @@ def write_to_csv_user(data_list, filename):
                 dict_writer = csv.DictWriter(f_output, fieldnames=fieldnames)
                 dict_writer.writeheader()
             else:
-                f_output = open(filename, "a")
+                f_output = open(filename, "a+")
+                lines = open(filename, "r").read()
                 dict_writer = csv.DictWriter(f_output, fieldnames=fieldnames)
 
             for data in data_list:
+                # if data['_id'] in lines:
+                #     log_info(f"the job_id already present skiping : {data['_id']}", MODULE_CONTEXT)
+                # else:
                 dict_writer.writerow(data)
+                log_info(
+                    f"{data['_id']}|{data['created_on']} : written to csv for weekly",
+                    MODULE_CONTEXT,
+                )
+            return
+        except Exception as e:
+            print(str(e))
+            pass
+
+
+def write_to_csv_user_daily_crn(data_list, filename):
+    if not data_list:
+        return
+    else:
+        try:
+            fieldnames = [
+                "_id",
+                "created_on",
+                "src_lang",
+                "tgt_lang",
+                "orgID",
+                "userName",
+                "name",
+                "is_active",
+                "userId",
+                "doc_sent_count",
+                "avg_sent_bleu_score",
+                "total_time_spent",
+                "saved_sent_count",
+            ]
+            if not os.path.exists(filename):
+                f_output = open(filename, "w")
+                dict_writer = csv.DictWriter(f_output, fieldnames=fieldnames)
+                dict_writer.writeheader()
+            else:
+                f_output = open(filename, "a+")
+                lines = open(filename, "r").read()
+                dict_writer = csv.DictWriter(f_output, fieldnames=fieldnames)
+
+            for data in data_list:
+                if data["_id"] in lines:
+                    log_info(
+                        f"the job_id already present skiping : {data['_id']}",
+                        MODULE_CONTEXT,
+                    )
+                else:
+                    dict_writer.writerow(data)
+                    log_info(
+                        f"{data['_id']}|{data['created_on']} : written to csv for daily",
+                        MODULE_CONTEXT,
+                    )
             return
         except Exception as e:
             print(str(e))

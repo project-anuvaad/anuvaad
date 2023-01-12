@@ -1,6 +1,6 @@
 // DocumentCountByLang
 
-import { Box, CircularProgress, FormControl, Grid, InputLabel, MenuItem, Paper, Select, Typography } from "@material-ui/core";
+import { Box, CircularProgress, FormControl, Grid, InputLabel, MenuItem, Paper, Select, Typography, Button, Popover } from "@material-ui/core";
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import {
@@ -17,6 +17,7 @@ import {
 import ChartStyles from "../../../styles/web/ChartStyles";
 import ResponsiveChartContainer from "../common/ResponsiveChartContainer";
 import { withStyles } from "@material-ui/core/styles";
+import GetAppIcon from '@material-ui/icons/GetApp';
 const LANG_MODEL = require('../../../../utils/language.model')
 
 const colors = [
@@ -36,13 +37,16 @@ const colors = [
 const DocumentCountByLang = (props) => {
     // const classes = ChartStyles();
 
-    const { incomingData, loadingChart, classes } = props;
+    const { incomingData, loadingChart, classes, onDownloadReportClick } = props;
     const [selectedSourceLang, setSelectedSourceLang] = useState('en');
     const [sourceData, setSourceData] = useState();
     const [axisValue, setAxisValue] = useState({
         yAxis: "Count",
         xAxis: "Language",
     });
+
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const showExportPopover = Boolean(anchorEl);
 
     const handleSrcLangChange = (event) => {
         setSelectedSourceLang(event.target.value);
@@ -108,12 +112,62 @@ const DocumentCountByLang = (props) => {
                                 : 0}
                         </Typography>
                     </Box>
+                    <Box className="exportButtons" displayPrint="none" style={{ flexDirection: "row", alignItems: "center", placeContent: "end", width: "50%", display: "flex" }}>
+                        <Button
+                            onClick={(e) => setAnchorEl(e.currentTarget)}
+                        >
+                            <GetAppIcon />
+                        </Button>
+                        <Popover
+                            id={"simple-popover"}
+                            open={showExportPopover}
+                            anchorEl={anchorEl}
+                            onClose={() => setAnchorEl(null)}
+                            anchorOrigin={{
+                                vertical: 'bottom',
+                                horizontal: 'left',
+                            }}
+                            transformOrigin={{
+                                vertical: 'top',
+                                horizontal: 'center',
+                            }}
+                        >
+                            <Grid
+                                container
+                                direction="column"
+                                style={{ overflow: "hidden", padding: 10 }}
+                            >
+                                <Button
+                                    fullWidth
+                                    onClick={() => { 
+                                        setAnchorEl(null)
+                                        onDownloadReportClick(true, "img", ["documentCountByLang"], "Anuvaad-Analytics") 
+                                    }}
+                                >
+                                    <Grid style={{ display: "flex", width: "100%", justifyContent: "flex-start", alignItems: "center" }}>
+                                        <Typography variant="button">Image</Typography>
+                                    </Grid>
+                                </Button>
+                                <Button
+                                    fullWidth
+                                    onClick={() => { 
+                                        setAnchorEl(null)
+                                        onDownloadReportClick(true, "pdf", ["documentCountByLang"], "Anuvaad-Analytics") 
+                                    }}
+                                >
+                                    <Grid style={{ display: "flex", width: "100%", justifyContent: "flex-start", alignItems: "center" }}>
+                                        <Typography variant="button">PDF</Typography>
+                                    </Grid>
+                                </Button>
+                            </Grid>
+                        </Popover>
+                    </Box>
                 </Box>
                 <Grid
                     container
                     direction="row"
                     alignItems={'center'}
-                    style={{ textAlign: 'left', margin: "40px"}}
+                    style={{ textAlign: 'left', margin: "40px" }}
                 >
                     <Typography variant='h6'>
                         Number of Documents processed per language with
