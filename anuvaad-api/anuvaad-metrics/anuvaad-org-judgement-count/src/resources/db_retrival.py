@@ -1,5 +1,6 @@
 from datetime import datetime
 import json
+import shutil
 import threading
 import pandas as pd
 import pytz
@@ -299,12 +300,18 @@ def anuvaad_chart_org_doc():
             ) = stats.lang_count(result, body)
             response = make_response(
                 jsonify(
-                    {"data": {
-                    "total_document_sentence_count": int(total_documemt_sentence_count),
-                    "total_verified_sentence_count": int(total_verified_sentence_count),
-                    "total_documents": int(total_docs),
-                    "language_counts": keyss,
-                }}
+                    {
+                        "data": {
+                            "total_document_sentence_count": int(
+                                total_documemt_sentence_count
+                            ),
+                            "total_verified_sentence_count": int(
+                                total_verified_sentence_count
+                            ),
+                            "total_documents": int(total_docs),
+                            "language_counts": keyss,
+                        }
+                    }
                 ),
                 200,
             )
@@ -411,3 +418,43 @@ def dropdown_lang():
         data = json.load(f)
     out = CustomResponse(Status.SUCCESS.value, data)
     return out.getres()
+
+
+@app.route(config.API_URL_PREFIX + "/anuvaad-data/copyfiles", methods=["POST", "GET"])
+def copy_cron_csv():
+    users = ["srihari.nagaraj@tarento.com"]
+    log_info("fetch data started", MODULE_CONTEXT)
+    # filename = uuid.uuid4().hex
+    daily_cron_file_name1 = config.DAILY_CRON_FILE_NAME1
+    daily_cron_file_name2 = config.DAILY_CRON_FILE_NAME2
+    weekly_cron_file_name1 = config.WEEKLY_CRON_FILE_NAME1
+    weekly_cron_file_name2 = config.WEEKLY_CRON_FILE_NAME2
+    # file_save = str(filename)[:-10]+'_USER_WISE_JUD_Org_level_Statistics.csv'
+    if os.path.exists(
+        config.DOWNLOAD_FOLDER + "/" + weekly_cron_file_name1 ) and os.path.exists(config.DOWNLOAD_FOLDER + "/" + weekly_cron_file_name2):
+        if not os.path.exists(
+            config.DOWNLOAD_FOLDER + "/" + daily_cron_file_name1
+        ) and not os.path.exists(config.DOWNLOAD_FOLDER + "/" + daily_cron_file_name2):
+            shutil.copyfile(
+                config.DOWNLOAD_FOLDER + "/" + weekly_cron_file_name1,
+                config.DOWNLOAD_FOLDER + "/" + daily_cron_file_name1,
+            )
+            shutil.copyfile(
+                config.DOWNLOAD_FOLDER + "/" + weekly_cron_file_name2,
+                config.DOWNLOAD_FOLDER + "/" + daily_cron_file_name2,
+            )
+            data = "files copied"
+        else :
+            data = "Files Already in Directory"
+    else:
+        data = "Files Not found in Directory"
+    response = make_response(
+                jsonify(
+        {
+            "msg": data,
+            "daily_cron_filename1": str(daily_cron_file_name1),
+            "daily_cron_filename2": str(daily_cron_file_name2),
+        },
+    ),
+    202,)
+    return response

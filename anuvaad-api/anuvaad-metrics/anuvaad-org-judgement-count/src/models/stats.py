@@ -281,13 +281,13 @@ class jud_stats(object):
         return from_date, end_date
 
     def file_validation(self):
-        file_name1 = "language_wise_JUD_STATS1.csv"
-        file_name2 = "language_wise_JUD_STATS2.csv"
+        file_name1 = config.DAILY_CRON_FILE_NAME1
+        file_name2 = config.DAILY_CRON_FILE_NAME2
         # file_name2 = "/home/sriharimn/Downloads/language_wise_JUD_STATS2.csv"
         # file_name1 = "/home/sriharimn/Downloads/language_wise_JUD_STATS1.csv"
         file_name1 = os.path.join(config.DOWNLOAD_FOLDER, file_name1)
         file_name2 = os.path.join(config.DOWNLOAD_FOLDER, file_name2)
-        if not os.path.exists(file_name1) and os.path.exists(file_name2):
+        if not os.path.exists(file_name1) and not os.path.exists(file_name2):
             return post_error("FILES_NOT_FOUND", "files are mandatory", None), False
         else:
             df = pd.read_csv(file_name1)
@@ -299,6 +299,10 @@ class jud_stats(object):
             df1.dropna(how="all", axis=1, inplace=True)
             result = df1.merge(df, indicator=True, how="right")
             result = result.sort_values(by=["orgID"], ascending=True)
+            # mask = result["orgID"].isin(
+            #     ["ANUVAAD", "TARENTO_TESTORG", "NONMT", "ECOMMITTEE"]
+            # )
+            # result = result[~mask]
             return result, True
 
     def doc_count(self, result):

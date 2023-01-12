@@ -32,7 +32,7 @@ class PreProcessor(Resource):
         # with open('data.json', 'w') as f:
         #     json.dump(body, f)
         upload_id = str(uuid4())
-        filename = json_data['input']['files'][0]['file']['path']
+        filename = json_data['input']['files'][0]['path']
         app_context.init()
         app_context.application_context = json_data
         log_info("pre-processor service started", app_context.application_context)
