@@ -13,10 +13,10 @@ from utilities import (
 )
 
 from apscheduler.schedulers.background import BackgroundScheduler
-# import pytz
+import pytz
 import shutil
 
-# IST = pytz.timezone("Asia/Kolkata")
+IST = pytz.timezone("Asia/Kolkata")
 
 # from apscheduler.schedulers.blocking import BlockingScheduler
 # from apscheduler.triggers.cron import CronTrigger
@@ -25,27 +25,27 @@ import shutil
 # schedule_job = BlockingScheduler()
 
 
-schedule_job = BackgroundScheduler()
+schedule_job = BackgroundScheduler(timezone="Asia/Kolkata")
 
 stats = jud_stats()
 usr_collection, ch_collection = stats.mongo_connection()
 log_info("Mongo connected", MODULE_CONTEXT)
 
-class IST(datetime.tzinfo):
-    def utcoffset(self, dt):
-        return datetime.timedelta(hours=5, minutes=30)
+# class IST(datetime.tzinfo):
+#     def utcoffset(self, dt):
+#         return datetime.timedelta(hours=5, minutes=30)
 
-    def tzname(self, dt):
-        return "IST"
+#     def tzname(self, dt):
+#         return "IST"
 
-    def dst(self, dt):
-        return datetime.timedelta()
+#     def dst(self, dt):
+#         return datetime.timedelta()
 
-tz = IST()
+# tz = IST()
 
 # @.scheduled_job("interval", id="get_data_from_db", hours=6)
 @schedule_job.scheduled_job(
-    "cron", id="my_job_id", day_of_week="sun", hour="00", minute="00",timezone =tz
+    "cron", id="my_job_id", day_of_week="sun", hour="00", minute="00"
 )
 def get_trans_user_data_from_db_weekly_crn():
     users = ["srihari.nagaraj@tarento.com"]
@@ -108,7 +108,7 @@ def get_trans_user_data_from_db_weekly_crn():
 
 
 @schedule_job.scheduled_job(
-    "cron", id="my_job_id", day_of_week="mon-fri", hour="00,06,12,18", minute="00",timezone =tz
+    "cron", id="my_job_id", day_of_week="mon-fri", hour="00,06,12,18", minute="00"
 )
 def get_trans_user_data_from_db_daily_day_crn():
     users = ["srihari.nagaraj@tarento.com"]
