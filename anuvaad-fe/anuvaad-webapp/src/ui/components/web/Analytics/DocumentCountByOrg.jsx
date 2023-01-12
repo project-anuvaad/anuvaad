@@ -1,4 +1,4 @@
-import { Box, CircularProgress, Paper, Typography } from "@material-ui/core";
+import { Box, Button, CircularProgress, Grid, Paper, Popover, Typography } from "@material-ui/core";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import {
@@ -15,6 +15,7 @@ import {
 import ResponsiveChartContainer from "../common/ResponsiveChartContainer";
 import ChartStyles from "../../../styles/web/ChartStyles";
 import { withStyles } from "@material-ui/core/styles";
+import GetAppIcon from '@material-ui/icons/GetApp';
 
 const colors = [
   "188efc",
@@ -33,12 +34,15 @@ const colors = [
 const DocumentCountByOrg = (props) => {
   // const classes = ChartStyles();
 
-  const { loadingChart, classes } = props;
-  const sourceData = useSelector(state=>state.getDocumentCountPerOrg.data?.data);
+  const { loadingChart, classes, onDownloadReportClick } = props;
+  const sourceData = useSelector(state => state.getDocumentCountPerOrg.data?.data);
   const [axisValue, setAxisValue] = useState({
     yAxis: "Count",
     xAxis: "Organization",
   });
+
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const showExportPopover = Boolean(anchorEl);
 
   const CustomizedAxisTick = (props) => {
     const { x, y, payload } = props;
@@ -55,7 +59,7 @@ const DocumentCountByOrg = (props) => {
         >
           {payload.value &&
             payload.value.substr(0, 14) +
-              (payload.value.length > 14 ? "..." : "")}
+            (payload.value.length > 14 ? "..." : "")}
         </text>
       </g>
     );
@@ -84,6 +88,56 @@ const DocumentCountByOrg = (props) => {
                 ? new Intl.NumberFormat("en").format(sourceData?.total_documents)
                 : 0}
             </Typography>
+          </Box>
+          <Box className="exportButtons" displayPrint="none" style={{ flexDirection: "row", alignItems: "center", placeContent: "end", width: "50%", display: "flex" }}>
+            <Button
+              onClick={(e) => setAnchorEl(e.currentTarget)}
+            >
+              <GetAppIcon />
+            </Button>
+            <Popover
+              id={"simple-popover"}
+              open={showExportPopover}
+              anchorEl={anchorEl}
+              onClose={() => setAnchorEl(null)}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'left',
+              }}
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'center',
+              }}
+            >
+              <Grid
+                container
+                direction="column"
+                style={{ overflow: "hidden", padding: 10 }}
+              >
+                <Button
+                  fullWidth
+                  onClick={() => { 
+                    setAnchorEl(null)
+                    onDownloadReportClick(true, "img", ["documentCountByOrg"], "Anuvaad-Analytics") 
+                  }}
+                >
+                  <Grid style={{ display: "flex", width: "100%", justifyContent: "flex-start", alignItems: "center" }}>
+                    <Typography variant="button">Image</Typography>
+                  </Grid>
+                </Button>
+                <Button
+                  fullWidth
+                  onClick={() => { 
+                    setAnchorEl(null)
+                    onDownloadReportClick(true, "pdf", ["documentCountByOrg"], "Anuvaad-Analytics") 
+                  }}
+                >
+                  <Grid style={{ display: "flex", width: "100%", justifyContent: "flex-start", alignItems: "center" }}>
+                    <Typography variant="button">PDF</Typography>
+                  </Grid>
+                </Button>
+              </Grid>
+            </Popover>
           </Box>
         </Box>
 

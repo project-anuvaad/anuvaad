@@ -3,7 +3,7 @@ import os
 import time
 
 DEBUG = False
-API_URL_PREFIX = "/anuvaad/anuvaad-etl/pre-processor"
+API_URL_PREFIX = "/anuvaad-etl/pre-processor"
 HOST = '0.0.0.0'
 PORT = 5001
 

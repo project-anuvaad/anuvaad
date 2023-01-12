@@ -15,7 +15,13 @@ USER_DB = os.environ.get("MONGO_DB_IDENTIFIER", "usermanagement")
 WFM_DB = os.environ.get("MONGO_WFM_DB", "anuvaad-etl-wfm-db")
 PREPROCESSING_DB = os.environ.get("MONGO_CH_DB", "preprocessing")
 
-cron_time = os.environ.get("ANUVAAD_METRICS_CRON",6)
+CRON_TIME = os.environ.get("ANUVAAD_METRICS_CRON","00 00,06,12,18 * * *")
+
+WEEKLY_CRON_FILE_NAME1 = "language_wise_JUD_STATS1.csv"
+WEEKLY_CRON_FILE_NAME2 = "language_wise_JUD_STATS2.csv"
+
+DAILY_CRON_FILE_NAME1 = "language_wise_JUD_STATS1_daily.csv"
+DAILY_CRON_FILE_NAME2 = "language_wise_JUD_STATS2_daily.csv"
 
 
 USER_COLLECTION = "sample"

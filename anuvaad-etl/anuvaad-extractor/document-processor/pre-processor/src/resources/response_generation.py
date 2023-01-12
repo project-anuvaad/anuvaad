@@ -42,7 +42,7 @@ class Response(object):
             output_file_response = list()
             for i, item in enumerate(input_files):
                 input_filename, in_file_type, identifier = file_ops.accessing_files(
-                    item['file'])
+                    item)
                 self.json_data['taskID'] = task_id
                 app_context.application_context = self.json_data
                 #debug_flush = True
@@ -113,7 +113,7 @@ class Response(object):
     def nonwf_response(self):
         log_info("non workflow response started the response generation",
                  app_context.application_context)
-        input_files = self.json_data['input']['inputs']
+        input_files = self.json_data['input']['files']
         app_context.init()
         app_context.application_context = self.json_data
         error_validator = ValidationResponse(self.DOWNLOAD_FOLDER)
