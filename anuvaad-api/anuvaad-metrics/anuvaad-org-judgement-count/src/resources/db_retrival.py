@@ -430,21 +430,24 @@ def copy_cron_csv():
     weekly_cron_file_name1 = config.WEEKLY_CRON_FILE_NAME1
     weekly_cron_file_name2 = config.WEEKLY_CRON_FILE_NAME2
     # file_save = str(filename)[:-10]+'_USER_WISE_JUD_Org_level_Statistics.csv'
-    if not os.path.exists(
-        config.DOWNLOAD_FOLDER + "/" + daily_cron_file_name1
-    ) and not os.path.exists(config.DOWNLOAD_FOLDER + "/" + daily_cron_file_name2):
-        print()
-        shutil.copyfile(
-            config.DOWNLOAD_FOLDER + "/" + weekly_cron_file_name1,
-            config.DOWNLOAD_FOLDER + "/" + daily_cron_file_name1,
-        )
-        shutil.copyfile(
-            config.DOWNLOAD_FOLDER + "/" + weekly_cron_file_name2,
-            config.DOWNLOAD_FOLDER + "/" + daily_cron_file_name2,
-        )
-        data = "files copied"
+    if os.path.exists(
+        config.DOWNLOAD_FOLDER + "/" + weekly_cron_file_name1 ) and os.path.exists(config.DOWNLOAD_FOLDER + "/" + weekly_cron_file_name2):
+        if not os.path.exists(
+            config.DOWNLOAD_FOLDER + "/" + daily_cron_file_name1
+        ) and not os.path.exists(config.DOWNLOAD_FOLDER + "/" + daily_cron_file_name2):
+            shutil.copyfile(
+                config.DOWNLOAD_FOLDER + "/" + weekly_cron_file_name1,
+                config.DOWNLOAD_FOLDER + "/" + daily_cron_file_name1,
+            )
+            shutil.copyfile(
+                config.DOWNLOAD_FOLDER + "/" + weekly_cron_file_name2,
+                config.DOWNLOAD_FOLDER + "/" + daily_cron_file_name2,
+            )
+            data = "files copied"
+        else :
+            data = "Files Already in Directory"
     else:
-        data = "files already in folder"
+        data = "Files Not found in Directory"
     response = make_response(
                 jsonify(
         {
