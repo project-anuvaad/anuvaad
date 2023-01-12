@@ -23,7 +23,7 @@ class ValidationResponse(object):
         else:
             for i, item in enumerate(input_files):
                 print(item)
-                input_filename, in_file_type, identifier = file_ops.accessing_files(item['file'])
+                input_filename, in_file_type, identifier = file_ops.accessing_files(item)
                 print(input_filename)
                 input_filepath = file_ops.input_path(input_filename)
                 if input_filename == "" or input_filename is None:

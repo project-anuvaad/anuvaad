@@ -42,7 +42,7 @@ class Response(object):
             output_file_response = list()
             for i, item in enumerate(input_files):
                 input_filename, in_file_type, identifier = file_ops.accessing_files(
-                    item['file'])
+                    item)
                 self.json_data['taskID'] = task_id
                 app_context.application_context = self.json_data
                 #debug_flush = True

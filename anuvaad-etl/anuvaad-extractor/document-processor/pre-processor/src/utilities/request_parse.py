@@ -12,24 +12,25 @@ class File:
 
     
     def get_format(self):
-        return self.file['file']['type']
+        return self.file['type']
 
     
     def get_name(self):
-        return self.file['file']['path']
+        return self.file['path']
 
     
     def get_tilt_align_config(self):
-        if 'align' not in self.file['config']['OCR'].keys():
+        print(self.file)
+        if 'align' not in self.file.keys():
             return None
         else:
-            return self.file['config']['OCR']['align']
+            return self.file['align']
 
     def get_watermark_remove_config(self):
-        if 'watermark' not in self.file['config']['OCR'].keys():
+        if 'watermark' not in self.file.keys():
             return None
         else:
-            return self.file['config']['OCR']['watermark']
+            return self.file['watermark']
    
     def get_file(self):
         return self.file
