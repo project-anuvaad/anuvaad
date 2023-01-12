@@ -2,7 +2,7 @@ from models import jud_stats
 from utilities import MODULE_CONTEXT
 from anuvaad_auditor.loghandler import log_info, log_exception
 import config
-from datetime import datetime
+import datetime
 import os
 import pandas as pd
 from utilities import (
@@ -31,10 +31,21 @@ stats = jud_stats()
 usr_collection, ch_collection = stats.mongo_connection()
 log_info("Mongo connected", MODULE_CONTEXT)
 
+# class IST(datetime.tzinfo):
+#     def utcoffset(self, dt):
+#         return datetime.timedelta(hours=5, minutes=30)
+
+#     def tzname(self, dt):
+#         return "IST"
+
+#     def dst(self, dt):
+#         return datetime.timedelta()
+
+# tz = IST()
 
 # @.scheduled_job("interval", id="get_data_from_db", hours=6)
 @schedule_job.scheduled_job(
-    "cron", id="my_job_id", day_of_week="sun", hour="00", minute="00"
+    "cron", id="my_job_id", day_of_week="sun", hour="00", minute="00",timezone =IST
 )
 def get_trans_user_data_from_db_weekly_crn():
     users = ["srihari.nagaraj@tarento.com"]
@@ -97,7 +108,7 @@ def get_trans_user_data_from_db_weekly_crn():
 
 
 @schedule_job.scheduled_job(
-    "cron", id="my_job_id", day_of_week="mon-fri", hour="00,06,12,18", minute="00"
+    "cron", id="my_job_id", day_of_week="mon-fri", hour="00,06,12,18", minute="00",timezone =IST
 )
 def get_trans_user_data_from_db_daily_day_crn():
     users = ["srihari.nagaraj@tarento.com"]
@@ -128,10 +139,10 @@ def get_trans_user_data_from_db_daily_day_crn():
     try:
         df = pd.read_csv(config.DOWNLOAD_FOLDER + "/" + daily_cron_file_name1)
         from_datee = df["created_on"].max()
-        from_date = datetime.strptime(str(from_datee), "%Y-%m-%d %I:%M:%S.%f")
-        now = datetime.now()
+        from_date = datetime.datetime.strptime(str(from_datee), "%Y-%m-%d %I:%M:%S.%f")
+        now = datetime.datetime.now()
         date_time = now.strftime("%Y-%m-%d")
-        end_date = datetime.strptime(str(date_time), "%Y-%m-%d")
+        end_date = datetime.datetime.strptime(str(date_time), "%Y-%m-%d")
         # from_date, end_date = stats.get_time_frame_for_analytics()
         for doc in user_docs:
             # log_info(f'fetching details for {doc} userID',MODULE_CONTEXT)
