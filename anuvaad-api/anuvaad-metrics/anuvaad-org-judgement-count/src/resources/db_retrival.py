@@ -430,7 +430,6 @@ def copy_cron_csv():
     weekly_cron_file_name1 = config.WEEKLY_CRON_FILE_NAME1
     weekly_cron_file_name2 = config.WEEKLY_CRON_FILE_NAME2
     # file_save = str(filename)[:-10]+'_USER_WISE_JUD_Org_level_Statistics.csv'
-    print(config.DOWNLOAD_FOLDER + "/" + daily_cron_file_name1)
     if not os.path.exists(
         config.DOWNLOAD_FOLDER + "/" + daily_cron_file_name1
     ) and not os.path.exists(config.DOWNLOAD_FOLDER + "/" + daily_cron_file_name2):
@@ -446,12 +445,13 @@ def copy_cron_csv():
         data = "files copied"
     else:
         data = "files already in folder"
-    out = CustomResponse(
-        Status.SUCCESS.value,
+    response = make_response(
+                jsonify(
         {
             "msg": data,
             "daily_cron_filename1": str(daily_cron_file_name1),
             "daily_cron_filename2": str(daily_cron_file_name2),
         },
-    )
-    return out.getres()
+    ),
+    202,)
+    return response

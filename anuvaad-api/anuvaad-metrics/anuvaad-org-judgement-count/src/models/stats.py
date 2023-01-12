@@ -287,7 +287,7 @@ class jud_stats(object):
         # file_name1 = "/home/sriharimn/Downloads/language_wise_JUD_STATS1.csv"
         file_name1 = os.path.join(config.DOWNLOAD_FOLDER, file_name1)
         file_name2 = os.path.join(config.DOWNLOAD_FOLDER, file_name2)
-        if not os.path.exists(file_name1) and os.path.exists(file_name2):
+        if not os.path.exists(file_name1) and not os.path.exists(file_name2):
             return post_error("FILES_NOT_FOUND", "files are mandatory", None), False
         else:
             df = pd.read_csv(file_name1)
