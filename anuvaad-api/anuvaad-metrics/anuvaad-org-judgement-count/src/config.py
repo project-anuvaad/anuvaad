@@ -23,6 +23,8 @@ WEEKLY_CRON_FILE_NAME2 = "language_wise_JUD_STATS2.csv"
 DAILY_CRON_FILE_NAME1 = "language_wise_JUD_STATS1_daily.csv"
 DAILY_CRON_FILE_NAME2 = "language_wise_JUD_STATS2_daily.csv"
 
+EMAIL_NOTIFIER = ["srihari.nagaraj@tarento.com","hanumesh.kamatagi@tarento.com","apoorva.bellary@tarento.com"]
+
 
 USER_COLLECTION = "sample"
 WFM_COLLECTION = "anuvaad-etl-wfm-jobs-collection"
