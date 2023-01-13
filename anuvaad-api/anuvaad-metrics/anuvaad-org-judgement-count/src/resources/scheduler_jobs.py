@@ -45,20 +45,24 @@ log_info("Mongo connected", MODULE_CONTEXT)
 
 # @.scheduled_job("interval", id="get_data_from_db", hours=6)
 @schedule_job.scheduled_job(
-    "cron", id="my_job_id", day_of_week="sun", hour="00", minute="00"
+    "cron", id="my_job_id1", day_of_week="sun", hour="02", minute="00"
 )
 def get_trans_user_data_from_db_weekly_crn():
-    users = ["srihari.nagaraj@tarento.com"]
+    users = config.EMAIL_NOTIFIER
     log_info("fetch data started", MODULE_CONTEXT)
     # filename = uuid.uuid4().hex
     weekly_cron_file_name1 = config.WEEKLY_CRON_FILE_NAME1
     weekly_cron_file_name2 = config.WEEKLY_CRON_FILE_NAME2
+    daily_cron_file_name1 = config.DAILY_CRON_FILE_NAME1
+    daily_cron_file_name2 = config.DAILY_CRON_FILE_NAME2
     # file_save = str(filename)[:-10]+'_USER_WISE_JUD_Org_level_Statistics.csv'
     if os.path.exists(
         config.DOWNLOAD_FOLDER + "/" + weekly_cron_file_name1
     ) and os.path.exists(config.DOWNLOAD_FOLDER + "/" + weekly_cron_file_name2):
         os.remove(config.DOWNLOAD_FOLDER + "/" + weekly_cron_file_name1)
         os.remove(config.DOWNLOAD_FOLDER + "/" + weekly_cron_file_name2)
+        os.remove(config.DOWNLOAD_FOLDER + "/" + daily_cron_file_name1)
+        os.remove(config.DOWNLOAD_FOLDER + "/" + daily_cron_file_name2)
     else:
         msg = generate_email_notification(
             users, "could not get the data files not found"
@@ -92,6 +96,32 @@ def get_trans_user_data_from_db_weekly_crn():
             f"Data written into files {weekly_cron_file_name1,weekly_cron_file_name2}",
             MODULE_CONTEXT,
         )
+        if not os.path.exists(
+            config.DOWNLOAD_FOLDER + "/" + daily_cron_file_name1
+        ) and not os.path.exists(config.DOWNLOAD_FOLDER + "/" + daily_cron_file_name2):
+            shutil.copyfile(
+                config.DOWNLOAD_FOLDER + "/" + weekly_cron_file_name1,
+                config.DOWNLOAD_FOLDER + "/" + daily_cron_file_name1,
+            )
+            shutil.copyfile(
+                config.DOWNLOAD_FOLDER + "/" + weekly_cron_file_name2,
+                config.DOWNLOAD_FOLDER + "/" + daily_cron_file_name2,
+            )
+            log_info(
+                f"files copied from weekly cron to daily cron {daily_cron_file_name1,daily_cron_file_name2}",
+                MODULE_CONTEXT,
+            )
+            # msg = generate_email_notification(users, "weekly cron files copied : {}".format(e))
+            # send_email(msg)
+        else:
+            log_info(
+                f"files already there in folder {daily_cron_file_name1,daily_cron_file_name2}",
+                MODULE_CONTEXT,
+            )
+            msg = generate_email_notification(
+                users, "files already in directory cannot copy"
+            )
+            send_email(msg)
         return
     except Exception as e:
         log_exception("Error in fetching the data: {}".format(e), MODULE_CONTEXT, e)
@@ -108,10 +138,10 @@ def get_trans_user_data_from_db_weekly_crn():
 
 
 @schedule_job.scheduled_job(
-    "cron", id="my_job_id", day_of_week="mon-fri", hour="00,06,12,18", minute="00"
+    "cron", id="my_job_id2", day_of_week="mon-fri", hour="00,06,12,18", minute="00"
 )
 def get_trans_user_data_from_db_daily_day_crn():
-    users = ["srihari.nagaraj@tarento.com"]
+    users = config.EMAIL_NOTIFIER
     log_info("fetch data started", MODULE_CONTEXT)
     # filename = uuid.uuid4().hex
     daily_cron_file_name1 = config.DAILY_CRON_FILE_NAME1
@@ -139,7 +169,7 @@ def get_trans_user_data_from_db_daily_day_crn():
     try:
         df = pd.read_csv(config.DOWNLOAD_FOLDER + "/" + daily_cron_file_name1)
         from_datee = df["created_on"].max()
-        from_date = datetime.datetime.strptime(str(from_datee), "%Y-%m-%d %I:%M:%S.%f")
+        from_date = datetime.datetime.strptime(str(from_datee), "%Y-%m-%d %H:%M:%S.%f")
         now = datetime.datetime.now()
         date_time = now.strftime("%Y-%m-%d")
         end_date = datetime.datetime.strptime(str(date_time), "%Y-%m-%d")
