@@ -124,90 +124,114 @@ class jud_stats(object):
     def fetch_data_for_language_trans_tokenized_for_scheduer_only(
         self, ch_collection, doc, from_date, end_date
     ):
-        ch_docs = ch_collection.aggregate(
-            [
-                {
-                    "$match": {
-                        "$and": [
-                            {
-                                "created_by": str(doc["userID"]),
-                                "created_on": {"$gte": from_date, "$lte": end_date},
+        done = 0
+        # while True:
+        try:
+            ch_docs = ch_collection.aggregate(
+                [
+                    {
+                        "$match": {
+                            "$and": [
+                                {
+                                    "created_by": str(doc["userID"]),
+                                    "created_on": {"$gte": from_date, "$lte": end_date},
+                                },
+                                {"data_type": "text_blocks"},
+                            ]
+                        }
+                    },
+                    {"$unwind": "$data.tokenized_sentences"},
+                    {
+                        "$group": {
+                            "_id": "$job_id",
+                            "created_on": {"$first": "$created_on"},
+                            "src_lang": {"$first": "$src_lang"},
+                            "tgt_lang": {"$first": "$tgt_lang"},
+                            "doc_sent_count": {"$sum": 1},
+                            "total_time_spent": {
+                                "$sum": "$data.tokenized_sentences.time_spent_ms"
                             },
-                            {"data_type": "text_blocks"},
-                        ]
+                        }
+                    },
+                    {
+                        "$addFields": {
+                            "orgID": str(doc.get("orgID")),
+                            "userName": str(doc["userName"]),
+                            "name": str(doc["name"]),
+                            "is_active": str(doc["is_active"]),
+                            "userId": str(doc["userID"]),
+                        }
                     }
-                },
-                {"$unwind": "$data.tokenized_sentences"},
-                {
-                    "$group": {
-                        "_id": "$job_id",
-                        "created_on": {"$first": "$created_on"},
-                        "src_lang": {"$first": "$src_lang"},
-                        "tgt_lang": {"$first": "$tgt_lang"},
-                        "doc_sent_count": {"$sum": 1},
-                        "total_time_spent": {
-                            "$sum": "$data.tokenized_sentences.time_spent_ms"
-                        },
-                    }
-                },
-                {
-                    "$addFields": {
-                        "orgID": str(doc.get("orgID")),
-                        "userName": str(doc["userName"]),
-                        "name": str(doc["name"]),
-                        "is_active": str(doc["is_active"]),
-                        "userId": str(doc["userID"]),
-                    }
-                },
-            ]
-        )
+                ]
+            )
+            done == 1
+            # print(x)
+        except Exception as e: 
+            log_exception("error in fetching the data : {}".format(str(e)),MODULE_CONTEXT,e)
+            # if done == 1:
+            #     print("!!!!!!!!!!!!!!!")
+            #     break
+
         return ch_docs
 
     def fetch_data_for_userwise_trans_user_tokenized(
         self, ch_collection, doc, from_date, end_date
     ):
-        saved_docs = ch_collection.aggregate(
-            [
-                {
-                    "$match": {
-                        "$and": [
-                            {
-                                "created_by": str(doc["userID"]),
-                                "created_on": {"$gte": from_date, "$lte": end_date},
+        done = 0
+        # while True:
+        try:
+            saved_docs = ch_collection.aggregate(
+                [
+                    {
+                        "$match": {
+                            "$and": [
+                                {
+                                    "created_by": str(doc["userID"]),
+                                    "created_on": {"$gte": from_date, "$lte": end_date},
+                                },
+                                {"data_type": "text_blocks"},
+                            ]
+                        }
+                    },
+                    {"$unwind": "$data.tokenized_sentences"},
+                    {"$match": {"data.tokenized_sentences.save": True}},
+                    {
+                        "$group": {
+                            "_id": "$job_id",
+                            "created_on": {"$first": "$created_on"},
+                            "src_lang": {"$first": "$src_lang"},
+                            "tgt_lang": {"$first": "$tgt_lang"},
+                            # "doc_sent_count": { "$sum": 1 },
+                            "total_time_spent": {
+                                "$sum": "$data.tokenized_sentences.time_spent_ms"
                             },
-                            {"data_type": "text_blocks"},
-                        ]
-                    }
-                },
-                {"$unwind": "$data.tokenized_sentences"},
-                {"$match": {"data.tokenized_sentences.save": True}},
-                {
-                    "$group": {
-                        "_id": "$job_id",
-                        "created_on": {"$first": "$created_on"},
-                        "src_lang": {"$first": "$src_lang"},
-                        "tgt_lang": {"$first": "$tgt_lang"},
-                        # "doc_sent_count": { "$sum": 1 },
-                        "total_time_spent": {
-                            "$sum": "$data.tokenized_sentences.time_spent_ms"
-                        },
-                        "avg_sent_bleu_score": {
-                            "$avg": "$data.tokenized_sentences.bleu_score"
-                        },
-                        "saved_sent_count": {"$sum": 1},
-                    }
-                },
-                {
-                    "$addFields": {
-                        "orgID": str(doc.get("orgID")),
-                        "userName": str(doc["userName"]),
-                        "name": str(doc["name"]),
-                        "is_active": str(doc["is_active"]),
-                        "userId": str(doc["userID"]),
-                    }
-                },
-            ]
-        )
+                            "avg_sent_bleu_score": {
+                                "$avg": "$data.tokenized_sentences.bleu_score"
+                            },
+                            "saved_sent_count": {"$sum": 1},
+                        }
+                    },
+                    {
+                        "$addFields": {
+                            "orgID": str(doc.get("orgID")),
+                            "userName": str(doc["userName"]),
+                            "name": str(doc["name"]),
+                            "is_active": str(doc["is_active"]),
+                            "userId": str(doc["userID"]),
+                        }
+                    },
+                ]
+            )
+            done == 1
+        except Exception as e:
+            log_exception(
+        "error in fetching the data : {}".format(str(e)),
+        MODULE_CONTEXT,
+        e,
+    )
+        # if done == 1:
+        #     print("***************")
+        #     break
 
         return saved_docs
 

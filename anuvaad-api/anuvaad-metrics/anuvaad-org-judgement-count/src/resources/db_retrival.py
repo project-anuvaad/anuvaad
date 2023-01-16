@@ -491,34 +491,34 @@ def get_trans_user_data_from_db_weekly_crn():
         for doc in user_docs:
             # print(doc)
             # log_info(f'fetching details for {doc} userID',MODULE_CONTEXT)
-            done = 0
-            while True:
-                try:
-                    ch_docs = stats.fetch_data_for_language_trans_tokenized_for_scheduer_only(
-                        ch_collection, doc, from_date, end_date
-                    )
-                    saved_docs = stats.fetch_data_for_userwise_trans_user_tokenized(
-                        ch_collection, doc, from_date, end_date
-                    )
-                    # log_info(f'Details collected for for userID : {doc} ',MODULE_CONTEXT)
-                    write_to_csv_user(
-                        [x for x in ch_docs],
-                        (config.DOWNLOAD_FOLDER + "/" + weekly_cron_file_name1),
-                    )
-                    write_to_csv_user(
-                        [x for x in saved_docs],
-                        (config.DOWNLOAD_FOLDER + "/" + weekly_cron_file_name2),
-                    )
-                    done = 1
-                    
-                except Exception as e:
-                    log_exception(
-                "error in fetching the data : {}".format(str(e)),
-                MODULE_CONTEXT,
-                e,
+            # done = 0
+            # while True:
+            #     try:
+            ch_docs = stats.fetch_data_for_language_trans_tokenized_for_scheduer_only(
+                ch_collection, doc, from_date, end_date
             )
-                if done == 1:
-                    break
+            saved_docs = stats.fetch_data_for_userwise_trans_user_tokenized(
+                ch_collection, doc, from_date, end_date
+            )
+            # log_info(f'Details collected for for userID : {doc} ',MODULE_CONTEXT)
+            write_to_csv_user(
+                [x for x in ch_docs],
+                (config.DOWNLOAD_FOLDER + "/" + weekly_cron_file_name1),
+            )
+            write_to_csv_user(
+                [x for x in saved_docs],
+                (config.DOWNLOAD_FOLDER + "/" + weekly_cron_file_name2),
+            )
+            #         done = 1
+                    
+            #     except Exception as e:
+            #         log_exception(
+            #     "error in fetching the data : {}".format(str(e)),
+            #     MODULE_CONTEXT,
+            #     e,
+            # )
+            #     if done == 1:
+            #         break
         log_info(
             f"Data written into files {weekly_cron_file_name1,weekly_cron_file_name2}",
             MODULE_CONTEXT,
