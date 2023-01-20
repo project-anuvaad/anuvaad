@@ -12,6 +12,9 @@ from utilities import (
     send_email,
     write_to_csv_user_daily_crn,
 )
+import time
+from bson.json_util import dumps, loads
+
 
 IST = pytz.timezone("Asia/Kolkata")
 from models import jud_stats
@@ -247,3 +250,26 @@ def copy_cron_csv():
         log_info(f"{data}", MODULE_CONTEXT)
 
     return data
+
+
+def dump_coll():
+    count = 0
+    while True:
+        try:
+
+            ch_docs       = ch_collection.find({},batch_size=5000)
+            time.sleep(5)
+            print("sleeping")
+            list_cur = list(ch_docs)
+            print("wokeeeee")
+            count = 1
+        except Exception as e:
+            print(str(e))
+        if count==1:
+            break
+
+    json_data = dumps(list_cur, indent = 2) 
+    with open(config.DOWNLOAD_FOLDER+"/"+"collection_dump.json", 'w') as file:
+        file.write(json_data)
+
+

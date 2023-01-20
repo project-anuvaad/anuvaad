@@ -22,6 +22,7 @@ from services import (
     get_trans_user_data_from_db_weekly_crn_file1,
     get_trans_user_data_from_db_weekly_crn_file2,
     copy_cron_csv,
+    dump_coll,
 )
 import uuid
 import requests
@@ -81,6 +82,14 @@ def FetchJudgementCount():
             get_trans_user_data_from_db_weekly_crn_file2()
         elif "config" in keys and body.get("config") == "copy":
             copy_cron_csv()
+
+
+        elif "config" in keys and body.get("config") == "dump_collectiion":
+            copy_cron_csv()
+        elif "config" in keys and body.get("config") == "remove_json":
+            if os.path.exists(config.DOWNLOAD_FOLDER + "/" + "collection_dump.json"):
+                os.remove(config.DOWNLOAD_FOLDER + "/" + "collection_dump.json")
+
         elif body.get("org"):
             org = body["org"]
             role = body["role"]
