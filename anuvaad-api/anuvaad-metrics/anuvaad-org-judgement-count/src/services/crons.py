@@ -267,9 +267,10 @@ def dump_coll():
             print(str(e))
         if count==1:
             break
-
+    
     json_data = dumps(list_cur, indent = 2) 
     with open(config.DOWNLOAD_FOLDER+"/"+"collection_dump.json", 'w') as file:
         file.write(json_data)
+    return
 
 
