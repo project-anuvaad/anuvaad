@@ -44,9 +44,9 @@ log_info("Mongo connected", MODULE_CONTEXT)
 # tz = IST()
 
 # @.scheduled_job("interval", id="get_data_from_db", hours=6)
-@schedule_job.scheduled_job(
-    "cron", id="my_job_id1", day_of_week="sun", hour="02", minute="00"
-)
+# @schedule_job.scheduled_job(
+#     "cron", id="my_job_id1", day_of_week="sun", hour="02", minute="00"
+# )
 def get_trans_user_data_from_db_weekly_crn():
     users = config.EMAIL_NOTIFIER
     log_info("fetch data started", MODULE_CONTEXT)
@@ -75,42 +75,44 @@ def get_trans_user_data_from_db_weekly_crn():
     )
     try:
         from_date, end_date = stats.get_time_frame_for_analytics()
-        for doc in user_docs:
-            # log_info(f'fetching details for {doc} userID',MODULE_CONTEXT)
-            done = 0
-            try:
-                while True:
+        done = 0
+        while True:
+            for doc in user_docs:
+                # log_info(f'fetching details for {doc} userID',MODULE_CONTEXT)
+                
+                try:
+                    
 
-                    ch_docs = (
-                        stats.fetch_data_for_language_trans_tokenized_for_scheduer_only(
+                        ch_docs = (
+                            stats.fetch_data_for_language_trans_tokenized_for_scheduer_only(
+                                ch_collection, doc, from_date, end_date
+                            )
+                        )
+                        saved_docs = stats.fetch_data_for_userwise_trans_user_tokenized(
                             ch_collection, doc, from_date, end_date
                         )
+                        # log_info(f'Details collected for for userID : {doc} ',MODULE_CONTEXT)
+                        write_to_csv_user(
+                            [x for x in ch_docs],
+                            (config.DOWNLOAD_FOLDER + "/" + weekly_cron_file_name1),
+                        )
+                        write_to_csv_user(
+                            [x for x in saved_docs],
+                            (config.DOWNLOAD_FOLDER + "/" + weekly_cron_file_name2),
+                        )
+                except Exception as e:
+                    log_exception(
+                        "error in fetching the data : {}".format(str(e)),
+                        MODULE_CONTEXT,
+                        e,
                     )
-                    saved_docs = stats.fetch_data_for_userwise_trans_user_tokenized(
-                        ch_collection, doc, from_date, end_date
-                    )
-                    # log_info(f'Details collected for for userID : {doc} ',MODULE_CONTEXT)
-                    write_to_csv_user(
-                        [x for x in ch_docs],
-                        (config.DOWNLOAD_FOLDER + "/" + weekly_cron_file_name1),
-                    )
-                    write_to_csv_user(
-                        [x for x in saved_docs],
-                        (config.DOWNLOAD_FOLDER + "/" + weekly_cron_file_name2),
-                    )
-                    done = 1
-                    if done == 1:
-                        break
-            except Exception as e:
-                log_exception(
-                    "error in fetching the data : {}".format(str(e)),
-                    MODULE_CONTEXT,
-                    e,
-                )
-        log_info(
-            f"Data written into files {weekly_cron_file_name1,weekly_cron_file_name2}",
-            MODULE_CONTEXT,
-        )
+            done = 1
+            if done == 1:
+                break
+            log_info(
+                f"Data written into files {weekly_cron_file_name1,weekly_cron_file_name2}",
+                MODULE_CONTEXT,
+            )
         if not os.path.exists(
             config.DOWNLOAD_FOLDER + "/" + daily_cron_file_name1
         ) and not os.path.exists(config.DOWNLOAD_FOLDER + "/" + daily_cron_file_name2):
