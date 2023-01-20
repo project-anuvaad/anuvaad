@@ -225,6 +225,20 @@ def copy_cron_csv():
             )
             data = "files copied"
             log_info(f"{data}", MODULE_CONTEXT)
+        elif os.path.exists(
+            config.DOWNLOAD_FOLDER + "/" + daily_cron_file_name1
+        ) and os.path.exists(config.DOWNLOAD_FOLDER + "/" + daily_cron_file_name2):
+            os.remove(config.DOWNLOAD_FOLDER + "/" + daily_cron_file_name1)
+            os.remove(config.DOWNLOAD_FOLDER + "/" + daily_cron_file_name1)
+            shutil.copyfile(
+                config.DOWNLOAD_FOLDER + "/" + weekly_cron_file_name1,
+                config.DOWNLOAD_FOLDER + "/" + daily_cron_file_name1,
+            )
+            shutil.copyfile(
+                config.DOWNLOAD_FOLDER + "/" + weekly_cron_file_name2,
+                config.DOWNLOAD_FOLDER + "/" + daily_cron_file_name2,
+            )
+            data = "files copied"
         else:
             data = "Files Already in Directory"
             log_info(f"{data}", MODULE_CONTEXT)
