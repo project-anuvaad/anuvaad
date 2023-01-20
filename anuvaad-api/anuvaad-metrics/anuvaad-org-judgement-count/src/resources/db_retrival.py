@@ -83,13 +83,6 @@ def FetchJudgementCount():
         elif "config" in keys and body.get("config") == "copy":
             copy_cron_csv()
 
-
-        elif "config" in keys and body.get("config") == "dump_collectiion":
-            dump_coll()
-        elif "config" in keys and body.get("config") == "remove_json":
-            if os.path.exists(config.DOWNLOAD_FOLDER + "/" + "collection_dump.json"):
-                os.remove(config.DOWNLOAD_FOLDER + "/" + "collection_dump.json")
-
         elif body.get("org"):
             org = body["org"]
             role = body["role"]
