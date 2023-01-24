@@ -8,8 +8,8 @@ class AnuvaadTamilTokenizer(object):
     """
     abbrevations
     """
-    _abbrevations_with_non_generalize_pattern = [r'நீ[.]',r'பே[.]',r'ம[.]',r'எண்[.]',r'சா[.]',r'ஆ[ ][.]',r'சா[ ][.]',r'எண்[ ][.]']
-    _abbrevations_with_non_generalize = ['நீ.','பே.','ம.','எண்.','சா.','ஆ .','சா .','எண் .']
+    _abbrevations_with_non_generalize_pattern = [r'நீ[.]',r'பே[.]',r'ம[.]',r'எண்[.]',r'சா[.]',r'ஆ[ ][.]',r'சா[ ][.]',r'எண்[ ][.]',r'அ[.]சா']
+    _abbrevations_with_non_generalize = ['நீ.','பே.','ம.','எண்.','சா.','ஆ .','சா .','எண் .','P.W']
     _abbrevations_with_space_pattern = r'((\s)(([\u0B85-\u0BB9])([\u0B82-\u0B83,\u0BBE-\u0BD7])?([\u0B85-\u0BB9])?([\u0B82-\u0B83,\u0BBE-\u0BD7])?(\u002e)(\s)?){1,})'
     _abbrevations_with_space = []
     _abbrevations_without_space_pattern = r'(^(([\u0B85-\u0BB9])([\u0B82-\u0B83,\u0BBE-\u0BD7])?([\u0B85-\u0BB9])?([\u0B82-\u0B83,\u0BBE-\u0BD7])?(\u002e)(\s)?){1,})'
