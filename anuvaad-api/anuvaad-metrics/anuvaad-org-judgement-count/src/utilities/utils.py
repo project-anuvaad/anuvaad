@@ -124,7 +124,7 @@ def write_to_csv_user(data_list, filename):
                 dict_writer.writeheader()
             else:
                 f_output = open(filename, "a+")
-                lines = open(filename, "r").read()
+                # lines = open(filename, "r").read()
                 dict_writer = csv.DictWriter(f_output, fieldnames=fieldnames)
 
             for data in data_list:
