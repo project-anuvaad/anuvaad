@@ -6,7 +6,8 @@ const generateDocx = (jobName,fname, height, width) => {
 
     let docx = officegen({
         type: 'docx',
-        orientation: 'portrait',
+        // orientation: 'portrait',
+        pageMargins:{ top: 500, right: 500, bottom: 500, left: 500 },
         pageSize: {
             width,
             height
