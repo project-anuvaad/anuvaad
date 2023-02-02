@@ -15,7 +15,7 @@ import config
 def extract_images_and_text_regions(filename, base_dir,lang,page_layout):
     try :
         pdf_data , flags = children_functions.doc_pre_processing(filename,base_dir,lang)
-        #flags['doc_class'] ='class_2'
+        flags['doc_class'] ='class_1'
 
         if flags['doc_class'] == 'class_1':
             pass
