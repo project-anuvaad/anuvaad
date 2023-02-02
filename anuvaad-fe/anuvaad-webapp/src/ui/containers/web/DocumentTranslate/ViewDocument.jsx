@@ -32,6 +32,7 @@ import DataTable from "../../../components/web/common/DataTable";
 import { Button, TableCell, TableRow, TextField, TableFooter, Typography } from "@material-ui/core";
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import FeedbackIcon from '@material-ui/icons/Feedback';
 
 const TELEMETRY = require("../../../../utils/TelemetryManager");
 
@@ -669,6 +670,21 @@ class ViewDocument extends React.Component {
                       }
                     >
                       <CloudDownloadIcon />
+                    </IconButton>
+                  </Tooltip>
+
+                  <Tooltip title="Feedback" placement="left">
+                    <IconButton
+                      style={{ color: "#233466", padding: "5px" }}
+                      component="a"
+                      // onClick={() =>
+                      //   this.processDownloadInputFileClick(
+                      //     tableMeta.rowData[1],
+                      //     tableMeta.rowData[2]
+                      //   )
+                      // }
+                    >
+                      <FeedbackIcon />
                     </IconButton>
                   </Tooltip>
                 </div>

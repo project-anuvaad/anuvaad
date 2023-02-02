@@ -27,6 +27,7 @@ import DataTable from '../../../components/web/common/DataTable';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import { Button, TableCell, TableFooter, TableRow, TextField, Typography } from '@material-ui/core';
+import FeedbackIcon from '@material-ui/icons/Feedback';
 
 const TELEMETRY = require("../../../../utils/TelemetryManager");
 
@@ -628,6 +629,20 @@ class ViewDocumentDigitization extends React.Component {
                                             <CloudDownloadIcon />
                                         </IconButton>
                                     </Tooltip>
+                                    <Tooltip title="Feedback" placement="left">
+                                        <IconButton
+                                            style={{ color: "#233466", padding: "5px" }}
+                                            component="a"
+                                        // onClick={() =>
+                                        //   this.processDownloadInputFileClick(
+                                        //     tableMeta.rowData[1],
+                                        //     tableMeta.rowData[2]
+                                        //   )
+                                        // }
+                                        >
+                                            <FeedbackIcon />
+                                        </IconButton>
+                                    </Tooltip>
                                 </div>
                             );
                         }
@@ -695,7 +710,7 @@ class ViewDocumentDigitization extends React.Component {
                             <TableRow>
                                 <TableCell colSpan={12}>
                                     <div style={{ textAlign: "end", justifyContent: "space-evenly" }}>
-                                    <Typography variant="caption" style={{ fontSize: "0.9rem", fontWeight: "600", float: 'left',padding: '10px'}}>Total Documents - <b>{this.props.digitizeddocument.count}</b></Typography>
+                                        <Typography variant="caption" style={{ fontSize: "0.9rem", fontWeight: "600", float: 'left', padding: '10px' }}>Total Documents - <b>{this.props.digitizeddocument.count}</b></Typography>
                                         <Typography variant="caption" style={{ fontSize: "0.9rem", fontWeight: "600" }}>Page No. - </Typography>
                                         <TextField
                                             type="number"

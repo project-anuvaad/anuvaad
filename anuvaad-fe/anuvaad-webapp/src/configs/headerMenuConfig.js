@@ -83,6 +83,13 @@ const headerMenuConfig = [
         menuType : menuTypes[1]
     },
     {
+        id : "feedback",
+        title: "Feedback",
+        onclick : (assignedOrgId)=>history.push(`${process.env.PUBLIC_URL}/feedback/${assignedOrgId}`),
+        rolesAllowed : userRoles,
+        menuType : menuTypes[1]
+    },
+    {
         id : "organization-glossary",
         title: "Glossary List",
         onclick : (assignedOrgId)=>history.push(`${process.env.PUBLIC_URL}/organization-glossary/${assignedOrgId}`),
