@@ -49,8 +49,8 @@ class Response(object):
                         #
                         log_info(f"Test31: docx_transform_object = {docx_transform_obj}",None)
                         docx_obj = docx_transform_obj.read_docx_file(input_filename)
-                        if in_locale != config.LOCALE_ENGLISH and config.DOCX_FONT_VALIDATION_ENABLED:
-                            docx_transform_obj.check_if_valid_fonts_used(in_locale=in_locale)
+                        # if in_locale != config.LOCALE_ENGLISH and config.DOCX_FONT_VALIDATION_ENABLED:
+                        #     docx_transform_obj.check_if_valid_fonts_used(in_locale=in_locale)
                         transformed_obj = docx_transform_obj.generate_json_structure(docx_obj)
                         #
                         log_info(f"Test31: transformed_obj = {transformed_obj}",None)
