@@ -22,7 +22,6 @@ from services import (
     get_trans_user_data_from_db_weekly_crn_file1,
     get_trans_user_data_from_db_weekly_crn_file2,
     copy_cron_csv,
-    dump_coll,
 )
 import uuid
 import requests
@@ -406,32 +405,55 @@ def anuvaad_chart_lang_org():
 )
 def anuvaad_chart_verfied_sentence():
     # body = request.get_json()
-    if request.method == "POST":
-        url = generate_url(config.jud, "verified_count")
-        data = requests.get(url)
-        data = data.json()
-        return data
-    result, status = stats.file_validation()
     try:
-        if status == False:
-            return result
-        else:
-            (
-                total_docs,
-                total_documemt_sentence_count,
-                total_verified_sentence_count,
-                keyss,
-            ) = stats.verified_doc(result)
-            out = CustomResponse(
-                Status.SUCCESS.value,
-                {
-                    "total_document_sentence_count": int(total_documemt_sentence_count),
-                    "total_verified_sentence_count": int(total_verified_sentence_count),
-                    "total_documents": int(total_docs),
-                    "language_counts": keyss,
-                },
-            )
-            return out.getres()
+        result, status = stats.file_validation()
+        if request.method == "POST":
+            body = request.get_json()
+            if status == False:
+                return result
+            else:
+                (
+                    total_docs,
+                    total_documemt_sentence_count,
+                    total_verified_sentence_count,
+                    keyss,
+                ) = stats.verified_doc_sentence_by_org(result,body)
+                out = CustomResponse(
+                    Status.SUCCESS.value,
+                    {
+                        "total_document_sentence_count": int(total_documemt_sentence_count),
+                        "total_verified_sentence_count": int(total_verified_sentence_count),
+                        "total_documents": int(total_docs),
+                        "language_counts": keyss,
+                    },
+                )
+                return out.getres()
+            
+        # url = generate_url(config.jud, "verified_count")
+        # data = requests.get(url)
+        # data = data.json()
+        # return data
+    # result, status = stats.file_validation()
+        elif request.method == "GET":
+            if status == False:
+                return result
+            else:
+                (
+                    total_docs,
+                    total_documemt_sentence_count,
+                    total_verified_sentence_count,
+                    keyss,
+                ) = stats.verified_doc_sentence_all(result)
+                out = CustomResponse(
+                    Status.SUCCESS.value,
+                    {
+                        "total_document_sentence_count": int(total_documemt_sentence_count),
+                        "total_verified_sentence_count": int(total_verified_sentence_count),
+                        "total_documents": int(total_docs),
+                        "language_counts": keyss,
+                    },
+                )
+                return out.getres()
             # return jsonify({'msgg':keyss})
     except Exception as e:
         log_exception("Error in FetchJudgementCount: {}".format(e), MODULE_CONTEXT, e)

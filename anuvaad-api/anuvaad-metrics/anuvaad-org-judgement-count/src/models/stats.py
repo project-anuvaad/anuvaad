@@ -433,7 +433,57 @@ class jud_stats(object):
                     keyss,
                 )
 
-    def verified_doc(self, result):
+    def verified_doc_sentence_by_org(self, result,body):
+
+        orgid = result.groupby(["orgID"])
+        gb_groups = orgid.groups
+        gb_groups.keys()
+        check_none = result[result["orgID"] == body['org']]
+        if check_none.empty == True:
+                keyss = {
+                    "doc_sent_count": None,
+                    "org": body['org'],
+                    "src_label": None,
+                    "src_lang": None,
+                    "tgt_label": None,
+                    "tgt_lang": None,
+                    "total_doc": None,
+                    "verified_sentence": None,
+                }
+                total_docs = 0
+                total_documemt_sentence_count = 0
+                total_verified_sentence_count = 0
+                return (
+                    total_docs,
+                    total_documemt_sentence_count,
+                    total_verified_sentence_count,
+                    keyss,
+                )
+        else:
+            ddf = result.loc[gb_groups[body['org']]]  # body
+            keyss = ddf.groupby(["tgt_lang"]).agg(
+                total_doc=("_id", "count"),
+                doc_sent_count=("doc_sent_count", "sum"),
+                verified_sentence=("saved_sent_count", "sum"),
+                org=("orgID", "first"),
+                src_lang=("src_lang", "first"),
+                tgt_lang=("tgt_lang", "first"),
+            )
+            keyss = keyss.to_dict("records")
+            for i, j in enumerate(keyss):
+                if keyss[i]["tgt_lang"] in config.LANG_MAPPING.keys():
+                    keyss[i]["tgt_label"] = config.LANG_MAPPING[keyss[i]["tgt_lang"]]
+            total_docs = sum(c["total_doc"] for c in keyss)
+            total_documemt_sentence_count = sum(c["doc_sent_count"] for c in keyss)
+            total_verified_sentence_count = sum(c["verified_sentence"] for c in keyss)
+            return (
+                total_docs,
+                total_documemt_sentence_count,
+                total_verified_sentence_count,
+                keyss,
+            )
+
+    def verified_doc_sentence_all(self,result):
         # total_docs = len(result)
         # total_documemt_sentence_count = result["doc_sent_count"].sum()
         # total_verified_sentence_count = result["saved_sent_count"].sum()
