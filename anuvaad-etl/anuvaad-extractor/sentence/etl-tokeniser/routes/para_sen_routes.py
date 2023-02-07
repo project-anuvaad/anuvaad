@@ -3,7 +3,7 @@ from flask_restful import Api
 from resources.para_sen import SenTokenisePostWF
 from resources.para_sen import SentenceTokenise
 from resources.para_sen import BlockTokenize
-from resources.para_sen import AnuvaadFeedback
+# from resources.para_sen import AnuvaadFeedback
 
 # end-point for independent service
 TOK_BLUEPRINT = Blueprint("sentence_extraction", __name__)
