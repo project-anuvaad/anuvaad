@@ -26,6 +26,6 @@ api_wf = Api(TOK_PARAGRAPH_BLUEPRINT_wf)
 api_wf.add_resource(SenTokenisePostWF, "/v0/paragraphs-tokenisation-wf")
 
 
-TOK_PARAGRAPH_BLUEPRINT_wf = Blueprint("feedback", __name__)
-api_wf = Api(TOK_PARAGRAPH_BLUEPRINT_wf)
-api_wf.add_resource(AnuvaadFeedback, "/v0/feedback")
+# TOK_PARAGRAPH_BLUEPRINT_wf = Blueprint("feedback", __name__)
+# api_wf = Api(TOK_PARAGRAPH_BLUEPRINT_wf)
+# api_wf.add_resource(AnuvaadFeedback, "/v0/feedback")

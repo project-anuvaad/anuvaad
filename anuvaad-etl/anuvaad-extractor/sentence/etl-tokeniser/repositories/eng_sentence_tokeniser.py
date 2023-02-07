@@ -62,6 +62,7 @@ class AnuvaadEngTokenizer(object):
         text = self.serialize_quotes_with_number(text)
         text = self.serialize_bullet_points(text)
         text = self.serialize_table_points(text)
+        text = self.add_space_after_sentence_end(text)
         text = self.serialize_sentence_end_with_a_letter(text)
         sentences = self._tokenizer.tokenize(text)
         output = []
@@ -330,7 +331,14 @@ class AnuvaadEngTokenizer(object):
                 text = pattern_obj.sub(pattern, text)
                 index+=1
         return text
-
+    def add_space_after_sentence_end(self, text):
+        sentence_ends = ['.','?','!',';',':','।', '॥', '|']
+        for sentence_end in sentence_ends:
+            pattern = re.compile(r'['+sentence_end+'][ ]') #remove already correct patterns
+            text = pattern.sub(sentence_end, text)
+            pattern = re.compile(r'['+sentence_end+']')
+            text = pattern.sub(sentence_end + ' ', text)
+        return text
 
 class SentenceEndLangVars(PunktLanguageVars):
     text = []
