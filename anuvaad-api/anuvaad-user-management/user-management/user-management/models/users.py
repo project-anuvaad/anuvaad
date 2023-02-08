@@ -91,6 +91,8 @@ class UserManagementModel(object):
                     users_data["models"]    =   user["models"]
                 if user.get("roles_new")    !=  None:
                     users_data["roles"] =   user["roles_new"]
+                if user.get("userName")    !=  None:
+                    users_data["userName"] =   user["userName"]
                 
                 #connecting to mongo instance/collection
                 collections = get_db()[USR_MONGO_COLLECTION]
