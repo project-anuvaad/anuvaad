@@ -64,7 +64,7 @@ class MyGlossary extends React.Component {
         let orgID = JSON.parse(localStorage.getItem("userProfile")).orgID;
         let apiObj = new ViewGlossary(userID, orgID);
         APITransport(apiObj);
-        this.setState({ loading: false })
+        // this.setState({ loading: false })
     }
     componentDidMount() {
         if (this.props.glossaryData.count === 0) {
