@@ -354,7 +354,7 @@ class ViewDocumentDigitization extends React.Component {
         let user_profile = JSON.parse(localStorage.getItem("userProfile"));
 
         let obj = new DownloadFile(job.converted_filename, user_profile.userID);
-
+        // console.log("job ----- ", job);
         const apiReq1 = fetch(obj.apiEndPoint(), {
             method: "get",
             headers: obj.getHeaders().headers,
@@ -377,7 +377,7 @@ class ViewDocumentDigitization extends React.Component {
                             let a = document.createElement("a");
                             let url = URL.createObjectURL(blob);
                             a.href = url;
-                            a.download = job.converted_filename;
+                            a.download = job.filename;
                             this.setState({ dialogMessage: null });
                             a.click();
                         });

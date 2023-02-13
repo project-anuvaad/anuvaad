@@ -28,9 +28,9 @@ export default class SimpleDialog extends React.Component {
                     aria-describedby="alert-dialog-slide-description"
                     style={this.props.type ? { width: "100%" } : {}}
                 >
-                    <DialogTitle id="alert-dialog-slide-title">
+                    {/* <DialogTitle id="alert-dialog-slide-title">
                         {title}
-                    </DialogTitle>
+                    </DialogTitle> */}
                     <DialogContent style={{minWidth: "500px"}}>
                         {this.props.type && this.props.type !== "warning"?
                             <div>
