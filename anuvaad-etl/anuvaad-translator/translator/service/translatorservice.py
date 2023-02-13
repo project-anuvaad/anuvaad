@@ -114,7 +114,7 @@ class TranslatorService:
                 tmx_present = self.is_tmx_present(file, translate_wf_input)
             if translate_wf_input["metadata"]["orgID"] in list(str(orgs_nmt_disable).split(",")):
                 log_info("NoNMT ORGS!"+str(orgs_nmt_disable),orgs_nmt_disable)
-                log_info("Job belongs to NONMT type!", translate_wf_input)
+                log_info("Job belongs to NONMT type!"+str(orgs_nmt_disable), translate_wf_input)
                 tmx_present, nonmt_user = False, True
             pool = multiprocessing.Pool(no_of_process)
             connection_details = file["model"]["connection_details"]
