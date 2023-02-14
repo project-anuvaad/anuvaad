@@ -240,6 +240,11 @@ def FetchJudgementCount_user_wise():
                     ch_collection, doc, from_date, end_date
                 )
                 log_info(f"Details collected for for userID : {doc} ", MODULE_CONTEXT)
+                try:
+                    ch_docs.next()
+                    saved_docs.next()
+                except Exception as e:
+                    print(str(e))
                 ch_docs = [x for x in ch_docs]
                 write_to_csv_user(ch_docs, (config.DOWNLOAD_FOLDER + "/" + file_name1))
                 write_to_csv_user(
