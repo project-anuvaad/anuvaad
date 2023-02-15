@@ -355,7 +355,7 @@ class StartDigitizationUpload extends React.Component {
                                         acceptedFiles={[".txt,audio/*,.ods,.pptx,image/*,.psd,.pdf,.xlsm,.xltx,.xltm,.xla,.xltm,.docx,.rtf", ".txt", ".pdf", ".doc", ".ppt", ".excel", ".xlsx", ".xls", ".log", ".xlsb"]}
                                         onChange={this.handleChange.bind(this)}
                                         filesLimit={1}
-                                        maxFileSize={100000000}
+                                        maxFileSize={104857600}
                                         dropzoneText={translate("digitize_upload.page.label.addDropDocument")}
                                         onDelete={this.handleDelete.bind(this)}
                                     />
