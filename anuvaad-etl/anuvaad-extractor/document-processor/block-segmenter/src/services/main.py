@@ -42,8 +42,8 @@ def get_segmented_regions(app_context,base_dir) :
                 # page_lines   =  file_properties.get_lines(page_index)
                 # page_regions =  file_properties.get_regions(page_index)
                 # page_words   =  file_properties.get_words(page_index)
-                #font_meta    = font_properties(file_properties.get_page(page_index))
-                font_meta  = []
+                font_meta    = font_properties(file_properties.get_page(page_index))
+                #font_meta  = []
                 #page_regions =  region_unifier.region_unifier(page_lines,page_regions)
                 #file_properties.set_regions(page_index, segment_regions(page_words,page_lines,page_regions))
                 file_properties.set_font_properties(page_index,font_meta)
