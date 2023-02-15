@@ -443,8 +443,8 @@ class jud_stats(object):
                 keyss = {
                     "doc_sent_count": None,
                     "org": body['org'],
-                    "src_label": None,
-                    "src_lang": None,
+                    # "src_label": None,
+                    # "src_lang": None,
                     "tgt_label": None,
                     "tgt_lang": None,
                     "total_doc": None,
@@ -466,7 +466,7 @@ class jud_stats(object):
                 doc_sent_count=("doc_sent_count", "sum"),
                 verified_sentence=("saved_sent_count", "sum"),
                 org=("orgID", "first"),
-                src_lang=("src_lang", "first"),
+                # src_lang=("src_lang", "first"),
                 tgt_lang=("tgt_lang", "first"),
             )
             keyss = keyss.to_dict("records")
