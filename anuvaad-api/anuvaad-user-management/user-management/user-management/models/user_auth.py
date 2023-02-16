@@ -175,7 +175,7 @@ class UserAuthenticationModel(object):
             return post_error("Database exception", "Exception:{}".format(str(e)), None)
 
 
-    def activate_deactivate_user(self,user_email,status):
+    def activate_deactivate_user(self,user_email,status,rem_user):
         """"Resetting activation status of verified users"""
 
         try:
@@ -193,11 +193,15 @@ class UserAuthenticationModel(object):
                     if validity is not None:
                         log_info("{} belongs to an inactive org {}, hence operation failed".format(user_email,user["orgID"]), MODULE_CONTEXT)
                         return validity
-                    #updating active status on database
-                    results = collections.update(user, {"$set": {"is_active": status}})
-                    if 'writeError' in list(results.keys()):
-                        log_info("Status updation on database failed due to writeError", MODULE_CONTEXT)
-                        return post_error("db error", "writeError whie updating record", None)
+                    
+                    if rem_user != None:
+                        results = collections.delete_one({"userID":rem_user}) # remove user from the system only superadmin 
+                    else:
+                        results = collections.update(user, {"$set": {"is_active": status}}) #updating active status on database
+
+                        if 'writeError' in list(results.keys()):
+                            log_info("Status updation on database failed due to writeError", MODULE_CONTEXT)
+                            return post_error("db error", "writeError whie updating record", None)
                     log_info("Status updation on database successful", MODULE_CONTEXT)
             else:
                 return post_error("Data Not valid","Somehow there exist more than one record matching the given parameters ",None)               
