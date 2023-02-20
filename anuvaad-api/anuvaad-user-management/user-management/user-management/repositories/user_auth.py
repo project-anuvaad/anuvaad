@@ -30,6 +30,6 @@ class UserAuthenticationRepositories:
         result = authModel.verify_user(user_email,user_id)
         return result
 
-    def activate_deactivate_user(self,user_email,status,rem_user):
-        result = authModel.activate_deactivate_user(user_email,status,rem_user)
+    def activate_deactivate_user(self,user_email,status,rem_user,verify_user):
+        result = authModel.activate_deactivate_user(user_email,status,rem_user,verify_user)
         return result
