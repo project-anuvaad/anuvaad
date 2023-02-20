@@ -124,90 +124,114 @@ class jud_stats(object):
     def fetch_data_for_language_trans_tokenized_for_scheduer_only(
         self, ch_collection, doc, from_date, end_date
     ):
-        ch_docs = ch_collection.aggregate(
-            [
-                {
-                    "$match": {
-                        "$and": [
-                            {
-                                "created_by": str(doc["userID"]),
-                                "created_on": {"$gte": from_date, "$lte": end_date},
+        done = 0
+        # while True:
+        try:
+            ch_docs = ch_collection.aggregate(
+                [
+                    {
+                        "$match": {
+                            "$and": [
+                                {
+                                    "created_by": str(doc["userID"]),
+                                    "created_on": {"$gte": from_date, "$lte": end_date},
+                                },
+                                {"data_type": "text_blocks"},
+                            ]
+                        }
+                    },
+                    {"$unwind": "$data.tokenized_sentences"},
+                    {
+                        "$group": {
+                            "_id": "$job_id",
+                            "created_on": {"$first": "$created_on"},
+                            "src_lang": {"$first": "$src_lang"},
+                            "tgt_lang": {"$first": "$tgt_lang"},
+                            "doc_sent_count": {"$sum": 1},
+                            "total_time_spent": {
+                                "$sum": "$data.tokenized_sentences.time_spent_ms"
                             },
-                            {"data_type": "text_blocks"},
-                        ]
+                        }
+                    },
+                    {
+                        "$addFields": {
+                            "orgID": str(doc.get("orgID")),
+                            "userName": str(doc["userName"]),
+                            "name": str(doc["name"]),
+                            "is_active": str(doc["is_active"]),
+                            "userId": str(doc["userID"]),
+                        }
                     }
-                },
-                {"$unwind": "$data.tokenized_sentences"},
-                {
-                    "$group": {
-                        "_id": "$job_id",
-                        "created_on": {"$first": "$created_on"},
-                        "src_lang": {"$first": "$src_lang"},
-                        "tgt_lang": {"$first": "$tgt_lang"},
-                        "doc_sent_count": {"$sum": 1},
-                        "total_time_spent": {
-                            "$sum": "$data.tokenized_sentences.time_spent_ms"
-                        },
-                    }
-                },
-                {
-                    "$addFields": {
-                        "orgID": str(doc.get("orgID")),
-                        "userName": str(doc["userName"]),
-                        "name": str(doc["name"]),
-                        "is_active": str(doc["is_active"]),
-                        "userId": str(doc["userID"]),
-                    }
-                },
-            ]
-        )
+                ]
+            )
+            done == 1
+            # print(x)
+        except Exception as e: 
+            log_exception("error in fetching the data : {}".format(str(e)),MODULE_CONTEXT,e)
+            # if done == 1:
+            #     print("!!!!!!!!!!!!!!!")
+            #     break
+
         return ch_docs
 
     def fetch_data_for_userwise_trans_user_tokenized(
         self, ch_collection, doc, from_date, end_date
     ):
-        saved_docs = ch_collection.aggregate(
-            [
-                {
-                    "$match": {
-                        "$and": [
-                            {
-                                "created_by": str(doc["userID"]),
-                                "created_on": {"$gte": from_date, "$lte": end_date},
+        done = 0
+        # while True:
+        try:
+            saved_docs = ch_collection.aggregate(
+                [
+                    {
+                        "$match": {
+                            "$and": [
+                                {
+                                    "created_by": str(doc["userID"]),
+                                    "created_on": {"$gte": from_date, "$lte": end_date},
+                                },
+                                {"data_type": "text_blocks"},
+                            ]
+                        }
+                    },
+                    {"$unwind": "$data.tokenized_sentences"},
+                    {"$match": {"data.tokenized_sentences.save": True}},
+                    {
+                        "$group": {
+                            "_id": "$job_id",
+                            "created_on": {"$first": "$created_on"},
+                            "src_lang": {"$first": "$src_lang"},
+                            "tgt_lang": {"$first": "$tgt_lang"},
+                            # "doc_sent_count": { "$sum": 1 },
+                            "total_time_spent": {
+                                "$sum": "$data.tokenized_sentences.time_spent_ms"
                             },
-                            {"data_type": "text_blocks"},
-                        ]
-                    }
-                },
-                {"$unwind": "$data.tokenized_sentences"},
-                {"$match": {"data.tokenized_sentences.save": True}},
-                {
-                    "$group": {
-                        "_id": "$job_id",
-                        "created_on": {"$first": "$created_on"},
-                        "src_lang": {"$first": "$src_lang"},
-                        "tgt_lang": {"$first": "$tgt_lang"},
-                        # "doc_sent_count": { "$sum": 1 },
-                        "total_time_spent": {
-                            "$sum": "$data.tokenized_sentences.time_spent_ms"
-                        },
-                        "avg_sent_bleu_score": {
-                            "$avg": "$data.tokenized_sentences.bleu_score"
-                        },
-                        "saved_sent_count": {"$sum": 1},
-                    }
-                },
-                {
-                    "$addFields": {
-                        "orgID": str(doc.get("orgID")),
-                        "userName": str(doc["userName"]),
-                        "name": str(doc["name"]),
-                        "is_active": str(doc["is_active"]),
-                        "userId": str(doc["userID"]),
-                    }
-                },
-            ]
-        )
+                            "avg_sent_bleu_score": {
+                                "$avg": "$data.tokenized_sentences.bleu_score"
+                            },
+                            "saved_sent_count": {"$sum": 1},
+                        }
+                    },
+                    {
+                        "$addFields": {
+                            "orgID": str(doc.get("orgID")),
+                            "userName": str(doc["userName"]),
+                            "name": str(doc["name"]),
+                            "is_active": str(doc["is_active"]),
+                            "userId": str(doc["userID"]),
+                        }
+                    },
+                ]
+            )
+            done == 1
+        except Exception as e:
+            log_exception(
+        "error in fetching the data : {}".format(str(e)),
+        MODULE_CONTEXT,
+        e,
+    )
+        # if done == 1:
+        #     print("***************")
+        #     break
 
         return saved_docs
 
@@ -299,10 +323,10 @@ class jud_stats(object):
             df1.dropna(how="all", axis=1, inplace=True)
             result = df1.merge(df, indicator=True, how="right")
             result = result.sort_values(by=["orgID"], ascending=True)
-            mask = result["orgID"].isin(
-                ["ANUVAAD", "TARENTO_TESTORG", "NONMT", "ECOMMITTEE "]
-            )
-            result = result[~mask]
+            # mask = result["orgID"].isin(
+            #     ["ANUVAAD", "TARENTO_TESTORG", "NONMT", "ECOMMITTEE "]
+            # )
+            # result = result[~mask]
             return result, True
 
     def doc_count(self, result):
@@ -409,7 +433,57 @@ class jud_stats(object):
                     keyss,
                 )
 
-    def verified_doc(self, result):
+    def verified_doc_sentence_by_org(self, result,body):
+
+        orgid = result.groupby(["orgID"])
+        gb_groups = orgid.groups
+        gb_groups.keys()
+        check_none = result[result["orgID"] == body['org']]
+        if check_none.empty == True:
+                keyss = {
+                    "doc_sent_count": None,
+                    "org": body['org'],
+                    # "src_label": None,
+                    # "src_lang": None,
+                    "tgt_label": None,
+                    "tgt_lang": None,
+                    "total_doc": None,
+                    "verified_sentence": None,
+                }
+                total_docs = 0
+                total_documemt_sentence_count = 0
+                total_verified_sentence_count = 0
+                return (
+                    total_docs,
+                    total_documemt_sentence_count,
+                    total_verified_sentence_count,
+                    keyss,
+                )
+        else:
+            ddf = result.loc[gb_groups[body['org']]]  # body
+            keyss = ddf.groupby(["tgt_lang"]).agg(
+                total_doc=("_id", "count"),
+                doc_sent_count=("doc_sent_count", "sum"),
+                verified_sentence=("saved_sent_count", "sum"),
+                org=("orgID", "first"),
+                # src_lang=("src_lang", "first"),
+                tgt_lang=("tgt_lang", "first"),
+            )
+            keyss = keyss.to_dict("records")
+            for i, j in enumerate(keyss):
+                if keyss[i]["tgt_lang"] in config.LANG_MAPPING.keys():
+                    keyss[i]["tgt_label"] = config.LANG_MAPPING[keyss[i]["tgt_lang"]]
+            total_docs = sum(c["total_doc"] for c in keyss)
+            total_documemt_sentence_count = sum(c["doc_sent_count"] for c in keyss)
+            total_verified_sentence_count = sum(c["verified_sentence"] for c in keyss)
+            return (
+                total_docs,
+                total_documemt_sentence_count,
+                total_verified_sentence_count,
+                keyss,
+            )
+
+    def verified_doc_sentence_all(self,result):
         # total_docs = len(result)
         # total_documemt_sentence_count = result["doc_sent_count"].sum()
         # total_verified_sentence_count = result["saved_sent_count"].sum()
