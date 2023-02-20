@@ -364,7 +364,7 @@ class ViewDocumentDigitization extends React.Component {
                     this.setState({
                         dialogMessage: "Failed to download file...",
                         timeOut: 3000,
-                        variant: "info",
+                        variant: "error",
                     });
                     console.log("api failed");
                 } else {
@@ -387,7 +387,7 @@ class ViewDocumentDigitization extends React.Component {
                 this.setState({
                     dialogMessage: "Failed to download file...",
                     timeOut: 3000,
-                    variant: "info",
+                    variant: "error",
                 });
                 console.log("api failed because of server or network", error);
             });
