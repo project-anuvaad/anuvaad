@@ -1,6 +1,7 @@
 
 import os
 import uuid
+import io
 
 import config
 import pandas as pd
@@ -14,7 +15,7 @@ from datetime import datetime
 import PyPDF2
 import subprocess
 from models.user_files import UserFiles
-from PyPDF2 import PdfFileReader, PdfFileWriter
+from PyPDF2 import PdfReader, PdfWriter
 # from resources.file_handler import FileUploader
 # from resources.file_handler import FileUploader
 
@@ -36,9 +37,11 @@ def is_file_empty(file_bfr, file_path):
 def page_restrictions_pdf(filename):
     # file = open(config.download_folder + filename) 
     filepath = config.download_folder
-    file = open(filepath +'/'+ filename, "rb")
-    pdfReader = PyPDF2.PdfFileReader(file)
-    page_number = pdfReader.numPages
+    with open(filepath+'/'+filename, 'rb') as pdf_file:
+         # Create a PDF reader object
+        pdf_reader = PyPDF2.PdfReader(io.BytesIO(pdf_file.read()))
+        page_number = len(pdf_reader.pages)
+        print(page_number)
     return page_number
 
 # def upload_doc(filename): #, timeout=None
