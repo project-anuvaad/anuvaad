@@ -213,6 +213,10 @@ class ActivateDeactivateUser(Resource):
         rem_user = None
         if "remove_user" in body.keys():
             rem_user = body['remove_user']
+        verify_user = None
+        if "verify_user" in body.keys():
+            verify_user = body['verify_user']
+            print(verify_user)
         user_email = body["userName"]
         status= body["is_active"]
 
@@ -220,7 +224,7 @@ class ActivateDeactivateUser(Resource):
             return post_error("Invalid format", "is_active status should be either true or false", None), 400
         log_info("Request received for updating activation status of {}".format(user_email),MODULE_CONTEXT)
         try:
-            result = authRepo.activate_deactivate_user(user_email,status,rem_user)
+            result = authRepo.activate_deactivate_user(user_email,status,rem_user,verify_user)
             if result is not None:
                 log_info("Updation of activation status for {} failed".format(user_email),MODULE_CONTEXT)
                 return result, 400
