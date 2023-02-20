@@ -41,28 +41,28 @@ def page_restrictions_pdf(filename):
     page_number = pdfReader.numPages
     return page_number
 
-def upload_doc(filename): #, timeout=None
-    filepath = config.download_folder
-    file_Ext = filename.split('.')[1]
-    print(filepath+'/'+filename)
-    # args = ['unoconv','-f', 'pdf', filepath+'/'+filename]
-    # print('args',args)
-    args = ["libreoffice", '--headless', '--convert-to', 'pdf', '--outdir', filepath,
-                    filepath+'/'+filename]
-    s = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE) #, timeout=timeout
-    print("test5:",s)
-    print(filename)
-    filename = filename.split('.')[0]
-    filename = filename+'.pdf'
-    print('test7:',filepath+'/'+filename)
-#    if filename in filepath:
-    print('fi-------:', filename)
-    file = open(filepath + '/' + filename, "rb")
-    print(file)
-    pdfReader = PyPDF2.PdfFileReader(file)
-    page_number = pdfReader.numPages #len(pdfReader.pages)
-    print(page_number)
-    return page_number
+# def upload_doc(filename): #, timeout=None
+#     filepath = config.download_folder
+#     file_Ext = filename.split('.')[1]
+#     print(filepath+'/'+filename)
+#     # args = ['unoconv','-f', 'pdf', filepath+'/'+filename]
+#     # print('args',args)
+#     args = ["libreoffice", '--headless', '--convert-to', 'pdf', '--outdir', filepath,
+#                     filepath+'/'+filename]
+#     s = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE) #, timeout=timeout
+#     print("test5:",s)
+#     print(filename)
+#     filename = filename.split('.')[0]
+#     filename = filename+'.pdf'
+#     print('test7:',filepath+'/'+filename)
+# #    if filename in filepath:
+#     print('fi-------:', filename)
+#     file = open(filepath + '/' + filename, "rb")
+#     print(file)
+#     pdfReader = PyPDF2.PdfFileReader(file)
+#     page_number = pdfReader.numPages #len(pdfReader.pages)
+#     print(page_number)
+#     return page_number
 
 ## this function is to reduce the number of pages. currently not in use
 def reduce_page(filenames,filepath,file_extension):
