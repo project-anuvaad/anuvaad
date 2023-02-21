@@ -213,10 +213,9 @@ class ActivateDeactivateUser(Resource):
         rem_user = None
         if "remove_user" in body.keys():
             rem_user = body['remove_user']
-        verify_user = None
-        if "verify_user" in body.keys():
-            verify_user = body['verify_user']
-            print(verify_user)
+        verify_user = False
+        if "is_verified" in body.keys():
+            verify_user = body['is_verified']
         user_email = body["userName"]
         status= body["is_active"]
 
