@@ -234,21 +234,24 @@ class ViewDocument extends React.Component {
    * helper methods
    */
   getJobsSortedByTimestamp = () => {
-    console.log("this.props.job_details.documents ======== ", this.props.job_details.documents);
+    // console.log("this.props.job_details.documents ======== ", this.props.job_details.documents);
     let jobs = this.props.job_details.documents.sort((a, b) => {
       if (a.created_on < b.created_on) {
         return 1;
       }
       return -1;
     });
+    // console.log("jobs ======== ", jobs);
     return jobs;
   };
 
   getJobsAsPerPageAndLimit = (page, limit) => {
-    return this.getJobsSortedByTimestamp().slice(
-      page * limit,
-      page * limit + limit
-    );
+    console.log("this.getJobsSortedByTimestamp() ------- ", this.getJobsSortedByTimestamp());
+    return this.getJobsSortedByTimestamp()
+    // .slice(
+    //   page * limit,
+    //   page * limit + limit
+    // );
   };
 
   getRecordIds = () => {
@@ -366,6 +369,7 @@ class ViewDocument extends React.Component {
       variant: "info",
     });
     let job = this.getJobIdDetail(jobId);
+    console.log("job ----- ", job);
     let user_profile = JSON.parse(localStorage.getItem("userProfile"));
     console.log(job.converted_filename, user_profile.userID)
     let obj = new DownloadFile(job.converted_filename, user_profile.userID);
@@ -392,7 +396,7 @@ class ViewDocument extends React.Component {
               let a = document.createElement("a");
               let url = URL.createObjectURL(blob);
               a.href = url;
-              a.download = job.converted_filename;
+              a.download = job.filename;
               this.setState({ dialogMessage: null });
               a.click();
             });

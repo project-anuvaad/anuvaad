@@ -175,7 +175,7 @@ class UserAuthenticationModel(object):
             return post_error("Database exception", "Exception:{}".format(str(e)), None)
 
 
-    def activate_deactivate_user(self,user_email,status):
+    def activate_deactivate_user(self,user_email,status,rem_user,verify_user):
         """"Resetting activation status of verified users"""
 
         try:
@@ -184,6 +184,11 @@ class UserAuthenticationModel(object):
             #searching for a verified account for given username
             record = collections.find({"userName": user_email,"is_verified":True})
             if record.count()==0:
+                if verify_user != None:
+                    record1 = collections.find({"userName": user_email})
+                    if record1.count() == 1:
+                        results = collections.update({"userName": {"$exists":True,"$in":[user_email]}}, {"$set": {"is_verified": True}})
+                        log_info("{} the user is verified".format(user_email), MODULE_CONTEXT)
                 log_info("{} is not a verified user".format(user_email), MODULE_CONTEXT)
                 return post_error("Data Not valid","Not a verified user",None)
             if record.count() ==1:
@@ -193,11 +198,15 @@ class UserAuthenticationModel(object):
                     if validity is not None:
                         log_info("{} belongs to an inactive org {}, hence operation failed".format(user_email,user["orgID"]), MODULE_CONTEXT)
                         return validity
-                    #updating active status on database
-                    results = collections.update(user, {"$set": {"is_active": status}})
-                    if 'writeError' in list(results.keys()):
-                        log_info("Status updation on database failed due to writeError", MODULE_CONTEXT)
-                        return post_error("db error", "writeError whie updating record", None)
+                    
+                    if rem_user != None:
+                        results = collections.delete_one({"userID":rem_user}) # remove user from the system only superadmin 
+                    else:
+                        results = collections.update(user, {"$set": {"is_active": status}}) #updating active status on database
+
+                        if 'writeError' in list(results.keys()):
+                            log_info("Status updation on database failed due to writeError", MODULE_CONTEXT)
+                            return post_error("db error", "writeError whie updating record", None)
                     log_info("Status updation on database successful", MODULE_CONTEXT)
             else:
                 return post_error("Data Not valid","Somehow there exist more than one record matching the given parameters ",None)               

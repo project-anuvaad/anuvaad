@@ -118,7 +118,7 @@ class UserManagementModel(object):
             #fetching all verified users from db when skip_pgination = True
             if skip_pagination==True:
                 log_info("Fetching all verified users from database", MODULE_CONTEXT)
-                out = collections.find({"is_verified":True},exclude)
+                out = collections.find({"is_verified":{"$in":[True,False]}},exclude)
                 record_count=out.count()
             elif not user_ids and not user_names and  role_codes and  org_codes :
                 log_info("Fetching verified users from specific org and rolecodes", MODULE_CONTEXT)
