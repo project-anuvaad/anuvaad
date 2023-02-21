@@ -184,8 +184,8 @@ class UserAuthenticationModel(object):
             #searching for a verified account for given username
             record = collections.find({"userName": user_email,"is_verified":True})
             if record.count()==0:
-                if verify_user != None:
-                    record1 = collections.find({"userName": user_email})
+                if verify_user !=None:
+                    record1 = collections.find({"userName": user_email,"is_active":False})
                     if record1.count() == 1:
                         results = collections.update({"userName": {"$exists":True,"$in":[user_email]}}, {"$set": {"is_verified": True}})
                         log_info("{} the user is verified".format(user_email), MODULE_CONTEXT)
