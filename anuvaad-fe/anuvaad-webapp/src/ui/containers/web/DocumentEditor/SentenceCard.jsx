@@ -40,6 +40,8 @@ import ViewGlossary from '../../../../flux/actions/apis/user_glossary/fetch_user
 import APITransport from "../../../../flux/actions/apitransport/apitransport";
 import SuggestGlossaryModal from './SuggestGlossaryModal';
 import SuggestGlossary from '../../../../flux/actions/apis/document_translate/suggest_glossary';
+import { IndicTransliterate } from "@ai4bharat/indic-transliterate";
+import "@ai4bharat/indic-transliterate/dist/index.css";
 
 
 const TELEMETRY = require('../../../../utils/TelemetryManager')
@@ -661,7 +663,56 @@ class SentenceCard extends React.Component {
         return (
             <form >
                 <div>
-                    <Autocomplete
+                    {this.props?.model?.target_language_code !=="en" ?
+                <IndicTransliterate
+                     
+                        renderComponent={(props) => {
+                            const inputRef = props.ref;
+                            delete props["ref"];
+                            return (
+                                <TextField {...props} label="Enter translated sentence"
+                                    helperText={this.props.model && this.props.model.status === "ACTIVE" && this.props.model.interactive_translation && orgID !== 'NONMT' ? "Ctrl+m to move text, TAB key to move suggested words, Ctrl+s to save" : "Ctrl+m to move text, Ctrl+s to save"}
+                                    type="text"
+                                    name={this.props.sentence.s_id}
+                                    value={this.state.value}
+                                    fullWidth
+                                    multiline
+                                    disabled={this.state.isCardBusy}
+                                    variant="outlined"
+                                   
+                                    onClick={this.handleClick}
+                                    inputRef={inputRef}
+                                   
+                                   
+                                />
+                            )
+                        }}
+                        maxOptions={3}
+                        onKeyDown={this.handleKeyDown}
+                        value={this.state.value}
+                        onChangeText={(text) => {
+                            this.setState({ value: text })
+                        }}
+                        lang={this.props?.model?.target_language_code}
+                      
+                       
+                    /> : <TextField label="Enter translated sentence"
+                    helperText={this.props.model && this.props.model.status === "ACTIVE" && this.props.model.interactive_translation && orgID !== 'NONMT' ? "Ctrl+m to move text, TAB key to move suggested words, Ctrl+s to save" : "Ctrl+m to move text, Ctrl+s to save"}
+                    type="text"
+                    name={this.props.sentence.s_id}
+                    value={this.state.value}
+                    onChange={this.handleUserInputText}
+                    fullWidth
+                    multiline
+                    disabled={this.state.isCardBusy}
+                    variant="outlined"
+                    onKeyDown={this.handleKeyDown}
+                    onClick={this.handleClick}
+                    inputRef={this.textInput}
+                   
+                />}
+
+                    {/* <Autocomplete
                         filterOptions={filterOptions}
                         id={this.props.sentence.s_id}
                         getOptionLabel={option => option.name ? option.name : ""}
@@ -723,7 +774,7 @@ class SentenceCard extends React.Component {
                                     ),
                                 }}
                             />
-                        )} />
+                        )} /> */}
                 </div>
                 <br />
             </form>
