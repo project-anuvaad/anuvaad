@@ -150,7 +150,6 @@ class SentenceCard extends React.Component {
             this.setState({ score: this.props.sentence.rating_score })
         }
 
-        console.log("this.props in setence card component -------- ", this.props);
     }
 
     componentWillUpdate(nextProps, nextState) {
