@@ -33,8 +33,10 @@ const Analytics = () => {
         dispatch(APITransport(apiObj));
     }
 
-    const getTranslatedAndVerifiedSetenceCount = () => {
-        const apiObj = new getAnuvaadTranslatedAndVerifiedSetenceCount();
+    const getTranslatedAndVerifiedSetenceCount = (value) => {
+        const assignedOrgId = JSON.parse(localStorage.getItem("userProfile"))?.orgID;
+        const orgId = value ? value : assignedOrgId ? assignedOrgId : "";
+        const apiObj = new getAnuvaadTranslatedAndVerifiedSetenceCount("POST", orgId);
         dispatch(APITransport(apiObj));
     }
 
@@ -131,6 +133,7 @@ const Analytics = () => {
                 <div id={"translatedAndVarifiedSentenceByLang"}>
                     <TranslatedAndVarifiedSentenceByLang
                         onDownloadReportClick={downloadReportClick}
+                        onOrgChange={getTranslatedAndVerifiedSetenceCount}
                     />
                 </div>
                 <div id={"documentCountByOrg"}>

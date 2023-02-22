@@ -71,7 +71,8 @@ import getViewOptions from './editor/getViewOptions';
 import getTranslatedAndVerifiedSetenceCount from './analytics/getTranslatedAndVerifiedSetenceCount';
 import getCountByLang from './analytics/getCountByLang';
 import getDocumentCountPerOrg from './analytics/getDocumentCountPerOrg'
-import getAnuvaadSupportedLanguages from './analytics/getSupportedLangList'
+import getAnuvaadSupportedLanguages from './analytics/getSupportedLangList';
+import getOrgList from './analytics/getOrgList';
 
 export default {
     login,
@@ -146,5 +147,6 @@ export default {
     getTranslatedAndVerifiedSetenceCount,
     getCountByLang,
     getDocumentCountPerOrg,
-    getAnuvaadSupportedLanguages
+    getAnuvaadSupportedLanguages,
+    getOrgList
 };

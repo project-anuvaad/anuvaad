@@ -6,9 +6,10 @@
  import C from "../../constants";
  
  export default class getAnuvaadTranslatedAndVerifiedSetenceCount extends API {
-   constructor(timeout = 2000) {
-     super("GET", timeout, false);
+   constructor(reqType = "POST", orgId, timeout = 2000) {
+     super(reqType, timeout, false);
      this.type = C.GET_TRANSLATED_AND_VERIFIED_SETENCE_COUNT;
+     this.orgId = orgId;
      this.endpoint = `${super.apiEndPointAuto()}${ENDPOINTS.getTranslatedAndVerifiedSetenceCount}`;
    }
  
@@ -25,7 +26,9 @@
    }
  
    getBody() {
-    return false
+    return JSON.stringify({
+      org: this.orgId
+    })
    }
  
    getHeaders() {
