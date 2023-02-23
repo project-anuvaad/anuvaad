@@ -17,10 +17,8 @@ from anuvaad_auditor.loghandler import log_exception
 def ocr(crop_image,configs,left,top,language):
 
     if configs:
-        log_info('tesseract psm applied  ===>', app_context.application_context)
         temp_df = pytesseract.image_to_data(crop_image,config='--psm 8', lang=LANG_MAPPING[language][0],output_type=Output.DATAFRAME)
     else:
-        log_info('tesseract without psm  ===>', app_context.application_context)
         temp_df = pytesseract.image_to_data(crop_image, lang= LANG_MAPPING[language][0],output_type=Output.DATAFRAME)
     temp_df = temp_df[temp_df.text.notnull()]
     text = ""
