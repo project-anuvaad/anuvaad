@@ -7,7 +7,7 @@ const initialUserState = {
 
 function getUserData(input) {
     if (Array.isArray(input) && input.length > 0) {
-        console.log("input ------ ", input);
+        // console.log("input ------ ", input);
         const users = [...input];
         users.sort(function (x, y) {
             return y.activated_time - x.activated_time;

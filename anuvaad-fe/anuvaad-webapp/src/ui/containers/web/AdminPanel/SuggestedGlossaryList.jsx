@@ -69,7 +69,7 @@ class SuggestedGlossaryList extends React.Component {
     // if (this.props.glossaryData.count === 0) {
     this.setState({ loading: true })
     this.getSuggestedGlossary();
-    console.log("this.props.suggestedGlossaryData", this.props.suggestedGlossaryData)
+    // console.log("this.props.suggestedGlossaryData", this.props.suggestedGlossaryData)
 
     // }
     // console.log("this.props.match.params.orgId", this.props.match.params.orgId)
@@ -105,8 +105,8 @@ class SuggestedGlossaryList extends React.Component {
 
   makeDeleteSuggestionAPICall = (userIds, uuIds, deleteAll, orgIds, status, showMessage) => {
     this.setState({ open: true, message: 'Glossary suggestion deletion in progress...', variant: 'info', openConfirmDialog: false, showMessage })
-    console.log("userIds, uuIds, deleteAll, orgIds");
-    console.log(userIds, uuIds, deleteAll, orgIds);
+    // console.log("userIds, uuIds, deleteAll, orgIds");
+    // console.log(userIds, uuIds, deleteAll, orgIds);
     let apiObj = new UpdateSuggestedGlossaryStatus( uuIds, status);
     fetch(apiObj.apiEndPoint(), {
       method: 'post',
@@ -125,13 +125,13 @@ class SuggestedGlossaryList extends React.Component {
   }
 
   handleAcceptSuggestion = (dataArray) => {
-    console.log("dataArray", dataArray);
+    // console.log("dataArray", dataArray);
     // console.log("this.props.suggestedGlossaryData", this.props.suggestedGlossaryData)
     this.makeCreateGlossaryAPICall(dataArray[2], dataArray[0], dataArray[1], dataArray[4], dataArray[6], dataArray[5]);
   }
 
   handleDeleteSuggestion = (dataArray) => {
-    console.log("dataArray", dataArray);
+    // console.log("dataArray", dataArray);
     // let reverseLocale = dataArray[3].split("|").reverse().join("|");
     this.makeDeleteSuggestionAPICall([], [dataArray[6]], false, [this.orgID], "Rejected", true);
     this.setState({openSingleSuggestionDeleteConfirmBox: false, singleDeletionArr: [] })
@@ -144,7 +144,7 @@ class SuggestedGlossaryList extends React.Component {
   deleteMultipleRows = () => {
     // let isOrg = delete_glossary.isOrg(this.props.suggestedGlossaryData, this.state.rowsToDelete)
     let rowsToBeDeleted = delete_glossary.getBulkDeletionArray(this.props.suggestedGlossaryData, this.state.rowsToDelete)
-    console.log("rowsToBeDeleted", rowsToBeDeleted);
+    // console.log("rowsToBeDeleted", rowsToBeDeleted);
     let IdArrOfSelectedRows = rowsToBeDeleted?.map((el,index)=>{
       return el.id
     });

@@ -167,7 +167,7 @@ class ViewDocumentDigitization extends React.Component {
     keyPress = (e) => {
         if (e.code === "Enter" && this.state.isInputActive) {
             // handleTransliterationModelClose();
-            console.log("enter key press.");
+            // console.log("enter key press.");
             this.onChangePageMAnually();
         }
     };

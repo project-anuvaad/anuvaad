@@ -95,7 +95,7 @@ class ViewDocument extends React.Component {
     if (e.code === "Enter" && this.state.isInputActive) {
       e.preventDefault();
       // handleTransliterationModelClose();
-      console.log("enter key press.");
+      // console.log("enter key press.");
       this.onChangePageMAnually();
     }
   };
@@ -105,7 +105,9 @@ class ViewDocument extends React.Component {
     // console.log("limit (Number(this.state.inputPageNumber)-1)*10 ---> ", this.props.job_details.count);
     // this.makeAPICallJobsBulkSearch(0, (Number(this.state.inputPageNumber)-1)*10, false, false, true)
     this.tableRef.current.changePage(Number(this.state.inputPageNumber) - 1);
-    this.setState({ currentPageIndex: this.state.inputPageNumber - 1 });
+    this.setState({ currentPageIndex: this.state.inputPageNumber - 1 }, ()=> {
+      this.makeAPICallDocumentsTranslationProgress();
+    });
   }
 
   componentWillUnmount() {
@@ -246,12 +248,12 @@ class ViewDocument extends React.Component {
   };
 
   getJobsAsPerPageAndLimit = (page, limit) => {
-    console.log("this.getJobsSortedByTimestamp() ------- ", this.getJobsSortedByTimestamp());
+    // console.log("this.getJobsSortedByTimestamp() ------- ", this.getJobsSortedByTimestamp());
     return this.getJobsSortedByTimestamp()
-    // .slice(
-    //   page * limit,
-    //   page * limit + limit
-    // );
+    .slice(
+      page * limit,
+      page * limit + limit
+    );
   };
 
   getRecordIds = () => {
@@ -369,9 +371,9 @@ class ViewDocument extends React.Component {
       variant: "info",
     });
     let job = this.getJobIdDetail(jobId);
-    console.log("job ----- ", job);
+    // console.log("job ----- ", job);
     let user_profile = JSON.parse(localStorage.getItem("userProfile"));
-    console.log(job.converted_filename, user_profile.userID)
+    // console.log(job.converted_filename, user_profile.userID)
     let obj = new DownloadFile(job.converted_filename, user_profile.userID);
 
     const apiReq1 = fetch(obj.apiEndPoint(), {
@@ -787,7 +789,7 @@ class ViewDocument extends React.Component {
                     >Go</Button>
                     <IconButton
                       onClick={() => {
-                        this.setState({ currentPageIndex: this.state.currentPageIndex - 1 })
+                        this.setState({ currentPageIndex: this.state.currentPageIndex - 1 }, ()=>this.makeAPICallDocumentsTranslationProgress())
                         this.tableRef.current.changePage(Number(this.state.currentPageIndex - 1))
                       }}
                       tabIndex={this.state.currentPageIndex - 1}
@@ -797,7 +799,7 @@ class ViewDocument extends React.Component {
                     <Typography variant="caption" style={{ fontSize: "0.9rem", fontWeight: "600" }}>Page {parseInt(this.state.currentPageIndex + 1)} of {parseInt(totalPageCount)} </Typography>
                     <IconButton
                       onClick={() => {
-                        this.setState({ currentPageIndex: this.state.currentPageIndex + 1 })
+                        this.setState({ currentPageIndex: this.state.currentPageIndex + 1 }, ()=>this.makeAPICallDocumentsTranslationProgress())
                         this.tableRef.current.changePage(Number(this.state.currentPageIndex + 1))
                       }}
                       tabIndex={this.state.currentPageIndex + 1}

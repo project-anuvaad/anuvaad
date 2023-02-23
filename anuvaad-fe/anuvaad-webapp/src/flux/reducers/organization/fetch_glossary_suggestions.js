@@ -28,7 +28,7 @@ const getSuggestedGlossaryData = (data=[]) => {
     let rejectedSuggestions = result.filter((el)=>{return el.status === "Rejected"});
 
     finalResult = [...pendingSuggestions, ...approvedSuggestions, ...rejectedSuggestions ];
-    console.log("finalResult", finalResult);
+    // console.log("finalResult", finalResult);
     return finalResult;
 }
 export default (state = initialState, action) => {

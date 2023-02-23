@@ -14,7 +14,7 @@ export default class getAnuvaadCountByLang extends API {
         super.processResponse(res);
         if (res) {
             this.langCountData = res;
-            console.log(res);
+            // console.log(res);
         }
     }
 
