@@ -740,12 +740,12 @@ class SentenceCard extends React.Component {
 
 
     retranslateSentence = () => {
-        console.log("this.state.value", this.state.value)
+        // console.log("this.state.value", this.state.value)
         if (this.props.onAction) {
             let eventArray = this.handleTimeCalc("Retranslate", "", (this.state.value.length < 1 || this.state.value === '') ? this.props.sentence.s0_tgt : this.state.value)
             this.setState({ eventArray })
             this.setState({ value: '' })
-            console.log("eventArray", eventArray)
+            // console.log("eventArray", eventArray)
             this.props.onAction(SENTENCE_ACTION.RETRANSLATE_SENTENCE, this.props.pageNumber, [this.props.sentence])
         }
     }
@@ -1163,7 +1163,7 @@ class SentenceCard extends React.Component {
         this.setState({ loading: true, openSuggestGlossaryModal: false })
         let userProfile = JSON.parse(localStorage.getItem('userProfile'))
         let apiObj = new SuggestGlossary(userProfile.userID, userProfile.orgID, this.state.selectedSentence, tgt, locale, 'JUDICIARY')
-        console.log("apiObj", apiObj);
+        // console.log("apiObj", apiObj);
         fetch(apiObj.apiEndPoint(), {
             method: 'post',
             body: JSON.stringify(apiObj.getBody()),

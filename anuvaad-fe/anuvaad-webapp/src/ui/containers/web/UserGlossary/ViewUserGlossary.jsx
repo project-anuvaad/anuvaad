@@ -84,8 +84,8 @@ class MyGlossary extends React.Component {
     }
 
     makeDeleteGlossaryAPICall = (userId, orgID, src, tgt, locale, reverseLocale, context, bulkDelete = false, deletionArray = []) => {
-        console.log(`userId, src, tgt, locale, reverseLocale, context, bulkDelete = false, deletionArray = []`);
-        console.log(userId, src, tgt, locale, reverseLocale, context, bulkDelete, deletionArray);
+        // console.log(`userId, src, tgt, locale, reverseLocale, context, bulkDelete = false, deletionArray = []`);
+        // console.log(userId, src, tgt, locale, reverseLocale, context, bulkDelete, deletionArray);
         this.setState({ open: true, message: 'Glossary deletion in progress...', variant: 'info' })
         // let orgID = JSON.parse(localStorage.getItem("userProfile")).orgID;
         let apiObj = new DeleteGlossary(userId, orgID, src, tgt, locale, reverseLocale, context, bulkDelete, deletionArray);
@@ -136,7 +136,7 @@ class MyGlossary extends React.Component {
     }
 
     handleDeleteAllGlossary = () => {
-        console.log("handleDeleteAllGlossary")
+        // console.log("handleDeleteAllGlossary")
         this.setState({ openConfirmDialog: true })
     }
 

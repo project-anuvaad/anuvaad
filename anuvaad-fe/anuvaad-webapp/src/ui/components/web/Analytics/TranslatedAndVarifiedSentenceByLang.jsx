@@ -31,7 +31,7 @@ function TranslatedAndVarifiedSentenceByLang(props) {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const showExportPopover = Boolean(anchorEl);
 
-    console.log(sourceData, "sourceData")
+    // console.log(sourceData, "sourceData")
 
     const [totalSentences, setTotalSentences] = useState();
     const [totalVerifiedSentences, settotalVerifiedSentences] = useState();

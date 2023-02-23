@@ -95,7 +95,7 @@ class ViewDocument extends React.Component {
     if (e.code === "Enter" && this.state.isInputActive) {
       e.preventDefault();
       // handleTransliterationModelClose();
-      console.log("enter key press.");
+      // console.log("enter key press.");
       this.onChangePageMAnually();
     }
   };
@@ -248,7 +248,7 @@ class ViewDocument extends React.Component {
   };
 
   getJobsAsPerPageAndLimit = (page, limit) => {
-    console.log("this.getJobsSortedByTimestamp() ------- ", this.getJobsSortedByTimestamp());
+    // console.log("this.getJobsSortedByTimestamp() ------- ", this.getJobsSortedByTimestamp());
     return this.getJobsSortedByTimestamp()
     .slice(
       page * limit,
@@ -371,9 +371,9 @@ class ViewDocument extends React.Component {
       variant: "info",
     });
     let job = this.getJobIdDetail(jobId);
-    console.log("job ----- ", job);
+    // console.log("job ----- ", job);
     let user_profile = JSON.parse(localStorage.getItem("userProfile"));
-    console.log(job.converted_filename, user_profile.userID)
+    // console.log(job.converted_filename, user_profile.userID)
     let obj = new DownloadFile(job.converted_filename, user_profile.userID);
 
     const apiReq1 = fetch(obj.apiEndPoint(), {
