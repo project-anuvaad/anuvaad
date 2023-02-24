@@ -30,6 +30,7 @@ import JobStatus from "../../../../flux/actions/apis/view_document/v1_jobprogres
 import FetchModel from "../../../../flux/actions/apis/common/fetchmodel";
 import { showPdf, clearShowPdf } from '../../../../flux/actions/apis/document_translate/showpdf';
 import { contentUpdateStarted, clearFetchContent } from '../../../../flux/actions/users/translator_actions';
+import clear_html_link from "../../../../flux/actions/apis/document_translate/clear_html_link";
 import { update_sentences, update_blocks } from '../../../../flux/actions/apis/document_translate/update_page_content';
 import { editorModeClear, editorModeNormal, editorModeMerge } from '../../../../flux/actions/editor/document_editor_mode';
 import { clearHighlighBlock } from '../../../../flux/actions/users/translator_actions';
@@ -174,11 +175,12 @@ class DocumentEditor extends React.Component {
     localStorage.setItem("inputFile", "");
 
     let recordId = this.props.match.params.jobid;
-    let jobId = recordId ? recordId.split("|")[0] : ""
-    TELEMETRY.endTranslatorFlow(jobId)
-    this.props.clearFetchContent()
-    this.props.clearHighlighBlock()
-    this.props.clearShowPdf()
+    let jobId = recordId ? recordId.split("|")[0] : "";
+    TELEMETRY.endTranslatorFlow(jobId);
+    this.props.clearFetchContent();
+    this.props.clear_html_link();
+    this.props.clearHighlighBlock();
+    this.props.clearShowPdf();
   }
 
   handleSourceScroll(id) {
@@ -864,6 +866,7 @@ const mapDispatchToProps = dispatch => bindActionCreators(
     update_blocks,
     ClearContent,
     clearFetchContent,
+    clear_html_link,
     clearHighlighBlock,
     editorModeNormal, editorModeMerge, editorModeClear,
     showPdf,
