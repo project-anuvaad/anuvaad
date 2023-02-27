@@ -20,7 +20,7 @@ class UserLogin(Resource):
         
         user_name = body["userName"]
         password = body["password"]
-        log_info(f"start login for end {user_name}", MODULE_CONTEXT)
+        log_info(f"login for user start {user_name}", MODULE_CONTEXT)
         log_info("Request for login from {}".format(user_name),MODULE_CONTEXT)
 
         validity=UserUtils.validate_user_login_input(user_name, password)
@@ -35,7 +35,7 @@ class UserLogin(Resource):
                 res = CustomResponse(Status.FAILURE_USR_LOGIN.value, None)
                 return res.getresjson(), 400
             log_info("Login successful for {}".format(user_name),MODULE_CONTEXT)
-            log_info(f"start login for end {user_name}", MODULE_CONTEXT)
+            log_info(f"login for user end {user_name}", MODULE_CONTEXT)
             res = CustomResponse(Status.SUCCESS_USR_LOGIN.value, result)
             return res.getresjson(), 200
         except Exception as e:
