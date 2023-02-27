@@ -76,8 +76,8 @@ class OrganizationGlossary extends React.Component {
     // console.log("this.props.match.params.orgId", this.props.match.params.orgId)
   }
   componentDidUpdate(prevProps) {
-    console.log("prevProps.glossaryData ---------------- ", prevProps.glossaryData);
-    console.log("this.props.glossaryData ---------------- ", this.props.glossaryData);
+    // console.log("prevProps.glossaryData ---------------- ", prevProps.glossaryData);
+    // console.log("this.props.glossaryData ---------------- ", this.props.glossaryData);
     if (this.props.glossaryData.hasOwnProperty("deleted") && !this.props.glossaryData.delete && this.state.loading) {
       this.setState({ loading: false })
     }
