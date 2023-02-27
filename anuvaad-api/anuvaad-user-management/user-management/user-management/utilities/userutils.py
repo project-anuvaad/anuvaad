@@ -310,6 +310,7 @@ class UserUtils:
             # connecting to mongo instance/collection
             collections = get_db()[USR_TOKEN_MONGO_COLLECTION]
             # searching for token against the user_name
+            log_info(f"get token model start {user_name}", MODULE_CONTEXT)
             record = collections.find(
                 {"user": user_name, "active": True},
                 {"_id": 0, "token": 1, "secret_key": 1},
@@ -352,6 +353,7 @@ class UserUtils:
                             e,
                         )
                         return {"status": False, "data": None}
+            log_info(f"get token model end {user_name}", MODULE_CONTEXT)
         except Exception as e:
             log_exception("Database connection exception ", MODULE_CONTEXT, e)
             return {"status": "Database connection exception", "data": None}
@@ -545,6 +547,7 @@ class UserUtils:
         """
 
         try:
+            log_info(f"Initial Login validate start{username}", MODULE_CONTEXT)
             # connecting to mongo instance/collection
             collections = get_db()[USR_MONGO_COLLECTION]
             # fetching the user details from db
@@ -589,6 +592,7 @@ class UserUtils:
                         "exception:{}".format(str(e)),
                         None,
                     )
+            log_info(f"Initial Login validate end{username}", MODULE_CONTEXT)
         except Exception as e:
             log_exception(
                 "exception while validating username and password" + str(e),
