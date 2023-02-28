@@ -219,10 +219,10 @@ def mask_image(image,df, image_width,image_height,input_json,margin= 0 ,fill=255
         df = image_boundry_correction(image_width,image_height,df)
         for index, row in df.iterrows():
             try :
-                row_bottom = int(row['text_top'] + row['text_height'])
-                row_right = int(row['text_left'] + row['text_width'])
-                row_left   = row['text_left']
-                row_top    = row['text_top']
+                row_bottom = int(row['text_top']+10 + row['text_height'])
+                row_right = int(row['text_left']+10 + row['text_width'])
+                row_left   = row['text_left']-10
+                row_top    = row['text_top']-10
 
                 # Some times the image height/width  can be negative
                 if row_right < row['text_left'] :
