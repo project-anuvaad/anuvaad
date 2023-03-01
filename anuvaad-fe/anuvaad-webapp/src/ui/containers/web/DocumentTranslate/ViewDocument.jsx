@@ -59,7 +59,7 @@ class ViewDocument extends React.Component {
    * life cycle methods
    */
   componentDidMount() {
-    this.timerId = setInterval(this.checkInprogressJobStatus.bind(this), 10000);
+    this.timerId = setInterval(this.checkInprogressJobStatus.bind(this), 30000);
     TELEMETRY.pageLoadStarted("view-document");
 
     if (this.props.job_details.documents.length < 1) {
