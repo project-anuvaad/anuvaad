@@ -163,8 +163,8 @@ class DigitizedDocHeader extends React.Component {
             } else {
                 this.setState({
                     anchorEl: null,
-                    showStatus: true,
-                    message: "Downloading failed...",
+                    showStatus: false,
+                    dialogMessage: "Downloading failed...",
                     variant: "error"
                 });
             }
