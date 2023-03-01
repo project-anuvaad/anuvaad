@@ -117,7 +117,7 @@ class ViewDocumentDigitization extends React.Component {
 
     checkInprogressJobStatus = () => {
         let inprogressJobIds = this.props.digitizeddocument.documents
-            .filter((job) => job.status === "INPROGRESS")
+            .filter((job) => job.status === "INPROGRESS" || job.status === "STARTED")
             .map((job) => job.jobID);
         if (inprogressJobIds.length > 0) {
             this.makeAPICallJobsBulkSearch(
@@ -132,7 +132,7 @@ class ViewDocumentDigitization extends React.Component {
     };
 
     componentDidMount() {
-        this.timerId = setInterval(this.checkInprogressJobStatus.bind(this), 10000);
+        this.timerId = setInterval(this.checkInprogressJobStatus.bind(this), 30000);
         TELEMETRY.pageLoadStarted("document-digitization");
 
         if (this.props.digitizeddocument.documents.length < 1) {
@@ -287,7 +287,7 @@ class ViewDocumentDigitization extends React.Component {
                 `${process.env.PUBLIC_URL}/interactive-digitization/${jobId}/${filename}/${job.converted_filename}/${Og_file_name}`,
                 this.state
             );
-        } else if (status === "INPROGRESS") {
+        } else if (status === "INPROGRESS" || job.status === "STARTED") {
             this.setState({
                 dialogMessage: "Please wait process is Inprogress!",
                 timeOut: 3000,
