@@ -191,8 +191,8 @@ class AppRoutes extends React.Component {
               dontShowHeader={false}
             />
 
-
-            <PrivateRoute
+          
+            {/* <PrivateRoute
               path={`${process.env.PUBLIC_URL}/forgot-password`}
               title="Forgot Password"
               authenticate={() => true}
@@ -200,8 +200,7 @@ class AppRoutes extends React.Component {
               drawer
               dontShowHeader={true}
               currentMenu="forgot-password"
-            />
-
+            /> */}
 
             <PrivateRoute
               path={`${process.env.PUBLIC_URL}/glossary-upload`}
