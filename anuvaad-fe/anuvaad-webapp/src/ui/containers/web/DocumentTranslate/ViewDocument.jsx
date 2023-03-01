@@ -175,7 +175,7 @@ class ViewDocument extends React.Component {
    */
   checkInprogressJobStatus = () => {
     let inprogressJobIds = this.props.job_details.documents
-      .filter((job) => job.status === "INPROGRESS")
+      .filter((job) => job.status === "INPROGRESS" || job.status === "STARTED")
       .map((job) => job.jobID);
     if (inprogressJobIds.length > 0) {
       this.makeAPICallJobsBulkSearch(
@@ -328,7 +328,7 @@ class ViewDocument extends React.Component {
       );
 
 
-    } else if (status === "INPROGRESS") {
+    } else if (status === "INPROGRESS" || status === "STARTED") {
       this.setState({
         dialogMessage: "Please wait process is Inprogress!",
         timeOut: 3000,
