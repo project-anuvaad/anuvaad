@@ -6,17 +6,14 @@ const initialState = {
 }
 
 const getGlossaryData = (data) => {
-    let result = data.map(val => {
-        return {
+    let result = data.map(val => (
+        {
+            ...val,
             id: val.hash,
-            src: val.src,
             tgt: val.user_tgt,
-            locale: val.locale,
-            userID: val.userID,
-            context: val.context,
             typeOfGlossary: val.orgID ? "Organization" : "Individual"
         }
-    })
+    ))
     return result
 }
 export default (state = initialState, action) => {

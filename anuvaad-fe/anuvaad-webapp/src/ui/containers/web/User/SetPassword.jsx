@@ -21,7 +21,7 @@ import APITransport from "../../../../flux/actions/apitransport/apitransport";
 class SetPassword extends React.Component {
     constructor(props) {
         super(props);
-        console.log("props url ----- ", this.props.match.params);
+        // console.log("props url ----- ", this.props.match.params);
         this.state = {
 
             password: "",

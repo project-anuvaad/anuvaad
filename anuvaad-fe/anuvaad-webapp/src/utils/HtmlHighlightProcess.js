@@ -32,7 +32,7 @@ export const highlightSource = (
     } else {
       let regExpArr = source.replace(/[|,|\.|\-]+/g, "").split(" ");
       let regExpSource = getInitialText(regExpArr, pattern);
-      console.log(regExpSource);
+      // console.log(regExpSource);
       regExpSource = new RegExp(regExpSource, "gm");
       let m;
       let regArr = [];

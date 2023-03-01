@@ -30,6 +30,7 @@ import JobStatus from "../../../../flux/actions/apis/view_document/v1_jobprogres
 import FetchModel from "../../../../flux/actions/apis/common/fetchmodel";
 import { showPdf, clearShowPdf } from '../../../../flux/actions/apis/document_translate/showpdf';
 import { contentUpdateStarted, clearFetchContent } from '../../../../flux/actions/users/translator_actions';
+import clear_html_link from "../../../../flux/actions/apis/document_translate/clear_html_link";
 import { update_sentences, update_blocks } from '../../../../flux/actions/apis/document_translate/update_page_content';
 import { editorModeClear, editorModeNormal, editorModeMerge } from '../../../../flux/actions/editor/document_editor_mode';
 import { clearHighlighBlock } from '../../../../flux/actions/users/translator_actions';
@@ -174,11 +175,12 @@ class DocumentEditor extends React.Component {
     localStorage.setItem("inputFile", "");
 
     let recordId = this.props.match.params.jobid;
-    let jobId = recordId ? recordId.split("|")[0] : ""
-    TELEMETRY.endTranslatorFlow(jobId)
-    this.props.clearFetchContent()
-    this.props.clearHighlighBlock()
-    this.props.clearShowPdf()
+    let jobId = recordId ? recordId.split("|")[0] : "";
+    TELEMETRY.endTranslatorFlow(jobId);
+    this.props.clearFetchContent();
+    this.props.clear_html_link();
+    this.props.clearHighlighBlock();
+    this.props.clearShowPdf();
   }
 
   handleSourceScroll(id) {
@@ -312,7 +314,7 @@ class DocumentEditor extends React.Component {
   makeAPICallReTranslateSentence = (sentences, pageNumber) => {
     let sentence_ids = sentences.s_id
     let updated_blocks = BLOCK_OPS.do_sentence_retranslation(this.props.document_contents.pages, sentence_ids);
-    console.log("updated_blocks", updated_blocks);
+    // console.log("updated_blocks", updated_blocks);
     /**
      * telemetry information.
      */
@@ -321,7 +323,7 @@ class DocumentEditor extends React.Component {
     // TELEMETRY.mergeSentencesEvent(initial_sentences, final_sentence)
     let model = LANG_MODEL.fetchModel(parseInt(this.props.match.params.modelId), this.props.fetch_models, this.props.match.params.source_language_code, this.props.match.params.target_language_code, this.props.match.params.source_language_code, this.props.match.params.target_language_code)
     this.informUserProgress(translate('common.page.label.RETRANSLATE_SENTENCE'));
-    console.log("model in retranslation === ", model);
+    // console.log("model in retranslation === ", model);
     let apiObj = new WorkFlowAPI("WF_S_TR", updated_blocks, this.props.match.params.jobid, model.source_language_code,
       '', '', model, [sentence_ids], "", "", [], "", true)
     const apiReq = fetch(apiObj.apiEndPoint(), {
@@ -864,6 +866,7 @@ const mapDispatchToProps = dispatch => bindActionCreators(
     update_blocks,
     ClearContent,
     clearFetchContent,
+    clear_html_link,
     clearHighlighBlock,
     editorModeNormal, editorModeMerge, editorModeClear,
     showPdf,
