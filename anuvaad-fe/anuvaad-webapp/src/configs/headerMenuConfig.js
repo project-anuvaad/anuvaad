@@ -89,20 +89,20 @@ const headerMenuConfig = [
         rolesAllowed : [userRoles[2]],
         menuType : menuTypes[2]
     },
-    {
-        id : "view-scheduled-jobs",
-        title: "View Jobs",
-        onclick : (assignedOrgId)=>history.push(`${process.env.PUBLIC_URL}/view-scheduled-jobs`),
-        rolesAllowed : [userRoles[2], userRoles[3]],
-        menuType : menuTypes[2]
-    },
-    {
-        id : "view-annotation-job",
-        title: "View Annotation Job",
-        onclick : (assignedOrgId)=>history.push(`${process.env.PUBLIC_URL}/view-annotation-job`),
-        rolesAllowed : [userRoles[1]],
-        menuType : menuTypes[2]
-    },
+    // {
+    //     id : "view-scheduled-jobs",
+    //     title: "View Jobs",
+    //     onclick : (assignedOrgId)=>history.push(`${process.env.PUBLIC_URL}/view-scheduled-jobs`),
+    //     rolesAllowed : [userRoles[2], userRoles[3]],
+    //     menuType : menuTypes[2]
+    // },
+    // {
+    //     id : "view-annotation-job",
+    //     title: "View Annotation Job",
+    //     onclick : (assignedOrgId)=>history.push(`${process.env.PUBLIC_URL}/view-annotation-job`),
+    //     rolesAllowed : [userRoles[1]],
+    //     menuType : menuTypes[2]
+    // },
     {
         id : "analytics",
         title: "Analytics",

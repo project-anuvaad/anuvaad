@@ -164,8 +164,6 @@ class SentenceCard extends React.Component {
 
 }
    
-  
-
   componentWillUpdate(nextProps, nextState) {
     if (
       nextProps.document_editor_mode.mode !==
