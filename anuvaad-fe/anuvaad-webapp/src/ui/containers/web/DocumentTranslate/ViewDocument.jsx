@@ -320,7 +320,7 @@ class ViewDocument extends React.Component {
   processViewDocumentClick = (jobId, recordId, status, workflowCode) => {
     let role = localStorage.getItem("roles")
     let job = this.getJobIdDetail(jobId);
-    job.filename = job.filename?.replaceAll("#", "%23");
+    job.filename = job.filename?.includes("#") ? job.filename?.split("#").join("%23") : job.filename;
     if (status === "COMPLETED") {
       history.push(
         `${process.env.PUBLIC_URL}/interactive-document/${job.recordId}/${job.converted_filename}/${job.model_id}/${job.filename}/${workflowCode}/${job.source_language_code}/${job.target_language_code}`,
