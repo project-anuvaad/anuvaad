@@ -43,7 +43,6 @@ import ViewGlossary from "../../../../flux/actions/apis/user_glossary/fetch_user
 import APITransport from "../../../../flux/actions/apitransport/apitransport";
 import SuggestGlossaryModal from "./SuggestGlossaryModal";
 import SuggestGlossary from "../../../../flux/actions/apis/document_translate/suggest_glossary";
-import transliterationModeld from "../../../../utils/transliterationModeld";
 import endpoints from "../../../../configs/apiendpoints";
 import configs from "../../../../configs/configs";
 import { IndicTransliterate } from 'react-transliterate';
@@ -150,20 +149,6 @@ class SentenceCard extends React.Component {
     this.processMergeCancelButtonClicked =
       this.processMergeCancelButtonClicked.bind(this);
   }
-
-  componentDidUpdate(prevProps ,prevState){  
-    if(!!prevProps?.model?.source_language_code != !!prevState?.modelId){
-        let modelIds = transliterationModeld?.ModelID?.find(
-            (el) =>
-             { return (el.sourceLanguage && el.targetLanguage )  ===  (this.props?.model?.source_language_code && this.props?.model?.target_language_code) 
-             }
-    
-          );
-        this.setState({modelId: modelIds?.modelId})  
-    }
-  }
-
- 
 
   componentDidMount() {
     if (
@@ -962,7 +947,7 @@ class SentenceCard extends React.Component {
         <div>
           <IndicTransliterate
             customApiURL={`${configs.BASE_URL_ULCA + endpoints.hostedInference}`}
-            transliterationModelId={this.state.modelId}
+            transliterationModelId={this.props.getTransliterationModelID?.modelId}
             renderComponent={(props) => {
               const inputRef = props.ref;
               delete props["ref"];
@@ -1769,6 +1754,7 @@ const mapStateToProps = (state) => ({
   sentence_highlight: state.sentence_highlight.sentence,
   block_highlight: state.block_highlight,
   document_editor_mode: state.document_editor_mode,
+  getTransliterationModelID: state.getTransliterationModelID
 });
 
 const mapDispatchToProps = (dispatch) =>
