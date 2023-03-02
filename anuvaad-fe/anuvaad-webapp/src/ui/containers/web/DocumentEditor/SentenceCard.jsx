@@ -958,8 +958,8 @@ class SentenceCard extends React.Component {
                     this.props.model.status === "ACTIVE" &&
                     this.props.model.interactive_translation &&
                     orgID !== "NONMT"
-                      ? "Ctrl+m to move text, Ctrl+s to save"
-                      : "Ctrl+m to move text, Ctrl+s to save"
+                      ? "Ctrl+m to move text, Ctrl+s to save, press Esc to get your manual translation without transliteration"
+                      : "Ctrl+m to move text, Ctrl+s to save, press Esc to get your manual translation without transliteration"
                   }
                   type="text"
                   name={this.props.sentence.s_id}
