@@ -305,7 +305,7 @@ class InteractiveDocHeader extends React.Component {
   fetchDocxFile = () => {
     let fname = this.props.match.params.jobid.replace(".json", ".docx");
     let jobId = encodeURI(this.props.match.params.jobid);
-    let jobName = this.props.match.params.filename.replaceAll("%23", "#");
+    let jobName = this.props.match.params.filename?.includes("%23") ? this.props.match.params.filename?.split("#").join("%23") : this.props.match.params.filename;
     jobName = jobName.substr(0, jobName.lastIndexOf("."));
     const apiObj = new DownloadDOCX(jobId, fname, jobName);
     this.setState({
@@ -586,7 +586,7 @@ class InteractiveDocHeader extends React.Component {
           >
             <BackIcon />
           </IconButton>
-          {this.props.match.params.filename.replaceAll("%23", "#")}
+          {this.props.match.params.filename.split("#").join("%23")}
         </Typography>
         <div style={{ position: "absolute", right: "30px" }}>
           {this.renderOptions()}
