@@ -35,6 +35,7 @@ import { update_sentences, update_blocks } from '../../../../flux/actions/apis/d
 import { editorModeClear, editorModeNormal, editorModeMerge } from '../../../../flux/actions/editor/document_editor_mode';
 import { clearHighlighBlock } from '../../../../flux/actions/users/translator_actions';
 import { Button } from "@material-ui/core";
+import fetchTransliterationModelID from "../../../../flux/actions/apis/document_translate/fetchTransliterationModel";
 // import html2canvas from "html2canvas"
 // import { jsPDF } from "jspdf";
 import ReactToPrint, { PrintContextConsumer } from 'react-to-print';
@@ -73,6 +74,8 @@ class DocumentEditor extends React.Component {
       totalLoaderValue: 0,
       currentIndex: 0,
       download: false,
+      targLangCode: "",
+      srcLangCode:"",
 
       fetchNext: true.valueOf,
     }
@@ -92,14 +95,16 @@ class DocumentEditor extends React.Component {
     this.setState({ showLoader: true });
     this.makeAPICallFetchContent(1);
     this.makeAPICallDocumentsTranslationProgress();
-
     if (!this.props.fetch_models || !this.props.fetch_models.length > 0) {
       const apiModel = new FetchModel();
       this.props.APITransport(apiModel);
     } else {
       let model = LANG_MODEL.fetchModel(parseInt(this.props.match.params.modelId), this.props.fetch_models, this.props.match.params.source_language_code, this.props.match.params.target_language_code)
       if (model && model.hasOwnProperty('source_language_name') && model.hasOwnProperty('target_language_name')) {
-        TELEMETRY.startTranslatorFlow(model.source_language_name, model.target_language_name, this.props.match.params.inputfileid, jobId)
+        TELEMETRY.startTranslatorFlow(model.source_language_name, model.target_language_name, this.props.match.params.inputfileid, jobId);
+        this.setState({targLangCode: model.target_language_code,srcLangCode: model.source_language_code},()=>{
+          this.getTransliterationModel(this.state.targLangCode,this.state.srcLangCode);
+        });
       }
     }
 
@@ -152,9 +157,19 @@ class DocumentEditor extends React.Component {
       let jobId = this.props.match.params.jobid ? this.props.match.params.jobid.split("|")[0] : ""
       let model = LANG_MODEL.fetchModel(parseInt(this.props.match.params.modelId), this.props.fetch_models, this.props.match.params.source_language_code, this.props.match.params.target_language_code)
       if (model && model.hasOwnProperty('source_language_name') && model.hasOwnProperty('target_language_name')) {
-        TELEMETRY.startTranslatorFlow(model.source_language_name, model.target_language_name, this.props.match.params.inputfileid, jobId)
+        TELEMETRY.startTranslatorFlow(model.source_language_name, model.target_language_name, this.props.match.params.inputfileid, jobId);
+        this.setState({targLangCode: model.target_language_code,srcLangCode: model.source_language_code},()=>{
+          this.getTransliterationModel(this.state.targLangCode,this.state.srcLangCode);
+        });
       }
     }
+
+  }
+
+  getTransliterationModel(srcLang){
+    const { APITransport } = this.props;
+    const apiObj = new fetchTransliterationModelID(this.state.srcLangCode,this.state.targLangCode);
+    APITransport(apiObj);
 
   }
 
