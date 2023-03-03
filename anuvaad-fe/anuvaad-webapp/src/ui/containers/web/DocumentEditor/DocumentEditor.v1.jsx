@@ -76,6 +76,7 @@ class DocumentEditor extends React.Component {
       download: false,
       targLangCode: "",
       srcLangCode:"",
+      transliterationChecked: false,
 
       fetchNext: true.valueOf,
     }
@@ -103,7 +104,7 @@ class DocumentEditor extends React.Component {
       if (model && model.hasOwnProperty('source_language_name') && model.hasOwnProperty('target_language_name')) {
         TELEMETRY.startTranslatorFlow(model.source_language_name, model.target_language_name, this.props.match.params.inputfileid, jobId);
         this.setState({targLangCode: model.target_language_code,srcLangCode: model.source_language_code},()=>{
-          // this.getTransliterationModel(this.state.targLangCode,this.state.srcLangCode);
+          this.getTransliterationModel(this.state.targLangCode,this.state.srcLangCode);
         });
       }
     }
@@ -159,7 +160,7 @@ class DocumentEditor extends React.Component {
       if (model && model.hasOwnProperty('source_language_name') && model.hasOwnProperty('target_language_name')) {
         TELEMETRY.startTranslatorFlow(model.source_language_name, model.target_language_name, this.props.match.params.inputfileid, jobId);
         this.setState({targLangCode: model.target_language_code,srcLangCode: model.source_language_code},()=>{
-          // this.getTransliterationModel(this.state.targLangCode,this.state.srcLangCode);
+          this.getTransliterationModel(this.state.targLangCode,this.state.srcLangCode);
         });
       }
     }
@@ -676,6 +677,10 @@ class DocumentEditor extends React.Component {
     this.setState({ docView: !this.state.docView })
   }
 
+  enableTransliteration = (value) => {
+    this.setState({transliterationChecked: value})
+  }
+
   showPreview = () => {
     let pagesPerCall = this.state.totalPageCount < 30 ? 5 : (this.state.totalPageCount / 10)
     let count = Math.ceil(pagesPerCall)
@@ -777,6 +782,7 @@ class DocumentEditor extends React.Component {
           pages.map(page => page['translated_texts'].map((sentence, index) => {
             sentence.src = sentence.src.replace(/\s{2,}/g, ' ').trim()
             return < div key={sentence.s_id} ref={sentence.s_id} > <SentenceCard key={sentence.s_id}
+              enableTransliteration={this.state.transliterationChecked}
               pageNumber={page.page_no}
               recordId={this.props.match.params.jobid}
               model={LANG_MODEL.fetchModel(parseInt(this.props.match.params.modelId), this.props.fetch_models, this.props.match.params.source_language_code, this.props.match.params.target_language_code)}
@@ -829,7 +835,7 @@ class DocumentEditor extends React.Component {
   render() {
     return (
       <div style={{ marginTop : 5 }}>
-        <div style={{ height: "50px", marginBottom: "13px" }}> <InteractiveDocToolBar docView={this.state.docView} onAction={this.handleDocumentView} onShowPreview={this.showPreview} preview={this.state.preview} /></div>
+        <div style={{ height: "50px", marginBottom: "13px" }}> <InteractiveDocToolBar enableTransliteration={this.enableTransliteration} docView={this.state.docView} onAction={this.handleDocumentView} onShowPreview={this.showPreview} preview={this.state.preview} /></div>
 
         {!this.state.preview ?
           <>
