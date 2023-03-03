@@ -943,6 +943,7 @@ class SentenceCard extends React.Component {
     return (
       <form>
         <div>
+        {this.props?.model?.target_language_code != "en" ?(
           <IndicTransliterate
             customApiURL={`${configs.BASE_URL_ULCA + endpoints.hostedInference}`}
             transliterationModelId={this.props.getTransliterationModelID?.modelId}
@@ -980,7 +981,21 @@ class SentenceCard extends React.Component {
             }}
             lang={this.props?.model?.target_language_code}
             maxOptions={3}
-          />
+          />) : (<TextField  label="Enter translated sentence"
+          helperText={this.props.model && this.props.model.status === "ACTIVE" && this.props.model.interactive_translation && orgID !== 'NONMT' ? "Ctrl+m to move text, TAB key to move suggested words, Ctrl+s to save" : "Ctrl+m to move text, Ctrl+s to save"}
+          type="text"
+          name={this.props.sentence.s_id}
+          value={this.state.value}
+          onChange={this.handleUserInputText}
+          fullWidth
+          multiline
+          disabled={this.state.isCardBusy}
+          variant="outlined"
+          onKeyDown={this.handleKeyDown}
+          onClick={this.handleClick}
+          inputRef={this.textInput}
+         
+      />)}
 
           {/* <Autocomplete
                         filterOptions={filterOptions}
