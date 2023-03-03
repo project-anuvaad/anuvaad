@@ -943,46 +943,7 @@ class SentenceCard extends React.Component {
     return (
       <form>
         <div>
-          <IndicTransliterate
-            customApiURL={`${configs.BASE_URL_ULCA + endpoints.hostedInference}`}
-            transliterationModelId={this.props.getTransliterationModelID?.modelId}
-            renderComponent={(props) => {
-              const inputRef = props.ref;
-              delete props["ref"];
-              return (
-                <TextField
-                  {...props}
-                  label="Enter translated sentence"
-                  helperText={
-                    this.props.model &&
-                    this.props.model.status === "ACTIVE" &&
-                    this.props.model.interactive_translation &&
-                    orgID !== "NONMT"
-                      ? "Ctrl+m to move text, Ctrl+s to save, press Esc to get your manual translation without transliteration"
-                      : "Ctrl+m to move text, Ctrl+s to save, press Esc to get your manual translation without transliteration"
-                  }
-                  type="text"
-                  name={this.props.sentence.s_id}
-                  value={this.state.value}
-                  fullWidth
-                  multiline
-                  disabled={this.state.isCardBusy}
-                  variant="outlined"
-                  onClick={this.handleClick}
-                  inputRef={inputRef}
-                />
-              );
-            }}
-            onKeyDown={this.handleKeyDown}
-            value={this.state.value}
-            onChangeText={(text) => {
-              this.setState({ value: text });
-            }}
-            lang={this.props?.model?.target_language_code}
-            maxOptions={3}
-          />
-
-          {/* <Autocomplete
+        <Autocomplete
                         filterOptions={filterOptions}
                         id={this.props.sentence.s_id}
                         getOptionLabel={option => option.name ? option.name : ""}
@@ -1044,7 +1005,7 @@ class SentenceCard extends React.Component {
                                     ),
                                 }}
                             />
-                        )} /> */}
+                        )} />
         </div>
         <br />
       </form>
