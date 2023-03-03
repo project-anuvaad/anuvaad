@@ -943,7 +943,61 @@ class SentenceCard extends React.Component {
     return (
       <form>
         <div>
-        <Autocomplete
+        {this.props?.model?.target_language_code != "en" && this.props.enableTransliteration ?(
+          <IndicTransliterate
+            customApiURL={`${configs.BASE_URL_ULCA + endpoints.hostedInference}`}
+            transliterationModelId={this.props.getTransliterationModelID?.modelId}
+            renderComponent={(props) => {
+              const inputRef = props.ref;
+              delete props["ref"];
+              return (
+                <TextField
+                  {...props}
+                  label="Enter translated sentence"
+                  helperText={
+                    this.props.model &&
+                    this.props.model.status === "ACTIVE" &&
+                    this.props.model.interactive_translation &&
+                    orgID !== "NONMT"
+                      ? "Ctrl+m to move text, Ctrl+s to save, Enable transliteration to get suggestions/disable transliteration and enter manual translation"
+                      : "Ctrl+m to move text, Ctrl+s to save, Enable transliteration to get suggestions/disable transliteration and enter manual translation"
+                  }
+                  type="text"
+                  name={this.props.sentence.s_id}
+                  value={this.state.value}
+                  fullWidth
+                  multiline
+                  disabled={this.state.isCardBusy}
+                  variant="outlined"
+                  onClick={this.handleClick}
+                  inputRef={inputRef}
+                />
+              );
+            }}
+            onKeyDown={this.handleKeyDown}
+            value={this.state.value}
+            onChangeText={(text) => {
+              this.setState({ value: text });
+            }}
+            lang={this.props?.model?.target_language_code}
+            maxOptions={3}
+          />) : (<TextField  label="Enter translated sentence"
+          helperText={this.props.model && this.props.model.status === "ACTIVE" && this.props.model.interactive_translation && orgID !== 'NONMT' ? "Ctrl+m to move text,Ctrl+s to save, Enable transliteration to get suggestions/disable transliteration and enter manual translation" : "Ctrl+m to move text, Ctrl+s to save, Enable transliteration to get suggestions/disable transliteration and enter manual translation"}
+          type="text"
+          name={this.props.sentence.s_id}
+          value={this.state.value}
+          onChange={this.handleUserInputText}
+          fullWidth
+          multiline
+          disabled={this.state.isCardBusy}
+          variant="outlined"
+          onKeyDown={this.handleKeyDown}
+          onClick={this.handleClick}
+          inputRef={this.textInput}
+         
+      />)}
+
+          {/* <Autocomplete
                         filterOptions={filterOptions}
                         id={this.props.sentence.s_id}
                         getOptionLabel={option => option.name ? option.name : ""}
@@ -962,17 +1016,14 @@ class SentenceCard extends React.Component {
                         onChange={(event, newValue) => {
                             let option = newValue.name ? newValue.name : newValue
                             var elem = document.getElementById(this.props.sentence.s_id)
-
                             let value = this.state.value ? this.state.value.slice(0, elem.selectionStart) : ""
                             let trimedText = value.trim()
-
                             var selectedText = option.slice(0, trimedText.length)
                             let caretValue = option.slice(trimedText.length, option.length)
                             this.setState({
                                 value: (selectedText ? selectedText.trim() : selectedText) + " " + (caretValue ? caretValue.trim() + " " : caretValue),
                                 showSuggestions: false,
                                 userEnteredText: true,
-
                             });
                         }}
                         onClose={(event, newValue) => {
@@ -1005,7 +1056,7 @@ class SentenceCard extends React.Component {
                                     ),
                                 }}
                             />
-                        )} />
+                        )} /> */}
         </div>
         <br />
       </form>
