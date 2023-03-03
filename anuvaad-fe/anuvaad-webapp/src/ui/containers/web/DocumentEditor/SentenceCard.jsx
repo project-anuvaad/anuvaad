@@ -943,7 +943,7 @@ class SentenceCard extends React.Component {
     return (
       <form>
         <div>
-        {this.props?.model?.target_language_code != "en" ?(
+        {this.props?.model?.target_language_code != "en" && this.props.enableTransliteration ?(
           <IndicTransliterate
             customApiURL={`${configs.BASE_URL_ULCA + endpoints.hostedInference}`}
             transliterationModelId={this.props.getTransliterationModelID?.modelId}
@@ -959,8 +959,8 @@ class SentenceCard extends React.Component {
                     this.props.model.status === "ACTIVE" &&
                     this.props.model.interactive_translation &&
                     orgID !== "NONMT"
-                      ? "Ctrl+m to move text, Ctrl+s to save, press Esc to get your manual translation without transliteration"
-                      : "Ctrl+m to move text, Ctrl+s to save, press Esc to get your manual translation without transliteration"
+                      ? "Ctrl+m to move text, Ctrl+s to save, Enable transliteration to get suggestions/disable transliteration and enter manual translation"
+                      : "Ctrl+m to move text, Ctrl+s to save, Enable transliteration to get suggestions/disable transliteration and enter manual translation"
                   }
                   type="text"
                   name={this.props.sentence.s_id}
@@ -982,7 +982,7 @@ class SentenceCard extends React.Component {
             lang={this.props?.model?.target_language_code}
             maxOptions={3}
           />) : (<TextField  label="Enter translated sentence"
-          helperText={this.props.model && this.props.model.status === "ACTIVE" && this.props.model.interactive_translation && orgID !== 'NONMT' ? "Ctrl+m to move text,Ctrl+s to save" : "Ctrl+m to move text, Ctrl+s to save"}
+          helperText={this.props.model && this.props.model.status === "ACTIVE" && this.props.model.interactive_translation && orgID !== 'NONMT' ? "Ctrl+m to move text,Ctrl+s to save, Enable transliteration to get suggestions/disable transliteration and enter manual translation" : "Ctrl+m to move text, Ctrl+s to save, Enable transliteration to get suggestions/disable transliteration and enter manual translation"}
           type="text"
           name={this.props.sentence.s_id}
           value={this.state.value}
