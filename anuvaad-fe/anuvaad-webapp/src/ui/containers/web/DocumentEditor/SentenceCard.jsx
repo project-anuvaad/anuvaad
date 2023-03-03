@@ -982,7 +982,7 @@ class SentenceCard extends React.Component {
             lang={this.props?.model?.target_language_code}
             maxOptions={3}
           />) : (<TextField  label="Enter translated sentence"
-          helperText={this.props.model && this.props.model.status === "ACTIVE" && this.props.model.interactive_translation && orgID !== 'NONMT' ? "Ctrl+m to move text, TAB key to move suggested words, Ctrl+s to save" : "Ctrl+m to move text, Ctrl+s to save"}
+          helperText={this.props.model && this.props.model.status === "ACTIVE" && this.props.model.interactive_translation && orgID !== 'NONMT' ? "Ctrl+m to move text,Ctrl+s to save" : "Ctrl+m to move text, Ctrl+s to save"}
           type="text"
           name={this.props.sentence.s_id}
           value={this.state.value}
