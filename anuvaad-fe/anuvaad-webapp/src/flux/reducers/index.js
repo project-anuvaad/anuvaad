@@ -72,6 +72,7 @@ import getTranslatedAndVerifiedSetenceCount from './analytics/getTranslatedAndVe
 import getCountByLang from './analytics/getCountByLang';
 import getDocumentCountPerOrg from './analytics/getDocumentCountPerOrg'
 import getAnuvaadSupportedLanguages from './analytics/getSupportedLangList'
+import getTransliterationModelID from './document_translate/fetchTransliterationModel';
 
 export default {
     login,
@@ -146,5 +147,6 @@ export default {
     getTranslatedAndVerifiedSetenceCount,
     getCountByLang,
     getDocumentCountPerOrg,
-    getAnuvaadSupportedLanguages
+    getAnuvaadSupportedLanguages,
+    getTransliterationModelID
 };

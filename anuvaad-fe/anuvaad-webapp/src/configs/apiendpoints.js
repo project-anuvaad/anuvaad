@@ -59,6 +59,9 @@ const endpoints = {
   getLangCount: "/anuvaad-metrics/anuvaad-data/lang_count",
   getDocumentCountPerOrg: "/anuvaad-metrics/anuvaad-data/doc_count",
   getAllSupportedLangList: "/anuvaad-metrics/anuvaad-data/languages",
+  hostedInference: "/ulca/apis/v0/model/compute",
+  getTransliterationModelId:"/ulca/apis/v0/model/getTransliterationModelId",
+
 };
 
 export default endpoints;
