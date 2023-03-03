@@ -103,7 +103,7 @@ class DocumentEditor extends React.Component {
       if (model && model.hasOwnProperty('source_language_name') && model.hasOwnProperty('target_language_name')) {
         TELEMETRY.startTranslatorFlow(model.source_language_name, model.target_language_name, this.props.match.params.inputfileid, jobId);
         this.setState({targLangCode: model.target_language_code,srcLangCode: model.source_language_code},()=>{
-          this.getTransliterationModel(this.state.targLangCode,this.state.srcLangCode);
+          // this.getTransliterationModel(this.state.targLangCode,this.state.srcLangCode);
         });
       }
     }
@@ -159,7 +159,7 @@ class DocumentEditor extends React.Component {
       if (model && model.hasOwnProperty('source_language_name') && model.hasOwnProperty('target_language_name')) {
         TELEMETRY.startTranslatorFlow(model.source_language_name, model.target_language_name, this.props.match.params.inputfileid, jobId);
         this.setState({targLangCode: model.target_language_code,srcLangCode: model.source_language_code},()=>{
-          this.getTransliterationModel(this.state.targLangCode,this.state.srcLangCode);
+          // this.getTransliterationModel(this.state.targLangCode,this.state.srcLangCode);
         });
       }
     }
