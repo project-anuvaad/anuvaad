@@ -1,4 +1,4 @@
-from datetime import datetime
+import datetime
 import json
 import shutil
 import threading
@@ -17,6 +17,12 @@ from utilities import (
     generate_email_notification,
     send_email,
 )
+from services import (
+    get_trans_user_data_from_db_daily_day_crn,
+    get_trans_user_data_from_db_weekly_crn_file1,
+    get_trans_user_data_from_db_weekly_crn_file2,
+    copy_cron_csv,
+)
 import uuid
 import requests
 
@@ -24,8 +30,9 @@ import requests
 # from flask import render_template
 IST = pytz.timezone("Asia/Kolkata")
 from flask import Flask, jsonify
-from email.mime.base import MIMEBase
-from email import encoders
+
+# from email.mime.base import MIMEBase
+# from email import encoders
 
 
 app = Flask(__name__, template_folder="../templates")
@@ -50,9 +57,31 @@ def FetchJudgementCount():
         file_save = str(filename)[:-10] + "_JUD_Org_level_Statistics.csv"
         keys = body.keys()
         if "config" in keys and body.get("config") == "cron":
-            get_trans_user_data_from_db_weekly_crn()
+            if not os.path.exists(
+                config.DOWNLOAD_FOLDER + "/" + config.DAILY_CRON_FILE_NAME1
+            ) and not os.path.exists(
+                config.DOWNLOAD_FOLDER + "/" + config.DAILY_CRON_FILE_NAME2
+            ):
+                shutil.copyfile(
+                    config.DOWNLOAD_FOLDER + "/" + config.backup_file_1,
+                    config.DOWNLOAD_FOLDER + "/" + config.DAILY_CRON_FILE_NAME1,
+                )
+                shutil.copyfile(
+                    config.DOWNLOAD_FOLDER + "/" + config.backup_file_2,
+                    config.DOWNLOAD_FOLDER + "/" + config.DAILY_CRON_FILE_NAME2,
+                )
+                log_info(
+                    f"files copied from weekly cron to daily cron {config.backup_file_1,config.backup_file_2}",
+                    MODULE_CONTEXT,
+                )
+                get_trans_user_data_from_db_daily_day_crn()
+        elif "config" in keys and body.get("config") == "file1":
+            get_trans_user_data_from_db_weekly_crn_file1()
+        elif "config" in keys and body.get("config") == "file2":
+            get_trans_user_data_from_db_weekly_crn_file2()
         elif "config" in keys and body.get("config") == "copy":
             copy_cron_csv()
+
         elif body.get("org"):
             org = body["org"]
             role = body["role"]
@@ -70,7 +99,17 @@ def FetchJudgementCount():
                 f"Data returned from {config.USER_COLLECTION} collection",
                 MODULE_CONTEXT,
             )
-
+        elif "config" in keys and body.get("config") == "remove":
+            if os.path.exists(
+                config.DOWNLOAD_FOLDER + "/" + config.DAILY_CRON_FILE_NAME1
+            ):
+                os.remove(config.DOWNLOAD_FOLDER + "/" + config.DAILY_CRON_FILE_NAME1)
+            if os.path.exists(
+                config.DOWNLOAD_FOLDER + "/" + config.DAILY_CRON_FILE_NAME2
+            ):
+                os.remove(config.DOWNLOAD_FOLDER + "/" + config.DAILY_CRON_FILE_NAME2)
+            else:
+                return {"msg": "already deleted"}
         try:
             if "config" in keys:
                 pass
@@ -91,7 +130,9 @@ def FetchJudgementCount():
                         )
                         ch_docs = [x for x in ch_docs]
                         write_to_csv(
-                            ch_docs, doc["_id"], (config.DOWNLOAD_FOLDER + "/" + file_name1)
+                            ch_docs,
+                            doc["_id"],
+                            (config.DOWNLOAD_FOLDER + "/" + file_name1),
                         )
                         write_to_csv(
                             [x for x in saved_docs],
@@ -121,9 +162,12 @@ def FetchJudgementCount():
                     file_save = config.DOWNLOAD_FOLDER + "/" + file_save
                     files = [file_name1, file_name2, file_save]
                     log_info(
-                        "Generating email notification for found data !!!!", MODULE_CONTEXT
+                        "Generating email notification for found data !!!!",
+                        MODULE_CONTEXT,
                     )
-                    msg = generate_email_notification(users, "Data Generated Successfully")
+                    msg = generate_email_notification(
+                        users, "Data Generated Successfully"
+                    )
                     for i, j in enumerate(files):
                         with open(j, "rb") as content_file:
                             content = content_file.read()
@@ -133,23 +177,11 @@ def FetchJudgementCount():
                                 subtype="csv",
                                 filename=j.split("/")[-1],
                             )
-
-                        # using smtp lib
-                        # attach_file = open(j, "rb")  # Open the file as binary mode
-                        # payload = MIMEBase("application", "octate-stream")
-                        # payload.set_payload((attach_file).read())
-                        # encoders.encode_base64(payload)  # encode the attachment
-                        # # add payload header with filename
-                        # payload.add_header(
-                        #     "Content-Disposition",
-                        #     "attachment",
-                        #     filename=str(j.split("/")[-1]),
-                        # )
-                        # msg.attach(payload)
                     send_email(msg)
                     log_info(f"Generated alert email ", MODULE_CONTEXT)
                     log_info(
-                        "filenames :{},{} ".format(file_name1, file_name2), MODULE_CONTEXT
+                        "filenames :{},{} ".format(file_name1, file_name2),
+                        MODULE_CONTEXT,
                     )
                 else:
                     log_info(
@@ -208,6 +240,11 @@ def FetchJudgementCount_user_wise():
                     ch_collection, doc, from_date, end_date
                 )
                 log_info(f"Details collected for for userID : {doc} ", MODULE_CONTEXT)
+                # try:
+                #     ch_docs.next()
+                #     saved_docs.next()
+                # except Exception as e:
+                #     print(str(e))
                 ch_docs = [x for x in ch_docs]
                 write_to_csv_user(ch_docs, (config.DOWNLOAD_FOLDER + "/" + file_name1))
                 write_to_csv_user(
@@ -234,7 +271,7 @@ def FetchJudgementCount_user_wise():
                 log_info(
                     "Generating email notification for found data !!!!", MODULE_CONTEXT
                 )
-                tdy_date = datetime.now(IST).strftime("%Y:%m:%d %H:%M:%S")
+                # tdy_date = datetime.now(IST).strftime("%Y:%m:%d %H:%M:%S")
                 msg = generate_email_notification(users, "Data Generated Successfully")
                 for i, j in enumerate(files):
                     with open(j, "rb") as content_file:
@@ -324,16 +361,6 @@ def anuvaad_chart_org_doc():
             )
             response.headers["Content-Type"] = "application/json"
             return response
-            # out = CustomResponse(
-            #     Status.ACCEPTED.value,
-            #     {
-            #         "total_document_sentence_count": int(total_documemt_sentence_count),
-            #         "total_verified_sentence_count": int(total_verified_sentence_count),
-            #         "total_documents": int(total_docs),
-            #         "language_counts": keyss,
-            #     },
-            # )
-            # return out.getres()
 
     except Exception as e:
         log_exception("Error in FetchJudgementCount: {}".format(e), MODULE_CONTEXT, e)
@@ -383,32 +410,55 @@ def anuvaad_chart_lang_org():
 )
 def anuvaad_chart_verfied_sentence():
     # body = request.get_json()
-    if request.method == "POST":
-        url = generate_url(config.jud, "verified_count")
-        data = requests.get(url)
-        data = data.json()
-        return data
-    result, status = stats.file_validation()
     try:
-        if status == False:
-            return result
-        else:
-            (
-                total_docs,
-                total_documemt_sentence_count,
-                total_verified_sentence_count,
-                keyss,
-            ) = stats.verified_doc(result)
-            out = CustomResponse(
-                Status.SUCCESS.value,
-                {
-                    "total_document_sentence_count": int(total_documemt_sentence_count),
-                    "total_verified_sentence_count": int(total_verified_sentence_count),
-                    "total_documents": int(total_docs),
-                    "language_counts": keyss,
-                },
-            )
-            return out.getres()
+        result, status = stats.file_validation()
+        if request.method == "POST":
+            body = request.get_json()
+            if status == False:
+                return result
+            else:
+                (
+                    total_docs,
+                    total_documemt_sentence_count,
+                    total_verified_sentence_count,
+                    keyss,
+                ) = stats.verified_doc_sentence_by_org(result,body)
+                out = CustomResponse(
+                    Status.SUCCESS.value,
+                    {
+                        "total_document_sentence_count": int(total_documemt_sentence_count),
+                        "total_verified_sentence_count": int(total_verified_sentence_count),
+                        "total_documents": int(total_docs),
+                        "language_counts": keyss,
+                    },
+                )
+                return out.getres()
+            
+        # url = generate_url(config.jud, "verified_count")
+        # data = requests.get(url)
+        # data = data.json()
+        # return data
+    # result, status = stats.file_validation()
+        elif request.method == "GET":
+            if status == False:
+                return result
+            else:
+                (
+                    total_docs,
+                    total_documemt_sentence_count,
+                    total_verified_sentence_count,
+                    keyss,
+                ) = stats.verified_doc_sentence_all(result)
+                out = CustomResponse(
+                    Status.SUCCESS.value,
+                    {
+                        "total_document_sentence_count": int(total_documemt_sentence_count),
+                        "total_verified_sentence_count": int(total_verified_sentence_count),
+                        "total_documents": int(total_docs),
+                        "language_counts": keyss,
+                    },
+                )
+                return out.getres()
             # return jsonify({'msgg':keyss})
     except Exception as e:
         log_exception("Error in FetchJudgementCount: {}".format(e), MODULE_CONTEXT, e)
@@ -425,140 +475,3 @@ def dropdown_lang():
         data = json.load(f)
     out = CustomResponse(Status.SUCCESS.value, data)
     return out.getres()
-
-
-def copy_cron_csv():
-    log_info("fetch data started", MODULE_CONTEXT)
-    # filename = uuid.uuid4().hex
-    daily_cron_file_name1 = config.DAILY_CRON_FILE_NAME1
-    daily_cron_file_name2 = config.DAILY_CRON_FILE_NAME2
-    weekly_cron_file_name1 = config.WEEKLY_CRON_FILE_NAME1
-    weekly_cron_file_name2 = config.WEEKLY_CRON_FILE_NAME2
-    # file_save = str(filename)[:-10]+'_USER_WISE_JUD_Org_level_Statistics.csv'
-    if os.path.exists(
-        config.DOWNLOAD_FOLDER + "/" + weekly_cron_file_name1 ) and os.path.exists(config.DOWNLOAD_FOLDER + "/" + weekly_cron_file_name2):
-        if not os.path.exists(
-            config.DOWNLOAD_FOLDER + "/" + daily_cron_file_name1
-        ) and not os.path.exists(config.DOWNLOAD_FOLDER + "/" + daily_cron_file_name2):
-            shutil.copyfile(
-                config.DOWNLOAD_FOLDER + "/" + weekly_cron_file_name1,
-                config.DOWNLOAD_FOLDER + "/" + daily_cron_file_name1,
-            )
-            shutil.copyfile(
-                config.DOWNLOAD_FOLDER + "/" + weekly_cron_file_name2,
-                config.DOWNLOAD_FOLDER + "/" + daily_cron_file_name2,
-            )
-            data = "files copied"
-            log_info(f"{data}", MODULE_CONTEXT)
-        else :
-            data = "Files Already in Directory"
-            log_info(f"{data}", MODULE_CONTEXT)
-    else:
-        data = "Files Not found in Directory"
-        log_info(f"{data}", MODULE_CONTEXT)
-
-    return data
-
-
-def get_trans_user_data_from_db_weekly_crn():
-    users = config.EMAIL_NOTIFIER
-    log_info("fetch data started", MODULE_CONTEXT)
-    # filename = uuid.uuid4().hex
-    weekly_cron_file_name1 = config.WEEKLY_CRON_FILE_NAME1
-    weekly_cron_file_name2 = config.WEEKLY_CRON_FILE_NAME2
-    daily_cron_file_name1 = config.DAILY_CRON_FILE_NAME1
-    daily_cron_file_name2 = config.DAILY_CRON_FILE_NAME2
-    # file_save = str(filename)[:-10]+'_USER_WISE_JUD_Org_level_Statistics.csv'
-    if os.path.exists(
-        config.DOWNLOAD_FOLDER + "/" + weekly_cron_file_name1
-    ) and os.path.exists(config.DOWNLOAD_FOLDER + "/" + weekly_cron_file_name2):
-        os.remove(config.DOWNLOAD_FOLDER + "/" + weekly_cron_file_name1)
-        os.remove(config.DOWNLOAD_FOLDER + "/" + weekly_cron_file_name2)
-        os.remove(config.DOWNLOAD_FOLDER + "/" + daily_cron_file_name1)
-        os.remove(config.DOWNLOAD_FOLDER + "/" + daily_cron_file_name2)
-    else:
-        msg = generate_email_notification(
-            users, "could not get the data files not found"
-        )
-        send_email(msg)
-        log_info(f"Generated alert email scheduler files not found ", MODULE_CONTEXT)
-    user_docs = stats.get_all_users_active_inactive(usr_collection)
-    log_info(
-        f"Data returned from user {config.USER_COLLECTION} collection", MODULE_CONTEXT
-    )
-    try:
-        from_date, end_date = stats.get_time_frame_for_analytics()
-        for doc in user_docs:
-            # print(doc)
-            # log_info(f'fetching details for {doc} userID',MODULE_CONTEXT)
-            done = 0
-            try:
-                while True:
-
-                    ch_docs = stats.fetch_data_for_language_trans_tokenized_for_scheduer_only(
-                        ch_collection, doc, from_date, end_date
-                    )
-                    saved_docs = stats.fetch_data_for_userwise_trans_user_tokenized(
-                        ch_collection, doc, from_date, end_date
-                    )
-                    # log_info(f'Details collected for for userID : {doc} ',MODULE_CONTEXT)
-                    write_to_csv_user(
-                        [x for x in ch_docs],
-                        (config.DOWNLOAD_FOLDER + "/" + weekly_cron_file_name1),
-                    )
-                    write_to_csv_user(
-                        [x for x in saved_docs],
-                        (config.DOWNLOAD_FOLDER + "/" + weekly_cron_file_name2),
-                    )
-                    done = 1
-                    if done == 1:
-                        break
-            except Exception as e:
-                log_exception(
-            "error in fetching the data : {}".format(str(e)),
-            MODULE_CONTEXT,
-            e,
-        )
-        log_info(
-            f"Data written into files {weekly_cron_file_name1,weekly_cron_file_name2}",
-            MODULE_CONTEXT,
-        )
-        if not os.path.exists(
-            config.DOWNLOAD_FOLDER + "/" + daily_cron_file_name1
-        ) and not os.path.exists(config.DOWNLOAD_FOLDER + "/" + daily_cron_file_name2):
-            shutil.copyfile(
-                config.DOWNLOAD_FOLDER + "/" + weekly_cron_file_name1,
-                config.DOWNLOAD_FOLDER + "/" + daily_cron_file_name1,
-            )
-            shutil.copyfile(
-                config.DOWNLOAD_FOLDER + "/" + weekly_cron_file_name2,
-                config.DOWNLOAD_FOLDER + "/" + daily_cron_file_name2,
-            )
-            log_info(
-                f"files copied from weekly cron to daily cron {daily_cron_file_name1,daily_cron_file_name2}",
-                MODULE_CONTEXT,
-            )
-            # msg = generate_email_notification(users, "weekly cron files copied ")
-            # send_email(msg)
-        else:
-            log_info(
-                f"files already there in folder {daily_cron_file_name1,daily_cron_file_name2}",
-                MODULE_CONTEXT,
-            )
-            msg = generate_email_notification(
-                users, "files already in directory cannot copy"
-            )
-            send_email(msg)
-        return
-    except Exception as e:
-        log_exception("Error in fetching the data: {}".format(e), MODULE_CONTEXT, e)
-        msg = generate_email_notification(
-            users, "could not get the data something went wrong : {}".format(e)
-        )
-        send_email(msg)
-        log_exception(
-            "Generated alert email in exception weekly cron job : {}".format(str(e)),
-            MODULE_CONTEXT,
-            e,
-        )
-        return
