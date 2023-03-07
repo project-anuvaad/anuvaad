@@ -29,9 +29,11 @@ class TranslatorJobsCleaner(Thread):
                 for record in records:
                     try:
                         job_start_time = record["transInput"]["taskStartTime"]
+                        print(job_start_time,"job_time_start")
                         diff = eval(str(time.time()).replace('.', '')[0:13]) - job_start_time
-                        log_info(job_start_time + "Job time start " , obj)
-                        log_info(diff + "diff" , obj)
+                        print(diff,"diff")
+                        log_info(f"Job time start {job_start_time}" , obj)
+                        log_info(f"diff {diff}" , obj)
                         if (diff / 1000) > eval(str(jc_job_delete_interval_sec)):
                             log_info("Inside if" , obj)
                             translator_utils.delete(record["jobID"])
