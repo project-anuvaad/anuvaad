@@ -30,7 +30,7 @@ class TranslatorJobsCleaner(Thread):
                     try:
                         job_start_time = record["transInput"]["taskStartTime"]
                         diff = eval(str(time.time()).replace('.', '')[0:13]) - job_start_time
-                        if (diff / 1000) > eval(str(jc_job_delete_interval_sec)):
+                        if (diff / 1000) > eval(str(172800)):#jc_job_delete_interval_sec
                             translator_utils.delete(record["jobID"])
                             translator_utils.delete_batches(record["jobID"])
                             translator_utils.delete_pages(record["recordID"])
