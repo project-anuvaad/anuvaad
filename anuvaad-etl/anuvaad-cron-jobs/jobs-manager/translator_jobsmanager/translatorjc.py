@@ -25,6 +25,8 @@ class TranslatorJobsCleaner(Thread):
         while not self.stopped.wait(eval(str(jc_cron_interval_sec))):
             try:
                 records = translator_utils.find_all(False)
+                print(records,"records")
+                log_info(f"records {records}" , obj)
                 deleted = 0
                 for record in records:
                     try:
