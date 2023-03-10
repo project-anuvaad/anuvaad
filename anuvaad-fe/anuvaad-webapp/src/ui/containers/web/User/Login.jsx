@@ -130,18 +130,18 @@ class Login extends React.Component {
           localStorage.setItem("lang", "en");
           localStorage.setItem("userProfile", JSON.stringify(resData));
           if (roles.includes("SUPERADMIN")) {
-            // history.push(`${process.env.PUBLIC_URL}/dummy-page`);
-            history.push(`${process.env.PUBLIC_URL}/user-details`);
-            // history.push(`${process.env.PUBLIC_URL}/create-user`)
+            history.push(`${process.env.PUBLIC_URL}/intro`);
+            // history.push(`${process.env.PUBLIC_URL}/user-details`);
           } else if (roles.includes("ADMIN")) {
-            history.push(`${process.env.PUBLIC_URL}/user-details`);
-            // history.push(`${process.env.PUBLIC_URL}/create-user`)
+            history.push(`${process.env.PUBLIC_URL}/intro`);
+            // history.push(`${process.env.PUBLIC_URL}/user-details`);
           } else if (roles.includes("TRANSLATOR")) {
-            history.push(`${process.env.PUBLIC_URL}/view-document`);
+            history.push(`${process.env.PUBLIC_URL}/intro`);
+            // history.push(`${process.env.PUBLIC_URL}/view-document`);
           } else {
-            history.push(`${process.env.PUBLIC_URL}/view-document`);
+            history.push(`${process.env.PUBLIC_URL}/intro`);
+            // history.push(`${process.env.PUBLIC_URL}/view-document`);
           }
-          // history.push(`${process.env.PUBLIC_URL}/create-user`)
         }
       })
       .catch((error) => {
