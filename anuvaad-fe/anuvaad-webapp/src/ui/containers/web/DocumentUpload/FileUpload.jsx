@@ -122,11 +122,11 @@ class PdfUpload extends Component {
                 color="primary"
                 variant="contained"
                 onClick={() => {
+                  this.setState({ files: { workspaceName: "" } });
                   this.handleDialogClose();
-                  this.makeDocumentUploadAPICall();
                 }}
               >
-                I understand, proceed
+                Cancel
               </Button>
             </Grid>
             <Grid item xs={6} sm={6} md={6} lg={6} xl={6}>
@@ -137,11 +137,11 @@ class PdfUpload extends Component {
                 color="primary"
                 variant="contained"
                 onClick={() => {
-                  this.setState({ files: { workspaceName: "" } });
                   this.handleDialogClose();
+                  this.makeDocumentUploadAPICall();
                 }}
               >
-                Cancel
+                I understand, proceed
               </Button>
             </Grid>
           </Grid>
@@ -262,17 +262,22 @@ class PdfUpload extends Component {
 
   componentDidMount() {
     TELEMETRY.pageLoadStarted("document-upload");
-
+    console.log("this.props.match --- ", this.props.match);
     const { APITransport } = this.props;
     const apiModel = new FetchModel();
     APITransport(apiModel);
     this.setState({
       showLoader: true,
-      uploadType: this.props.match.params.type === "translate" ? true : false,
+      uploadType: this.props.match.path === "/document-upload" ? true : false,
     });
   }
 
   componentDidUpdate(prevProps) {
+
+    if(prevProps.match.path !== this.props.match.path){
+      this.setState({uploadType: this.props.match.path === "/document-upload" ? true : false,})
+    }
+
     if (prevProps.fetch_models.models !== this.props.fetch_models.models) {
       this.setState({
         source_languages: LANG_MODEL.get_supported_languages(
@@ -589,7 +594,7 @@ class PdfUpload extends Component {
                 </Grid>
               </Grid>
 
-              <Grid
+              {/* <Grid
                 item
                 xs={12}
                 sm={6}
@@ -607,13 +612,13 @@ class PdfUpload extends Component {
                 >
                   {translate("common.page.button.back")}
                 </Button>
-              </Grid>
+              </Grid> */}
               <Grid
                 item
-                xs={6}
-                sm={6}
-                lg={6}
-                xl={6}
+                xs={12}
+                sm={12}
+                lg={12}
+                xl={12}
                 style={{ paddingTop: "25px" }}
               >
                 <Grid item xs={12} sm={12} lg={12} xl={12}>

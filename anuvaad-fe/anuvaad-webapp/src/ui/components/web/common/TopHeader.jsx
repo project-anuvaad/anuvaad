@@ -17,6 +17,8 @@ import Grid from '@material-ui/core/Grid';
 import Popover from '@material-ui/core/Popover';
 import MenuIcon from "@material-ui/icons/Menu";
 import CloseIcon from '@material-ui/icons/Close';
+import DashboardIcon from '@material-ui/icons/Dashboard';
+import AssessmentIcon from '@material-ui/icons/Assessment';
 import SettingsOutlinedIcon from '@material-ui/icons/SettingsOutlined';
 import React, { useState, useEffect, useRef } from "react";
 import { Link as RouterLink } from "react-router-dom";
@@ -38,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
     },
     logo: {
         // height: "2rem",
-        width: "6rem",
+        width: "4.5rem",
         cursor: "pointer"
     },
     // ".MuiButton-label":{
@@ -125,7 +127,7 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: "#E0E0E0"
     },
     userMenuButtonText: {
-        width : "100%",
+        width: "100%",
         fontSize: "19px",
         fontWeight: "500",
         fontFamily: "roboto",
@@ -133,14 +135,14 @@ const useStyles = makeStyles((theme) => ({
     },
     // popover button text style
     popoverMenuText: {
-        width : "100%",
+        width: "100%",
         fontSize: "0.875rem",
         fontWeight: "400",
         fontFamily: "roboto",
         padding: 5
     },
     popoverMenuButton: {
-        
+
     },
     popoverMenuButtonActive: {
 
@@ -148,20 +150,20 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function TopHeader(props) {
-    const { 
-            header, 
-            logo, 
-            menuButton, 
-            toolbar, 
-            desktopMenuContainer, 
-            drawerContainer, 
-            popoverStyle, 
-            highlightedMenuButton, 
-            userMenuButton, 
-            activeUserMenuButton, 
-            userMenuButtonText,
-            popoverMenuText
-        } = useStyles();
+    const {
+        header,
+        logo,
+        menuButton,
+        toolbar,
+        desktopMenuContainer,
+        drawerContainer,
+        popoverStyle,
+        highlightedMenuButton,
+        userMenuButton,
+        activeUserMenuButton,
+        userMenuButtonText,
+        popoverMenuText
+    } = useStyles();
 
     const { currentMenu, dontShowHeader } = props;
 
@@ -176,6 +178,7 @@ export default function TopHeader(props) {
 
     const [showUserPopoverMenuAnchorEle, setShowUserPopoverMenuAnchorEle] = useState(null);
     const [showSettingsPopoverMenuAnchorEle, setShowSettingsPopoverMenuAnchorEle] = useState(null);
+    const [showDashboardPopoverMenuAnchorEle, setShowDashboardPopoverMenuAnchorEle] = useState(null);
 
     const assignedOrgId = JSON.parse(localStorage.getItem("userProfile"))?.orgID;
     const role = localStorage.getItem("roles");
@@ -202,7 +205,7 @@ export default function TopHeader(props) {
     const displayDesktop = () => {
         return (
             !dontShowHeader && <Toolbar className={toolbar}>
-                {femmecubatorLogo()}
+                {renderAnuvaadLogo()}
                 <div>{getMenuButtons()}</div>
                 <div>{PopOverMenuButtons()}</div>
             </Toolbar>
@@ -217,7 +220,7 @@ export default function TopHeader(props) {
 
         return (
             !dontShowHeader && <Toolbar className={toolbar}>
-                <div>{femmecubatorLogo()}</div>
+                <div>{renderAnuvaadLogo()}</div>
                 <IconButton
                     {...{
                         edge: "start",
@@ -282,7 +285,7 @@ export default function TopHeader(props) {
                                         el.onclick(assignedOrgId);
                                         closeDrawerOnMenuClick()
                                     },
-                                    style: { textDecoration: "none", color: "#000000", marginTop : 5 },
+                                    style: { textDecoration: "none", color: "#000000", marginTop: 5 },
                                     component: RouterLink,
                                     className: currentMenu === el.id ? highlightedMenuButton : menuButton,
                                 }}
@@ -304,7 +307,7 @@ export default function TopHeader(props) {
                                         el.onclick(assignedOrgId);
                                         closeDrawerOnMenuClick()
                                     },
-                                    style: { textDecoration: "none", color: "#000000", marginTop : 5 },
+                                    style: { textDecoration: "none", color: "#000000", marginTop: 5 },
                                     component: RouterLink,
                                     className: currentMenu === el.id ? highlightedMenuButton : menuButton,
                                 }}
@@ -326,7 +329,7 @@ export default function TopHeader(props) {
                                         el.onclick(assignedOrgId);
                                         closeDrawerOnMenuClick()
                                     },
-                                    style: { textDecoration: "none", color: "#000000", marginTop : 5 },
+                                    style: { textDecoration: "none", color: "#000000", marginTop: 5 },
                                     component: RouterLink,
                                     className: currentMenu === el.id ? highlightedMenuButton : menuButton,
                                 }}
@@ -341,40 +344,41 @@ export default function TopHeader(props) {
         );
     };
 
-    const femmecubatorLogo = () => {
-        return <img 
-                    src={headerLogoImg} 
-                    className={logo}
-                    ref={logoRef}
-                    onClick={()=>history.push(`${process.env.PUBLIC_URL}/`)}
-                    onError={(({currentTarget})=> {
-                        currentTarget.onerror = null;
-                        if(!currentTarget.src.includes(AnuvaadLogo)){
-                            currentTarget.src = AnuvaadLogo;
-                            return
-                        }
-                    })}
-                />
+    const renderAnuvaadLogo = () => {
+        return <img
+            src={headerLogoImg}
+            className={logo}
+            ref={logoRef}
+            onClick={() => history.push(`${process.env.PUBLIC_URL}/`)}
+            onError={(({ currentTarget }) => {
+                currentTarget.onerror = null;
+                if (!currentTarget.src.includes(AnuvaadLogo)) {
+                    currentTarget.src = AnuvaadLogo;
+                    return
+                }
+            })}
+        />
     };
 
     const getMenuButtons = () => {
         return (
             <Grid container className={desktopMenuContainer}>
                 {headerMenuConfig.map((el, i) => {
-                    return (
-                        el.menuType === "MAIN" && el.rolesAllowed.includes(role) && assignedOrgId !== "NONMT" && <Button
+                    return el.menuType === "MAIN" && el.rolesAllowed.includes(role) && assignedOrgId !== "NONMT" && <Button
                             {...{
                                 key: el.id,
                                 id: el.id,
-                                onClick: () => { el.onclick(assignedOrgId) },
+                                onClick: () => { 
+                                    el.onclick(assignedOrgId);
+                                    console.log(currentMenu + " === " + el.id);
+                                },
                                 style: { textDecoration: "none", color: "#000000", letterSpacing: "0.5px" },
-                                component: RouterLink,
+                                // component: RouterLink,
                                 className: currentMenu === el.id ? highlightedMenuButton : menuButton,
                             }}
                         >
                             <Typography className={userMenuButtonText}>{el.title}</Typography>
                         </Button>
-                    );
                 })}
             </Grid>
 
@@ -389,12 +393,76 @@ export default function TopHeader(props) {
                         {(role !== "SUPERADMIN" && role !== "ADMIN") && <Grid item>
                             <div style={{ display: "flex", alignItems: "center" }}>
                                 <IconButton
+                                    style={{marginLeft: "5px"}}
                                     {...{
                                         edge: "start",
                                         color: "#2C2799",
                                         "aria-label": "menu",
                                         "aria-haspopup": "true",
                                     }}
+                                    title={"Dashboard"}
+                                    onClick={(e) => setShowDashboardPopoverMenuAnchorEle(e.currentTarget)}
+                                >
+                                    <DashboardIcon fontSize="large" />
+                                </IconButton>
+                                <Popover
+                                    id={"simple-popover"}
+                                    open={Boolean(showDashboardPopoverMenuAnchorEle)}
+                                    anchorEl={showDashboardPopoverMenuAnchorEle}
+                                    onClose={() => setShowDashboardPopoverMenuAnchorEle(null)}
+                                    anchorOrigin={{
+                                        vertical: 'bottom',
+                                        horizontal: 'center',
+                                    }}
+                                    transformOrigin={{
+                                        vertical: 'top',
+                                        horizontal: 'center',
+                                    }}
+                                    style={{ backgroundColor: "rgba(0,0,0,0)" }}
+                                >
+                                    <Grid container direction="column" className={popoverStyle}>
+                                        {
+                                            headerMenuConfig.map((el, i) => {
+                                                return (
+                                                    el.menuType === "DASHBOARD" && el.rolesAllowed.includes(role) && assignedOrgId !== "NONMT" &&
+                                                    <Button
+                                                        variant="text"
+                                                        fullWidth
+                                                        className={currentMenu === el.id ? activeUserMenuButton : userMenuButton}
+                                                        onClick={() => {
+                                                            setShowDashboardPopoverMenuAnchorEle(null)
+                                                            el.onclick(assignedOrgId)
+                                                        }}
+                                                    >
+                                                        <Typography className={popoverMenuText} style={{ textAlignLast: "left" }}>{el.title}</Typography>
+                                                    </Button>
+                                                )
+                                            })
+                                        }
+                                    </Grid>
+                                </Popover>
+                                <IconButton
+                                    style={{marginLeft: "5px"}}
+                                    {...{
+                                        edge: "start",
+                                        color: "#2C2799",
+                                        "aria-label": "menu",
+                                        "aria-haspopup": "true",
+                                    }}
+                                    title={"Analytics"}
+                                    onClick={(e) => history.push(`${process.env.PUBLIC_URL}/analytics`)}
+                                >
+                                    <AssessmentIcon fontSize="large" />
+                                </IconButton>
+                                <IconButton
+                                    style={{marginLeft: "5px"}}
+                                    {...{
+                                        edge: "start",
+                                        color: "#2C2799",
+                                        "aria-label": "menu",
+                                        "aria-haspopup": "true",
+                                    }}
+                                    title={"Settings"}
                                     onClick={(e) => setShowSettingsPopoverMenuAnchorEle(e.currentTarget)}
                                 >
                                     <SettingsOutlinedIcon fontSize="large" />
@@ -428,7 +496,7 @@ export default function TopHeader(props) {
                                                             el.onclick(assignedOrgId)
                                                         }}
                                                     >
-                                                        <Typography className={popoverMenuText} style={{textAlignLast : "left"}}>{el.title}</Typography>
+                                                        <Typography className={popoverMenuText} style={{ textAlignLast: "left" }}>{el.title}</Typography>
                                                     </Button>
                                                 )
                                             })
@@ -450,7 +518,7 @@ export default function TopHeader(props) {
                                 >
                                     <Avatar style={{ backgroundColor: "#2C2799" }}>{userName?.split("")[0].toLocaleUpperCase()}</Avatar>
                                 </IconButton>
-                                    <Typography variant="subtitle1" style={{fontSize: "1.25rem"}}>{userName?.split(" ")[0]}</Typography>
+                                    <Typography variant="subtitle1" style={{ fontSize: "1.25rem" }}>{userName?.split(" ")[0]}</Typography>
                                 </Button>
                                 <Popover
                                     id={"simple-popover"}
@@ -469,7 +537,7 @@ export default function TopHeader(props) {
                                 >
                                     <Grid container direction="column" className={popoverStyle}>
                                         <Grid item>
-                                            <Typography style={{padding: 10}} variant="caption">Signed in as <b>{role ? role : ""}</b></Typography>
+                                            <Typography style={{ padding: 10 }} variant="caption">Signed in as <b>{role ? role : ""}</b></Typography>
                                         </Grid>
                                         <Divider style={{ marginTop: 5, marginBottom: 5, width: "100%" }} />
                                         {
@@ -485,7 +553,7 @@ export default function TopHeader(props) {
                                                             el.onclick(assignedOrgId)
                                                         }}
                                                     >
-                                                        <Typography className={popoverMenuText} style={{textAlignLast : "left"}}>{el.title}</Typography>
+                                                        <Typography className={popoverMenuText} style={{ textAlignLast: "left" }}>{el.title}</Typography>
                                                     </Button>
                                                 )
                                             })

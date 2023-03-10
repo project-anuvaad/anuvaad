@@ -47,6 +47,7 @@ import SuggestedGlossaryList from "./ui/containers/web/AdminPanel/SuggestedGloss
 import MySuggestedGlossary from "./ui/containers/web/UserGlossary/MySuggestedGlossary";
 import UserManagement from "./ui/containers/web/User/UserManagement";
 import Analytics from "./ui/containers/web/Analytics/Analytics";
+import Intro from "./ui/containers/web/Intro/Intro";
 
 const PrivateRoute = ({ headerAttribute: headerAttribute, component: Component, userRoles, title, drawer, showLogo, forDemo, dontShowLoader, dontShowHeader, currentMenu, authenticate, ...rest }) => (
   <Route
@@ -126,6 +127,14 @@ class AppRoutes extends React.Component {
             /> */}
 
             <PrivateRoute
+              path={`${process.env.PUBLIC_URL}/intro`}
+              title={"Intro"}
+              component={Intro}
+              authenticate={this.authenticateUser}
+              currentMenu="intro"
+            />
+
+            <PrivateRoute
               path={`${process.env.PUBLIC_URL}/analytics`}
               title={translate('webroutes.page.title.profile')}
               component={Analytics}
@@ -182,12 +191,22 @@ class AppRoutes extends React.Component {
             />
 
             <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/document-upload/:type`}
+              path={`${process.env.PUBLIC_URL}/document-upload`}
               userRoles={["TRANSLATOR", "ANNOTATOR"]}
               component={FileUpload}
               title="Start Translate"
               authenticate={this.authenticateUser}
-              currentMenu="texttranslate"
+              currentMenu="document-upload"
+              dontShowHeader={false}
+            />
+
+            <PrivateRoute
+              path={`${process.env.PUBLIC_URL}/data-collection`}
+              userRoles={["TRANSLATOR", "ANNOTATOR"]}
+              component={FileUpload}
+              title="Start Translate"
+              authenticate={this.authenticateUser}
+              currentMenu="data-collection"
               dontShowHeader={false}
             />
 
