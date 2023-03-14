@@ -3,9 +3,11 @@ from repositories import UserAuthenticationRepositories
 from models import CustomResponse, Status
 from utilities import UserUtils
 from utilities import MODULE_CONTEXT
-from anuvaad_auditor.loghandler import log_info, log_exception
+# from anuvaad_auditor.loghandler import log_info, log_exception
+from Logs_Auditor.loghandler import log_info, log_exception
 from flask import request
-from anuvaad_auditor.errorhandler import post_error
+# from anuvaad_auditor.errorhandler import post_error
+from Logs_Auditor.errorhandler import post_error
 
 authRepo = UserAuthenticationRepositories()
 

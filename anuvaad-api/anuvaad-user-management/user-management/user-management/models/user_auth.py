@@ -1,8 +1,10 @@
 from utilities import MODULE_CONTEXT
 from db import get_db
 from utilities import UserUtils, OrgUtils
-from anuvaad_auditor.loghandler import log_info, log_exception
-from anuvaad_auditor.errorhandler import post_error
+# from anuvaad_auditor.loghandler import log_info, log_exception
+# from anuvaad_auditor.errorhandler import post_error
+from Logs_Auditor.loghandler import log_info, log_exception
+from Logs_Auditor.errorhandler import post_error
 import bcrypt
 import jwt
 import datetime

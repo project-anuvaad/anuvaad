@@ -2,9 +2,11 @@ from flask_restful import Resource
 from repositories import UserManagementRepositories
 from models import CustomResponse, Status
 from utilities import UserUtils, MODULE_CONTEXT
-from anuvaad_auditor.loghandler import log_info, log_exception
+# from anuvaad_auditor.loghandler import log_info, log_exception
+from Logs_Auditor.loghandler import log_info, log_exception
 from flask import request, jsonify
-from anuvaad_auditor.errorhandler import post_error
+# from anuvaad_auditor.errorhandler import post_error
+from Logs_Auditor.errorhandler import post_error
 import config
 
 userRepo    =   UserManagementRepositories()

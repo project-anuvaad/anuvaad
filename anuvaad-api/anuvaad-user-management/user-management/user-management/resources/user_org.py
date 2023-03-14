@@ -3,10 +3,12 @@ from repositories import UserOrganizationRepositories
 from models import CustomResponse, Status
 from utilities import OrgUtils, MODULE_CONTEXT
 import ast
-from anuvaad_auditor.loghandler import log_info, log_exception
+# from anuvaad_auditor.loghandler import log_info, log_exception
+from Logs_Auditor.loghandler import log_info, log_exception
 from flask import request
 from flask import jsonify
-from anuvaad_auditor.errorhandler import post_error
+# from anuvaad_auditor.errorhandler import post_error
+from Logs_Auditor.errorhandler import post_error
 import config
 
 orgRepo = UserOrganizationRepositories()
