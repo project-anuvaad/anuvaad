@@ -10,5 +10,3 @@ pymongo==3.11.1
 PyNaCl==1.4.0
 requests==2.24.0
 uuid==1.30
-
-

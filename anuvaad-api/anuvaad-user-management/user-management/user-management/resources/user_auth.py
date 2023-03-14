@@ -20,6 +20,7 @@ class UserLogin(Resource):
         
         user_name = body["userName"]
         password = body["password"]
+        log_info(f"login for user start {user_name}", MODULE_CONTEXT)
         log_info("Request for login from {}".format(user_name),MODULE_CONTEXT)
 
         validity=UserUtils.validate_user_login_input(user_name, password)
@@ -34,6 +35,7 @@ class UserLogin(Resource):
                 res = CustomResponse(Status.FAILURE_USR_LOGIN.value, None)
                 return res.getresjson(), 400
             log_info("Login successful for {}".format(user_name),MODULE_CONTEXT)
+            log_info(f"login for user end {user_name}", MODULE_CONTEXT)
             res = CustomResponse(Status.SUCCESS_USR_LOGIN.value, result)
             return res.getresjson(), 200
         except Exception as e:
@@ -210,6 +212,12 @@ class ActivateDeactivateUser(Resource):
             return post_error("Data Missing","userName not found",None), 400
         if "is_active" not in body:
             return post_error("Data Missing","is_active not found",None), 400
+        rem_user = None
+        if "remove_user" in body.keys():
+            rem_user = body['remove_user']
+        verify_user = False
+        if "is_verified" in body.keys():
+            verify_user = body['is_verified']
         user_email = body["userName"]
         status= body["is_active"]
 
@@ -217,7 +225,7 @@ class ActivateDeactivateUser(Resource):
             return post_error("Invalid format", "is_active status should be either true or false", None), 400
         log_info("Request received for updating activation status of {}".format(user_email),MODULE_CONTEXT)
         try:
-            result = authRepo.activate_deactivate_user(user_email,status)
+            result = authRepo.activate_deactivate_user(user_email,status,rem_user,verify_user)
             if result is not None:
                 log_info("Updation of activation status for {} failed".format(user_email),MODULE_CONTEXT)
                 return result, 400

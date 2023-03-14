@@ -3,7 +3,7 @@ import uuid
 import time
 import re
 import bcrypt
-from db import get_db
+from db import get_db,User_management_db
 from anuvaad_auditor.loghandler import log_info, log_exception
 from anuvaad_auditor.errorhandler import post_error
 import jwt
@@ -42,6 +42,9 @@ token_life = config.AUTH_TOKEN_EXPIRY_HRS
 role_codes = []
 role_details = []
 
+
+db = User_management_db()
+db_connection = db.instantiate()
 
 class UserUtils:
     @staticmethod
@@ -308,8 +311,10 @@ class UserUtils:
         """
         try:
             # connecting to mongo instance/collection
-            collections = get_db()[USR_TOKEN_MONGO_COLLECTION]
+            collections = db.get_mongo_instance(db_connection,USR_TOKEN_MONGO_COLLECTION)
+            # collections = get_db()[USR_TOKEN_MONGO_COLLECTION]
             # searching for token against the user_name
+            log_info(f"get token model start {user_name}", MODULE_CONTEXT)
             record = collections.find(
                 {"user": user_name, "active": True},
                 {"_id": 0, "token": 1, "secret_key": 1},
@@ -352,6 +357,7 @@ class UserUtils:
                             e,
                         )
                         return {"status": False, "data": None}
+            log_info(f"get token model end {user_name}", MODULE_CONTEXT)
         except Exception as e:
             log_exception("Database connection exception ", MODULE_CONTEXT, e)
             return {"status": "Database connection exception", "data": None}
@@ -545,16 +551,21 @@ class UserUtils:
         """
 
         try:
+            log_info(f"Initial Login validate start{username}", MODULE_CONTEXT)
             # connecting to mongo instance/collection
-            collections = get_db()[USR_MONGO_COLLECTION]
+            collections = db.get_mongo_instance(db_connection,USR_MONGO_COLLECTION)
+            # collections = get_db()[USR_MONGO_COLLECTION]
             # fetching the user details from db
+            log_info("{} find verified start".format(username), MODULE_CONTEXT)
             result = collections.find(
                 {"userName": username, "is_verified": True},
                 {"password": 1, "_id": 0, "is_active": 1},
             )
+            log_info("{} find verified end".format(username), MODULE_CONTEXT)
             if result.count() == 0:
                 log_info("{} is not a verified user".format(username), MODULE_CONTEXT)
                 return post_error("Not verified", "User account is not verified", None)
+            log_info("{} find active start".format(username), MODULE_CONTEXT)
             for value in result:
                 if value["is_active"] == False:
                     log_info(
@@ -565,8 +576,12 @@ class UserUtils:
                         "This operation is not allowed for an inactive user",
                         None,
                     )
+                log_info("{} find active end".format(username), MODULE_CONTEXT)
+                log_info("{} find password start".format(username), MODULE_CONTEXT)
                 password_in_db = value["password"].encode("utf-8")
+                log_info("{} find password encode".format(username), MODULE_CONTEXT)
                 try:
+                    log_info("{} find password checkpw".format(username), MODULE_CONTEXT)
                     if (
                         bcrypt.checkpw(password.encode("utf-8"), password_in_db)
                         == False
@@ -580,6 +595,7 @@ class UserUtils:
                             "Incorrect username or password",
                             None,
                         )
+                    log_info("{} find password checkpw stop".format(username), MODULE_CONTEXT)
                 except Exception as e:
                     log_exception(
                         "exception while decoding password", MODULE_CONTEXT, e
@@ -589,6 +605,8 @@ class UserUtils:
                         "exception:{}".format(str(e)),
                         None,
                     )
+            log_info("{} find password end".format(username), MODULE_CONTEXT)
+            log_info(f"Initial Login validate end{username}", MODULE_CONTEXT)
         except Exception as e:
             log_exception(
                 "exception while validating username and password" + str(e),

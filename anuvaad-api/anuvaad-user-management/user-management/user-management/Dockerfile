@@ -27,9 +27,9 @@
 #     software-properties-common \
 #     zip \
 #     && apt-get clean && rm -rf /tmp/* /var/tmp/*
-# RUN pip3 install -r requirements.txt
-# RUN pip3 install uwsgi
-# RUN pip install pymongo[srv]
+# RUN python -m pip install --upgrade pip
+# RUN pip install -r requirements.txt
+# RUN pip install uwsgi
 # COPY start.sh /usr/bin/start.sh
 # RUN chmod +x /usr/bin/start.sh
 # CMD ["/usr/bin/start.sh"]
