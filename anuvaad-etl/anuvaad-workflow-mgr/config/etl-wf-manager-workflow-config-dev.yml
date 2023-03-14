@@ -331,9 +331,9 @@ WorkflowConfigs:
           - name: OCR-DD15-GOOGLE-VISION
           endState: false
         - order: 2
-        tool:
-        - name: OCR-TOKENISER
-        endState: true
+          tool:
+          - name: OCR-TOKENISER
+          endState: true
 
 
       - workflowCode: WF_A_FTTKTR
