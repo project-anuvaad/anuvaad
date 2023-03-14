@@ -1,4 +1,4 @@
-Logs-Auditor==0.0.1
+Logs-Auditor==0.0.2
 bcrypt==3.2.0
 DateTime==4.3
 Flask==2.1.0
