@@ -71,7 +71,7 @@ if isinstance(user_translation_enabled, str):
 orgs_nmt_disable = os.environ.get('ORGS_NMT_DISABLE', 'NONMT')
 tmx_disable_roles = os.environ.get('ROLES_TMX_DISABLE', 'ANNOTATOR')
 utm_disable_roles = os.environ.get('ROLES_UTM_DISABLE', 'ANNOTATOR')
-suggestion_statuses = ["Pending", "Approved", "Rejected"]
+suggestion_statuses = ["Pending", "Approved", "Rejected","Modified"]
 is_attention_based_alignment_enabled = os.environ.get('IS_ATTN_BASED_ALIGNMENT_ENABLED', True)
 if isinstance(is_attention_based_alignment_enabled, str):
     if is_attention_based_alignment_enabled == "TRUE":
