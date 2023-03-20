@@ -144,7 +144,8 @@ class UserUtils:
                 MODULE_CONTEXT,
             )
             # connecting to mongo instance/collection
-            collections = get_db()[collection]
+            # collections = get_db()[collection]
+            collections = db.get_mongo_instance(db_connection,collection)
             # storing token in database
             collections.insert(
                 {
@@ -181,7 +182,8 @@ class UserUtils:
         """
         try:
             # connecting to mongo instance/collection
-            collections = get_db()[USR_TOKEN_MONGO_COLLECTION]
+            # collections = get_db()[USR_TOKEN_MONGO_COLLECTION]
+            collections = db.get_mongo_instance(db_connection,USR_TOKEN_MONGO_COLLECTION)
             # searching for token from database
             result = collections.find(
                 {"token": token}, {"_id": 0, "user": 1, "active": 1, "secret_key": 1}
@@ -191,7 +193,8 @@ class UserUtils:
                     "Checking in extension users repo, for the token", MODULE_CONTEXT
                 )
                 # checking for extension users
-                collections = get_db()[EX_USR_TOKEN_MONGO_COLLECTION]
+                # collections = get_db()[EX_USR_TOKEN_MONGO_COLLECTION]
+                collections = db.get_mongo_instance(db_connection,EX_USR_TOKEN_MONGO_COLLECTION)
                 result = collections.find(
                     {"token": token},
                     {"_id": 0, "user": 1, "active": 1, "secret_key": 1},
@@ -249,11 +252,13 @@ class UserUtils:
             else:
                 document = USR_TOKEN_MONGO_COLLECTION
             # connecting to mongo instance/collection
-            collections = get_db()[document]
+            # collections = get_db()[document]
+            collections = db.get_mongo_instance(db_connection,document)
             # searching for database record matching token, getting user_name
             result = collections.find({"token": token}, {"_id": 0, "user": 1})
             if result.count() == 0:
-                collections = get_db()[EX_USR_TOKEN_MONGO_COLLECTION]
+                # collections = get_db()[EX_USR_TOKEN_MONGO_COLLECTION]
+                collections = db.get_mongo_instance(db_connection,EX_USR_TOKEN_MONGO_COLLECTION)
                 result = collections.find({"token": token}, {"_id": 0, "user": 1})
                 if result.count == 0:
                     return post_error(
@@ -265,7 +270,8 @@ class UserUtils:
                         MODULE_CONTEXT,
                     )
                     username = result[0]["user"]
-                    ex_usr_collection = get_db()[EX_USR_MONGO_COLLECTION]
+                    # ex_usr_collection = get_db()[EX_USR_MONGO_COLLECTION]
+                    ex_usr_collection = db.get_mongo_instance(db_connection,EX_USR_MONGO_COLLECTION)
                     ex_usr = ex_usr_collection.find({"userID": username}, {"_id": 0})
                     ex_usr_collection.update_one(
                         {"userID": username},
@@ -275,7 +281,8 @@ class UserUtils:
             else:
                 for record in result:
                     username = record["user"]
-                collections_usr = get_db()[USR_MONGO_COLLECTION]
+                # collections_usr = get_db()[USR_MONGO_COLLECTION]
+                collections_usr = db.get_mongo_instance(db_connection,USR_MONGO_COLLECTION)
                 # searching for database record matching username
                 result_usr = collections_usr.find(
                     {"userName": username, "is_verified": True},
@@ -418,7 +425,8 @@ class UserUtils:
 
         try:
             # connecting to mongo instance/collection
-            collections = get_db()[USR_MONGO_COLLECTION]
+            # collections = get_db()[USR_MONGO_COLLECTION]
+            collections = db.get_mongo_instance(db_connection,USR_MONGO_COLLECTION)
             # searching username with verification status = True
             user_record = collections.find(
                 {"userName": user["userName"], "is_verified": True}
@@ -467,7 +475,8 @@ class UserUtils:
 
         try:
             # connecting to mongo instance/collection
-            collections = get_db()[USR_MONGO_COLLECTION]
+            # collections = get_db()[USR_MONGO_COLLECTION]
+            collections = db.get_mongo_instance(db_connection,USR_MONGO_COLLECTION)
             # searching User Id with verification status = True
             record = collections.find({"userID": user_id, "is_verified": True})
             if record.count() == 0:
@@ -553,8 +562,9 @@ class UserUtils:
         try:
             log_info(f"Initial Login validate start{username}", MODULE_CONTEXT)
             # connecting to mongo instance/collection
-            collections = db.get_mongo_instance(db_connection,USR_MONGO_COLLECTION)
+            # collections = db.get_mongo_instance(db_connection,USR_MONGO_COLLECTION)
             # collections = get_db()[USR_MONGO_COLLECTION]
+            collections = db.get_mongo_instance(db_connection,USR_MONGO_COLLECTION)
             # fetching the user details from db
             log_info("{} find verified start".format(username), MODULE_CONTEXT)
             result = collections.find(
@@ -752,7 +762,8 @@ class UserUtils:
 
         try:
             # connecting to mongo instance/collection
-            collections = get_db()[USR_MONGO_COLLECTION]
+            # collections = get_db()[USR_MONGO_COLLECTION]
+            collections = db.get_mongo_instance(db_connection,USR_MONGO_COLLECTION)
             # searching for record matching user_name
             valid = collections.find({"userName": user_name, "is_verified": True})
             if valid.count() == 0:
