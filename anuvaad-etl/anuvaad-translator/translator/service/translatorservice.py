@@ -207,6 +207,7 @@ class TranslatorService:
                         post_error_wf("API_ERROR", "No API URL found!", translate_wf_input, None)
                         break
                     url = str(api_host) + str(api_ep)
+                    log_info("NMT_INPUT : "+nmt_in,translate_wf_input)
                     response = utils.call_api(url, "POST", nmt_in, None, "userID")
                     if response["data"]:
                         log_info("B_ID: " + batch_id + " | SENTENCES: " + str(len(batch)) +
