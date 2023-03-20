@@ -1,10 +1,8 @@
 from utilities import MODULE_CONTEXT
 import utilities
 from db import get_db
-# from anuvaad_auditor.loghandler import log_info, log_exception
-# from anuvaad_auditor.errorhandler import post_error
-from Logs_Auditor.loghandler import log_info, log_exception
-from Logs_Auditor.errorhandler import post_error
+from anuvaad_auditor.loghandler import log_info, log_exception
+from anuvaad_auditor.errorhandler import post_error
 from config import EX_USR_MONGO_COLLECTION, EX_USR_TOKEN_MONGO_COLLECTION
 import time
 from config import EXTENSION_USR_ROLE_KEY, EXTENSION_ORG

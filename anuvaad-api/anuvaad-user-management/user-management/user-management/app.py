@@ -1,10 +1,8 @@
 from flask import Flask
 from flask.blueprints import Blueprint
 from flask_cors import CORS
-# from anuvaad_auditor.loghandler import log_info, log_exception
-# from anuvaad_auditor.errorhandler import post_error
-from Logs_Auditor.loghandler import log_info, log_exception
-from Logs_Auditor.errorhandler import post_error
+from anuvaad_auditor.loghandler import log_info, log_exception
+from anuvaad_auditor.errorhandler import post_error
 import routes
 import config
 from utilities import MODULE_CONTEXT

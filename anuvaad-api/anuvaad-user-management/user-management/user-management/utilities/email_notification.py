@@ -3,8 +3,7 @@ import smtplib
 from datetime import datetime
 import pytz
 import config
-# from anuvaad_auditor.loghandler import log_info, log_exception
-from Logs_Auditor.loghandler import log_info, log_exception
+from anuvaad_auditor.loghandler import log_info, log_exception
 from utilities import MODULE_CONTEXT
 from email.message import EmailMessage
 from email.utils import formataddr
