@@ -366,7 +366,7 @@ class StartDigitizationUpload extends React.Component {
                                 {localStorage.getItem("roles") === 'ANNOTATOR' && this.renderVersion()}
                                 {this.renderTextField()}
                             </Grid>
-                            <Grid item xs={12} sm={6} lg={6} xl={6} style={{ paddingTop: "25px" }}>
+                            {/* <Grid item xs={12} sm={6} lg={6} xl={6} style={{ paddingTop: "25px" }}>
                                 <Button
                                     id="back"
                                     variant="contained" color="primary"
@@ -381,8 +381,8 @@ class StartDigitizationUpload extends React.Component {
                                 >
                                     {translate("common.page.button.back")}
                                 </Button>
-                            </Grid>
-                            <Grid item xs={6} sm={6} lg={6} xl={6} style={{ paddingTop: "25px" }}>
+                            </Grid> */}
+                            <Grid item xs={12} sm={12} lg={12} xl={12} style={{ paddingTop: "25px" }}>
                                 <Grid item xs={12} sm={12} lg={12} xl={12}>
                                     <Button
                                         id="upload"

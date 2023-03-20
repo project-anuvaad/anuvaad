@@ -223,6 +223,11 @@ class TranslatorValidator:
             return post_error("STATUS_NOT_FOUND", "status is mandatory", None)
         elif input_req["status"] not in suggestion_statuses:
             return post_error("STATUS_INVALID", "status is invalid", None)
+        if input_req["status"] == "Modified": 
+            if not input_req["src"]:
+                return post_error("SRC_NOT_FOUND", "Source text is mandatory", None)
+            if not input_req["tgt"]:
+                return post_error("TGT_NOT_FOUND", "Target text is mandatory", None)
         return None
 
 

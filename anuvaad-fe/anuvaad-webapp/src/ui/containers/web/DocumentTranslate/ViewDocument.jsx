@@ -508,6 +508,7 @@ class ViewDocument extends React.Component {
         options: {
           filter: false,
           sort: false,
+          display: false,
         },
       },
       {
@@ -526,6 +527,7 @@ class ViewDocument extends React.Component {
           filter: true,
           sort: false,
           empty: true,
+          display: false,
         },
       },
       {
@@ -535,6 +537,7 @@ class ViewDocument extends React.Component {
           filter: true,
           sort: false,
           empty: true,
+          display: false,
         },
       },
       {
@@ -542,21 +545,22 @@ class ViewDocument extends React.Component {
         label: "Description",
         options: {
           display: 'false',
-          sort: false
+          sort: false,
         }
       },
       {
         name: "spent_time",
         label: "Time Spent",
         options: {
-          sort: false
+          sort: false,
+          display: false,
         }
       },
       {
         name: "endTime",
         label: "End Time",
         options: {
-          display: "excluded",
+          display: "false",
         },
       },
       {
@@ -565,6 +569,7 @@ class ViewDocument extends React.Component {
         options: {
           filter: true,
           sort: true,
+          display: false,
           customBodyRender: (value, tableMeta, updateValue) => {
             if (tableMeta.rowData) {
               return (
@@ -823,7 +828,7 @@ class ViewDocument extends React.Component {
           {!this.state.showLoader && (
             <MuiThemeProvider theme={this.getMuiTheme()}>
               <DataTable
-                title={translate("common.page.title.document")}
+                title={"Translate " +  translate("common.page.title.document")}
                 data={this.getJobsSortedByTimestamp()}
                 columns={columns}
                 options={options}

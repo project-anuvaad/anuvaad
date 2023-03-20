@@ -2,7 +2,7 @@ import { translate } from "../assets/localisation";
 import history from "../web.history";
 
 const userRoles = ["TRANSLATOR", "ANNOTATOR", "ADMIN", "SUPERADMIN"];
-const menuTypes = ["USER", "SETTINGS", "MAIN"];
+const menuTypes = ["USER", "SETTINGS", "MAIN", "DASHBOARD"];
 
 const headerMenuConfig = [
     {
@@ -28,15 +28,36 @@ const headerMenuConfig = [
     },
     {
         id : "view-document",
-        title: "Translate Document",
+        title: "Translations",
         onclick : (assignedOrgId)=>history.push(`${process.env.PUBLIC_URL}/view-document`),
+        rolesAllowed : [userRoles[0], userRoles[1]],
+        menuType : menuTypes[3]
+    },
+    {
+        id : "document-digitization",
+        title: "Digitization",
+        onclick : (assignedOrgId)=>history.push(`${process.env.PUBLIC_URL}/document-digitization`),
+        rolesAllowed : [userRoles[0], userRoles[1]],
+        menuType : menuTypes[3]
+    },
+    {
+        id : "data-collection",
+        title: "Data Collection",
+        onclick : ()=>history.push(`${process.env.PUBLIC_URL}/data-collection`),
+        rolesAllowed : [userRoles[0], userRoles[1]],
+        menuType : menuTypes[1]
+    },
+    {
+        id : "document-upload",
+        title: "Translate Document",
+        onclick : ()=>history.push(`${process.env.PUBLIC_URL}/document-upload`),
         rolesAllowed : [userRoles[0], userRoles[1]],
         menuType : menuTypes[2]
     },
     {
-        id : "document-digitization",
+        id : "digitize-document-upload",
         title: "Digitize Document",
-        onclick : (assignedOrgId)=>history.push(`${process.env.PUBLIC_URL}/document-digitization`),
+        onclick : ()=>history.push(`${process.env.PUBLIC_URL}/digitize-document-upload`),
         rolesAllowed : [userRoles[0], userRoles[1]],
         menuType : menuTypes[2]
     },
@@ -45,7 +66,7 @@ const headerMenuConfig = [
         title: translate('dashboard.page.heading.title'),
         onclick : ()=>history.push(`${process.env.PUBLIC_URL}/instant-translate`),
         rolesAllowed : [userRoles[0], userRoles[1]],
-        menuType : menuTypes[2]
+        menuType : menuTypes[1]
     },
     {
         id : "user-details",
@@ -103,13 +124,13 @@ const headerMenuConfig = [
     //     rolesAllowed : [userRoles[1]],
     //     menuType : menuTypes[2]
     // },
-    {
-        id : "analytics",
-        title: "Analytics",
-        onclick : (assignedOrgId)=>history.push(`${process.env.PUBLIC_URL}/analytics`),
-        rolesAllowed : userRoles,
-        menuType : menuTypes[2]
-    },
+    // {
+    //     id : "analytics",
+    //     title: "Analytics",
+    //     onclick : (assignedOrgId)=>history.push(`${process.env.PUBLIC_URL}/analytics`),
+    //     rolesAllowed : userRoles,
+    //     menuType : menuTypes[2]
+    // },
     {
         id : "logout",
         title: translate('header.page.heading.logout'),

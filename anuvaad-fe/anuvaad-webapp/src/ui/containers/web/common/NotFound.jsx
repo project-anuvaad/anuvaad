@@ -7,7 +7,7 @@ const NotFound = () => {
     const currentUserRole = localStorage.getItem("roles");
     if (currentUserRole) {
       if (currentUserRole == "TRANSLATOR" || currentUserRole == "ANNOTATOR") {
-        history.push(`${process.env.PUBLIC_URL}/view-document`);
+        history.push(`${process.env.PUBLIC_URL}/intro`);
       } else {
         history.push(`${process.env.PUBLIC_URL}/user-details`);
       }
