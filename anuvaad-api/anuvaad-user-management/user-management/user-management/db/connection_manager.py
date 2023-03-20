@@ -2,8 +2,8 @@ from config import MONGO_SERVER_HOST
 from config import MONGO_DB_SCHEMA
 from utilities import MODULE_CONTEXT
 from pymongo import MongoClient
-# from anuvaad_auditor.loghandler import log_info, log_exception
-from Logs_Auditor.loghandler import log_info, log_exception
+from anuvaad_auditor.loghandler import log_info, log_exception
+
 from flask import g
 
 # establishing connection with mongo instance
