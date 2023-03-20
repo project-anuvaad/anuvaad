@@ -16,6 +16,7 @@ import MenuIcon from "@material-ui/icons/Menu";
 import BackIcon from "@material-ui/icons/ArrowBack";
 import CloseIcon from "@material-ui/icons/Close";
 import IconButton from "@material-ui/core/IconButton";
+import GetAppIcon from '@material-ui/icons/GetApp';
 
 import { translate } from "../../../../../src/assets/localisation";
 import GlobalStyles from "../../../styles/web/styles";
@@ -424,7 +425,7 @@ class InteractiveDocHeader extends React.Component {
           </>
         )}
 
-        <Button
+        {/* <Button
           variant="outlined"
           color="primary"
           style={{ marginLeft: "10px" }}
@@ -432,7 +433,16 @@ class InteractiveDocHeader extends React.Component {
         >
           Download
           <DownIcon />
-        </Button>
+        </Button> */}
+        <IconButton 
+          variant="outlined"
+          color="primary"
+          style={{ marginLeft: "10px" }}
+          onClick={this.handleMenu.bind(this)}
+          title="Download"
+        >
+          <GetAppIcon />
+        </IconButton>
 
         <StyledMenu
           id="menu-appbar"

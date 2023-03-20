@@ -89,20 +89,15 @@ class UpdatePassword extends React.Component {
                                 }} onClick={this.handleSubmit.bind(this)}>
                                 {translate("common.page.button.submit")}
                             </Button>
-                            <Typography style={{paddingBottom: 10}}>
-                                <Link
-                                id="newaccount"
-                                href="#"
+                            <br />
+                            <Button
+                                id="back"
                                 variant="contained" aria-label="edit" style={{
-                                    width: '100%', marginBottom: '2%', borderRadius: "20px 20px 20px 20px", height: '45px',
-                                    backgroundColor: '#2C2799', color: 'white', padding: 10, textDecoration: "none", paddingLeft: "16%", paddingRight: "16%", '&hover': {textDecoration: "none"}
-                                }} 
-
-                                onClick={()=>history.push(`${process.env.PUBLIC_URL}/user/login`)}>
+                                    width: '40%', marginBottom: '2%', borderRadius: "20px 20px 20px 20px", height: '45px',
+                                    backgroundColor: '#2C2799', color: 'white',
+                                }} onClick={()=>history.push(`${process.env.PUBLIC_URL}/user/login`)}>
                                 Back to Login
-                            </Link>
-                            </Typography>                
-
+                            </Button>
                         </Grid>
                     {/* </Grid> */}
                 </div>

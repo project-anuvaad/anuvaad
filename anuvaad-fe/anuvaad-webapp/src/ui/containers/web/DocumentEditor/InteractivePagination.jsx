@@ -11,11 +11,13 @@ import TextField from '@material-ui/core/TextField'
 import SENTENCE_ACTION from "./SentenceActions";
 import Slider from '@material-ui/core/Slider';
 import Tooltip from '@material-ui/core/Tooltip';
+import MergeTypeIcon from '@material-ui/icons/MergeType';
 import PropTypes from 'prop-types';
 import { currentPageUpdate } from "../../../../flux/actions/apis/document_translate/pagiantion_update";
 import { clearHighlighBlock } from '../../../../flux/actions/users/translator_actions';
 import fetchpercent from '../../../../flux/actions/apis/view_digitized_document/fetch_slider_percent';
 import fetchfontpixel from '../../../../flux/actions/apis/view_digitized_document/fetch_slider_pixel';
+import { IconButton } from "@material-ui/core";
 
 const PAGE_OPS = require("../../../../utils/page.operations");
 
@@ -97,13 +99,21 @@ class InteractivePagination extends React.Component {
   renderNormaModeButtons = () => {
     return (
       <div>
-        <Button
+        <IconButton 
           onClick={this.processMergeButtonClicked}
-          variant="outlined"
+          variant="contained"
           color="primary"
+          title="Merge"
         >
-          MERGE
-        </Button>
+          <MergeTypeIcon />
+        </IconButton>
+         {/* <Button
+           onClick={this.processMergeButtonClicked}
+           variant="outlined"
+           color="primary"
+         >
+           MERGE
+         </Button> */}
       </div>
     );
   };
@@ -180,6 +190,7 @@ class InteractivePagination extends React.Component {
                 color="primary"
                 size={"large"}
                 style={{ marginLeft: "-8.5%" }}
+                siblingCount={0} boundaryCount={1}
               />
               <TextField
                 type="number"
@@ -241,7 +252,7 @@ class InteractivePagination extends React.Component {
                       </div>
                     </div>}
 
-                  <div style={{ position: "absolute", right: "30px" }}>
+                  <div style={{ position: "absolute", right: "15px" }}>
                     {this.renderNormaModeButtons()}
                   </div>
                 </>
