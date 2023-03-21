@@ -416,6 +416,23 @@ def anuvaad_chart_verfied_sentence():
             body = request.get_json()
             if status == False:
                 return result
+            elif  'org' in body.keys() and body['org'] == 'ALL':
+                (
+                    total_docs,
+                    total_documemt_sentence_count,
+                    total_verified_sentence_count,
+                    keyss,
+                ) = stats.verified_doc_sentence_all(result)
+                out = CustomResponse(
+                    Status.SUCCESS.value,
+                    {
+                        "total_document_sentence_count": int(total_documemt_sentence_count),
+                        "total_verified_sentence_count": int(total_verified_sentence_count),
+                        "total_documents": int(total_docs),
+                        "language_counts": keyss,
+                    },
+                )
+                return out.getres()
             else:
                 (
                     total_docs,
