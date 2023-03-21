@@ -3,11 +3,13 @@ import C from "../../constants";
 import ENDPOINTS from "../../../../configs/apiendpoints";
 
 export default class UpdateSuggestedGlossaryStatus extends API {
-    constructor(uuIds = [], status = "", timeout = 2000) {
+    constructor(uuIds = [], status = "", srcText = "", tgtText = "", timeout = 2000) {
         super('POST', timeout, false);
         this.type = C.UPDATE_GLOSSARY_SUGGESTION_STATUS;
         this.uuIds = uuIds;
-        this.status = status
+        this.status = status;
+        this.srcText = srcText;
+        this.tgtText = tgtText;
         this.response = "";
         this.endpoint = `${super.apiEndPointAuto()}${ENDPOINTS.update_suggestion_status}`;
     }
@@ -28,10 +30,20 @@ export default class UpdateSuggestedGlossaryStatus extends API {
     }
 
     getBody() {
-        return {
+        if (this.status === "Modified") {
+            return {
+                ids: this.uuIds,
+                status: this.status,
+                src: this.srcText,
+                tgt: this.tgtText
+            };
+        } else {
+            return {
                 ids: this.uuIds,
                 status: this.status
-        };
+            };
+        }
+
     }
 
     getHeaders() {
