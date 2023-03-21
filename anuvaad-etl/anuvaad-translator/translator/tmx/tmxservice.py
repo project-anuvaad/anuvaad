@@ -558,7 +558,10 @@ class TMXService:
     def suggestion_box_update(self, object_in):
         try:
             find_condition = {"id": {"$in": object_in["ids"]}}
-            set_clause = {"status": object_in["status"], "updatedOn": eval(str(time.time()).replace('.', '')[0:13])}
+            if object_in["status"] == "Modified":
+                set_clause = {"status": object_in["status"], "src": object_in["src"], "tgt": object_in["tgt"], "updatedOn": eval(str(time.time()).replace('.', '')[0:13])}
+            else:
+                set_clause = {"status": object_in["status"], "updatedOn": eval(str(time.time()).replace('.', '')[0:13])}
             repo.suggestion_box_update(find_condition, {"$set": set_clause})
             return {"message": "Suggestions Updated !", "status": "SUCCESS"}
         except Exception as e:
