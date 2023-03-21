@@ -60,7 +60,8 @@ const generateTableArray = (data) => {
                 val: tgt,
                 opts: {
                     align: 'left',
-                    b: true,
+                    b: false,
+                    cellColWidth: 1800,
                     sz: '20',
                     fontFamily: cell.font_family ? cell.font_family : 'Arial Unicode MS',
                 }
@@ -71,6 +72,7 @@ const generateTableArray = (data) => {
                 opts: {
                     align: 'left',
                     b: false,
+                    cellColWidth: 1800,
                     sz: '20',
                     fontFamily: cell.font_family ? cell.font_family : 'Arial Unicode MS',
                 }

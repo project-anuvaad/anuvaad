@@ -8,11 +8,12 @@ const generateDocxNew = (jobName,fname, height, width) => {
     let docx = officegen({
         type: 'docx',
         orientation: 'portrait',
+        pageMargins: { top: 500, left: 500, bottom: 500, right: 500 },
         pageSize: {
             width,
             height
         },
-        pageMargins: { top: 1000, left: 1000, bottom: 1000, right: 1000 },
+        
     })
 
     docx.on('finalize', function (written) {
