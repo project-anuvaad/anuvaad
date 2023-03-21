@@ -60,8 +60,6 @@ class TranslatorService:
             translate_wf_input["output"], translate_wf_input["status"] = error_list, "FAILED"
             translate_wf_input["error"] = error
             translate_wf_input["taskEndTime"] = eval(str(time.time()).replace('.', '')[0:13])
-            #translate_wf_input["source_language_code"]
-            #translate_wf_input["target_language_code"]
             log_info("Input to kafka topic: "+translate_wf_input,translate_wf_input)
             producer.produce(translate_wf_input, anu_translator_output_topic, None)
             return {"status": "failed", "message": "Some/All files failed"}
@@ -169,6 +167,8 @@ class TranslatorService:
             batch = batches[batch_id]
             record_id_enhanced = record_id + "|" + str(len(batch))
             nmt_in = {"record_id": record_id_enhanced, "id": file["model"]["model_id"], "message": batch}
+            nmt_in["source_language_code"] = translate_wf_input["input"]["files"]["model"]["source_language_code"]
+            nmt_in["target_language_code"] = translate_wf_input["input"]["files"]["model"]["target_language_code"]
             log_info("NMT INPUT DATA"+str(nmt_in)+"TO TOPIC:"+str(topic),translate_wf_input)
             if nonmt_user:
                 producer.produce(nmt_in, anu_translator_nonmt_topic, partition)
