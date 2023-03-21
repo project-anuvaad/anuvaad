@@ -1,7 +1,7 @@
 from flask_cors import CORS
 from anuvaad_auditor.loghandler import log_info
 from resources.db_retrival import app
-from resources.scheduler_jobs import schedule_job
+# from resources.scheduler_jobs import schedule_job
 import config
 from utilities import MODULE_CONTEXT
 
@@ -13,5 +13,5 @@ if __name__ == "__main__":
         "starting server at {} at port {}".format(config.HOST, config.PORT),
         MODULE_CONTEXT,
     )
-    schedule_job
+    # schedule_job
     app.run(host=config.HOST, port=config.PORT, debug=config.DEBUG)

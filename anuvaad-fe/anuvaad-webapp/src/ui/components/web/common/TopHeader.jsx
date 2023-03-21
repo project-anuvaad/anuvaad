@@ -305,7 +305,7 @@ export default function TopHeader(props) {
                                         closeDrawerOnMenuClick()
                                     },
                                     style: { textDecoration: "none", color: "#000000", marginTop : 5 },
-                                    component: RouterLink,
+                                    // component: RouterLink,
                                     className: currentMenu === el.id ? highlightedMenuButton : menuButton,
                                 }}
                             >
@@ -327,7 +327,7 @@ export default function TopHeader(props) {
                                         closeDrawerOnMenuClick()
                                     },
                                     style: { textDecoration: "none", color: "#000000", marginTop : 5 },
-                                    component: RouterLink,
+                                    // component: RouterLink,
                                     className: currentMenu === el.id ? highlightedMenuButton : menuButton,
                                 }}
                             >
@@ -368,7 +368,7 @@ export default function TopHeader(props) {
                                 id: el.id,
                                 onClick: () => { el.onclick(assignedOrgId) },
                                 style: { textDecoration: "none", color: "#000000", letterSpacing: "0.5px" },
-                                component: RouterLink,
+                                // component: RouterLink,
                                 className: currentMenu === el.id ? highlightedMenuButton : menuButton,
                             }}
                         >

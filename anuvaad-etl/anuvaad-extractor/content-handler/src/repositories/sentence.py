@@ -85,12 +85,15 @@ class SentenceRepositories:
         try:
             
             for sent in sentences:
-                sent["timestamp"]= eval(str(time.time()).replace('.', '')[0:13])
-                locale=sent["src_lang"]+"|"+sent["tgt_lang"]
-                sentence_hash= user_id + "___" + sent["src"]+"___"+locale
-                sent_key=hashlib.sha256(sentence_hash.encode('utf_16')).hexdigest()
-                save_result= self.sentenceModel.save_sentences_on_hashkey(sent_key,sent)
-                log_info("Sentences pushed to redis store", AppContext.getContext())
+                if sent['bleu_score'] == 1:
+                    log_info("bleu_score is 1 skippig utm save", AppContext.getContext())
+                else:
+                    sent["timestamp"]= eval(str(time.time()).replace('.', '')[0:13])
+                    locale=sent["src_lang"]+"|"+sent["tgt_lang"]
+                    sentence_hash= user_id + "___" + sent["src"]+"___"+locale
+                    sent_key=hashlib.sha256(sentence_hash.encode('utf_16')).hexdigest()
+                    save_result= self.sentenceModel.save_sentences_on_hashkey(sent_key,sent)
+                    log_info("Sentences pushed to redis store", AppContext.getContext())
         except Exception as e:
             log_exception("Exception while storing sentence data on redis: " + str(e), AppContext.getContext(), e)
             return None

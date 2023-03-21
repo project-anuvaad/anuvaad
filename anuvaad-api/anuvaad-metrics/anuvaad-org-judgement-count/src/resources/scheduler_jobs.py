@@ -154,9 +154,9 @@ def get_trans_user_data_from_db_weekly_crn():
         return
 
 
-@schedule_job.scheduled_job(
-    "cron", id="my_job_id2", day_of_week="mon-fri", hour="00,06,12,18", minute="00"
-)
+# @schedule_job.scheduled_job(
+#     "cron", id="my_job_id2", day_of_week="mon-fri", hour="00,06,12,18", minute="00"
+# )
 def get_trans_user_data_from_db_daily_day_crn_1():
     users = config.EMAIL_NOTIFIER
     log_info("fetch data started", MODULE_CONTEXT)
@@ -230,9 +230,9 @@ def get_trans_user_data_from_db_daily_day_crn_1():
         return
 
 
-@schedule_job.scheduled_job(
-    "cron", id="my_job_id3", day_of_week="mon-fri", hour="01,07,13,19", minute="00"
-)
+# @schedule_job.scheduled_job(
+#     "cron", id="my_job_id3", day_of_week="mon-fri", hour="01,07,13,19", minute="00"
+# )
 def get_trans_user_data_from_db_daily_day_crn_2():
     users = config.EMAIL_NOTIFIER
     log_info("fetch data started", MODULE_CONTEXT)
@@ -305,4 +305,4 @@ def get_trans_user_data_from_db_daily_day_crn_2():
 # )
 
 
-schedule_job.start()
+# schedule_job.start()
