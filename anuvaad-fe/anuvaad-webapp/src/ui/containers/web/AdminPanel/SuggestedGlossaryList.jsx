@@ -90,7 +90,7 @@ class SuggestedGlossaryList extends React.Component {
     }
   }
 
-  makeCreateGlossaryAPICall = async (orgID, src, tgt, locale, uuId, createdOn) => {
+  makeCreateGlossaryAPICall = (orgID, src, tgt, locale, uuId, createdOn) => {
     this.setState({ open: true, variant: 'info', message: "Suggestion accepting...", loading: true })
     let apiObj = new CreateOrgGlossary(orgID, src, tgt, locale, 'JUDICIARY')
     fetch(apiObj.apiEndPoint(), {
@@ -108,7 +108,7 @@ class SuggestedGlossaryList extends React.Component {
       })
   }
 
-  updateSuggestionStatusAPICall = async (userIds, uuIds, deleteAll, orgIds, status, showMessage, srcText, tgtText) => {
+  updateSuggestionStatusAPICall = (userIds, uuIds, deleteAll, orgIds, status, showMessage, srcText, tgtText) => {
     this.setState({ open: true, message: 'Glossary suggestion deletion in progress...', variant: 'info', openConfirmDialog: false, showMessage })
     // console.log("userIds, uuIds, deleteAll, orgIds");
     // console.log(userIds, uuIds, deleteAll, orgIds);
@@ -129,7 +129,7 @@ class SuggestedGlossaryList extends React.Component {
       })
   }
 
-  handleAcceptSuggestion = async (dataArray) => {
+  handleAcceptSuggestion = (dataArray) => {
     console.log("dataArray", dataArray);
     // console.log("this.props.suggestedGlossaryData", this.props.suggestedGlossaryData)
     this.makeCreateGlossaryAPICall(dataArray[2], dataArray[0], dataArray[1], dataArray[4], dataArray[6], dataArray[5]);
@@ -175,10 +175,13 @@ class SuggestedGlossaryList extends React.Component {
     this.setState({ showUpdateModal: val });
   }
 
-  onConfirmUpdateSuggestion = async (obj) => {
+  onConfirmUpdateSuggestion = (obj) => {
     this.handleUpdateModalToggle(false);
-    await this.updateSuggestionStatusAPICall([], [this.state.updateObj[6]], false, [], "Modified", false, this.state.updateObj[0], this.state.updateObj[1]);
-    await this.handleAcceptSuggestion(this.state.updateObj);
+    this.updateSuggestionStatusAPICall([], [this.state.updateObj[6]], false, [], "Modified", false, this.state.updateObj[0], this.state.updateObj[1]);
+    setTimeout(() => {
+      this.handleAcceptSuggestion(this.state.updateObj);
+    }, 1500);
+    
   }
 
   render() {
@@ -409,6 +412,11 @@ class SuggestedGlossaryList extends React.Component {
                 type="text"
                 fullWidth
                 value={this.state.updateObj[0]}
+                onChange={(e)=>{
+                  let updatedArr = this.state.updateObj;
+                  updatedArr[0] = e.target.value
+                  this.setState({ updateObj: updatedArr })
+                }}
               /> : 
               <IndicTransliterate
                 renderComponent={(props) => {
@@ -446,6 +454,11 @@ class SuggestedGlossaryList extends React.Component {
                 type="text"
                 fullWidth
                 value={this.state.updateObj[1]}
+                onChange={(e)=>{
+                  let updatedArr = this.state.updateObj;
+                  updatedArr[1] = e.target.value
+                  this.setState({ updateObj: updatedArr })
+                }}
               /> : <IndicTransliterate
               renderComponent={(props) => {
                 const inputRef = props.ref;
