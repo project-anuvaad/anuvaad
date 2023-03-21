@@ -167,8 +167,8 @@ class TranslatorService:
             batch = batches[batch_id]
             record_id_enhanced = record_id + "|" + str(len(batch))
             nmt_in = {"record_id": record_id_enhanced, "id": file["model"]["model_id"], "message": batch, 
-                        "source_language_code" : translate_wf_input["input"]["files"]["model"]["source_language_code"],
-                        "target_language_code" : translate_wf_input["input"]["files"]["model"]["target_language_code"]}
+                        "source_language_code" : file["model"]["source_language_code"],
+                        "target_language_code" : file["model"]["target_language_code"]}
             log_info("NMT INPUT DATA"+str(nmt_in)+"TO TOPIC:"+str(topic),translate_wf_input)
             if nonmt_user:
                 producer.produce(nmt_in, anu_translator_nonmt_topic, partition)
