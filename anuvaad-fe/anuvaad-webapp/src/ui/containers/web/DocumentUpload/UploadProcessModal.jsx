@@ -188,19 +188,18 @@ const useStyles = makeStyles((theme) => ({
 function getSteps() {
     return [
         {
-            title: 'FILE-TRANSLATOR',
+            title: 'Machine Translation',
             status: "COMPLETE",
             time: "0.23 sec"
         },
         {
-            title: 'TOKENISER',
-            status: "INPROGRESS",
-            time: "0.23 sec"
+            title: 'Manual Editing',
+            status: "COMPLETE",
+            time: "10 min 15 sec"
         },
         {
-            title: 'TRANSLATOR',
+            title: 'Parallel Docs Export',
             status: "PENDING",
-            time: "0.2 sec"
         },
     ];
 }
@@ -257,9 +256,11 @@ export default function UploadProcessModal() {
             aria-labelledby="max-width-dialog-title"
         >
             <div className={classes.root}>
-                <Typography style={{margin: 5}}>Translation for <b>source_document.pdf</b> is in progress</Typography>
+                <Typography style={{margin: 5}} variant="subtitle1">Job ID: <b>A_FTTTR-tMYSx-1679045562433</b> </Typography>
+
                 <Divider />
-                <Stepper activeStep={activeStep} orientation="vertical">
+                {/* <Typography style={{margin: 5}} variant="subtitle1">Task Status:</Typography> */}
+                <Stepper activeStep={activeStep} orientation="vertical">                
                     {steps.map((label, index) => (
                         <Step key={label} active={label.status === "PENDING" ? false : true}>
                             <StepLabel>{label.title}</StepLabel>
@@ -271,7 +272,11 @@ export default function UploadProcessModal() {
                             </StepContent>
                         </Step>
                     ))}
+                    <div style={{width: "100%", textAlign: "end"}}>
+                        <Button color='primary'>Ok</Button>
+                </div>
                 </Stepper>
+                
             </div>
         </Dialog>
 
