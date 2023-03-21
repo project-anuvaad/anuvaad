@@ -85,7 +85,7 @@ class SentenceRepositories:
         try:
             
             for sent in sentences:
-                if sent['bleu_score'] != 1:
+                if sent['bleu_score'] == 1:
                     log_info("bleu_score is 1 skippig utm save", AppContext.getContext())
                 else:
                     sent["timestamp"]= eval(str(time.time()).replace('.', '')[0:13])
