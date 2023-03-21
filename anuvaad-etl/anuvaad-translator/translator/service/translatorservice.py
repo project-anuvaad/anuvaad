@@ -165,11 +165,11 @@ class TranslatorService:
         partition = random.choice(
             list(range(0, total_no_of_partitions)))  # So that all batches of a page go to the same consumer
         topic = self.get_nmt_in_topic(translate_wf_input, file)
-        log_info("NMT INPUT DATA"+nmt_in+"TO TOPIC:"+topic,translate_wf_input)
         for batch_id in batches.keys():
             batch = batches[batch_id]
             record_id_enhanced = record_id + "|" + str(len(batch))
             nmt_in = {"record_id": record_id_enhanced, "id": file["model"]["model_id"], "message": batch}
+            log_info("NMT INPUT DATA"+nmt_in+"TO TOPIC:"+topic,translate_wf_input)
             if nonmt_user:
                 producer.produce(nmt_in, anu_translator_nonmt_topic, partition)
             else:
