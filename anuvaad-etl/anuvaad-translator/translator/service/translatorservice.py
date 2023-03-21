@@ -60,6 +60,9 @@ class TranslatorService:
             translate_wf_input["output"], translate_wf_input["status"] = error_list, "FAILED"
             translate_wf_input["error"] = error
             translate_wf_input["taskEndTime"] = eval(str(time.time()).replace('.', '')[0:13])
+            #translate_wf_input["source_language_code"]
+            #translate_wf_input["target_language_code"]
+            log_info("Input to kafka topic: "+translate_wf_input,translate_wf_input)
             producer.produce(translate_wf_input, anu_translator_output_topic, None)
             return {"status": "failed", "message": "Some/All files failed"}
         return {"status": "success", "message": "Sentences sent to NMT"}
