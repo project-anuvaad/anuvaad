@@ -12,12 +12,14 @@ import SENTENCE_ACTION from "./SentenceActions";
 import Slider from '@material-ui/core/Slider';
 import Tooltip from '@material-ui/core/Tooltip';
 import MergeTypeIcon from '@material-ui/icons/MergeType';
+import DoneIcon from '@material-ui/icons/Done';
 import PropTypes from 'prop-types';
 import { currentPageUpdate } from "../../../../flux/actions/apis/document_translate/pagiantion_update";
 import { clearHighlighBlock } from '../../../../flux/actions/users/translator_actions';
 import fetchpercent from '../../../../flux/actions/apis/view_digitized_document/fetch_slider_percent';
 import fetchfontpixel from '../../../../flux/actions/apis/view_digitized_document/fetch_slider_pixel';
 import { IconButton } from "@material-ui/core";
+import ConfirmBox from "../../../components/web/common/ConfirmBox";
 
 const PAGE_OPS = require("../../../../utils/page.operations");
 
@@ -42,7 +44,7 @@ class InteractivePagination extends React.Component {
   constructor(props) {
     super(props);
     this.pageInputRef = React.createRef(null);
-    this.state = { offset: 1, gotoValue: 1, isInputActive: false };
+    this.state = { offset: 1, gotoValue: 1, isInputActive: false, showCompleteConfirmBox: false };
   }
   handleClick = (offset, value) => {
     this.props.currentPageUpdate(value);
@@ -101,19 +103,21 @@ class InteractivePagination extends React.Component {
       <div>
         <IconButton 
           onClick={this.processMergeButtonClicked}
-          variant="contained"
-          color="primary"
+          variant="contained" color="secondary"
           title="Merge"
+          style={{backgroundColor: "#2C2799"}}
         >
           <MergeTypeIcon />
         </IconButton>
-         {/* <Button
-           onClick={this.processMergeButtonClicked}
-           variant="outlined"
-           color="primary"
-         >
-           MERGE
-         </Button> */}
+        <IconButton 
+          onClick={()=>this.setState({showCompleteConfirmBox: true})}
+          variant="contained"
+          color="secondary"
+          title="Complete"
+          style={{backgroundColor: "green", marginLeft: 5}}
+        >
+          <DoneIcon />
+        </IconButton>
       </div>
     );
   };
@@ -285,9 +289,16 @@ class InteractivePagination extends React.Component {
                   />
                 </div>
               }
-
+              <ConfirmBox
+          open={this.state.showCompleteConfirmBox}
+          onClose={() => this.setState({showCompleteConfirmBox: false })}
+          title="Complete Editing"
+          contentText={<><span>Are you sure you want to complete document editing?</span> <br /> <span>You won't be able to edit this document once confirm.</span></>}
+          onConfirm={() => this.setState({showCompleteConfirmBox: false })}
+        />
             </>
           )}
+
         </Toolbar>
       </AppBar>
     )
