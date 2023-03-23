@@ -974,6 +974,10 @@ class SentenceCard extends React.Component {
                 />
               );
             }}
+            suggestionListStyle={{
+              height: "135px",
+              overflow: "auto"
+            }}
             onKeyDown={this.handleKeyDown}
             value={this.state.value}
             onChangeText={(text) => {
