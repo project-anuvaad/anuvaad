@@ -174,7 +174,9 @@ class InteractiveDocHeader extends React.Component {
                 } else {
                   const buffer = new Uint8Array(await response.arrayBuffer());
                   let res = Buffer.from(buffer).toString("base64");
-                  this.downloadFile(res, fileName);
+                  let downloadFileName = this.props.match.params.filename?.includes("%23") ? this.props.match.params.filename?.split("%23").join("#") : this.props.match.params.filename;
+                  downloadFileName = downloadFileName.slice(0,downloadFileName.lastIndexOf("."))+"_translated_"+this.props.match.params.target_language_code+fileName.slice(fileName.lastIndexOf("."), fileName.length);
+                  this.downloadFile(res, downloadFileName);
                 }
               })
               .catch((error) => {
@@ -275,7 +277,9 @@ class InteractiveDocHeader extends React.Component {
               } else {
                 const buffer = new Uint8Array(await response.arrayBuffer());
                 let res = Buffer.from(buffer).toString("base64");
-                this.downloadFile(res, fileName);
+                let downloadFileName = this.props.match.params.filename?.includes("%23") ? this.props.match.params.filename?.split("%23").join("#") : this.props.match.params.filename;
+                downloadFileName = downloadFileName.slice(0,downloadFileName.lastIndexOf("."))+"_translated_"+this.props.match.params.target_language_code+fileName.slice(fileName.lastIndexOf("."), fileName.length);
+                this.downloadFile(res, downloadFileName);
               }
             })
             .catch((error) => {
@@ -326,7 +330,7 @@ class InteractiveDocHeader extends React.Component {
           link.href = url;
           link.setAttribute(
             "download",
-            `${jobName}_${fname.substr(0, fname.lastIndexOf("|"))}.docx`
+            `${jobName}_translate_${this.props.match.params.target_language_code}.docx`
           );
           document.body.appendChild(link);
           link.click();
