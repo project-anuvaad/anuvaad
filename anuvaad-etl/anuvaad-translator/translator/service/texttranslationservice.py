@@ -171,8 +171,8 @@ class TextTranslationService:
             text_nmt.append({"s_id": text["s_id"], "src": text["src"]})
         batches = self.fetch_batches(text_nmt)
         for batch in batches.keys():
-            nmt_in = {"src_list": batches[batch], "source_language_code": model["source_language_code"],
-                      "target_language_code": model["target_language_code"], "model_id": model["model_id"]}
+            nmt_in = {"src_list": batches[batch], "source_language_code": sentence_translation_input["source_language_code"],
+                      "target_language_code": sentence_translation_input["target_language_code"], "model_id": model["model_id"]}
             nmt_list.append(nmt_in)
         try:
             host = model["connection_details"]["translation"]["host"]
