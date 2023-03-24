@@ -115,6 +115,7 @@ class TextTranslationService:
 
     # Method to translate plain sentences
     def translate_sentences(self, sentence_translation_input):
+        log_info("Input to translate sentence"+str(sentence_translation_input),sentence_translation_input)
         sentence_translation_input["taskID"] = utils.generate_task_id()
         sentence_translation_input["taskStartTime"] = eval(str(time.time()).replace('.', '')[0:13])
         sentence_translation_input["state"] = "TRANSLATED"
