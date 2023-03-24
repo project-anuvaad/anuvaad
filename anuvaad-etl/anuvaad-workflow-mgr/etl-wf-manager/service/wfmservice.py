@@ -184,6 +184,8 @@ class WFMService:
             config = wfmutils.get_configs()['workflowCodes'][wf_input["workflowCode"]]
             client_output = {"input": wf_input, "jobID": wf_input["jobID"], "translation": config["translation"],
                              "workflowCode": wf_input["workflowCode"], "active": True,
+                             "source_language_code": wf_input["source_language_code"],
+                             "target_language_code": wf_input["target_language_code"],
                              "status": "STARTED", "state": "INITIATED", "metadata": wf_input["metadata"],
                              "startTime": eval(str(time.time()).replace('.', '')[0:13]), "taskDetails": []}
         else:

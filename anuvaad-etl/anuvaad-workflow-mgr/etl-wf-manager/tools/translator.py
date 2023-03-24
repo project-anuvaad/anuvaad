@@ -28,7 +28,9 @@ class Translator:
             "stepOrder": 0,
             "tool": tool_translator,
             "input": tool_input,
-            "metadata": wf_input["metadata"]
+            "metadata": wf_input["metadata"],
+            "source_language_code": wf_input["source_language_code"],
+            "target_language_code": wf_input["target_language_code"]
         }
         trans_input["metadata"]["module"] = tool_translator
         return trans_input
