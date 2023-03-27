@@ -11,5 +11,5 @@ python-pptx==0.6.19
 PyDocX==0.9.10
 beautifulsoup4==4.9.3
 boto3==1.17.86
-redis==3.5.3
+redis==4.5.3
 python-magic==0.4.24
