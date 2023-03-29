@@ -37,6 +37,14 @@ class DocumentExporterService:
                 zip_file= FileUtilities.zipfile_creation(output_filename)
                 log_info("txt file formation done!! file folder: %s"%zip_file, MODULE_CONTEXT)
                 return zip_file
+            
+            if file_type == 'docx':
+                log_info("document type %s formation started"%file_type, MODULE_CONTEXT)
+                output_filename=os.path.join(output_file_folder,str(record_id).replace(".json","")+'_'+str(randint(100, 999))+".docx")
+                exportRepo.write_to_docx(data,output_filename)
+                zip_file= FileUtilities.zipfile_creation(output_filename)
+                log_info("txt file formation done!! file folder: %s"%zip_file, MODULE_CONTEXT)
+                return zip_file
 
         except Exception as e:
             log_exception("Document type {} saving failed due to exception | {}".format(file_type,str(e)), MODULE_CONTEXT, None)

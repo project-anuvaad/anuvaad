@@ -18,6 +18,7 @@ from zipfile import ZipFile
 import uuid
 import xlsxwriter
 from jsonpath_rw import jsonpath, parse
+from docx.oxml.shared import OxmlElement,qn
 
 def zipfile_creation(filepath):
     arcname = filepath.replace(f"{config.DATA_OUTPUT_DIR}/","")
@@ -51,69 +52,50 @@ class DocumentConversion(object):
     # converting document json data into pandas dataframes.
     def convert_page_data_into_dataframes(self, pages):
         try:
-            dfs              = []
-            page_width       = None
-            page_height      = None
+            dfs = []
             page_layout = {}
+            df_columns = [
+                'text_top',
+                'text_left',
+                'text_width',
+                'text_height',
+                'text',
+                'font_size',
+                'font_family',
+                'font_color',
+                'base64',
+                'line_count'
+            ]
+
             for page in pages:
-                text_tops        = []
-                text_lefts       = []
-                text_widths      = []
-                text_heights     = []
-                font_sizes       = []
-                font_families    = []
-                font_colors      = []
-                text_values      = []
-                b64_images       = []
-                if 'images' not in list(page.keys()) or 'text_blocks' not in list(page.keys()):
-                    log_info('looks like one of the key is missing {}'.format(page.keys()), MODULE_CONTEXT)
-                    pass
-                
-                images       = page['images'] if 'images' in list(page.keys()) else None
-                texts        = page['text_blocks']
-                page_num     = page['page_no']
-                page_width   = page['page_width']
-                page_height  = page['page_height']
-                page_layout.update({'page_width' : page_width, 'page_height' : page_height})
-                for text in texts:
-                    text_tops.append(text['text_top'])
-                    text_lefts.append(text['text_left'])
-                    text_widths.append(text['text_width'])
-                    text_heights.append(text['text_height'])
-                    font_sizes.append(text['font_size'])
-                    font_families.append(text['font_family'])
-                    font_colors.append(text['font_color'])
-                    b64_images.append(None)
-                    
-                    text_value = []
-                    for processed_text in text['tokenized_sentences']:
-                        if 'tgt' in processed_text:
-                            if processed_text['tgt'] != None:
-                                # print(processed_text['tgt'],"tgtttttttttttttttttttt")
-                                text_value.append(processed_text['tgt'])
-                            else:
-                                text_value.append("This line is Not Translated")
-                        else:
-                            text_value.append(processed_text['src'])
-                    if text_value:
-                        text_values.append(' '.join(text_value))
-                if images:                       
-                    for image in images:
-                        text_tops.append(image['text_top'])
-                        text_lefts.append(image['text_left'])
-                        text_widths.append(image['text_width'])
-                        text_heights.append(image['text_height'])
-                        b64_images.append(image['base64'])
-                        text_values.append(None)
-                        font_sizes.append(None)
-                        font_families.append(None)
-                        font_colors.append(None)
-                
-                df = pd.DataFrame(list(zip(text_tops, text_lefts, text_widths, text_heights,
-                                                        text_values, font_sizes, font_families, font_colors, b64_images)), 
-                                        columns =['text_top', 'text_left', 'text_width', 'text_height',
-                                                    'text', 'font_size', 'font_family', 'font_color', 'base64'])
-                df.sort_values('text_top', axis = 0, ascending = True, inplace=True) 
+                if type(page) != dict or "text_blocks" not in page.keys():
+                    continue
+                df = pd.DataFrame(columns=df_columns)
+                page_layout.update(
+                    {
+                        'page_width': page['page_width'],
+                        'page_height': page['page_height']
+                    }
+                )
+
+                for text in page['text_blocks']:
+                    t_content = ' '.join([i['tgt'].strip() for i in text['tokenized_sentences']])
+                    if len(t_content) == 0:
+                        t_content = text['text']
+                    df.loc[len(df)] = [
+                        text['text_top'],
+                        text['text_left'],
+                        text['text_width'],
+                        text['text_height'],
+                        t_content,
+                        text['font_size'],
+                        text['font_family'],
+                        text['font_color'],
+                        None,
+                        len(text["children"]),
+                    ]
+                # clean df
+                df.sort_values('text_top', axis=0, ascending=True, inplace=True)
                 df = df.reset_index()
                 df = df.where(pd.notnull(df), None)
                 dfs.append(df)
@@ -133,39 +115,45 @@ class DocumentConversion(object):
             section.page_width    = Cm(doc_utils.get_cms(page_layout['page_width']))
             section.page_height   = Cm(doc_utils.get_cms(page_layout['page_height']))
 
-            section.left_margin   = Cm(1.27)
-            section.right_margin  = Cm(1.27)
-            section.top_margin    = Cm(1.27)
-            section.bottom_margin = Cm(1.27)
+            section.left_margin   = Cm(0.1)
+            section.right_margin  = Cm(0.1)
+            section.top_margin    = Cm(0.1)
+            section.bottom_margin = Cm(0.1)
             document._body.clear_content()
             
             for index, df in enumerate(dataframes):
                 for index, row in df.iterrows():
-                    # if row['text'] == None and row['base64'] != None:
-                    #     image_path = doc_utils.get_path_from_base64(self.DOWNLOAD_FOLDER, row['base64'])           
-                    #     document.add_picture(image_path, width=Cm(doc_utils.get_cms(row['text_width'])), 
-                    #                     height=Cm(doc_utils.get_cms(row['text_height'])))
-                    #     os.remove(image_path)
-                    if row['text'] != None and row['base64'] == None:
-                        paragraph                      = document.add_paragraph()
-                        paragraph_format               = paragraph.paragraph_format
-                        paragraph_format.left_indent   = Cm(doc_utils.get_cms(row['text_left']))
-                        if index != df.index[-1] and df.iloc[index + 1]['text_top'] != row['text_top']:
-                            pixel = df.iloc[index + 1]['text_top'] - row['text_top'] - row['font_size']
-                            if pixel>0:
-                                paragraph_format.space_after = Twips(doc_utils.pixel_to_twips(pixel))
-                            else:
-                                paragraph_format.space_after = Twips(0)
+                    if row['text'] == None :
+                        continue
+                    # add paragraph
+                    paragraph                      = document.add_paragraph()
+                    paragraph_format               = paragraph.paragraph_format
+                    paragraph_format.left_indent   = Cm(doc_utils.get_cms(row['text_left']))
+                    paragraph_format.right_indent   = Cm(doc_utils.get_cms(row['text_left'] + doc_utils.get_cms(row['text_width']))-1)#Cm(doc_utils.get_cms(page_layout['page_width'] - (row['text_left'] + row['text_width']))) #1440180
+                    # set space after/before para
+                    if index == 0:
+                        paragraph_format.space_before = Twips(doc_utils.pixel_to_twips(df.iloc[index]['text_top']))
+                    if index != df.index[-1] and df.iloc[index + 1]['text_top'] != row['text_top']:
+                        pixel = df.iloc[index + 1]['text_top'] - row['text_top'] - (row['font_size']*row['line_count'])
+                        if pixel>0:
+                            paragraph_format.space_after = Twips(doc_utils.pixel_to_twips(pixel))
                         else:
                             paragraph_format.space_after = Twips(0)
-                        run                            = paragraph.add_run()
-                        if row['font_family'] != None and "Bold" in row['font_family']:
-                            run.bold                   = True
-                        font                           = run.font
-                        font.name                      = 'Arial'
-                        if row['font_size'] != None:
-                            font.size                      = Twips(doc_utils.pixel_to_twips(row['font_size'])) 
-                        run.add_text(row['text'])
+                    else:
+                        paragraph_format.space_after = Twips(0)
+                    # add text with metadata(font,size) to para
+                    run                            = paragraph.add_run()
+                    run.add_text(row['text'])
+                    if row['font_family'] != None and "Bold" in row['font_family']:
+                        run.bold                   = True
+                    font                           = run.font
+                    font.complex_script            = True
+                    if row['font_size'] != None:
+                        font.size                      = Pt(row['font_size']/2) # only works en-chars, digits + symbols
+                    # custom element to enable/set size for non-english characters
+                    c = OxmlElement('w:szCs')
+                    c.set(qn('w:val'),font.element.rPr.sz.attrib.values()[0])
+                    font.element.rPr.append(c)
                 run.add_break(WD_BREAK.PAGE)
             out_filename = os.path.splitext(os.path.basename(record_id.split('|')[0]))[0] + str(uuid.uuid4()) + '_translated_docx.docx'
             output_filepath = os.path.join(self.DOWNLOAD_FOLDER , out_filename)

@@ -16,6 +16,13 @@ from reportlab.lib.fonts import addMapping
 from reportlab.lib.pagesizes import letter, A4
 from reportlab.pdfgen import canvas
 import pdftotext
+import pandas as pd
+from docx import Document
+from docx.shared import Twips, Cm
+from docx.enum.text import WD_BREAK
+from docx.enum.section import WD_ORIENT
+from docx.oxml.shared import OxmlElement,qn
+
 
 doc_utils = DocumentUtilities()
 
@@ -170,3 +177,120 @@ class DocumentExporterRepository(object):
             log_exception("Exception while correcting google vision text", MODULE_CONTEXT, e)
             return s1
         return text
+    
+    def write_to_docx(self, data, o_filename):
+        dfs, p_layout = self.convert_pagedata_into_df(data["pages"])
+        o_zipfile = self.docx_creation(dfs, p_layout, o_filename)
+        return o_zipfile
+
+    def convert_pagedata_into_df(self, pages):
+        dfs = []
+        page_layout = {}
+        df_columns = [
+            'text_top',
+            'text_left',
+            'text_width',
+            'text_height',
+            'text',
+            'font_size',
+            'font_family',
+            'font_style',
+        ]
+
+        for page in pages:
+            if type(page) != dict:
+                continue
+            df = pd.DataFrame(columns=df_columns)
+            page_layout.update(
+                {
+                    'page_width': page['boundingBox']['vertices'][2]['x']/2.77, # required
+                    'page_height': page['boundingBox']['vertices'][2]['y']/2.77, # required
+                })
+
+            for p_region in page['regions'][1:]:
+                if p_region['class'] not in ['PARA', 'FOOTER']:
+                    continue
+
+                for l_region in p_region['regions']:
+                    df.loc[len(df)] = [
+                        l_region['boundingBox']['vertices'][0]['y'],
+                        l_region['boundingBox']['vertices'][0]['x'],
+                        l_region['boundingBox']['vertices'][2]['x'] -
+                        l_region['boundingBox']['vertices'][0]['x'],
+                        l_region['boundingBox']['vertices'][2]['y'] -
+                        l_region['boundingBox']['vertices'][0]['y'],
+                        ' '.join([w_region['text']
+                                  for w_region in l_region['regions']]),
+                        l_region['font']['size'],
+                        l_region['font']['family'],
+                        l_region['font']['style'],
+                    ]
+            # custom tuners related to digitization
+            for i in ['text_top', 'text_left', 'text_width', 'text_height']:
+                df[i] = df[i].apply(lambda x: x/2.77)
+            df['font_size'] = df['font_size'].apply(lambda x: x/4)
+            # clean df
+            df.sort_values('text_top', axis=0, ascending=True, inplace=True)
+            df = df.reset_index()
+            df = df.where(pd.notnull(df), None)
+            dfs.append(df)
+
+        log_info("dataframes formed", MODULE_CONTEXT)
+        return dfs, page_layout
+
+    def docx_creation(self, dataframes, page_layout, output_filename):
+        doc_utils = DocumentUtilities()
+        document = Document()
+        section = document.sections[-1]
+        section.orientation = WD_ORIENT.PORTRAIT
+
+        section.page_width = Cm(doc_utils.get_cms(page_layout['page_width']))
+        section.page_height = Cm(doc_utils.get_cms(page_layout['page_height']))
+
+        section.left_margin = Cm(0.1)
+        section.right_margin = Cm(0.1)
+        section.top_margin = Cm(0.1)
+        section.bottom_margin = Cm(0.1)
+        document._body.clear_content()
+
+        for index, df in enumerate(dataframes):
+            for index, row in df.iterrows():
+                if row['text'] == None:
+                    continue
+                # add paragraph
+                paragraph = document.add_paragraph()
+                paragraph_format = paragraph.paragraph_format
+                paragraph_format.left_indent = Cm(
+                    doc_utils.get_cms(row['text_left']))
+                # set space after/before para
+                if index == 0:
+                    paragraph_format.space_before = Twips(
+                        doc_utils.pixel_to_twips(df.iloc[index]['text_top']))
+                if index != df.index[-1] and df.iloc[index + 1]['text_top'] != row['text_top']:
+                    pixel = df.iloc[index + 1]['text_top'] - \
+                        row['text_top'] - (row['font_size']*2.77)
+                    if pixel > 0:
+                        paragraph_format.space_after = Twips(
+                            doc_utils.pixel_to_twips(pixel))
+                    else:
+                        paragraph_format.space_after = Twips(0)
+                else:
+                    paragraph_format.space_after = Twips(0)
+                # add text with metadata(font,size) to para
+                run = paragraph.add_run()
+                run.add_text(row['text'])
+                if row['font_family'] != None and "Bold" in row['font_style']:
+                    run.bold = True
+                font = run.font
+                font.complex_script = True
+                if row['font_size'] != None:
+                    # only works en-chars, digits + symbols
+                    font.size = Twips(
+                        doc_utils.pixel_to_twips(row['font_size']))
+                # custom element to enable/set size for non-english characters
+                c = OxmlElement('w:szCs')
+                c.set(qn('w:val'), font.element.rPr.sz.attrib.values()[0])
+                font.element.rPr.append(c)
+            run.add_break(WD_BREAK.PAGE)
+        document.save(output_filename)
+        return output_filename
