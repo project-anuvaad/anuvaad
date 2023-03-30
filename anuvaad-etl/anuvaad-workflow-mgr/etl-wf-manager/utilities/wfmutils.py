@@ -7,10 +7,10 @@ import time
 
 import requests
 import yaml
-from configs.wfmconfig import config_file_url, tool_config_url, tool_sync_sentence_translator, tool_sync_paragraph_translator, tool_blockmerger, tool_tokeniser, tool_fileconverter, tool_aligner, tool_translator, tool_doc_pre_processor
+from configs.wfmconfig import config_file_url, tool_config_url, tool_sync_sentence_translator, tool_blockmerger, tool_tokeniser, tool_fileconverter, tool_aligner, tool_translator, tool_doc_pre_processor
 from configs.wfmconfig import tool_worddetector, tool_layoutdetector, tool_ch, tool_nmt, tool_ocrgooglevision, tool_ocrtesseract, tool_annotator
 from configs.wfmconfig import tool_blocksegmenter, tool_syncfiletranslator, tool_ocrdd10googlevision, tool_ocrdd15googlevision, \
-    jobid_random_str_length, tool_ocrtokeniser, tool_sync_block_translator, tool_filetranslator, tool_imageocr, tool_ocrdd20tesseract
+    jobid_random_str_length, tool_ocrtokeniser, tool_sync_block_translator, tool_filetranslator, tool_imageocr, tool_ocrdd20tesseract, tool_sync_block_tokenizer, tool_sync_paragraph_tokeniser
 from repository.wfmrepository import WFMRepository
 from anuvaad_auditor.loghandler import log_exception, log_error, log_info
 
@@ -295,9 +295,9 @@ class WFMUtils:
                 if 'retranslate' in job_details["input"].keys():
                     tool_input["input"]["retranslate"] = job_details["input"]["retranslate"]
         else:
-            if current_tool == tool_tokeniser:
+            if current_tool in [tool_tokeniser,tool_sync_block_tokenizer,tool_sync_paragraph_tokeniser]:
                 tool_input = tokeniser.get_tokeniser_input_wf(wf_input, True)
-            if current_tool in [tool_translator,tool_sync_block_translator,tool_sync_sentence_translator,tool_sync_paragraph_translator]:
+            if current_tool in [tool_translator,tool_sync_block_translator,tool_sync_sentence_translator]:
                 tool_input = translator.get_translator_input_wf(wf_input, True)
             if current_tool == tool_ch:
                 tool_input = ch.get_ch_update_req(wf_input)
