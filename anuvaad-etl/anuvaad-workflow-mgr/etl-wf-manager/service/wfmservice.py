@@ -182,6 +182,11 @@ class WFMService:
             wf_details = wfmutils.get_job_details(task_output["jobID"])
         if wf_details is None or len(wf_details) == 0:
             config = wfmutils.get_configs()['workflowCodes'][wf_input["workflowCode"]]
+            if "model" in wf_input.keys():
+                if "source_language_code" in wf_input["model"].keys():
+                    wf_input["source_language_code"] = wf_input["model"]["source_language_code"]
+                if "target_language_code" in wf_input["model"].keys():
+                    wf_input["target_language_code"] = wf_input["model"]["target_language_code"]
             client_output = {"input": wf_input, "jobID": wf_input["jobID"], "translation": config["translation"],
                              "workflowCode": wf_input["workflowCode"], "active": True,
                              "source_language_code": wf_input["source_language_code"],
