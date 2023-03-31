@@ -1,7 +1,7 @@
 from flask_cors import CORS
 from anuvaad_auditor.loghandler import log_info
 from resources.db_retrival import app
-# from resources.scheduler_jobs import schedule_job
+from resources.scheduler_jobs import schedule_job
 import config
 from utilities import MODULE_CONTEXT
 
