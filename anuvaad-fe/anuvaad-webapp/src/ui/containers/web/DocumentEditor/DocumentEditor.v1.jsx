@@ -263,7 +263,7 @@ class DocumentEditor extends React.Component {
     let model = LANG_MODEL.fetchModel(parseInt(this.props.match.params.modelId), this.props.fetch_models, this.props.match.params.source_language_code, this.props.match.params.target_language_code)
     this.informUserProgress(translate('common.page.label.SENTENCE_MERGED'))
     let apiObj = new WorkFlowAPI("WF_S_TR", updated_blocks.blocks, this.props.match.params.jobid, model.source_language_code,
-      '', '', model, sentence_ids)
+    model.target_language_code, '', model, sentence_ids)
     const apiReq = fetch(apiObj.apiEndPoint(), {
       method: 'post',
       body: JSON.stringify(apiObj.getBody()),
@@ -339,9 +339,9 @@ class DocumentEditor extends React.Component {
     // TELEMETRY.mergeSentencesEvent(initial_sentences, final_sentence)
     let model = LANG_MODEL.fetchModel(parseInt(this.props.match.params.modelId), this.props.fetch_models, this.props.match.params.source_language_code, this.props.match.params.target_language_code, this.props.match.params.source_language_code, this.props.match.params.target_language_code)
     this.informUserProgress(translate('common.page.label.RETRANSLATE_SENTENCE'));
-    // console.log("model in retranslation === ", model);
-    let apiObj = new WorkFlowAPI("WF_S_TR", updated_blocks, this.props.match.params.jobid, model.source_language_code,
-      '', '', model, [sentence_ids], "", "", [], "", true)
+    console.log("model in retranslation === ", model);
+    let apiObj = new WorkFlowAPI("WF_S_TR", updated_blocks, this.props.match.params.jobid, model.source_language_code, model.target_language_code,
+      '', model, [sentence_ids], "", "", [], "", true)
     const apiReq = fetch(apiObj.apiEndPoint(), {
       method: 'post',
       body: JSON.stringify(apiObj.getBody()),
@@ -377,7 +377,7 @@ class DocumentEditor extends React.Component {
     let model = LANG_MODEL.fetchModel(parseInt(this.props.match.params.modelId), this.props.fetch_models, this.props.match.params.source_language_code, this.props.match.params.target_language_code)
     this.informUserProgress(translate('common.page.label.SENTENCE_SPLITTED'))
     let apiObj = new WorkFlowAPI("WF_S_TR", updated_blocks.blocks, this.props.match.params.jobid, model.source_language_code,
-      '', '', model, updated_blocks.selected_sentence_ids)
+    model.target_language_code, '', model, updated_blocks.selected_sentence_ids)
     const apiReq = fetch(apiObj.apiEndPoint(), {
       method: 'post',
       body: JSON.stringify(apiObj.getBody()),
@@ -410,7 +410,7 @@ class DocumentEditor extends React.Component {
     let model = LANG_MODEL.fetchModel(parseInt(this.props.match.params.modelId), this.props.fetch_models, this.props.match.params.source_language_code, this.props.match.params.target_language_code)
 
     let apiObj = new WorkFlowAPI("WF_S_TKTR", sentence, this.props.match.params.jobid, model.source_language_code,
-      '', '', model)
+    model.target_language_code, '', model)
     const apiReq = fetch(apiObj.apiEndPoint(), {
       method: 'post',
       body: JSON.stringify(apiObj.getBody()),
