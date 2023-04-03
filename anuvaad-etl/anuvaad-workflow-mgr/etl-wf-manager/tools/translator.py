@@ -1,4 +1,4 @@
-from configs.wfmconfig import tool_tokeniser
+from configs.wfmconfig import tool_tokeniser,tool_sync_block_tokenizer,tool_sync_paragraph_tokeniser
 from configs.wfmconfig import tool_translator
 
 
@@ -38,7 +38,7 @@ class Translator:
     # Returns a json of the format accepted by Translator based on the predecessor.
     def get_translator_input(self, task_output, predecessor, is_sync):
         if is_sync:
-            if predecessor == tool_tokeniser:
+            if predecessor in [tool_tokeniser,tool_sync_block_tokenizer,tool_sync_paragraph_tokeniser]:
                 if self.is_contains_list_of_paragraphs(task_output=task_output):
                     tool_input = {
                         "model_id": task_output["output"][0]["model_id"],
