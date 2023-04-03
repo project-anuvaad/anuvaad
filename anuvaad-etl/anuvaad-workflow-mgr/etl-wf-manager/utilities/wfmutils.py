@@ -276,6 +276,10 @@ class WFMUtils:
 
     def get_tool_input_sync(self, current_tool, previous_tool, task_output, wf_input):
         tool_input = {}
+        log.info("current_tool",current_tool)
+        log.info("previous_tool",previous_tool)
+        log.info("task_output",task_output)
+        log.info("wf_input",wf_input)        
         if wf_input is None:
             if current_tool == tool_tokeniser:
                 tool_input = tokeniser.get_tokeniser_input(
