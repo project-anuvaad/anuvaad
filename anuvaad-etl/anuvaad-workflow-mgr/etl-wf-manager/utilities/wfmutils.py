@@ -281,10 +281,10 @@ class WFMUtils:
         log.info("task_output",task_output)
         log.info("wf_input",wf_input)        
         if wf_input is None:
-            if current_tool == tool_tokeniser:
+            if current_tool in [tool_tokeniser,tool_sync_block_tokenizer,tool_sync_paragraph_tokeniser]:
                 tool_input = tokeniser.get_tokeniser_input(
                     task_output, previous_tool)
-            if current_tool in [tool_filetranslator,tool_syncfiletranslator]:
+            if current_tool in [tool_filetranslator,tool_syncfiletranslator,tool_translator,tool_sync_block_translator,tool_sync_sentence_translator]:
                 tool_input = translator.get_translator_input(
                     task_output, previous_tool, True)
                 job_details = self.get_job_details(task_output["jobID"])[0]
