@@ -289,6 +289,7 @@ class WFMUtils:
                     task_output, previous_tool, True)
                 job_details = self.get_job_details(task_output["jobID"])[0]
                 log.info("Job Details"+str(job_details))
+                log.info("Tool Input"+str(tool_input))
                 if translator.is_contains_list_of_paragraphs(task_output=task_output) is False:
                     tool_input["input"]["model"] = job_details["input"]["model"]
 
