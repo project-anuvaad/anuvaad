@@ -414,21 +414,28 @@ export default function TopHeader(props) {
         return (
             <Grid container className={desktopMenuContainer}>
                 {headerMenuConfig.map((el, i) => {
-                    return el.menuType === "MAIN" && el.rolesAllowed.includes(role) && assignedOrgId !== "NONMT" && <Button
-                    {...{
-                        key: el.id,
-                        id: el.id,
-                        onClick: () => { 
-                            el.onclick(assignedOrgId);
-                            // console.log(currentMenu + " === " + el.id);
-                        },
-                        style: { textDecoration: "none", color: "#000000", letterSpacing: "0.5px" },
-                        // component: RouterLink,
-                        className: currentMenu === el.id ? highlightedMenuButton : menuButton,
-                    }}
+                    return el.menuType === "MAIN" && el.rolesAllowed.includes(role) && assignedOrgId !== "NONMT" && 
+                    <NavLink
+                        to = {!el.followOrg ? `/${el.id}` : `/${el.id}/${assignedOrgId}`}
+                        className = {currentMenu === el.id ? highlightedMenuButton : menuButton}
                 >
                     <Typography className={userMenuButtonText}>{el.title}</Typography>
-                </Button>
+                </NavLink>
+                //     <Button
+                //     {...{
+                //         key: el.id,
+                //         id: el.id,
+                //         onClick: () => { 
+                //             el.onclick(assignedOrgId);
+                //             // console.log(currentMenu + " === " + el.id);
+                //         },
+                //         style: { textDecoration: "none", color: "#000000", letterSpacing: "0.5px" },
+                //         // component: RouterLink,
+                //         className: currentMenu === el.id ? highlightedMenuButton : menuButton,
+                //     }}
+                // >
+                //     <Typography className={userMenuButtonText}>{el.title}</Typography>
+                // </Button>
                 })}
             </Grid>
 

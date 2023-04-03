@@ -132,7 +132,8 @@ class DigitizedDocHeader extends React.Component {
         let fname = this.props.match.params.filename.replace(".json", ".docx");
         let jobId = encodeURI(this.props.match.params.jobId);
         let jobName = this.props.match.params.filename;
-        // let downloadedFileName = this.props.match.params.og_fname;
+        let og_fname = this.props.match.params.og_fname;
+        let downloadedFileName = og_fname.slice(0, og_fname.lastIndexOf("."));
         // jobName = jobName.substr(0, jobName.lastIndexOf("."));
         const apiObj = new DownloadDOCX(jobId, fname, jobName, 'ocr');
         this.setState({
@@ -154,7 +155,7 @@ class DigitizedDocHeader extends React.Component {
                     jobName = jobName.substr(0, jobName.lastIndexOf("."));
                     link.setAttribute(
                         "download",
-                        `${fname}`
+                        `${downloadedFileName}_digitized.docx`
                     );
                     document.body.appendChild(link);
                     link.click();

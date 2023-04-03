@@ -193,7 +193,7 @@ class InteractivePagination extends React.Component {
                 onChange={this.handleClick}
                 color="primary"
                 size={"large"}
-                style={{ marginLeft: "-8.5%" }}
+                style={{ marginLeft: "-10%" }}
                 siblingCount={0} boundaryCount={1}
               />
               <TextField
