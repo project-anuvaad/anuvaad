@@ -122,29 +122,21 @@ class jud_stats(object):
         return ch_docs
 
     def fetch_data_for_language_trans_tokenized_for_scheduer_only(
-        self, ch_collection, doc, from_date, end_date
+        self, ch_collection, from_date, end_date
     ):
-        done = 0
-        # while True:
         try:
             ch_docs = ch_collection.aggregate(
                 [
                     {
-                        "$match": {
-                            "$and": [
-                                {
-                                    "created_by": str(doc["userID"]),
-                                    "created_on": {"$gte": from_date, "$lte": end_date},
-                                },
-                                {"data_type": "text_blocks"},
-                            ]
-                        }
+                        "$match": 
+                                {"data_type": "text_blocks","created_on": {"$gte": from_date, "$lte": end_date}},    
                     },
                     {"$unwind": "$data.tokenized_sentences"},
                     {
                         "$group": {
                             "_id": "$job_id",
                             "created_on": {"$first": "$created_on"},
+                            "created_by":{"$first":"$created_by"},
                             "src_lang": {"$first": "$src_lang"},
                             "tgt_lang": {"$first": "$tgt_lang"},
                             "doc_sent_count": {"$sum": 1},
@@ -153,45 +145,23 @@ class jud_stats(object):
                             },
                         }
                     },
-                    {
-                        "$addFields": {
-                            "orgID": str(doc.get("orgID")),
-                            "userName": str(doc["userName"]),
-                            "name": str(doc["name"]),
-                            "is_active": str(doc["is_active"]),
-                            "userId": str(doc["userID"]),
-                        }
-                    }
                 ]
             )
-            done == 1
-            # print(x)
+
         except Exception as e: 
             log_exception("error in fetching the data : {}".format(str(e)),MODULE_CONTEXT,e)
-            # if done == 1:
-            #     print("!!!!!!!!!!!!!!!")
-            #     break
 
         return ch_docs
 
     def fetch_data_for_userwise_trans_user_tokenized(
-        self, ch_collection, doc, from_date, end_date
+        self, ch_collection, from_date, end_date
     ):
-        done = 0
-        # while True:
         try:
             saved_docs = ch_collection.aggregate(
                 [
                     {
-                        "$match": {
-                            "$and": [
-                                {
-                                    "created_by": str(doc["userID"]),
-                                    "created_on": {"$gte": from_date, "$lte": end_date},
-                                },
-                                {"data_type": "text_blocks"},
-                            ]
-                        }
+                        "$match": 
+                                {"data_type": "text_blocks","created_on": {"$gte": from_date, "$lte": end_date}},
                     },
                     {"$unwind": "$data.tokenized_sentences"},
                     {"$match": {"data.tokenized_sentences.save": True}},
@@ -199,6 +169,7 @@ class jud_stats(object):
                         "$group": {
                             "_id": "$job_id",
                             "created_on": {"$first": "$created_on"},
+                            "created_by":{"$first":"$created_by"},
                             "src_lang": {"$first": "$src_lang"},
                             "tgt_lang": {"$first": "$tgt_lang"},
                             # "doc_sent_count": { "$sum": 1 },
@@ -211,28 +182,14 @@ class jud_stats(object):
                             "saved_sent_count": {"$sum": 1},
                         }
                     },
-                    {
-                        "$addFields": {
-                            "orgID": str(doc.get("orgID")),
-                            "userName": str(doc["userName"]),
-                            "name": str(doc["name"]),
-                            "is_active": str(doc["is_active"]),
-                            "userId": str(doc["userID"]),
-                        }
-                    },
                 ]
             )
-            done == 1
         except Exception as e:
             log_exception(
         "error in fetching the data : {}".format(str(e)),
         MODULE_CONTEXT,
         e,
     )
-        # if done == 1:
-        #     print("***************")
-        #     break
-
         return saved_docs
 
     def get_user_role_org_wise(self, usr_collection, role, org):
@@ -307,12 +264,23 @@ class jud_stats(object):
     def file_validation(self):
         file_name1 = config.DAILY_CRON_FILE_NAME1
         file_name2 = config.DAILY_CRON_FILE_NAME2
+        stats_file_copy = config.STATS_FILE_COPY
         # file_name2 = "/home/sriharimn/Downloads/language_wise_JUD_STATS2.csv"
         # file_name1 = "/home/sriharimn/Downloads/language_wise_JUD_STATS1.csv"
         file_name1 = os.path.join(config.DOWNLOAD_FOLDER, file_name1)
         file_name2 = os.path.join(config.DOWNLOAD_FOLDER, file_name2)
+        stats = os.path.join(config.DOWNLOAD_FOLDER, stats_file_copy)
         if not os.path.exists(file_name1) and not os.path.exists(file_name2):
             return post_error("FILES_NOT_FOUND", "files are mandatory", None), False
+        if os.path.exists(stats) :
+            df = pd.read_csv(stats)
+            df.dropna(subset=['orgID'], inplace=True)
+            # result = df1.merge(df, indicator=True, how="right")
+            result = df.sort_values(by=["orgID"], ascending=True)
+            mask = result["orgID"].isin(
+                ["ANUVAAD", "TARENTO_TESTORG", "NONMT", "ECOMMITTEE "]
+            )
+            result = result[~mask]
         else:
             df = pd.read_csv(file_name1)
             df1 = pd.read_csv(file_name2)
@@ -321,13 +289,15 @@ class jud_stats(object):
             df.dropna(how="all", axis=1, inplace=True)
             df1.replace("", nan_value, inplace=True)
             df1.dropna(how="all", axis=1, inplace=True)
+            df1.dropna(subset=['orgID'], inplace=True)
+            df.dropna(subset=['orgID'], inplace=True)
             result = df1.merge(df, indicator=True, how="right")
-            result = result.sort_values(by=["orgID"], ascending=True)
-            # mask = result["orgID"].isin(
-            #     ["ANUVAAD", "TARENTO_TESTORG", "NONMT", "ECOMMITTEE "]
-            # )
-            # result = result[~mask]
-            return result, True
+            result = df.sort_values(by=["orgID"], ascending=True)
+            mask = result["orgID"].isin(
+                ["ANUVAAD", "TARENTO_TESTORG", "NONMT", "ECOMMITTEE "]
+            )
+            result = result[~mask]
+        return result, True
 
     def doc_count(self, result):
         # total_docs = len(result)

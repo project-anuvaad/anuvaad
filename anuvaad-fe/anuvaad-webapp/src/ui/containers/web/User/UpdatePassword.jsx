@@ -98,6 +98,7 @@ class UpdatePassword extends React.Component {
                                 }} onClick={()=>history.push(`${process.env.PUBLIC_URL}/user/login`)}>
                                 Back to Login
                             </Button>
+
                         </Grid>
                     {/* </Grid> */}
                 </div>
