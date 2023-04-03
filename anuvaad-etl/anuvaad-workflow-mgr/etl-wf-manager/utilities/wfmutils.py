@@ -276,10 +276,10 @@ class WFMUtils:
 
     def get_tool_input_sync(self, current_tool, previous_tool, task_output, wf_input):
         tool_input = {}
-        log.info("current_tool"+str(current_tool))
-        log.info("previous_tool"+str(previous_tool))
-        log.info("task_output"+str(task_output))
-        log.info("wf_input"+str(wf_input))        
+        # log.info("current_tool"+str(current_tool))
+        # log.info("previous_tool"+str(previous_tool))
+        # log.info("task_output"+str(task_output))
+        # log.info("wf_input"+str(wf_input))        
         if wf_input is None:
             if current_tool in [tool_tokeniser,tool_sync_block_tokenizer,tool_sync_paragraph_tokeniser]:
                 tool_input = tokeniser.get_tokeniser_input(
@@ -288,8 +288,8 @@ class WFMUtils:
                 tool_input = translator.get_translator_input(
                     task_output, previous_tool, True)
                 job_details = self.get_job_details(task_output["jobID"])[0]
-                log.info("Job Details"+str(job_details))
-                log.info("Tool Input"+str(tool_input))
+                # log.info("Job Details"+str(job_details))
+                # log.info("Tool Input"+str(tool_input))
                 if translator.is_contains_list_of_paragraphs(task_output=task_output) is False:
                     tool_input["input"]["model"] = job_details["input"]["model"]
 
