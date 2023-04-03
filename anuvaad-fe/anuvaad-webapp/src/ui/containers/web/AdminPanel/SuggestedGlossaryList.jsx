@@ -360,6 +360,7 @@ class SuggestedGlossaryList extends React.Component {
         this.deleteMultipleRows()
       }
     };
+
     return (
       <div style={{}}>
         <div style={{ margin: "0% 3% 3% 3%", paddingTop: "2%" }}>

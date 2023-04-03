@@ -27,6 +27,7 @@ import DocumentUpload from "../../../../flux/actions/apis/document_upload/docume
 import { createJobEntry } from "../../../../flux/actions/users/async_job_management";
 import Dialog from "@material-ui/core/Dialog";
 import { Container } from "@material-ui/core";
+import UploadProcessModal from "./UploadProcessModal";
 
 const TELEMETRY = require("../../../../utils/TelemetryManager");
 const LANG_MODEL = require("../../../../utils/language.model");
@@ -649,6 +650,7 @@ class PdfUpload extends Component {
             )}
           </Paper>
         </div>
+        {/* <UploadProcessModal /> */}
       </div>
     );
   }

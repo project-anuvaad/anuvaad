@@ -802,7 +802,7 @@ class DocumentEditor extends React.Component {
    */
   processZoom = () => {
     return (
-      <div style={{ marginLeft: '1%', marginRight: "2%" }}>
+      <div style={{ marginLeft: '1%', marginRight: "1%" }}>
         <Button
           variant="outlined"
           color="primary"

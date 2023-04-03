@@ -32,6 +32,7 @@ import DataTable from "../../../components/web/common/DataTable";
 import { Button, TableCell, TableRow, TextField, TableFooter, Typography } from "@material-ui/core";
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import UploadProcessModal from "../DocumentUpload/UploadProcessModal";
 
 const TELEMETRY = require("../../../../utils/TelemetryManager");
 
@@ -850,6 +851,7 @@ class ViewDocument extends React.Component {
         )}
         {(this.state.showLoader || this.state.loaderDelete) && <Spinner />}
         {this.state.dialogMessage && this.snackBarMessage()}
+        {/* <UploadProcessModal /> */}
       </div>
     );
   }
