@@ -42,7 +42,8 @@ class Login extends React.Component {
       password: "",
       showPassword: false,
       currentFocusedComponent: "Login",
-      reloadPage: false
+      reloadPage: false,
+      inputFocused: false,
     };
   }
 
@@ -58,7 +59,8 @@ class Login extends React.Component {
   componentDidMount() {
     localStorage.removeItem("token");
     window.addEventListener("keypress", (key) => {
-      if (key.code === "Enter") {
+      if (key.code === "Enter" && this.state.inputFocused) {
+        this.setState({inputFocused: false});
         this.processLoginButtonPressed();
       }
     });
@@ -210,6 +212,8 @@ class Login extends React.Component {
           <OutlinedTextField
             fullWidth
             name="email"
+            onFocus={()=>this.setState({inputFocused: true})} 
+            onBlur={()=>this.setState({inputFocused: false})}
             onChange={(event) => this.setState({ email: event.target.value })}
             value={this.state.email}
             placeholder="Enter your Email ID*"
@@ -222,6 +226,8 @@ class Login extends React.Component {
           <OutlinedTextField
             fullWidth
             name="password"
+            onFocus={()=>this.setState({inputFocused: true})} 
+            onBlur={()=>this.setState({inputFocused: false})}
             type={this.state.showPassword ? "text" : "password"}
             onChange={(event) =>
               this.setState({ password: event.target.value })
