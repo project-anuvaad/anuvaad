@@ -189,10 +189,13 @@ class WFMService:
                     wf_input["target_language_code"] = wf_input["model"]["target_language_code"]
             client_output = {"input": wf_input, "jobID": wf_input["jobID"], "translation": config["translation"],
                              "workflowCode": wf_input["workflowCode"], "active": True,
-                             "source_language_code": wf_input["source_language_code"],
-                             "target_language_code": wf_input["target_language_code"],
                              "status": "STARTED", "state": "INITIATED", "metadata": wf_input["metadata"],
                              "startTime": eval(str(time.time()).replace('.', '')[0:13]), "taskDetails": []}
+            if 'source_language_code' in wf_input.keys():
+                client_output['source_language_code'] = wf_input["source_language_code"]
+            if 'target_language_code' in wf_input.keys():
+                client_output['target_language_code'] = wf_input["target_language_code"]
+            
         else:
             wf_details = wf_details[0]
             if task_output is not None:
@@ -408,6 +411,8 @@ class WFMService:
         except Exception as e:
             log_exception("Exception while searching jobs: " + str(e), None, e)
             return None
+
+    def set_granularity():
 
 
     # Method to get wf configs from the remote yaml file.
