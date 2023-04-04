@@ -413,7 +413,7 @@ class WFMService:
             return None
 
     def set_granularity():
-
+        pass
 
     # Method to get wf configs from the remote yaml file.
     def get_wf_configs(self):
