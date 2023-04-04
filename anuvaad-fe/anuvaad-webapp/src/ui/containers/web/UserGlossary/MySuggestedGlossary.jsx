@@ -55,7 +55,7 @@ class SuggestedGlossaryList extends React.Component {
   getSuggestedGlossary = () => {
     const { APITransport } = this.props
 
-    let apiObj = new FetchSuggestions([this.userID], [], this.orgID ?  [this.orgID] : [], [], false, 0, 0, [], []);
+    let apiObj = new FetchSuggestions([this.userID], [], this.orgID ?  [this.orgID] : [], [], false, 0, 0, [], [], ["Pending", "Rejected"]);
     APITransport(apiObj)
   }
   componentDidMount() {
