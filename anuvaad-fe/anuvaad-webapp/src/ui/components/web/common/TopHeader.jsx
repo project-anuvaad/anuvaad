@@ -450,7 +450,7 @@ export default function TopHeader(props) {
                         {(role !== "SUPERADMIN" && role !== "ADMIN") && <Grid item>
                             <div style={{ display: "flex", alignItems: "center" }}>
                                 <IconButton
-                                    style={{marginLeft: "5px"}}
+                                    style={{marginLeft: "5px", color: currentMenu === "view-document" || currentMenu === "document-digitization" ? "#2C2799" : "rgba(0, 0, 0, 0.54)"}}
                                     {...{
                                         edge: "start",
                                         color: "#2C2799",
