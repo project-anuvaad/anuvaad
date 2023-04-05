@@ -570,7 +570,7 @@ class ViewDocument extends React.Component {
         options: {
           filter: true,
           sort: true,
-          display: false,
+          display: true,
           customBodyRender: (value, tableMeta, updateValue) => {
             if (tableMeta.rowData) {
               return (

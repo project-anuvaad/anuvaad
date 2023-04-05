@@ -1,6 +1,6 @@
 // UploadProcessModal
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
@@ -11,10 +11,12 @@ import Check from '@material-ui/icons/Check';
 import SettingsIcon from '@material-ui/icons/Settings';
 import GroupAddIcon from '@material-ui/icons/GroupAdd';
 import VideoLabelIcon from '@material-ui/icons/VideoLabel';
+import FileCopyIcon from '@material-ui/icons/FileCopy';
 import StepConnector from '@material-ui/core/StepConnector';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import { CircularProgress, Dialog, Divider, StepContent } from '@material-ui/core';
+import { CircularProgress, Dialog, Divider, Grid, IconButton, StepContent } from '@material-ui/core';
+import history from "../../../../web.history";
 
 const QontoConnector = withStyles({
     alternativeLabel: {
@@ -204,36 +206,12 @@ function getSteps() {
     ];
 }
 
-// function getStepContent(step) {
-//   switch (step) {
-//     case 0:
-//       return <div>
-//           <Typography>Status</Typography>
-//           <Typography>Started</Typography>
-//           </div>;
-//     case 1:
-//       return <div>
-//       <Typography>Status</Typography>
-//       <Typography>In Progress</Typography>
-//       </div>;
-//     case 2:
-//       return <div>
-//       <Typography>Status</Typography>
-//       <Typography>Completed</Typography>
-//       <Typography>Time Taken - 00.23 sec</Typography>
-//       </div>;
-//     default:
-//       return <div>
-//       <Typography>Status</Typography>
-//       <Typography>Started</Typography>
-//       </div>;
-//   }
-// }
-
-export default function UploadProcessModal() {
+export default function UploadProcessModal(props) {
     const classes = useStyles();
     const [activeStep, setActiveStep] = React.useState(1);
-    const steps = getSteps();
+    const [steps, setSteps] = useState([]);
+
+    const { progressData, onCopyClick, onUploadOtherDoc, goToDashboardLink } = props;
 
     const handleNext = () => {
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -247,6 +225,40 @@ export default function UploadProcessModal() {
         setActiveStep(0);
     };
 
+    const msToTime = (ms) => {
+        let seconds = (ms / 1000).toFixed(1);
+        let minutes = (ms / (1000 * 60)).toFixed(1);
+        let hours = (ms / (1000 * 60 * 60)).toFixed(1);
+        let days = (ms / (1000 * 60 * 60 * 24)).toFixed(1);
+        if (seconds < 60) return seconds + " Sec";
+        else if (minutes < 60) return minutes + " Min";
+        else if (hours < 24) return hours + " Hrs";
+        else return days + " Days"
+    }
+
+    useEffect(() => {
+
+        // setSteps(progressData?.taskDetails);
+        console.log("progressData --- ", progressData);
+        if (progressData?.taskDetails) {
+            let modifiedData = progressData?.taskDetails?.map((el, i) => {
+                if ("taskEndTime" in el) {
+                    el["endTimeProcess"] = parseInt(el["taskEndTime"]);
+                } else {
+                    el["endTimeProcess"] = parseInt(el["taskendTime"]);
+                }
+
+                el.startTimeProcess = parseInt(el.taskStarttime);
+                return el;
+            })
+            setSteps(modifiedData);
+        }
+    }, [progressData])
+
+    useEffect(() => {
+        console.log("steps --- ", steps);
+    }, [steps])
+
     return (
         <Dialog
             fullWidth={true}
@@ -256,27 +268,52 @@ export default function UploadProcessModal() {
             aria-labelledby="max-width-dialog-title"
         >
             <div className={classes.root}>
-                <Typography style={{margin: 5}} variant="subtitle1">Job ID: <b>A_FTTTR-tMYSx-1679045562433</b> </Typography>
+                <Grid
+                    direction='row'
+                    justifyContent='space-between'
+                    alignItems='center'
+                    style={{ display: "flex" }}
+                >
+                    <Typography style={{ margin: 5 }} variant="subtitle1">Job ID : <b>{progressData?.jobID}</b> </Typography>
+                    <IconButton
+                        onClick={() => {
+                            navigator.clipboard.writeText(progressData?.jobID);
+                            onCopyClick();
+                        }}
+                    >
+                        <FileCopyIcon color='primary' />
+                    </IconButton>
+                </Grid>
+
 
                 <Divider />
-                {/* <Typography style={{margin: 5}} variant="subtitle1">Task Status:</Typography> */}
-                <Stepper activeStep={activeStep} orientation="vertical">                
-                    {steps.map((label, index) => (
-                        <Step key={label} active={label.status === "PENDING" ? false : true}>
-                            <StepLabel>{label.title}</StepLabel>
+                <Stepper activeStep={steps.length - 1} orientation="vertical">
+                    {steps.length > 0 && steps?.map((process, index) => (
+                        <Step key={process?.stepOrder} active={process?.status === "SUCCESS" ? true : false}>
+                            <StepLabel>{process?.state}</StepLabel>
 
                             <StepContent>
-                                <Typography variant='body2'>{label.status}</Typography>
-                                {label.status === "COMPLETE" && <Typography variant='caption'>{label.time}</Typography>}
-                                {label.status === "INPROGRESS" && <CircularProgress />}
+                                <Typography variant='body2'>{process?.status}</Typography>
+                                {process?.status === "SUCCESS" && <Typography variant='caption'>Time Taken - {msToTime(process?.endTimeProcess - process?.startTimeProcess)}</Typography>}
                             </StepContent>
                         </Step>
                     ))}
-                    <div style={{width: "100%", textAlign: "end"}}>
-                        <Button color='primary'>Ok</Button>
-                </div>
+                    {progressData.status === "INPROGRESS" && <CircularProgress />}
+                    <div style={{ width: "100%", textAlign: "end", alignItems: "center" }}>
+                        <Button
+                            color='primary'
+                            variant='contained'
+                            onClick={() => window.open(goToDashboardLink)}
+                        >Go to dashboard</Button>
+                        <Button
+                            color='primary'
+                            variant='contained'
+                            style={{ marginLeft: 5 }}
+                            onClick={() => onUploadOtherDoc()}
+                        >Upload another document</Button>
+                    </div>
                 </Stepper>
-                
+
             </div>
         </Dialog>
 

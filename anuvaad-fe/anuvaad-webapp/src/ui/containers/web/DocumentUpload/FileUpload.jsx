@@ -25,9 +25,11 @@ import FetchModel from "../../../../flux/actions/apis/common/fetchmodel";
 import WorkFlow from "../../../../flux/actions/apis/common/fileupload";
 import DocumentUpload from "../../../../flux/actions/apis/document_upload/document_upload";
 import { createJobEntry } from "../../../../flux/actions/users/async_job_management";
+import FetchDocument from "../../../../flux/actions/apis/view_document/fetch_document";
 import Dialog from "@material-ui/core/Dialog";
 import { Container } from "@material-ui/core";
 import UploadProcessModal from "./UploadProcessModal";
+import Axios from "axios";
 
 const TELEMETRY = require("../../../../utils/TelemetryManager");
 const LANG_MODEL = require("../../../../utils/language.model");
@@ -83,6 +85,8 @@ class PdfUpload extends Component {
       jobDescription: "",
       formatWarning: false,
       variant: "success",
+      documentState: "",
+      showProcessModal: false
     };
   }
 
@@ -164,6 +168,20 @@ class PdfUpload extends Component {
     const apiObj = new DocumentUpload(this.state.files, "docUplaod", modelId);
     APITransport(apiObj);
   };
+
+  onCopyClick() {
+    this.setState({
+      message:
+        "Job id Copied to clipboard.",
+      open: true,
+      variant: "info",
+    });
+  }
+
+  onUploadOtherDoc(){
+    this.handleDelete();
+    this.setState({showProcessModal: false, documentState: ""});
+  }
 
   handleSubmit(e) {
     if (
@@ -275,8 +293,8 @@ class PdfUpload extends Component {
 
   componentDidUpdate(prevProps) {
 
-    if(prevProps.match.path !== this.props.match.path){
-      this.setState({uploadType: this.props.match.path === "/document-upload" ? true : false,})
+    if (prevProps.match.path !== this.props.match.path) {
+      this.setState({ uploadType: this.props.match.path === "/document-upload" ? true : false, })
     }
 
     if (prevProps.fetch_models.models !== this.props.fetch_models.models) {
@@ -333,12 +351,46 @@ class PdfUpload extends Component {
         this.props.workflowStatus.input.jobName,
         this.props.workflowStatus.jobID
       );
-      history.push(`${process.env.PUBLIC_URL}/view-document`);
+
+      this.setState({showProcessModal: true});
+      
+      this.fetchDocumentTranslationProcess([this.props.workflowStatus.jobID]);
+
+      const bulkCallInterval = setInterval(() => {
+        this.fetchDocumentTranslationProcess([this.props.workflowStatus.jobID]);
+      }, 20000);
+  
+      if (this.state.documentState.status === "COMPLETED") {
+        clearInterval(bulkCallInterval)
+        this.setState({ documentState: ""})
+      }
+
+      // history.push(`${process.env.PUBLIC_URL}/view-document`);
+
     }
   }
 
   componentWillUnmount() {
     TELEMETRY.pageLoadCompleted("document-upload");
+  }
+
+  fetchDocumentTranslationProcess(jobIds) {
+    let apiObj = new FetchDocument(
+      0,
+      0,
+      jobIds,
+      false,
+      false,
+      false
+    );
+
+    Axios.post(apiObj?.endpoint, apiObj?.getBody(), { headers: apiObj?.getHeaders().headers })
+      .then(res => {
+        // console.log("res -------- ", res);
+        this.setState({ documentState: res?.data?.jobs[0]})
+      }).catch(err => {
+        console.log("err -------- ", err);
+      })
   }
 
   processSourceLanguageSelected = (event) => {
@@ -412,7 +464,7 @@ class PdfUpload extends Component {
     return (
       <Grid item xs={12} sm={12} lg={12} xl={12} style={{ marginTop: "3%" }}>
         <Grid item xs={12} sm={12} lg={12} xl={12}>
-          <Typography 
+          <Typography
             style={{
               fontSize: "0.9rem",
               fontWeight: "600",
@@ -443,7 +495,7 @@ class PdfUpload extends Component {
               <MenuItem
                 id={lang.language_name}
                 key={lang.language_code}
-                style={{fontSize: "16px", fontFamily: "Roboto"}}
+                style={{ fontSize: "16px", fontFamily: "Roboto" }}
                 value={lang.language_code + ""}
               >
                 {lang.language_name}
@@ -461,7 +513,7 @@ class PdfUpload extends Component {
     return (
       <Grid item xs={12} sm={12} lg={12} xl={12}>
         <Grid item xs={12} sm={12} lg={12} xl={12}>
-          <Typography 
+          <Typography
             style={{
               fontSize: "0.9rem",
               fontWeight: "600",
@@ -493,7 +545,7 @@ class PdfUpload extends Component {
               <MenuItem
                 id={lang.language_name}
                 key={lang.language_code}
-                style={{fontSize: "16px", fontFamily: "Roboto"}}
+                style={{ fontSize: "16px", fontFamily: "Roboto" }}
                 value={lang.language_code + ""}
               >
                 {lang.language_name}
@@ -508,10 +560,10 @@ class PdfUpload extends Component {
   render() {
     const { classes } = this.props;
     return (
-      <div style={{  }}>
+      <div style={{}}>
         <Toolbar />
 
-        <div className={classes.div} style={{paddingTop: "2%", fontSize: "19px", fontWeight: "500"}}>
+        <div className={classes.div} style={{ paddingTop: "2%", fontSize: "19px", fontWeight: "500" }}>
           <Typography
             // variant="h4"
             className={classes.typographyHeader}
@@ -520,11 +572,11 @@ class PdfUpload extends Component {
           </Typography>
           <br />
           {this.state.uploadType ? (
-            <Typography variant="subtitle1" style={{fontSize: "1rem"}} className={classes.note}>
+            <Typography variant="subtitle1" style={{ fontSize: "1rem" }} className={classes.note}>
               {translate("pdf_upload.page.label.uploadMessage")}
             </Typography>
           ) : (
-            <Typography variant="subtitle1" style={{fontSize: "1rem"}} className={classes.typographySubHeader}>
+            <Typography variant="subtitle1" style={{ fontSize: "1rem" }} className={classes.typographySubHeader}>
               "Upload file that you want to collect data."
             </Typography>
           )}
@@ -569,7 +621,7 @@ class PdfUpload extends Component {
 
                 <Grid item xs={12} sm={12} lg={12} xl={12}>
                   <Grid item xs={12} sm={12} lg={12} xl={12}>
-                    <Typography 
+                    <Typography
                       style={{
                         fontSize: "0.9rem",
                         fontWeight: "600",
@@ -650,7 +702,15 @@ class PdfUpload extends Component {
             )}
           </Paper>
         </div>
-        {/* <UploadProcessModal /> */}
+        
+        {this.state.documentState && this.state.showProcessModal && 
+          <UploadProcessModal 
+            progressData={this.state.documentState} 
+            onCopyClick={()=>this.onCopyClick()} 
+            onUploadOtherDoc={()=>this.onUploadOtherDoc()} 
+            goToDashboardLink={`${process.env.PUBLIC_URL}/view-document`} 
+          />
+        }
       </div>
     );
   }
