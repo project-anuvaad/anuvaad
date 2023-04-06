@@ -117,7 +117,7 @@ class StartDigitizationUpload extends React.Component {
         if (prevProps.documentUplaod !== this.props.documentUplaod) {
             var sourceLang = LANG_MODEL.get_language_name(this.props.fetch_models.models, this.state.source_language_code, true)
             const { APITransport } = this.props;
-            const apiObj = new WorkFlow(this.state.workflow, this.props.documentUplaod.data, this.state.fileName, this.state.source_language_code,
+            const apiObj = new WorkFlow(this.state.workflow, this.props.documentUplaod.data, this.state.workspaceName ? this.state.workspaceName : this.state.fileName, this.state.source_language_code,
                 this.state.target_language_code, this.state.path, this.state.model, "", sourceLang);
             APITransport(apiObj);
         }
@@ -132,14 +132,14 @@ class StartDigitizationUpload extends React.Component {
 
             this.setState({ showProcessModal: true, showLoader: false });
 
-            this.fetchDocumentTranslationProcess([this.props.workflowStatus.jobID]);
+            this.fetchDocumentDigitizeProcess([this.props.workflowStatus.jobID]);
 
-            const bulkCallInterval = setInterval(() => {
-                this.fetchDocumentTranslationProcess([this.props.workflowStatus.jobID]);
+            this.bulkCallInterval = setInterval(() => {
+                this.fetchDocumentDigitizeProcess([this.props.workflowStatus.jobID]);
             }, 20000);
 
             if (this.state.documentState.status === "COMPLETED") {
-                clearInterval(bulkCallInterval)
+                clearInterval(this.bulkCallInterval)
                 this.setState({ documentState: "" })
             }
 
@@ -147,7 +147,7 @@ class StartDigitizationUpload extends React.Component {
         }
     }
 
-    fetchDocumentTranslationProcess(jobIds) {
+    fetchDocumentDigitizeProcess(jobIds) {
         let apiObj = new FetchDigitizedDocument(
             0,
             0,
@@ -177,7 +177,7 @@ class StartDigitizationUpload extends React.Component {
 
     onUploadOtherDoc() {
         this.handleDelete();
-        this.setState({ showProcessModal: false, documentState: "" });
+        this.setState({ showProcessModal: false, documentState: "", source_language_code: "", target_language_code: "", workspaceName: "" });
     }
 
 
@@ -194,7 +194,6 @@ class StartDigitizationUpload extends React.Component {
         const { classes } = this.props
         return <MuiThemeProvider theme={theme}>
             <DropzoneArea className={classes.DropZoneArea}
-                showPreviewsInDropzone
                 key={this.state.key}
                 dropZoneClass={classes.dropZoneArea}
                 acceptedFiles={[".txt,audio/*,.ods,.pptx,image/*,.psd,.pdf,.xlsm,.xltx,.xltm,.xla,.xltm,.docx,.rtf", ".txt", ".pdf", ".doc", ".ppt", ".excel", ".xlsx", ".xls", ".log", ".xlsb"]}
@@ -210,7 +209,9 @@ class StartDigitizationUpload extends React.Component {
 
     handleDelete = () => {
         this.setState({
-            files: []
+            files: [],
+            fileName: "",
+            path: "",
         });
     };
 
@@ -404,7 +405,9 @@ class StartDigitizationUpload extends React.Component {
                             <Grid item xs={12} sm={6} lg={6} xl={6}>
                                 <MuiThemeProvider theme={theme}>
                                     <DropzoneArea className={classes.DropZoneArea}
-                                        showPreviewsInDropzone
+                                        showPreviewsInDropzone={
+                                            this.state.files.length ? true : false
+                                        }
                                         dropZoneClass={classes.dropZoneArea}
                                         acceptedFiles={[".txt,audio/*,.ods,.pptx,image/*,.psd,.pdf,.xlsm,.xltx,.xltm,.xla,.xltm,.docx,.rtf", ".txt", ".pdf", ".doc", ".ppt", ".excel", ".xlsx", ".xls", ".log", ".xlsb"]}
                                         onChange={this.handleChange.bind(this)}

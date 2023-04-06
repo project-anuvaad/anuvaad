@@ -180,7 +180,7 @@ class PdfUpload extends Component {
 
   onUploadOtherDoc(){
     this.handleDelete();
-    this.setState({showProcessModal: false, documentState: ""});
+    this.setState({showProcessModal: false, documentState: "", source_language_code: "", target_language_code : "", workspaceName: ""});
   }
 
   handleSubmit(e) {
@@ -702,7 +702,7 @@ class PdfUpload extends Component {
             )}
           </Paper>
         </div>
-        
+
         {this.state.documentState && this.state.showProcessModal && 
           <UploadProcessModal 
             progressData={this.state.documentState} 
