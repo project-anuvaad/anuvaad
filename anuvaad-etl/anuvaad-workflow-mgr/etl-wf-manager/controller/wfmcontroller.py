@@ -117,8 +117,13 @@ def mark_inactive():
 @wfmapp.route(context_path + '/v1/workflow/setGranularity', methods=["POST"])
 def search_wf_configs():
     service = WFMService()
+    validator = WFMValidator()
     req_criteria = request.get_json()
     try:
+        validator.validate_granularity()
+        error = validator.common_validate(data)
+        if error is not None:
+            return error, 400        
         data = add_headers(data, request)
         if "userIDs" in req_criteria.keys():
             if not req_criteria["userIDs"]:
