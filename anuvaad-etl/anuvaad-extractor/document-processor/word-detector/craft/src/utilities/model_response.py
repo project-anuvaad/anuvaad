@@ -52,6 +52,7 @@ class CustomResponse():
     def success_response(self, workflow_id, task_start_time, task_end_time, tool_name, step_order, output_json_data):
         self.status_code['workflowCode'] = workflow_id
         self.status_code['taskStarttime'] = task_start_time
+        self.status_code['taskStarttime'] = int(task_start_time)
         self.status_code['taskEndTime'] = task_end_time
         self.status_code['output'] = output_json_data
         self.status_code['tool'] = tool_name
