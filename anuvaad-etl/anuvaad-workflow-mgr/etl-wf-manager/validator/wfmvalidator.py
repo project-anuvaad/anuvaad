@@ -166,3 +166,9 @@ class WFMValidator:
                 return post_error("USERS_NOT_FOUND", "users is mandatory for all files for this wf", None)
             if 'description' not in file.keys():
                 return post_error("DESC_NOT_FOUND", "description is mandatory for all files for this wf", None)
+
+    def validate_granularity(self, data):
+            if 'manualStartTime' not in data.keys() and 'manualEndTime' not in data.keys():
+                return post_error("TIMESTAMP_NOT_FOUND", "manualStartTime or manualEndTime not found", None)
+            if 'jobID' not in data.keys():
+                return post_error("JOBID_NOT_FOUND", "jobID not found", None)

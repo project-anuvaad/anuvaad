@@ -412,8 +412,9 @@ class WFMService:
             log_exception("Exception while searching jobs: " + str(e), None, e)
             return None
 
-    def set_granularity():
-        pass
+    def set_granularity(self,data):
+        jobDetails = wfmutils.get_job_details(data["jobID"])
+        log_info("Job Details"+str(jobDetails),jobDetails)
 
     # Method to get wf configs from the remote yaml file.
     def get_wf_configs(self):

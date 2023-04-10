@@ -120,8 +120,7 @@ def search_wf_configs():
     validator = WFMValidator()
     req_criteria = request.get_json()
     try:
-        validator.validate_granularity()
-        error = validator.common_validate(data)
+        error = validator.validate_granularity(req_criteria)
         if error is not None:
             return error, 400        
         data = add_headers(data, request)
