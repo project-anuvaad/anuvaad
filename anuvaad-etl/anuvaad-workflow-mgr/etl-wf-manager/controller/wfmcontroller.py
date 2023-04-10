@@ -113,25 +113,26 @@ def mark_inactive():
         log_exception("Something went wrong: " + str(e), None, e)
         return {"status": "FAILED", "message": "Something went wrong"}, 400
 
-# REST endpoint to set manual editing start and end time
-# @wfmapp.route(context_path + '/v1/workflow/setGranularity', methods=["POST"])
-# def search_wf_configs():
-#     service = WFMService()
-#     req_criteria = request.get_json()
-#     try:
-#         if "userIDs" in req_criteria.keys():
-#             if not req_criteria["userIDs"]:
-#                 req_criteria["userIDs"] = [request.headers["x-user-id"]]
-#         else:
-#             req_criteria["userIDs"] = [request.headers["x-user-id"]]
-#         response = service.set_granularity(req_criteria, False)
-#         if response:
-#             return jsonify(response), 200
-#         else:
-#             return jsonify({[]}), 400
-#     except Exception as e:
-#         log_exception("Something went wrong: " + str(e), None, e)
-#         return {"status": "FAILED", "message": "Something went wrong"}, 400
+#REST endpoint to set manual editing start and end time
+@wfmapp.route(context_path + '/v1/workflow/setGranularity', methods=["POST"])
+def search_wf_configs():
+    service = WFMService()
+    req_criteria = request.get_json()
+    try:
+        data = add_headers(data, request)
+        if "userIDs" in req_criteria.keys():
+            if not req_criteria["userIDs"]:
+                req_criteria["userIDs"] = [request.headers["x-user-id"]]
+        else:
+            req_criteria["userIDs"] = [request.headers["x-user-id"]]
+        response = service.set_granularity(req_criteria, False)
+        if response:
+            return jsonify(response), 200
+        else:
+            return jsonify({[]}), 400
+    except Exception as e:
+        log_exception("Something went wrong: " + str(e), None, e)
+        return {"status": "FAILED", "message": "Something went wrong"}, 400
 
 # REST endpoint to fetch configs
 @wfmapp.route(context_path + '/v1/workflow/configs/search', methods=["GET"])
