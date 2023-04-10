@@ -115,7 +115,7 @@ def mark_inactive():
 
 #REST endpoint to set manual editing start and end time
 @wfmapp.route(context_path + '/v1/workflow/setGranularity', methods=["POST"])
-def search_wf_configs():
+def set_granularity():
     service = WFMService()
     validator = WFMValidator()
     req_criteria = request.get_json()
@@ -129,7 +129,7 @@ def search_wf_configs():
                 req_criteria["userIDs"] = [request.headers["x-user-id"]]
         else:
             req_criteria["userIDs"] = [request.headers["x-user-id"]]
-        response = service.set_granularity(req_criteria, False)
+        response = service.set_granularity(req_criteria)
         if response:
             return jsonify(response), 200
         else:

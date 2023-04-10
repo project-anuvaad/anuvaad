@@ -4,6 +4,7 @@ import os
 #CROSS-MODULE-COMMON-CONFIGS
 kafka_bootstrap_server_host = os.environ.get('KAFKA_BOOTSTRAP_SERVER_HOST', 'localhost:9092')
 mongo_server_host = os.environ.get('MONGO_CLUSTER_URL', 'mongodb://localhost:27017,localhost:27018/?replicaSet=foo')
+#mongo_server_host = os.environ.get('MONGO_CLUSTER_URL', 'mongodb://localhost:27017/?readPreference=primary&ssl=false')
 app_host = os.environ.get('ANUVAAD_ETL_WFM_HOST', '0.0.0.0')
 app_port = os.environ.get('ANUVAD_ETL_WFM_PORT', 5001)
 
@@ -69,5 +70,5 @@ tool_config_url = os.environ.get('ANUVAAD_ETL_TOOL_CONFIG_FILE_URL',
 log_msg_start = " process started."
 log_msg_end = " process ended."
 log_msg_error = " has encountered an exception, job ended."
-
+granularity_list = ["manualStartTime","manualEndTime"]
 

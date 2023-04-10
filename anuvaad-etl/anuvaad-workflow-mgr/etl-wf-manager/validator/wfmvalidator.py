@@ -1,6 +1,7 @@
 #!/bin/python
 from configs.wfmconfig import tool_ocrgooglevision, tool_ocrtesseract, tool_blocksegmenter, tool_ocrdd10googlevision, tool_ocrdd15googlevision, tool_ocrdd20tesseract
 from configs.wfmconfig import is_sync_flow_enabled, is_async_flow_enabled, tool_translator, tool_worddetector, tool_layoutdetector, tool_annotator
+from configs.wfmconfig import granularity_list
 from utilities.wfmutils import WFMUtils
 import logging
 
@@ -168,7 +169,13 @@ class WFMValidator:
                 return post_error("DESC_NOT_FOUND", "description is mandatory for all files for this wf", None)
 
     def validate_granularity(self, data):
-            if 'manualStartTime' not in data.keys() and 'manualEndTime' not in data.keys():
-                return post_error("TIMESTAMP_NOT_FOUND", "manualStartTime or manualEndTime not found", None)
+            if 'granularity' not in data.keys():
+                return post_error("GRANULARITY_NOT_FOUND", "granularity is mandatory key", None)
+            if isinstance(data['granularity'],list) and len(data['granularity'])>0:
+                    for each_granularity in data['granularity']:
+                        if each_granularity not in granularity_list:
+                            return post_error("TIMESTAMP_NOT_FOUND", "Key within granularity is not valid", None)
+            else:
+                return post_error("GRANULARITY_NOT_FOUND", "granularity values are missing", None)
             if 'jobID' not in data.keys():
                 return post_error("JOBID_NOT_FOUND", "jobID not found", None)

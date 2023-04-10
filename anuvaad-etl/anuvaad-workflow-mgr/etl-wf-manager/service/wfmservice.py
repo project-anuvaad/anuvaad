@@ -413,8 +413,20 @@ class WFMService:
             return None
 
     def set_granularity(self,data):
-        jobDetails = wfmutils.get_job_details(data["jobID"])
-        log_info("Job Details"+str(jobDetails),jobDetails)
+        try: 
+            job_details = wfmutils.get_job_details(data["jobID"])
+            log_info("Job Details"+str(job_details),job_details)
+            job_details = job_details[0]
+            for each_granularity in data['granularity']:
+                if each_granularity not in job_details.keys():
+                    job_details[each_granularity] = eval(str(time.time()).replace('.', '')[0:13])    
+                    self.update_job_details(job_details, False)
+                else:
+                    return {"status": "SUCCESS","message":"Granularity already exists"}
+            return {"status": "SUCCESS","message":"Granularity set successfully"}
+        except Exception as e:
+            log_exception("Exception while setting granularity: " + str(e), None, None)
+            return {"status": "FAILED", "message": "Exception while setting granularity", "succeeded": [], "failed": data["jobID"]}
 
     # Method to get wf configs from the remote yaml file.
     def get_wf_configs(self):
