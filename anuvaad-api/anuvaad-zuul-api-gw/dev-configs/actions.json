@@ -735,6 +735,14 @@
             "active":true,
             "whiteList":false,
             "description":"API for Aanuvaad-Doc-Preprocessor"
-        }
+        },
+        {
+            "id":"f61dc1c6-f93a-44da-a8d2-32e5c9bf9d26",
+            "uri":"/anuvaad-etl/wf-manager/v1/workflow/setGranularity",
+            "module":"WORKFLOW-MANAGER",
+            "active":true,
+            "whiteList":false,
+            "description":"API for setting granularity status"
+        }    
     ]
 }
