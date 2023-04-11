@@ -1019,6 +1019,16 @@
             "role":"TRANSLATOR",
             "actionID": "f61dc1c6-f93a-44da-a8d2-32e5c9bf9d26",
             "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "f61dc1c6-f93a-44da-a8d2-32e5c9bf9d26",
+            "active":true
+        },
+        {
+            "role":"SUPERADMIN",
+            "actionID": "f61dc1c6-f93a-44da-a8d2-32e5c9bf9d26",
+            "active":true
         }
     ]
 }
