@@ -70,5 +70,4 @@ tool_config_url = os.environ.get('ANUVAAD_ETL_TOOL_CONFIG_FILE_URL',
 log_msg_start = " process started."
 log_msg_end = " process ended."
 log_msg_error = " has encountered an exception, job ended."
-granularity_list = ["manualStartTime","manualEndTime"]
-
+granularity_list = ["manualEditingStartTime","manualEditingEndTime","parallelDocumentUpload"]

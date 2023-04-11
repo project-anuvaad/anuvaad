@@ -174,7 +174,7 @@ class WFMValidator:
             if isinstance(data['granularity'],list) and len(data['granularity'])>0:
                     for each_granularity in data['granularity']:
                         if each_granularity not in granularity_list:
-                            return post_error("TIMESTAMP_NOT_FOUND", "Key within granularity is not valid", None)
+                            return post_error("GRANULARITY_NOT_FOUND", "Key within granularity is not valid", None)
             else:
                 return post_error("GRANULARITY_NOT_FOUND", "granularity values are missing", None)
             if 'jobID' not in data.keys():

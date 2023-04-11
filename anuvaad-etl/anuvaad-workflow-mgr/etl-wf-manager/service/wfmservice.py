@@ -6,8 +6,7 @@ from utilities.wfmutils import WFMUtils
 from kafkawrapper.wfmproducer import Producer
 from repository.wfmrepository import WFMRepository
 from validator.wfmvalidator import WFMValidator
-from configs.wfmconfig import anu_etl_wfm_core_topic, log_msg_start, log_msg_end, module_wfm_name, page_default_limit, \
-    anu_etl_notifier_input_topic, total_no_of_partitions
+from configs.wfmconfig import anu_etl_wfm_core_topic, log_msg_start, log_msg_end, module_wfm_name, page_default_limit, anu_etl_notifier_input_topic, total_no_of_partitions
 from anuvaad_auditor.errorhandler import post_error_wf, post_error, log_exception
 from anuvaad_auditor.loghandler import log_info, log_error
 from configs.wfmconfig import app_context
@@ -418,8 +417,16 @@ class WFMService:
             log_info("Job Details"+str(job_details),job_details)
             job_details = job_details[0]
             for each_granularity in data['granularity']:
-                if each_granularity not in job_details.keys():
-                    job_details[each_granularity] = eval(str(time.time()).replace('.', '')[0:13])    
+                if 'granularity' not in job_details.keys():
+                    job_details['granularity'] = {}
+                if each_granularity not in job_details['granularity'].keys():
+                    job_details['granularity'][each_granularity] = eval(str(time.time()).replace('.', '')[0:13]) 
+                    if each_granularity == 'manualEditingStartTime':
+                        job_details['granularity']['manualEditingStatus'] = "IN PROGRESS"
+                    elif each_granularity == 'manualEditingEndTime':
+                        job_details['granularity']['manualEditingStatus'] = "COMPLETED"                    
+                    elif each_granularity == "parallelDocumentUpload":
+                        job_details['granularity']['parallelDocumentUploadStatus'] = "COMPLETED"                    
                     self.update_job_details(job_details, False)
                 else:
                     return {"status": "SUCCESS","message":"Granularity already exists"}
