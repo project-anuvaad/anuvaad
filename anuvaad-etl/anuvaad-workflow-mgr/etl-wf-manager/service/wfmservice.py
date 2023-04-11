@@ -373,6 +373,9 @@ class WFMService:
                             jobIDs.append(jobID)
                         if len(jobIDs) > 0:
                             criteria["jobID"] = {"$in": jobIDs}
+            if 'filterByStartTime' in req_criteria.keys():
+                if 'startTimeStamp' in req_criteria['filterByStartTime'].keys() and 'endTimeStamp' in req_criteria['filterByStartTime'].keys():
+                            criteria["startTime"] = { "$gte": req_criteria['filterByStartTime']['startTimeStamp'], "$lte": req_criteria['filterByStartTime']['endTimeStamp']}
             if 'workflowCodes' in req_criteria.keys():
                 if req_criteria["workflowCodes"]:
                     wCodes = []
