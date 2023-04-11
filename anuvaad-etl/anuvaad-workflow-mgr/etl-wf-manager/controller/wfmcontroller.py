@@ -123,7 +123,7 @@ def set_granularity():
         error = validator.validate_granularity(req_criteria)
         if error is not None:
             return error, 400        
-        data = add_headers(data, request)
+        data = add_headers(req_criteria, request)
         if "userIDs" in req_criteria.keys():
             if not req_criteria["userIDs"]:
                 req_criteria["userIDs"] = [request.headers["x-user-id"]]
