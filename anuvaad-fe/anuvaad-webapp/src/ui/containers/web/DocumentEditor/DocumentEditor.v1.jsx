@@ -43,6 +43,8 @@ import PageCardHtml from './PageCardHtml';
 import Split from 'react-split';
 import '../../../styles/web/InteractiveEditor.css';
 import Loader from "../../../components/web/common/CircularLoader";
+import UpdateGranularStatus from "../../../../flux/actions/apis/document_translate/update_granular_status";
+import FetchDocument from "../../../../flux/actions/apis/view_document/fetch_document";
 const LANG_MODEL = require('../../../../utils/language.model')
 const PAGE_OPS = require("../../../../utils/page.operations");
 const BLOCK_OPS = require("../../../../utils/block.operations");
@@ -75,9 +77,10 @@ class DocumentEditor extends React.Component {
       currentIndex: 0,
       download: false,
       targLangCode: "",
-      srcLangCode:"",
+      srcLangCode: "",
       transliterationChecked: false,
-
+      enableCompleteButton: false,
+      updateManualStartTime: false,
       fetchNext: true.valueOf,
     }
     this.forMergeSentences = []
@@ -87,9 +90,43 @@ class DocumentEditor extends React.Component {
    * life cycle methods
    */
   componentDidMount() {
+    // console.log("this.props ---- ", this.props);
     TELEMETRY.pageLoadCompleted('document-editor')
     let recordId = this.props.match.params.jobid;
-    let jobId = recordId ? recordId.split("|")[0] : ""
+    let jobId = recordId ? recordId.split("|")[0] : "";
+
+    // get current status of document start
+    const apiObj = new FetchDocument(
+      0,
+      this.props.job_details.count,
+      [jobId],
+      false,
+      false,
+      false
+    );
+
+    fetch(apiObj.apiEndPoint(), {
+      method: 'post',
+      body: JSON.stringify(apiObj.getBody()),
+      headers: apiObj.getHeaders().headers
+    }).then(async response => {
+      const rsp_data = await response.json();
+      console.log("rsp_data ---- ", rsp_data);
+      let docArr = rsp_data?.jobs;
+      if(docArr?.length > 0){
+        if(
+          (docArr[0]?.granularity && docArr[0]?.granularity?.manualEditingStatus === "IN PROGRESS") 
+          || 
+          (!docArr[0]?.granularity && docArr[0]?.status === "COMPLETED")){
+          this.setState({enableCompleteButton: true});
+        }
+        if(!docArr[0]?.granularity && docArr[0]?.status === "COMPLETED"){
+          this.setState({updateManualStartTime: true});
+        }
+      }
+    })
+
+    // get current status of document end
 
     localStorage.setItem("recordId", recordId);
     localStorage.setItem("inputFile", this.props.match.params.inputfileid)
@@ -103,8 +140,8 @@ class DocumentEditor extends React.Component {
       let model = LANG_MODEL.fetchModel(parseInt(this.props.match.params.modelId), this.props.fetch_models, this.props.match.params.source_language_code, this.props.match.params.target_language_code)
       if (model && model.hasOwnProperty('source_language_name') && model.hasOwnProperty('target_language_name')) {
         TELEMETRY.startTranslatorFlow(model.source_language_name, model.target_language_name, this.props.match.params.inputfileid, jobId);
-        this.setState({targLangCode: model.target_language_code,srcLangCode: model.source_language_code},()=>{
-          this.getTransliterationModel(this.state.targLangCode,this.state.srcLangCode);
+        this.setState({ targLangCode: model.target_language_code, srcLangCode: model.source_language_code }, () => {
+          this.getTransliterationModel(this.state.targLangCode, this.state.srcLangCode);
         });
       }
     }
@@ -159,17 +196,57 @@ class DocumentEditor extends React.Component {
       let model = LANG_MODEL.fetchModel(parseInt(this.props.match.params.modelId), this.props.fetch_models, this.props.match.params.source_language_code, this.props.match.params.target_language_code)
       if (model && model.hasOwnProperty('source_language_name') && model.hasOwnProperty('target_language_name')) {
         TELEMETRY.startTranslatorFlow(model.source_language_name, model.target_language_name, this.props.match.params.inputfileid, jobId);
-        this.setState({targLangCode: model.target_language_code,srcLangCode: model.source_language_code},()=>{
-          this.getTransliterationModel(this.state.targLangCode,this.state.srcLangCode);
+        this.setState({ targLangCode: model.target_language_code, srcLangCode: model.source_language_code }, () => {
+          this.getTransliterationModel(this.state.targLangCode, this.state.srcLangCode);
         });
+      }
+    }
+
+    if (prevProps.job_status !== this.props.job_status) {
+      let currentSavedandTotalSetencesArr = this.props.job_status?.status.split(" of ");
+      let previousSavedandTotalSetencesArr = prevProps.job_status?.status.split(" of ");
+      // console.log("currentSavedandTotalSetencesArr ----- ", currentSavedandTotalSetencesArr);
+      // console.log("previousSavedandTotalSetencesArr ----- ", previousSavedandTotalSetencesArr);
+      if (previousSavedandTotalSetencesArr[0] == 0 && currentSavedandTotalSetencesArr[0] == 1) {
+        // update granular status to manual editing started
+        this.updateGranularity(["manualEditingStartTime"]);
       }
     }
 
   }
 
-  getTransliterationModel(srcLang){
+  updateGranularity(status) {
+    let recordId = this.props.match.params.jobid;
+    let jobId = recordId ? recordId.split("|")[0] : ""
+    const apiObj = new UpdateGranularStatus(jobId, status);
+
+    fetch(apiObj.apiEndPoint(), {
+      method: 'post',
+      body: JSON.stringify(apiObj.getBody()),
+      headers: apiObj.getHeaders().headers
+    }).then(async response => {
+      const rsp_data = await response.json();
+      // console.log("rsp_data ---- ", rsp_data);
+      this.setState({enableCompleteButton: true});
+      const { APITransport } = this.props;
+      const apiObj = new FetchDocument(
+        0,
+        this.props.job_details.count,
+        [],
+        false,
+        false,
+        false
+      );
+      APITransport(apiObj);
+    }).catch(err => {
+      console.log(err);
+    })
+
+  }
+
+  getTransliterationModel(srcLang) {
     const { APITransport } = this.props;
-    const apiObj = new fetchTransliterationModelID(this.state.srcLangCode,this.state.targLangCode);
+    const apiObj = new fetchTransliterationModelID(this.state.srcLangCode, this.state.targLangCode);
     APITransport(apiObj);
 
   }
@@ -263,7 +340,7 @@ class DocumentEditor extends React.Component {
     let model = LANG_MODEL.fetchModel(parseInt(this.props.match.params.modelId), this.props.fetch_models, this.props.match.params.source_language_code, this.props.match.params.target_language_code)
     this.informUserProgress(translate('common.page.label.SENTENCE_MERGED'))
     let apiObj = new WorkFlowAPI("WF_S_TR", updated_blocks.blocks, this.props.match.params.jobid, model.source_language_code,
-    model.target_language_code, '', model, sentence_ids)
+      model.target_language_code, '', model, sentence_ids)
     const apiReq = fetch(apiObj.apiEndPoint(), {
       method: 'post',
       body: JSON.stringify(apiObj.getBody()),
@@ -377,7 +454,7 @@ class DocumentEditor extends React.Component {
     let model = LANG_MODEL.fetchModel(parseInt(this.props.match.params.modelId), this.props.fetch_models, this.props.match.params.source_language_code, this.props.match.params.target_language_code)
     this.informUserProgress(translate('common.page.label.SENTENCE_SPLITTED'))
     let apiObj = new WorkFlowAPI("WF_S_TR", updated_blocks.blocks, this.props.match.params.jobid, model.source_language_code,
-    model.target_language_code, '', model, updated_blocks.selected_sentence_ids)
+      model.target_language_code, '', model, updated_blocks.selected_sentence_ids)
     const apiReq = fetch(apiObj.apiEndPoint(), {
       method: 'post',
       body: JSON.stringify(apiObj.getBody()),
@@ -410,7 +487,7 @@ class DocumentEditor extends React.Component {
     let model = LANG_MODEL.fetchModel(parseInt(this.props.match.params.modelId), this.props.fetch_models, this.props.match.params.source_language_code, this.props.match.params.target_language_code)
 
     let apiObj = new WorkFlowAPI("WF_S_TKTR", sentence, this.props.match.params.jobid, model.source_language_code,
-    model.target_language_code, '', model)
+      model.target_language_code, '', model)
     const apiReq = fetch(apiObj.apiEndPoint(), {
       method: 'post',
       body: JSON.stringify(apiObj.getBody()),
@@ -678,7 +755,7 @@ class DocumentEditor extends React.Component {
   }
 
   enableTransliteration = (value) => {
-    this.setState({transliterationChecked: value})
+    this.setState({ transliterationChecked: value })
   }
 
   showPreview = () => {
@@ -834,7 +911,7 @@ class DocumentEditor extends React.Component {
   }
   render() {
     return (
-      <div style={{ marginTop : 5 }}>
+      <div style={{ marginTop: 5 }}>
         <div style={{ height: "50px", marginBottom: "13px" }}> <InteractiveDocToolBar enableTransliteration={this.enableTransliteration} docView={this.state.docView} onAction={this.handleDocumentView} onShowPreview={this.showPreview} preview={this.state.preview} /></div>
 
         {!this.state.preview ?
@@ -845,6 +922,8 @@ class DocumentEditor extends React.Component {
             </Split>
             <div style={{ height: "65px", marginTop: "13px", bottom: "0px", position: "absolute", width: "100%" }}>
               <InteractivePagination count={this.props.document_contents.count}
+                enableCompleteButton={this.state.enableCompleteButton}
+                updateManualStartTime={this.state.updateManualStartTime}
                 data={this.props.document_contents.pages}
                 zoomPercent={this.state.zoomPercent}
                 processZoom={this.processZoom}
@@ -876,7 +955,9 @@ const mapStateToProps = state => ({
   active_page_number: state.active_page_number.page_number,
   document_editor_mode: state.document_editor_mode,
   fetchDocument: state.fetchDocument,
-  fetch_models: state.fetch_models.models
+  fetch_models: state.fetch_models.models,
+  job_status: state.job_status,
+  job_details: state.job_details
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators(

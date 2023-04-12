@@ -21,6 +21,7 @@ const endpoints = {
   fecthcontent: "/anuvaad/content-handler/v0/fetch-content",
   documentupload: "/anuvaad-api/file-uploader/v0/upload-file",
   documentConverter: "/anuvaad-etl/document-converter/v0/document-converter",
+  update_granular_status: "/anuvaad-etl/wf-manager/v1/workflow/setGranularity",
   word_dictionary: "/anuvaad/content-handler/v0/dictionary/search",
   save_content: "/anuvaad/content-handler/v0/save-content-sentence",
   translate: "/anuvaad-etl/translator/v1/text/translate",
