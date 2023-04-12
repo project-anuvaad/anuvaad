@@ -429,7 +429,11 @@ class WFMService:
                     elif each_granularity == 'manualEditingEndTime':
                         job_details['granularity']['manualEditingStatus'] = "COMPLETED"                    
                     elif each_granularity == "parallelDocumentUpload":
-                        job_details['granularity']['parallelDocumentUploadStatus'] = "COMPLETED"                    
+                        job_details['granularity']['parallelDocumentUploadStatus'] = "COMPLETED"     
+                        if 'manualEditingStartTime' in job_details['granularity'].keys():
+                            if 'manualEditingEndTime' not in job_details['granularity'].keys():
+                                job_details['granularity']['manualEditingStatus'] = "COMPLETED"                    
+                                job_details['granularity']['manualEditingEndTime'] = eval(str(time.time()).replace('.', '')[0:13]) 
                     self.update_job_details(job_details, False)
                 else:
                     return {"status": "SUCCESS","message":"Granularity already exists"}
