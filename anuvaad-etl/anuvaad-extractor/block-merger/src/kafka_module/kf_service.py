@@ -126,7 +126,7 @@ def block_merger_request_worker():
 
     while True:
         data            = blockMergerQueue.get(block=True)
-        task_id         = str("BM-" + eval(str(time.time()).replace('.', '')[0:13]))
+        task_id         = str("BM-" + str(time.time()).replace('.', '')[0:13])
         task_starttime  = eval(str(time.time()).replace('.', '')[0:13])
         if not data:
             continue
