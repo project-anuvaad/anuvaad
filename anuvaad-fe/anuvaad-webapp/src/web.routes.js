@@ -48,6 +48,7 @@ import MySuggestedGlossary from "./ui/containers/web/UserGlossary/MySuggestedGlo
 import UserManagement from "./ui/containers/web/User/UserManagement";
 import Analytics from "./ui/containers/web/Analytics/Analytics";
 import Intro from "./ui/containers/web/Intro/Intro";
+import UploadTranslatedDocument from "./ui/containers/web/UploadTranslatedDocument/UploadTranslatedDocument";
 
 const PrivateRoute = ({ headerAttribute: headerAttribute, component: Component, userRoles, title, drawer, showLogo, forDemo, dontShowLoader, dontShowHeader, currentMenu, authenticate, ...rest }) => (
   <Route
@@ -187,6 +188,16 @@ class AppRoutes extends React.Component {
               authenticate={this.authenticateUser}
               dontShowLoader
               currentMenu="texttranslate"
+              dontShowHeader={false}
+            />
+
+            <PrivateRoute
+              path={`${process.env.PUBLIC_URL}/upload-translated-document`}
+              userRoles={["TRANSLATOR", "ANNOTATOR"]}
+              component={UploadTranslatedDocument}
+              title="Upload Translated Document"
+              authenticate={this.authenticateUser}
+              currentMenu="upload-translated-document"
               dontShowHeader={false}
             />
 
