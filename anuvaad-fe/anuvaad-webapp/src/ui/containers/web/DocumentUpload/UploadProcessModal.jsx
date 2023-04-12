@@ -230,16 +230,16 @@ export default function UploadProcessModal(props) {
         let minutes = (ms / (1000 * 60)).toFixed(1);
         let hours = (ms / (1000 * 60 * 60)).toFixed(1);
         let days = (ms / (1000 * 60 * 60 * 24)).toFixed(1);
-        if (seconds < 60) return seconds + " Sec";
-        else if (minutes < 60) return minutes + " Min";
-        else if (hours < 24) return hours + " Hrs";
-        else return days + " Days"
+        if (seconds < 60) return Math.ceil(seconds) + " Sec";
+        else if (minutes < 60) return Math.ceil(minutes) + " Min";
+        else if (hours < 24) return Math.ceil(hours) + " Hrs";
+        else return Math.ceil(days) + " Days"
     }
 
     useEffect(() => {
 
         // setSteps(progressData?.taskDetails);
-        console.log("progressData --- ", progressData);
+        // console.log("progressData --- ", progressData);
         if (progressData?.taskDetails) {
             let modifiedData = progressData?.taskDetails?.map((el, i) => {
                 if ("taskEndTime" in el) {
@@ -248,7 +248,12 @@ export default function UploadProcessModal(props) {
                     el["endTimeProcess"] = parseInt(el["taskendTime"]);
                 }
 
-                el.startTimeProcess = parseInt(el.taskStarttime);
+                if ("taskStarttime" in el) {
+                    el["startTimeProcess"] = parseInt(el["taskStarttime"]);
+                } else {
+                    el["startTimeProcess"] = parseInt(el["taskStartTime"]);
+                }
+
                 return el;
             })
             setSteps(modifiedData);
@@ -288,17 +293,20 @@ export default function UploadProcessModal(props) {
 
                 <Divider />
                 <Stepper activeStep={steps.length - 1} orientation="vertical">
-                    {steps.length > 0 && steps?.map((process, index) => (
+                    {steps.length > 0 ? steps?.map((process, index) => (
                         <Step key={process?.stepOrder} active={process?.status === "SUCCESS" ? true : false}>
                             <StepLabel>{process?.state}</StepLabel>
 
                             <StepContent>
                                 <Typography variant='body2'>{process?.status}</Typography>
-                                {process?.status === "SUCCESS" && <Typography variant='caption'>Time Taken - {msToTime(process?.endTimeProcess - process?.startTimeProcess)}</Typography>}
+                                {process?.status === "SUCCESS" && <Typography variant='caption'>Time Taken : {msToTime(process?.endTimeProcess - process?.startTimeProcess)}</Typography>}
                             </StepContent>
                         </Step>
-                    ))}
+                    )) :
+                        <Typography variant='body2'>Processing...</Typography>
+                    }
                     {progressData.status === "INPROGRESS" && <CircularProgress />}
+                    {progressData.status === "FAILED" && <Typography style={{color: "red"}} variant='body2'>Failed To Process The Docuemnt.</Typography>}
                     <div style={{ width: "100%", textAlign: "end", alignItems: "center" }}>
                         <Button
                             color='primary'

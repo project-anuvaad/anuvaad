@@ -136,14 +136,12 @@ class StartDigitizationUpload extends React.Component {
 
             this.bulkCallInterval = setInterval(() => {
                 this.fetchDocumentDigitizeProcess([this.props.workflowStatus.jobID]);
+                if (this.state.documentState.status === "INPROGRESS") {
+                    this.fetchDocumentDigitizeProcess([this.props.workflowStatus.jobID]);
+                } else {
+                    return
+                  }
             }, 20000);
-
-            if (this.state.documentState.status === "COMPLETED") {
-                clearInterval(this.bulkCallInterval)
-                this.setState({ documentState: "" })
-            }
-
-            // history.push(`${process.env.PUBLIC_URL}/document-digitization`);
         }
     }
 

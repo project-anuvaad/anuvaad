@@ -33,6 +33,7 @@ import { Button, TableCell, TableRow, TextField, TableFooter, Typography } from 
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import UploadProcessModal from "../DocumentUpload/UploadProcessModal";
+import GranularTaskDetailsModal from "./GranularTaskDetailsModal";
 
 const TELEMETRY = require("../../../../utils/TelemetryManager");
 
@@ -301,6 +302,13 @@ class ViewDocument extends React.Component {
 
   processJobTimelinesClick(jobId, recordId) {
     let taskDetails = this.getJobIdDetail(jobId);
+    console.log("taskDetails ---- ", taskDetails);
+    this.setState({ showInfo: true, message: taskDetails, dialogType: "info", dialogTitle: "File Process Information" });
+  }
+
+  processGranularStausInfoClick(jobId, recordId){
+    let taskDetails = this.getJobIdDetail(jobId);
+    console.log("taskDetails ---- ", taskDetails);
     this.setState({ showInfo: true, message: taskDetails, dialogType: "info", dialogTitle: "File Process Information" });
   }
 
@@ -519,6 +527,7 @@ class ViewDocument extends React.Component {
           filter: true,
           sort: false,
           empty: true,
+          display: false
         },
       },
       {
@@ -608,6 +617,15 @@ class ViewDocument extends React.Component {
         label: "Workflow Code",
         options: {
           display: "excluded",
+        },
+      },
+      {
+        name: "currentGranularStatus",
+        label: "Status",
+        options: {
+          filter: true,
+          sort: false,
+          empty: true,
         },
       },
       {
@@ -839,7 +857,7 @@ class ViewDocument extends React.Component {
           )}
         </div>
         {this.state.showInfo && (
-          <Dialog
+          <GranularTaskDetailsModal
             message={this.state.message}
             type={this.state.dialogType}
             handleClose={this.handleDialogClose.bind(this)}

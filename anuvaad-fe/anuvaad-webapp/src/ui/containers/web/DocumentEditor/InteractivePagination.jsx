@@ -293,7 +293,7 @@ class InteractivePagination extends React.Component {
           open={this.state.showCompleteConfirmBox}
           onClose={() => this.setState({showCompleteConfirmBox: false })}
           title="Complete Editing"
-          contentText={<><span>Are you sure you want to complete document editing?</span> <br /> <span>You won't be able to edit this document once confirm.</span></>}
+          contentText={<><span>Are you sure you want to complete document editing?</span> <br /> <span>You won't be able to edit/upload this document anymore.</span></>}
           onConfirm={() => this.setState({showCompleteConfirmBox: false })}
         />
             </>

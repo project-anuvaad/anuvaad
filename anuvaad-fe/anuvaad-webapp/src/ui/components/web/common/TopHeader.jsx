@@ -20,6 +20,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import AssessmentIcon from '@material-ui/icons/Assessment';
 import SettingsOutlinedIcon from '@material-ui/icons/SettingsOutlined';
+import PublishIcon from '@material-ui/icons/Publish';
 import React, { useState, useEffect, useRef } from "react";
 import { Link as RouterLink, NavLink } from "react-router-dom";
 import AnuvaadLogo from "../../../../assets/HeaderTransparentLogo.png";
@@ -449,6 +450,20 @@ export default function TopHeader(props) {
                     <Grid container justifyContent="center" alignItems="center" spacing={2}>
                         {(role !== "SUPERADMIN" && role !== "ADMIN") && <Grid item>
                             <div style={{ display: "flex", alignItems: "center" }}>
+                            <IconButton
+                                    style={{marginLeft: "5px", color: currentMenu === "upload-translated-document" ? "#2C2799" : "rgba(0, 0, 0, 0.54)"}}
+                                    {...{
+                                        edge: "start",
+                                        color: "#2C2799",
+                                        "aria-label": "menu",
+                                        "aria-haspopup": "true",
+                                    }}
+                                    title={"Upload Translated Document"}
+                                    className={popOverIconButton}
+                                    onClick={(e) => history.push(`${process.env.PUBLIC_URL}/upload-translated-document`)}
+                                >
+                                    <PublishIcon fontSize="large" />
+                                </IconButton>
                                 <IconButton
                                     style={{marginLeft: "5px", color: currentMenu === "view-document" || currentMenu === "document-digitization" ? "#2C2799" : "rgba(0, 0, 0, 0.54)"}}
                                     {...{

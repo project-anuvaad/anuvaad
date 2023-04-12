@@ -89,7 +89,7 @@ export default class SimpleDialog extends React.Component {
                     </DialogContent>
                     {
                         this.props.type ? <DialogActions>
-                            <Button onClick={(event) => { this.props.handleClose() }} color="primary">{translate("common.page.label.ok")}</Button>
+                            <Button onClick={(event) => { this.props.handleClose() }} color="primary">OK</Button>
                         </DialogActions> : <DialogActions>
                             <Button onClick={(event) => { handleClose() }} color="primary">{translate("common.page.label.no")}</Button>
                             <Button onClick={(event) => { handleSubmit(value, status) }} color="primary">{translate("common.page.label.yes")}</Button>

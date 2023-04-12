@@ -18,7 +18,7 @@ import history from "../../../../web.history";
 import Snackbar from "../../../components/web/common/Snackbar";
 import { translate } from "../../../../assets/localisation";
 import FileUploadStyles from "../../../styles/web/FileUpload";
-import Toolbar from "./FileUploadHeader";
+// import Toolbar from "./FileUploadHeader";
 
 import APITransport from "../../../../flux/actions/apitransport/apitransport";
 import FetchModel from "../../../../flux/actions/apis/common/fetchmodel";
@@ -356,17 +356,13 @@ class PdfUpload extends Component {
       
       this.fetchDocumentTranslationProcess([this.props.workflowStatus.jobID]);
 
-      const bulkCallInterval = setInterval(() => {
-        this.fetchDocumentTranslationProcess([this.props.workflowStatus.jobID]);
+      setInterval(() => {
+        if (this.state.documentState.status === "INPROGRESS") {
+          this.fetchDocumentTranslationProcess([this.props.workflowStatus.jobID]);
+        } else {
+          return
+        }
       }, 20000);
-  
-      if (this.state.documentState.status === "COMPLETED") {
-        clearInterval(bulkCallInterval)
-        this.setState({ documentState: ""})
-      }
-
-      // history.push(`${process.env.PUBLIC_URL}/view-document`);
-
     }
   }
 
@@ -561,7 +557,7 @@ class PdfUpload extends Component {
     const { classes } = this.props;
     return (
       <div style={{}}>
-        <Toolbar />
+        {/* <Toolbar /> */}
 
         <div className={classes.div} style={{ paddingTop: "2%", fontSize: "19px", fontWeight: "500" }}>
           <Typography
