@@ -112,7 +112,13 @@ class BlockModel(object):
     def store_s3_link(self, data):
         try:
             collections = get_db()[MONGO_s3_LINK_STORE]
-            collections.insert(data)
+            record = collections.find({"job_id":data["job_id"]})
+            if record.count() == 0:
+                collections.insert(data)
+            if record.count() != 0:
+                collections.find_one_and_update({'job_id': data['job_id']},
+                            { '$set': { "file_link.parallel_doc" : data['file_link']} })
+            
         except Exception as e:
             log_exception("db connection exception |{}".format(str(e)),  AppContext.getContext(), e)
             return False
