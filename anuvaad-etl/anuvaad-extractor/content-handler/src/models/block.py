@@ -116,7 +116,7 @@ class BlockModel(object):
             if record.count() == 0:
                 collections.insert(data)
             if record.count() != 0:
-                collections.find_one_and_update({'job_id': data['job_id']},
+                collections.update_one({'job_id': data['job_id']},
                             { '$set': { "file_link.parallel_doc" : data['file_link']} })
             
         except Exception as e:
