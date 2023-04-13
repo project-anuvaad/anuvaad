@@ -362,7 +362,7 @@ class PdfUpload extends Component {
         } else {
           return
         }
-      }, 20000);
+      }, 15000);
     }
   }
 

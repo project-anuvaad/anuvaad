@@ -140,7 +140,7 @@ class StartDigitizationUpload extends React.Component {
                 } else {
                     return
                   }
-            }, 20000);
+            }, 15000);
         }
     }
 
