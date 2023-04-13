@@ -32,6 +32,7 @@ import { Container } from "@material-ui/core";
 // import UploadProcessModal from "./UploadProcessModal";
 import Axios from "axios";
 import UploadDocToS3 from "../../../../flux/actions/apis/document_translate/s3_upload_doc";
+import ConfirmBox from "../../../components/web/common/ConfirmBox";
 
 const TELEMETRY = require("../../../../utils/TelemetryManager");
 const LANG_MODEL = require("../../../../utils/language.model");
@@ -77,7 +78,8 @@ class UploadTranslatedDocument extends Component {
             showComponent: false,
             fileName: "",
             path: "",
-            variant: "success"
+            variant: "success",
+            showCompleteConfirmBox: false,
         };
     }
 
@@ -147,50 +149,77 @@ class UploadTranslatedDocument extends Component {
     }
 
     handleSubmit(e) {
+        this.setState({ showCompleteConfirmBox: false })
         if (
             this.state.files.length > 0 && this.state.selectedJob
         ) {
-            const fData = new FormData();
-            fData.append("file", this.state.files[0]);
-            fData.append("job_id", this.state.selectedJob?.jobID);
-            fData.append("src_file", this.state.selectedJob?.input?.files[0].path);
+            let uploadJobName = this.state.files[0]?.name;
+            let selectedJobName = this.state.selectedJob?.input?.jobName;
 
-            console.log("fData --- ", Object.fromEntries(fData));
 
-            const apiObj = new UploadDocToS3(fData);
+            let uploadFileName = uploadJobName?.substr(0, uploadJobName?.lastIndexOf("."));
+            let selectedFileName = selectedJobName?.substr(0, selectedJobName?.lastIndexOf("."))
 
-            fetch(apiObj.apiEndPoint(), {
-                method: 'post',
-                body: fData,
-                headers: apiObj.getHeaders().headers
-            }).then(async response => {
-                const rsp_data = await response.json();
-                console.log("rsp_data ----- ", rsp_data);
-                if (!rsp_data.ok) {
+            // console.log("uploadFileName ---- ", uploadFileName);
+            // console.log("selectedFileName ---- ", selectedFileName);
+
+
+            if(selectedFileName+"_translated" !== uploadFileName){
+                alert(`Translated file name should be "${selectedFileName}_translated". Please rename the file and try again.`)
+            } else {
+                const fData = new FormData();
+                fData.append("file", this.state.files[0]);
+                fData.append("job_id", this.state.selectedJob?.jobID);
+                fData.append("src_file", this.state.selectedJob?.input?.files[0].path);
+    
+                console.log("fData --- ", Object.fromEntries(fData));
+    
+                const apiObj = new UploadDocToS3(fData);
+    
+                fetch(apiObj.apiEndPoint(), {
+                    method: 'post',
+                    body: fData,
+                    headers: apiObj.getHeaders().headers
+                }).then(async response => {
+                    const rsp_data = await response.json();
+                    console.log("rsp_data ----- ", rsp_data);
+                    if (!rsp_data.ok) {
+                        this.setState({
+                            open: true,
+                            message: "Request Failed.",
+                            variant: "error"
+                        })
+                    } else {
+                        this.setState({
+                            open: true,
+                            message: "Translated File Uploaded",
+                            variant: "success"
+                        });
+                        // call bulk again -----
+                        const { APITransport } = this.props;
+                        const apiObj = new FetchDocument(
+                            0,
+                            this.props.job_details.count,
+                            [],
+                            false,
+                            false,
+                            false
+                        );
+                        APITransport(apiObj);
+                        setTimeout(() => {
+                            history.push(`${process.env.PUBLIC_URL}/view-document`);
+                        }, 2500);
+                    }
+                }).catch(err => {
+                    console.log(err);
                     this.setState({
                         open: true,
                         message: "Request Failed.",
                         variant: "error"
                     })
-                } else {
-                    this.setState({
-                        open: true,
-                        message: "Translated File Uploaded",
-                        variant: "success"
-                    });
-                    setTimeout(() => {
-                        history.push(`${process.env.PUBLIC_URL}/view-document`);
-                    }, 2500);
-                }
-            }).catch(err => {
-                console.log(err);
-                this.setState({
-                    open: true,
-                    message: "Request Failed.",
-                    variant: "error"
                 })
-            })
-
+    
+            }
         } else {
             alert("Field should not be empty!");
         }
@@ -343,9 +372,10 @@ class UploadTranslatedDocument extends Component {
                                         onChange={this.handleChange.bind(this)}
                                         filesLimit={1}
                                         maxFileSize={104857600}
-                                        dropzoneText={translate(
-                                            "common.page.label.addDropDocument"
-                                        )}
+                                        dropzoneText={"Upload Translated Document"}
+                                        // {translate(
+                                        //     "common.page.label.addDropDocument"
+                                        // )}
                                         onDelete={this.handleDelete.bind(this)}
                                     />
                                 </MuiThemeProvider>
@@ -353,6 +383,12 @@ class UploadTranslatedDocument extends Component {
                             <Grid item xs={12} sm={6} lg={6} xl={6}>
                                 {this.renderSourceDocumentItems()}
                             </Grid>
+                            <Grid item xs={12} sm={6} lg={6} xl={6}>
+                                {this.state.files[0]?.name &&
+                                    <Typography variant="subtitle2">Upload file name - {this.state.files[0]?.name}</Typography>
+                            }
+                            </Grid>
+                            {/* this.state.files[0]?.name */}
                             <Grid
                                 item
                                 xs={12}
@@ -368,7 +404,7 @@ class UploadTranslatedDocument extends Component {
                                         color="primary"
                                         className={classes.btnStyle}
                                         size="large"
-                                        onClick={this.handleSubmit.bind(this)}
+                                        onClick={() => this.setState({ showCompleteConfirmBox: true })}
                                     // disabled={!this.state.files.length}
                                     >
                                         {translate("common.page.button.upload")}
@@ -376,6 +412,14 @@ class UploadTranslatedDocument extends Component {
                                 </Grid>
                             </Grid>
                         </Grid>
+
+                        <ConfirmBox
+                            open={this.state.showCompleteConfirmBox}
+                            onClose={() => this.setState({ showCompleteConfirmBox: false })}
+                            title="Upload Translated Document -"
+                            contentText={<><span>Are you sure you want to upload translated document?</span> <br /> <span>You won't be able to edit/upload translation for this document again.</span></>}
+                            onConfirm={this.handleSubmit.bind(this)}
+                        />
 
                         {this.state.formatWarning && this.renderDialog()}
                         {this.state.open && (
@@ -401,6 +445,7 @@ const mapStateToProps = (state) => ({
     workflowStatus: state.workflowStatus,
     documentUplaod: state.documentUplaod,
     fetch_models: state.fetch_models,
+    job_details: state.job_details
 });
 
 const mapDispatchToProps = (dispatch) =>
