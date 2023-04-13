@@ -261,7 +261,6 @@ export default function UploadProcessModal(props) {
     }, [progressData])
 
     useEffect(() => {
-        console.log("steps --- ", steps);
     }, [steps])
 
     return (

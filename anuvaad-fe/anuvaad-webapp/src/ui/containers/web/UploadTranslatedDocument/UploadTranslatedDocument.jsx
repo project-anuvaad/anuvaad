@@ -31,6 +31,7 @@ import Dialog from "@material-ui/core/Dialog";
 import { Container } from "@material-ui/core";
 // import UploadProcessModal from "./UploadProcessModal";
 import Axios from "axios";
+import UploadDocToS3 from "../../../../flux/actions/apis/document_translate/s3_upload_doc";
 
 const TELEMETRY = require("../../../../utils/TelemetryManager");
 const LANG_MODEL = require("../../../../utils/language.model");
@@ -82,7 +83,7 @@ class UploadTranslatedDocument extends Component {
 
     getStartAndEndTimeForDocuments = () => {
         let startTime = new Date();
-        let endTime =  new Date();
+        let endTime = new Date();
         startTime = startTime.setDate(startTime.getDate() - 30);
 
         return {
@@ -101,24 +102,24 @@ class UploadTranslatedDocument extends Component {
             false,
             [],
             this.getStartAndEndTimeForDocuments()
-          );
-      
-          Axios.post(apiObj?.endpoint, apiObj?.getBody(), { headers: apiObj?.getHeaders().headers })
+        );
+
+        Axios.post(apiObj?.endpoint, apiObj?.getBody(), { headers: apiObj?.getHeaders().headers })
             .then(res => {
-              // console.log("res -------- ", res);
-              let data = res?.data?.jobs;
-              let result = [];
-              data.filter((el,i)=> {
-                if(
-                    (el.status === "COMPLETED" && el?.granularity && el.granularity?.manualEditingStatus === "IN PROGRESS")
-                    || (el.status === "COMPLETED" && !el?.granularity)
-                ){
-                    result.push(el);
-                }
-              })
-              this.setState({ jobs: result });
+                // console.log("res -------- ", res);
+                let data = res?.data?.jobs;
+                let result = [];
+                data.filter((el, i) => {
+                    if (
+                        (el.status === "COMPLETED" && el?.granularity && el.granularity?.manualEditingStatus === "IN PROGRESS")
+                        || (el.status === "COMPLETED" && !el?.granularity)
+                    ) {
+                        result.push(el);
+                    }
+                })
+                this.setState({ jobs: result });
             }).catch(err => {
-              console.log("err -------- ", err);
+                console.log("err -------- ", err);
             })
     }
 
@@ -137,29 +138,59 @@ class UploadTranslatedDocument extends Component {
         APITransport(apiObj);
     };
 
+    handleClose = () => {
+        this.setState({
+            open: false,
+            message: "",
+            variant: "info"
+        })
+    }
+
     handleSubmit(e) {
         if (
-            this.state.files.length > 0 &&
-            this.state.source_language_code &&
-            this.state.target_language_code
+            this.state.files.length > 0 && this.state.selectedJob
         ) {
-            let type = this.state.files[0].name.split(".").pop();
-            if (type !== "docx" && type !== "pptx") {
-                e.preventDefault();
-                if (this.state.source_language_code !== "taaa") {
-                    this.setState({ formatWarning: true });
+            const fData = new FormData();
+            fData.append("file", this.state.files[0]);
+            fData.append("job_id", this.state.selectedJob?.jobID);
+            fData.append("src_file", this.state.selectedJob?.input?.files[0].path);
+
+            console.log("fData --- ", Object.fromEntries(fData));
+
+            const apiObj = new UploadDocToS3(fData);
+
+            fetch(apiObj.apiEndPoint(), {
+                method: 'post',
+                body: fData,
+                headers: apiObj.getHeaders().headers
+            }).then(async response => {
+                const rsp_data = await response.json();
+                console.log("rsp_data ----- ", rsp_data);
+                if (!rsp_data.ok) {
+                    this.setState({
+                        open: true,
+                        message: "Request Failed.",
+                        variant: "error"
+                    })
                 } else {
                     this.setState({
-                        message:
-                            "For Tamil only a docx file can be translated, please pass this pdf through 'Digitize Document' and then try translation.",
                         open: true,
-                        variant: "error",
+                        message: "Translated File Uploaded",
+                        variant: "success"
                     });
+                    setTimeout(() => {
+                        history.push(`${process.env.PUBLIC_URL}/view-document`);
+                    }, 2500);
                 }
-            } else {
-                e.preventDefault();
-                this.makeDocumentUploadAPICall();
-            }
+            }).catch(err => {
+                console.log(err);
+                this.setState({
+                    open: true,
+                    message: "Request Failed.",
+                    variant: "error"
+                })
+            })
+
         } else {
             alert("Field should not be empty!");
         }
@@ -167,7 +198,7 @@ class UploadTranslatedDocument extends Component {
             this.setState({ open: false, varaint: "success" });
         }, 3000);
     }
-   
+
     handleSelectChange = (event) => {
         this.setState({ [event.target.name]: event.target.value });
     };
@@ -236,9 +267,9 @@ class UploadTranslatedDocument extends Component {
                         options={this.state.jobs}
                         getOptionLabel={(option) => option.input.jobName}
                         style={{ marginTop: 3 }}
-                        onChange={(e, value)=>{
+                        onChange={(e, value) => {
                             console.log(value);
-                            this.setState({selectedJob: value});
+                            this.setState({ selectedJob: value });
                         }}
                         renderInput={(params) => <TextField {...params} placeholder="Select Source Document" variant="outlined" />}
                     />
@@ -320,7 +351,7 @@ class UploadTranslatedDocument extends Component {
                                 </MuiThemeProvider>
                             </Grid>
                             <Grid item xs={12} sm={6} lg={6} xl={6}>
-                                {this.renderSourceDocumentItems()}   
+                                {this.renderSourceDocumentItems()}
                             </Grid>
                             <Grid
                                 item
@@ -338,7 +369,7 @@ class UploadTranslatedDocument extends Component {
                                         className={classes.btnStyle}
                                         size="large"
                                         onClick={this.handleSubmit.bind(this)}
-                                        disabled={!this.state.files.length}
+                                    // disabled={!this.state.files.length}
                                     >
                                         {translate("common.page.button.upload")}
                                     </Button>
