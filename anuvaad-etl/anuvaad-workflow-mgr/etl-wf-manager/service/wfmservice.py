@@ -427,6 +427,8 @@ class WFMService:
                     if each_granularity == 'manualEditingStartTime':
                         job_details['granularity']['manualEditingStatus'] = "IN PROGRESS"
                     elif each_granularity == 'manualEditingEndTime':
+                        if 'manualEditingStartTime' not in job_details['granularity'].keys():
+                            return {"status": "FAILED","message":"Setting editing end time failed"}
                         job_details['granularity']['manualEditingStatus'] = "COMPLETED"                    
                     elif each_granularity == "parallelDocumentUpload":
                         job_details['granularity']['parallelDocumentUploadStatus'] = "COMPLETED"     
