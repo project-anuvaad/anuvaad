@@ -87,29 +87,32 @@ function get_document_details(input) {
     }
 
     if(job["granularity"]){
-      if(job["granularity"]["manualEditingStatus"] === "IN PROGRESS"){
-        let granularStatusObj = {
-          startTime: job["granularity"]["manualEditingStartTime"],
-          status: job["granularity"]["manualEditingStatus"],
-          module: "MANUAL EDITING",
-          state: job["granularity"]["manualEditingStatus"]
-        };
-        granularStatusArr.push(granularStatusObj);
-      } else if(job["granularity"]["manualEditingStatus"] === "COMPLETED"){
-        let granularStatusObj = {
-          startTime: job["granularity"]["manualEditingStartTime"],
-          endTime: job["granularity"]["manualEditingEndTime"],
-          status: job["granularity"]["manualEditingStatus"],
-          module: "MANUAL EDITING",
-          state: job["granularity"]["manualEditingStatus"]
-        };
-        granularStatusArr.push(granularStatusObj);
+      if(job["granularity"]["manualEditingStatus"]){
+        if (job["granularity"]["manualEditingStatus"] === "IN PROGRESS") {
+          let granularStatusObj = {
+            startTime: job["granularity"]["manualEditingStartTime"],
+            status: job["granularity"]["manualEditingStatus"],
+            module: "MANUAL EDITING",
+            state: job["granularity"]["manualEditingStatus"]
+          };
+          granularStatusArr.push(granularStatusObj);
+        } else if (job["granularity"]["manualEditingStatus"] === "COMPLETED") {
+          let granularStatusObj = {
+            startTime: job["granularity"]["manualEditingStartTime"],
+            endTime: job["granularity"]["manualEditingEndTime"],
+            status: job["granularity"]["manualEditingStatus"],
+            module: "MANUAL EDITING",
+            state: job["granularity"]["manualEditingStatus"]
+          };
+          granularStatusArr.push(granularStatusObj);
+        }
       }
+      
 
-      if(job["granularity"]["parallelDocumentUploadStatus"] === "COMPLETED"){
+      if(job["granularity"]["parallelDocumentUploadStatus"] && job["granularity"]["parallelDocumentUploadStatus"] === "COMPLETED"){
         let granularStatusObj = {
           uploadTime: job["granularity"]["parallelDocumentUpload"],
-          status: job["granularity"]["manualEditingStatus"],
+          status: job["granularity"]["parallelDocumentUploadStatus"],
           module: "PARALLEL DOCUMENT UPLOAD",
           state: job["granularity"]["parallelDocumentUploadStatus"]
         };
