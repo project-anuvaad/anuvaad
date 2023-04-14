@@ -34,7 +34,7 @@ tqdm==4.30.0
 transliterate==1.10.2
 typed-ast==1.4.1
 unicodecsv==0.14.1
-urllib3==1.25.8
+urllib3==1.26.5
 utils==1.0.1
 Werkzeug==1.0.0
 wrapt==1.11.2
