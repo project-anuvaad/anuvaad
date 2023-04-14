@@ -224,6 +224,7 @@ class UserEventView extends React.Component {
           filter: true,
           sort: false,
           empty: true,
+          viewColumns: false,
           customBodyRender: (value, tableMeta, updateValue) => {
             if (tableMeta.rowData) {
               return <div>{this.renderEventList(tableMeta.rowData[0], tableMeta.rowData[5])}</div>;

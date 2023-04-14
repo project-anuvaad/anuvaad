@@ -419,6 +419,7 @@ from collections import namedtuple
 Rectangle = namedtuple('Rectangle', 'xmin ymin xmax ymax')
 import sys, random, torch, glob, torchvision
 import os
+from config import WATERMARK_REMOVE
 import copy
 from shapely.geometry import Polygon
 from src.utilities.remove_water_mark import clean_image
@@ -738,7 +739,8 @@ class PRIMA(object):
             image = cv2.imread(image)
             height, width, channels = image.shape
             # image = cv2.imread(image)
-            # image   = clean_image(image)
+            if WATERMARK_REMOVE:
+                image   = clean_image(image)
 
             # image   = image[..., ::-1]
             layout = model_primalaynet.detect(image)

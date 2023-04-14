@@ -428,7 +428,7 @@ const localization_EN_Data = {
   "profile.page.label.org": "Organization",
   "parallel_corpus.page.dialog.message": "Edit source and target sentence here",
   "common.page.label.document_count": "Document Count",
-  "common.page.label.addDropDocument": "Drag & Drop file,PPTX/DOCX (recommended)",
+  "common.page.label.addDropDocument": "Drag and Drop (pdf, docx, pptx)",
   "intractive_translate.page.message.enterOneWord": "Please enter at least one word. Then I can make suggestions.",
   "intractive_translate.page.message.loading": "Getting suggestions for you",
   "intractive_translate.page.message.endOfSuggestion": "You have reached the end of the sentence.",

@@ -39,4 +39,4 @@ utils==1.0.1
 Werkzeug==1.0.0
 wrapt==1.11.2
 WTForms==2.2.1
-anuvaad-auditor==0.1.6
+anuvaad_auditor==0.1.6

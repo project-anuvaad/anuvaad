@@ -567,13 +567,14 @@ class UserReport extends React.Component {
                     filter: true,
                     sort: false,
                     empty: true,
+                    viewColumns: false,
                     customBodyRender: (value, tableMeta, updateValue) => {
                         if (tableMeta.rowData) {
                             return (
                                 <div>
                                     {this.processDocumentView(tableMeta.rowData[1], tableMeta.rowData[0], tableMeta.rowData[5], tableMeta.rowData[6])}
                                     {this.processDocumentDownload(tableMeta.rowData[1])}
-                                    {this.processEventView(tableMeta.rowData[1], tableMeta.rowData[5], tableMeta.rowData[6])}
+                                    {/* {this.processEventView(tableMeta.rowData[1], tableMeta.rowData[5], tableMeta.rowData[6])} */}
                                 </div>
                             );
                         }

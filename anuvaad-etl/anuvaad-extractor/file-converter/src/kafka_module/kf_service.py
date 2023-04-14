@@ -33,11 +33,8 @@ def push_output(producer, topic_name, output, jobid, task_id):
 
 # main function for async process
 def process_fc_kf():
-    task_timestamp = eval(str(time.time()).replace('.', '')[0:13])
     file_ops = FileOperation()
     DOWNLOAD_FOLDER =file_ops.file_download(config.download_folder)
-    task_id = str("FC-" + str(task_timestamp))
-    task_starttime = task_timestamp
     producer_tok = Producer(list(str(config.bootstrap_server).split(",")))
     # instatiation of consumer for respective topic
     try:
@@ -45,6 +42,9 @@ def process_fc_kf():
         log_info("process_fc_kf : trying to receive value from consumer ", None)
         for msg in consumer:
             log_info("process_fc_kf : value received from consumer", None)
+            task_timestamp = eval(str(time.time()).replace('.', '')[0:13])
+            task_id = str("FC-" + str(task_timestamp))
+            task_starttime = task_timestamp
             data = msg.value
             task_id = str("FC-" + str(task_timestamp))
             task_starttime = task_timestamp

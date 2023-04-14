@@ -33,6 +33,14 @@ class File:
         return self.file['file']['name']
 
     @log_error
+    def get_watermark_remove_config(self):
+        print(self.file['config']['OCR'].keys())
+        if 'watermark' not in self.file['config']['OCR'].keys():
+            return None
+        else:
+            return self.file['config']['OCR']['watermark']
+
+    @log_error
     def get_pages(self):
         return ['/'.join(page_path.split('/')[-4:]) for page_path in self.file['page_info']]
 

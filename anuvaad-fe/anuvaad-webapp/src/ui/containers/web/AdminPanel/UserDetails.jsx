@@ -78,7 +78,9 @@ class UserDetails extends React.Component {
     TELEMETRY.pageLoadCompleted('user-details');
     this.setState({ showLoader: true, })
     this.props.clearStatus();
-    this.processFetchBulkUserDetailAPI(this.state.offset, this.state.limit)
+    let roleArr = [];
+    roleArr = this.state.role === "ADMIN" ? ["ANNOTATOR","TRANSLATOR"] : [];
+    this.processFetchBulkUserDetailAPI(this.state.offset, this.state.limit, false, false, [], [], roleArr);
   }
 
   componentDidUpdate(prevProps) {
@@ -362,6 +364,8 @@ class UserDetails extends React.Component {
           filter: true,
           sort: false,
           empty: true,
+          download: false,
+          viewColumns: false,
           customBodyRender: (value, tableMeta, updateValue) => {
             if (tableMeta.rowData) {
               return (
@@ -411,7 +415,7 @@ class UserDetails extends React.Component {
       count: this.props.count,
       rowsPerPageOptions: [10, 20, 50],
       filterType: "checkbox",
-      download: false,
+      download: true,
       print: false,
       fixedHeader: true,
       filter: false,
@@ -431,7 +435,7 @@ class UserDetails extends React.Component {
             </MuiThemeProvider>
           }
         </div>
-        {((this.state.showLoader && this.props.userinfo.data.length < 1) || this.state.status) && < Spinner />}
+        {((this.state.showLoader && !this.props.apistatus.error && this.props.userinfo?.data?.length < 1) || this.state.status) && < Spinner />}
         {
           this.state.isenabled &&
           this.processSnackBar()

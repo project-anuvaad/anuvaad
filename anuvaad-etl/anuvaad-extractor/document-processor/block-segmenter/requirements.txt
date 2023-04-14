@@ -3,7 +3,7 @@ Rtree==0.9.3
 kafka_python==2.0.1
 Flask_Cors==3.0.8
 Shapely==1.7.1
-anuvaad-auditor==0.1.6
+anuvaad_auditor==0.1.6
 flask-restful==0.3.8
 
 

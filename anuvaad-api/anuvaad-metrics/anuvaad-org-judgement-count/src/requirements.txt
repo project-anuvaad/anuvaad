@@ -1,5 +1,5 @@
 Flask-Cors==3.0.10
-anuvaad-auditor==0.1.4
+anuvaad_auditor==0.1.6
 Flask-RESTful==0.3.8
 six==1.15.0
 Flask==2.1.0
@@ -8,3 +8,4 @@ Flask-Mail==0.9.1
 requests
 pandas==1.2.3
 pymongo==3.11.0
+apscheduler==3.9.1

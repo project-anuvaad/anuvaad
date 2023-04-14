@@ -11,11 +11,19 @@ import TextField from '@material-ui/core/TextField'
 import SENTENCE_ACTION from "./SentenceActions";
 import Slider from '@material-ui/core/Slider';
 import Tooltip from '@material-ui/core/Tooltip';
+import MergeTypeIcon from '@material-ui/icons/MergeType';
+import DoneIcon from '@material-ui/icons/Done';
 import PropTypes from 'prop-types';
+import history from "../../../../web.history";
+import APITransport from "../../../../flux/actions/apitransport/apitransport";
 import { currentPageUpdate } from "../../../../flux/actions/apis/document_translate/pagiantion_update";
 import { clearHighlighBlock } from '../../../../flux/actions/users/translator_actions';
 import fetchpercent from '../../../../flux/actions/apis/view_digitized_document/fetch_slider_percent';
 import fetchfontpixel from '../../../../flux/actions/apis/view_digitized_document/fetch_slider_pixel';
+import { IconButton } from "@material-ui/core";
+import ConfirmBox from "../../../components/web/common/ConfirmBox";
+import UpdateGranularStatus from "../../../../flux/actions/apis/document_translate/update_granular_status";
+import FetchDocument from "../../../../flux/actions/apis/view_document/fetch_document";
 
 const PAGE_OPS = require("../../../../utils/page.operations");
 
@@ -40,7 +48,7 @@ class InteractivePagination extends React.Component {
   constructor(props) {
     super(props);
     this.pageInputRef = React.createRef(null);
-    this.state = { offset: 1, gotoValue: 1, isInputActive: false };
+    this.state = { offset: 1, gotoValue: 1, isInputActive: false, showCompleteConfirmBox: false };
   }
   handleClick = (offset, value) => {
     this.props.currentPageUpdate(value);
@@ -49,8 +57,8 @@ class InteractivePagination extends React.Component {
 
   componentDidMount() {
     this.props.currentPageUpdate(1);
-    window.addEventListener("keydown",(event)=>{
-      if(this.state.isInputActive && event.key === "Enter"){
+    window.addEventListener("keydown", (event) => {
+      if (this.state.isInputActive && event.key === "Enter") {
         event.preventDefault()
         // this.pageInputRef.current.blur();
         // this.setState({isInputActive: false})
@@ -94,16 +102,70 @@ class InteractivePagination extends React.Component {
     this.setState({ offset: parseInt(this.state.gotoValue) })
   }
 
+  updateGranularity(status) {
+    let recordId = this.props.match.params.jobid;
+    let jobId = recordId ? recordId.split("|")[0] : ""
+    const apiObj = new UpdateGranularStatus(jobId, status);
+
+    fetch(apiObj.apiEndPoint(), {
+      method: 'post',
+      body: JSON.stringify(apiObj.getBody()),
+      headers: apiObj.getHeaders().headers
+    }).then(async response => {
+      const rsp_data = await response.json();
+      // console.log("rsp_data ---- ", rsp_data);
+      if (rsp_data?.status == "SUCCESS") {
+        const { APITransport } = this.props;
+        const apiObj = new FetchDocument(
+          0,
+          this.props.job_details.count,
+          [],
+          false,
+          false,
+          false
+        );
+        APITransport(apiObj);
+        history.push(`${process.env.PUBLIC_URL}/view-document`);
+      }
+
+    }).catch(err => {
+      console.log(err);
+    })
+
+  }
+
+  onConfirmCompleteClick = () => {
+    this.setState({ showCompleteConfirmBox: false })
+    let statusArr;
+    if(this.props.updateManualStartTime){
+      statusArr = ["manualEditingStartTime", "manualEditingEndTime"];
+    } else {
+      statusArr = ["manualEditingEndTime"];
+    }
+    this.updateGranularity(statusArr)
+  }
+
   renderNormaModeButtons = () => {
     return (
       <div>
-        <Button
+        <IconButton
           onClick={this.processMergeButtonClicked}
-          variant="outlined"
-          color="primary"
+          variant="contained" color="secondary"
+          title="Merge"
+          style={{ backgroundColor: "#2C2799" }}
         >
-          MERGE
-        </Button>
+          <MergeTypeIcon />
+        </IconButton>
+        <IconButton
+          onClick={() => this.setState({ showCompleteConfirmBox: true })}
+          variant="contained"
+          color="secondary"
+          title="Complete"
+          disabled={!this.props.enableCompleteButton}
+          style={{ backgroundColor: !this.props.enableCompleteButton ? "#F5F5F5" : "green", marginLeft: 5 }}
+        >
+          <DoneIcon />
+        </IconButton>
       </div>
     );
   };
@@ -179,14 +241,15 @@ class InteractivePagination extends React.Component {
                 onChange={this.handleClick}
                 color="primary"
                 size={"large"}
-                style={{ marginLeft: "-8.5%" }}
+                style={{ marginLeft: "-10%" }}
+                siblingCount={0} boundaryCount={1}
               />
               <TextField
                 type="number"
                 style={{ width: "40px" }}
                 ref={this.pageInputRef}
-                onFocus={()=>this.setState({isInputActive: true})}
-                onBlur={()=>this.setState({isInputActive: false})}
+                onFocus={() => this.setState({ isInputActive: true })}
+                onBlur={() => this.setState({ isInputActive: false })}
                 InputProps={{
 
                   inputProps: {
@@ -241,7 +304,7 @@ class InteractivePagination extends React.Component {
                       </div>
                     </div>}
 
-                  <div style={{ position: "absolute", right: "30px" }}>
+                  <div style={{ position: "absolute", right: "15px" }}>
                     {this.renderNormaModeButtons()}
                   </div>
                 </>
@@ -274,9 +337,16 @@ class InteractivePagination extends React.Component {
                   />
                 </div>
               }
-
+              <ConfirmBox
+                open={this.state.showCompleteConfirmBox}
+                onClose={() => this.setState({ showCompleteConfirmBox: false })}
+                title="Complete Editing"
+                contentText={<><span>Are you sure you want to complete document editing?</span> <br /> <span>You won't be able to edit/upload this document anymore.</span></>}
+                onConfirm={() => this.onConfirmCompleteClick()}
+              />
             </>
           )}
+
         </Toolbar>
       </AppBar>
     )
@@ -302,6 +372,7 @@ const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
       currentPageUpdate,
+      APITransport,
       clearHighlighBlock,
       fetchpercent,
       fetchfontpixel,

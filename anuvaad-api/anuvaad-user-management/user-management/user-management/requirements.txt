@@ -1,10 +1,10 @@
-anuvaad-auditor==0.1.2
+anuvaad_auditor==0.1.6
 bcrypt==3.2.0
 DateTime==4.3
-Flask==1.1.2
+Flask==2.1.0
 Flask-Cors==3.0.8
 Flask-Mail==0.9.1
-Flask-RESTful==0.3.8
+Flask-RESTful==0.3.9
 PyJWT==1.7.1
 pymongo==3.11.1
 PyNaCl==1.4.0

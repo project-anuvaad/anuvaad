@@ -32,7 +32,7 @@ class ViewScheduledJobsHeader extends React.Component {
     }
 
     renderOption() {
-        console.log("this.shouldShowCreateJobButton()", this.shouldShowCreateJobButton());
+        // console.log("this.shouldShowCreateJobButton()", this.shouldShowCreateJobButton());
         return (
             <div>
                 {this.shouldShowCreateJobButton() && <Button

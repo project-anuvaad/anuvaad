@@ -151,21 +151,19 @@ class AnuvaadHindiTokenizer(object):
 
     def serialize_end(self, text):
         pattern_d = re.compile(r'(\u0965)')
-        text = pattern_d.sub(' END_||_END', text)
-        pattern = re.compile(r'(\u0964)')
-        text = pattern.sub(' END_|_END ', text)
-        pattern = re.compile(r'(\u007c)')
-        text = pattern.sub(' END_|||_END ', text)
-        
-
+        text = pattern_d.sub(' END_B', text)
+        pattern_e = re.compile(r'(\u0964)')
+        text = pattern_e.sub(' END_A ', text)
+        pattern_f = re.compile(r'(\u007C)')
+        text = pattern_f.sub(' END_C ', text)
         return text
 
     def deserialize_end(self, text):
-        pattern = re.compile(re.escape(' END_|_END'), re.IGNORECASE)
+        pattern = re.compile(re.escape(' END_A'), re.IGNORECASE)
         text = pattern.sub('।', text)
-        pattern = re.compile(re.escape(' END_||_END'), re.IGNORECASE)
+        pattern = re.compile(re.escape(' END_B'), re.IGNORECASE)
         text = pattern.sub('॥', text)
-        pattern = re.compile(re.escape(' END_|||_END'), re.IGNORECASE)
+        pattern = re.compile(re.escape(' END_C'), re.IGNORECASE)
         text = pattern.sub('|', text)
         return text
 

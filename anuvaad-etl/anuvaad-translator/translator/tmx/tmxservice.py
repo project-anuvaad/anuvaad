@@ -1,7 +1,7 @@
 import hashlib
 import json
 import time
-
+from datetime import datetime
 import uuid
 import xlrd
 from anuvaad_auditor.loghandler import log_exception, log_info
@@ -79,6 +79,7 @@ class TMXService:
             for sentence in tmx_input["sentences"]:
                 tmx_records = []
                 sentence_types, i = self.fetch_diff_flavors_of_sentence(sentence["src"]), 0
+                current_time = datetime.now().strftime('%s')
                 for sent in sentence_types:
                     tmx_record_pair = {"src": sent, "locale": sentence["locale"], "nmt_tgt": [],
                                        "user_tgt": sentence["tgt"], "context": tmx_input["context"]}
@@ -88,6 +89,7 @@ class TMXService:
                         tmx_record_pair["orgID"] = tmx_input["orgID"]
                     if i == 0:
                         tmx_record_pair["original"] = True
+                    tmx_record_pair['timestamp'] = current_time
                     tmx_records.append(tmx_record_pair)
                     i += 1
                 reverse_locale_array = str(sentence["locale"]).split("|")
@@ -98,6 +100,7 @@ class TMXService:
                     tmx_record_reverse_pair["userID"] = tmx_input["userID"]
                 if 'orgID' in tmx_input.keys():
                     tmx_record_reverse_pair["orgID"] = tmx_input["orgID"]
+                tmx_record_reverse_pair['timestamp'] = current_time
                 tmx_records.append(tmx_record_reverse_pair)
                 for tmx_record in tmx_records:
                     hash_dict = self.get_hash_key(tmx_record)
@@ -106,10 +109,10 @@ class TMXService:
                         repo.upsert(tmx_record["hash"], tmx_record)
             self.push_tmx_metadata(tmx_input, None)
             log_info("Translations pushed to TMX!", None)
-            return {"message": "created", "status": "SUCCESS"}
+            return {"message": "Glossary entry created", "status": "SUCCESS"}
         except Exception as e:
             log_exception("Exception while pushing to TMX: " + str(e), None, e)
-            return {"message": "creation failed", "status": "FAILED"}
+            return {"message": "Glossary entry creation failed", "status": "FAILED"}
 
     # Method to push tmx related metadata
     def push_tmx_metadata(self, tmx_record, file_path):
@@ -228,6 +231,7 @@ class TMXService:
                         tmx_result, fetch = self.get_tmx_with_fallback(tmx_record, tmx_level, tmx_file_cache, ctx)
                         computed += 1
                         if tmx_result:
+                            #log_info(f"Test68 phrase {tmx_record}, result {tmx_result}",None)
                             tmx_phrases.append(tmx_result[0])
                             phrase_list = phrase.split(" ")
                             hopping_pivot += (1 + len(' '.join(phrase_list)))
@@ -258,10 +262,12 @@ class TMXService:
     # Fetches TMX phrases for a sentence from hierarchical cache
     def get_tmx_with_fallback(self, tmx_record, tmx_level, tmx_file_cache, ctx):
         hash_dict = self.get_hash_key_search(tmx_record, tmx_level)
+        #log_info(f"Test68 hash_dict {hash_dict}", None)
         if 'USER' in hash_dict.keys():
             if hash_dict["USER"] not in tmx_file_cache.keys():
                 tmx_result = repo.search([hash_dict["USER"]])
                 if tmx_result:
+                    #log_info(f"Test68 USER tmx_result {tmx_result}", None)
                     tmx_file_cache[hash_dict["USER"]] = tmx_result
                     return tmx_result, True
             else:
@@ -270,6 +276,7 @@ class TMXService:
             if hash_dict["ORG"] not in tmx_file_cache.keys():
                 tmx_result = repo.search([hash_dict["ORG"]])
                 if tmx_result:
+                    #log_info(f"Test68 ORG tmx_result {tmx_result}", None)
                     tmx_file_cache[hash_dict["ORG"]] = tmx_result
                     return tmx_result, True
             else:
@@ -307,17 +314,21 @@ class TMXService:
                 tgt = utils.multiple_replace(tgt, tmx_replace_dict)
             tmx_tgt = tgt
             if tmx_without_nmt_phrases:
-                if not is_attention_based_alignment_enabled:
                     log_info("Phrases to LaBSE: {} | Total: {}".format(len(tmx_without_nmt_phrases), len(tmx_phrases)),
-                             ctx)
+                            ctx)
                     tmx_tgt, tmx_replacement = self.replace_with_labse_alignments(tmx_without_nmt_phrases, tgt,
-                                                                                  tmx_replacement, ctx)
-                else:
-                    log_info("Phrases to Attention API: {} | Total: {}".format(len(tmx_without_nmt_phrases),
-                                                                               len(tmx_phrases)), ctx)
-                    tmx_tgt, tmx_replacement = self.replace_with_attention_api(tmx_without_nmt_phrases, src, tgt,
-                                                                               tmx_replacement, ctx)
- 
+                                                                                tmx_replacement, ctx)
+                # if not is_attention_based_alignment_enabled:
+                #     log_info("Phrases to LaBSE: {} | Total: {}".format(len(tmx_without_nmt_phrases), len(tmx_phrases)),
+                #              ctx)
+                #     tmx_tgt, tmx_replacement = self.replace_with_labse_alignments(tmx_without_nmt_phrases, tgt,
+                #                                                                   tmx_replacement, ctx)
+                # else:
+                #     log_info("Phrases to Attention API: {} | Total: {}".format(len(tmx_without_nmt_phrases),
+                #                                                                len(tmx_phrases)), ctx)
+                                                                               
+                #     tmx_tgt, tmx_replacement = self.replace_with_attention_api(tmx_without_nmt_phrases, src, tgt,
+                #                                                               tmx_replacement, ctx)
             if tmx_tgt:
                 return tmx_tgt, tmx_replacement
             else:
@@ -335,6 +346,7 @@ class TMXService:
         nmt_req = [nmt_req]
         api_headers = {'Content-Type': 'application/json'}
         nmt_response = requests.post(url=nmt_labse_align_url, json=nmt_req, headers=api_headers)
+        #log_info(f"NMT Response with Labse API {nmt_response.json}",None)
         if nmt_response:
             if nmt_response.text:
                 nmt_response = json.loads(nmt_response.text)
@@ -374,6 +386,7 @@ class TMXService:
         nmt_req = [nmt_req]
         api_headers = {'Content-Type': 'application/json'}
         nmt_response = requests.post(url=nmt_attention_align_url, json=nmt_req, headers=api_headers)
+        #log_info(f"NMT Response with Attention API {nmt_response.json}",None)
         if nmt_response:
             if nmt_response.text:
                 nmt_response = json.loads(nmt_response.text)
@@ -405,6 +418,14 @@ class TMXService:
         else:
             return tgt, tmx_replacement
 
+
+    def sort_redis_records_timestamp(self,record):
+        if 'timestamp' in record.keys():
+            return eval(record['timestamp'])
+        else:
+            return 0
+
+    
     # Method to fetch all keys from the redis db
     def get_tmx_data(self, req):
         log_info(f"Searching TMX for: {req}", None)
@@ -440,7 +461,8 @@ class TMXService:
                         log_info(f'No TMX entries found with the original key set to True', None)
                         redis_records = []
             log_info(f'Count of final TMX to be returned: {len(redis_records)}', None)
-            return redis_records
+            sorted_redis_records = sorted(redis_records, key=self.sort_redis_records_timestamp, reverse=True)
+            return sorted_redis_records
         except Exception as e:
             log_exception("Exception while returning TMX data: {}".format(e), None, None)
             return []
@@ -536,7 +558,10 @@ class TMXService:
     def suggestion_box_update(self, object_in):
         try:
             find_condition = {"id": {"$in": object_in["ids"]}}
-            set_clause = {"status": object_in["status"], "updatedOn": eval(str(time.time()).replace('.', '')[0:13])}
+            if object_in["status"] == "Modified":
+                set_clause = {"status": object_in["status"], "src": object_in["src"], "tgt": object_in["tgt"], "updatedOn": eval(str(time.time()).replace('.', '')[0:13])}
+            else:
+                set_clause = {"status": object_in["status"], "updatedOn": eval(str(time.time()).replace('.', '')[0:13])}
             repo.suggestion_box_update(find_condition, {"$set": set_clause})
             return {"message": "Suggestions Updated !", "status": "SUCCESS"}
         except Exception as e:

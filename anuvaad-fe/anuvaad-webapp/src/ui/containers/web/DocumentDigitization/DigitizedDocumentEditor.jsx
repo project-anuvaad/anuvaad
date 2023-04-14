@@ -797,8 +797,10 @@ class DocumentEditor extends React.Component {
                             console.log('api failed')
                         } else {
                             const buffer = new Uint8Array(await response.arrayBuffer());
-                            let res = Buffer.from(buffer).toString('base64')
-                            this.downloadBlob(res, fileName)
+                            let res = Buffer.from(buffer).toString('base64');
+                            let downloadFileName = this.props.match.params.og_fname;
+                            downloadFileName = downloadFileName.slice(0, downloadFileName.lastIndexOf("."))+"_digitized"+fileName.slice(fileName.lastIndexOf("."), fileName.length);
+                            this.downloadBlob(res, downloadFileName);
                         }
 
                     }).catch((error) => {
