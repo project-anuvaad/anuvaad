@@ -159,7 +159,7 @@ class SentenceCard extends React.Component {
       this.setState({ score: this.props.sentence.rating_score });
     }
 
-    console.log("this.props in setence card component -------- ", this.props);  
+    // console.log("this.props in setence card component -------- ", this.props);  
 
 
 }
@@ -973,6 +973,10 @@ class SentenceCard extends React.Component {
                   inputRef={inputRef}
                 />
               );
+            }}
+            suggestionListStyle={{
+              height: "135px",
+              overflow: "auto"
             }}
             onKeyDown={this.handleKeyDown}
             value={this.state.value}

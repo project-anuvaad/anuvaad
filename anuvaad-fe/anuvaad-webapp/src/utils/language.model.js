@@ -13,7 +13,7 @@ export const get_supported_languages = (languages, translate) => {
     let condition = translate ? `$..[?( @.status == 'ACTIVE' && @.is_primary == true)]` : `$..[?(@.status == 'INACTIVE' && @.is_primary == true)]`
     let result = jp.query(languages, condition)
     if (result.length > 0) {
-        return result.map((lang) => { return { language_code: lang.source_language_code, language_name: lang.source_language_name } }).filter((v, i, a) => a.findIndex(t => (t.language_code === v.language_code)) === i)
+        return result.map((lang) => { return { language_code: lang.source_language_code, language_name: lang.source_language_name } }).filter((v, i, a) => a.findIndex(t => (t.language_code === v.language_code)) === i).sort((a, b) => a.language_name.toLowerCase() > b.language_name.toLowerCase() ? 1 : -1)
     }
     return []
 }
@@ -29,7 +29,7 @@ export const get_counterpart_languages = (languages, language_code, translate) =
             language_code: lang.target_language_code,
             language_name: get_language_name(languages, lang.target_language_code, translate)
         }
-    })
+    }).sort((a, b) => a.language_name.toLowerCase() > b.language_name.toLowerCase() ? 1 : -1)
 }
 
 export const get_nmt_models = (models, source_language, target_language_code) => {

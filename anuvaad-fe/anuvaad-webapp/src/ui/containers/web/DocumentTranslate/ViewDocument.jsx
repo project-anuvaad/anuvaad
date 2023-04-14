@@ -32,6 +32,8 @@ import DataTable from "../../../components/web/common/DataTable";
 import { Button, TableCell, TableRow, TextField, TableFooter, Typography } from "@material-ui/core";
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import UploadProcessModal from "../DocumentUpload/UploadProcessModal";
+import GranularTaskDetailsModal from "./GranularTaskDetailsModal";
 
 const TELEMETRY = require("../../../../utils/TelemetryManager");
 
@@ -300,6 +302,13 @@ class ViewDocument extends React.Component {
 
   processJobTimelinesClick(jobId, recordId) {
     let taskDetails = this.getJobIdDetail(jobId);
+    console.log("taskDetails ---- ", taskDetails);
+    this.setState({ showInfo: true, message: taskDetails, dialogType: "info", dialogTitle: "File Process Information" });
+  }
+
+  processGranularStausInfoClick(jobId, recordId){
+    let taskDetails = this.getJobIdDetail(jobId);
+    console.log("taskDetails ---- ", taskDetails);
     this.setState({ showInfo: true, message: taskDetails, dialogType: "info", dialogTitle: "File Process Information" });
   }
 
@@ -420,7 +429,7 @@ class ViewDocument extends React.Component {
     let sdate = new Date(startTime);
     let sec = Math.trunc(Math.abs(edate.getTime() - sdate.getTime()) / 1000);
     var date = new Date(0);
-    date.setSeconds(sec); // specify value for SECONDS here
+    date.setSeconds(sec == 0 ? 1 : sec); // specify value for SECONDS here
     return date.toISOString().substr(11, 8);
   }
 
@@ -508,6 +517,7 @@ class ViewDocument extends React.Component {
         options: {
           filter: false,
           sort: false,
+          display: false,
         },
       },
       {
@@ -517,6 +527,7 @@ class ViewDocument extends React.Component {
           filter: true,
           sort: false,
           empty: true,
+          display: false
         },
       },
       {
@@ -526,6 +537,7 @@ class ViewDocument extends React.Component {
           filter: true,
           sort: false,
           empty: true,
+          display: false,
         },
       },
       {
@@ -535,6 +547,7 @@ class ViewDocument extends React.Component {
           filter: true,
           sort: false,
           empty: true,
+          display: false,
         },
       },
       {
@@ -542,21 +555,22 @@ class ViewDocument extends React.Component {
         label: "Description",
         options: {
           display: 'false',
-          sort: false
+          sort: false,
         }
       },
       {
         name: "spent_time",
         label: "Time Spent",
         options: {
-          sort: false
+          sort: false,
+          display: false,
         }
       },
       {
         name: "endTime",
         label: "End Time",
         options: {
-          display: "excluded",
+          display: "false",
         },
       },
       {
@@ -565,6 +579,7 @@ class ViewDocument extends React.Component {
         options: {
           filter: true,
           sort: true,
+          display: true,
           customBodyRender: (value, tableMeta, updateValue) => {
             if (tableMeta.rowData) {
               return (
@@ -602,6 +617,15 @@ class ViewDocument extends React.Component {
         label: "Workflow Code",
         options: {
           display: "excluded",
+        },
+      },
+      {
+        name: "currentGranularStatus",
+        label: "Status",
+        options: {
+          filter: true,
+          sort: false,
+          empty: true,
         },
       },
       {
@@ -823,7 +847,7 @@ class ViewDocument extends React.Component {
           {!this.state.showLoader && (
             <MuiThemeProvider theme={this.getMuiTheme()}>
               <DataTable
-                title={translate("common.page.title.document")}
+                title={"Translate " +  translate("common.page.title.document")}
                 data={this.getJobsSortedByTimestamp()}
                 columns={columns}
                 options={options}
@@ -833,7 +857,7 @@ class ViewDocument extends React.Component {
           )}
         </div>
         {this.state.showInfo && (
-          <Dialog
+          <GranularTaskDetailsModal
             message={this.state.message}
             type={this.state.dialogType}
             handleClose={this.handleDialogClose.bind(this)}
@@ -845,6 +869,7 @@ class ViewDocument extends React.Component {
         )}
         {(this.state.showLoader || this.state.loaderDelete) && <Spinner />}
         {this.state.dialogMessage && this.snackBarMessage()}
+        {/* <UploadProcessModal /> */}
       </div>
     );
   }

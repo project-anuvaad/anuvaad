@@ -42,6 +42,7 @@ function get_document_details(input) {
   input["jobs"].forEach((job) => {
     let document = {};
     let timelines = [];
+    let granularStatusArr = [];
     document["filename"] = job["input"]["jobName"];
     document["description"] = job["input"]["jobDescription"];
     document["filetype"] = job["input"]["files"][0]["type"];
@@ -63,6 +64,67 @@ function get_document_details(input) {
     document["bleu_score"] = "...";
     document["spent_time"] = "...";
     document["workflowCode"] = job["workflowCode"];
+
+    // Granular status start
+
+    if(job["status"] === "COMPLETED"){
+      let granularStatusObj = {
+        startTime: job.startTime,
+        endTime: job.endTime,
+        status: job.status,
+        module: "TRANSLATION",
+        state: job.state
+      };
+      granularStatusArr.push(granularStatusObj);
+    } else if(job["status"] === "FAILED" || job["status"] === "INPROGRESS"){
+      let granularStatusObj = {
+        startTime: job.startTime,
+        status: job.status,
+        module: "TRANSLATION",
+        state: job.state
+      };
+      granularStatusArr.push(granularStatusObj);
+    }
+
+    if(job["granularity"]){
+      if(job["granularity"]["manualEditingStatus"]){
+        if (job["granularity"]["manualEditingStatus"] === "IN PROGRESS") {
+          let granularStatusObj = {
+            startTime: job["granularity"]["manualEditingStartTime"],
+            status: job["granularity"]["manualEditingStatus"],
+            module: "MANUAL EDITING",
+            state: job["granularity"]["manualEditingStatus"]
+          };
+          granularStatusArr.push(granularStatusObj);
+        } else if (job["granularity"]["manualEditingStatus"] === "COMPLETED") {
+          let granularStatusObj = {
+            startTime: job["granularity"]["manualEditingStartTime"],
+            endTime: job["granularity"]["manualEditingEndTime"],
+            status: job["granularity"]["manualEditingStatus"],
+            module: "MANUAL EDITING",
+            state: job["granularity"]["manualEditingStatus"]
+          };
+          granularStatusArr.push(granularStatusObj);
+        }
+      }
+      
+
+      if(job["granularity"]["parallelDocumentUploadStatus"] && job["granularity"]["parallelDocumentUploadStatus"] === "COMPLETED"){
+        let granularStatusObj = {
+          uploadTime: job["granularity"]["parallelDocumentUpload"],
+          status: job["granularity"]["parallelDocumentUploadStatus"],
+          module: "PARALLEL DOCUMENT UPLOAD",
+          state: job["granularity"]["parallelDocumentUploadStatus"]
+        };
+        granularStatusArr.push(granularStatusObj);
+      }
+
+    }
+
+    document["granularStatus"] = granularStatusArr;
+    // Granular status end
+
+    document["currentGranularStatus"] = `${granularStatusArr[granularStatusArr.length-1]?.module} - ${granularStatusArr[granularStatusArr.length-1]?.status}`
 
     job["taskDetails"].forEach((task) => {
       let timeline = {};

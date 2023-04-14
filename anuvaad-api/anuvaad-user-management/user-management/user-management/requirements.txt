@@ -1,4 +1,4 @@
-anuvaad-auditor==0.1.2
+anuvaad_auditor==0.1.6
 bcrypt==3.2.0
 DateTime==4.3
 Flask==2.1.0
