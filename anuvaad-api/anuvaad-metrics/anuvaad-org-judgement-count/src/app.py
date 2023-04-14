@@ -13,5 +13,5 @@ if __name__ == "__main__":
         "starting server at {} at port {}".format(config.HOST, config.PORT),
         MODULE_CONTEXT,
     )
-    schedule_job
+    # schedule_job
     app.run(host=config.HOST, port=config.PORT, debug=config.DEBUG)

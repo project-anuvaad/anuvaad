@@ -20,8 +20,9 @@ import CloseIcon from '@material-ui/icons/Close';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import AssessmentIcon from '@material-ui/icons/Assessment';
 import SettingsOutlinedIcon from '@material-ui/icons/SettingsOutlined';
+import PublishIcon from '@material-ui/icons/Publish';
 import React, { useState, useEffect, useRef } from "react";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, NavLink } from "react-router-dom";
 import AnuvaadLogo from "../../../../assets/HeaderTransparentLogo.png";
 import configs from "../../../../configs/configs";
 import headerMenuConfig from "../../../../configs/headerMenuConfig";
@@ -56,11 +57,13 @@ const useStyles = makeStyles((theme) => ({
         fontSize: "19px",
         // size: "200px",
         marginLeft: "20px",
+        textDecoration: "none",
         '&:hover': {
             backgroundColor: "#E0E0E0",
             color: "#000000",
             // padding: 18,
-            borderRadius: 12
+            borderRadius: 12,
+            textDecoration: "none",
         }
     },
     highlightedMenuButton: {
@@ -71,7 +74,8 @@ const useStyles = makeStyles((theme) => ({
         fontWeight: 500,
         color: "#000000",
         fontSize: "19px",
-        letterSpacing: "0.5px",
+        // letterSpacing: "0.5px",
+        textDecoration: "none",
         // size: "18px",
         marginLeft: "20px",
         // backgroundColor: "#E0E0E0",
@@ -146,6 +150,11 @@ const useStyles = makeStyles((theme) => ({
     },
     popoverMenuButtonActive: {
 
+    },
+    popOverIconButton: {
+        '&:hover': {
+            // color: "#2C2799"
+        }
     }
 }));
 
@@ -162,7 +171,8 @@ export default function TopHeader(props) {
         userMenuButton,
         activeUserMenuButton,
         userMenuButtonText,
-        popoverMenuText
+        popoverMenuText,
+        popOverIconButton
     } = useStyles();
 
     const { currentMenu, dontShowHeader } = props;
@@ -286,7 +296,7 @@ export default function TopHeader(props) {
                                         closeDrawerOnMenuClick()
                                     },
                                     style: { textDecoration: "none", color: "#000000", marginTop: 5 },
-                                    component: RouterLink,
+                                    // component: RouterLink,
                                     className: currentMenu === el.id ? highlightedMenuButton : menuButton,
                                 }}
                             >
@@ -295,6 +305,47 @@ export default function TopHeader(props) {
                         </div>
 
                 })}
+                <Typography variant="body2" style={{ marginBottom: 3, marginTop: 3 }}>Dashboard -</Typography>
+                {headerMenuConfig.map((el, i) => {
+                    return el.menuType === "DASHBOARD" && el.rolesAllowed.includes(role) && assignedOrgId !== "NONMT" &&
+                        <div>
+                            <Button
+                                {...{
+                                    key: el.id,
+                                    id: el.id,
+                                    onClick: () => {
+                                        el.onclick(assignedOrgId);
+                                        closeDrawerOnMenuClick()
+                                    },
+                                    style: { textDecoration: "none", color: "#000000", marginTop: 5 },
+                                    // component: RouterLink,
+                                    className: currentMenu === el.id ? highlightedMenuButton : menuButton,
+                                }}
+                            >
+                                {el.title}
+                            </Button>
+                        </div>
+
+                })}
+                <Typography variant="body2" style={{ marginBottom: 3, marginTop: 3 }}>Analytics -</Typography>
+                
+                        <div>
+                            <Button
+                                {...{
+                                    key: "analytics",
+                                    id: "analytics",
+                                    onClick: () => {
+                                        history.push(`${process.env.PUBLIC_URL}/analytics`)
+                                        closeDrawerOnMenuClick()
+                                    },
+                                    style: { textDecoration: "none", color: "#000000", marginTop: 5 },
+                                    // component: RouterLink,
+                                    className: currentMenu === "Analytics" ? highlightedMenuButton : menuButton,
+                                }}
+                            >
+                                Analytics
+                            </Button>
+                        </div>
                 <Typography variant="body2" style={{ marginBottom: 3, marginTop: 3 }}>Settings -</Typography>
                 {headerMenuConfig.map((el, i) => {
                     return el.menuType === "SETTINGS" && el.rolesAllowed.includes(role) && assignedOrgId !== "NONMT" &&
@@ -308,7 +359,7 @@ export default function TopHeader(props) {
                                         closeDrawerOnMenuClick()
                                     },
                                     style: { textDecoration: "none", color: "#000000", marginTop: 5 },
-                                    component: RouterLink,
+                                    // component: RouterLink,
                                     className: currentMenu === el.id ? highlightedMenuButton : menuButton,
                                 }}
                             >
@@ -330,7 +381,7 @@ export default function TopHeader(props) {
                                         closeDrawerOnMenuClick()
                                     },
                                     style: { textDecoration: "none", color: "#000000", marginTop: 5 },
-                                    component: RouterLink,
+                                    // component: RouterLink,
                                     className: currentMenu === el.id ? highlightedMenuButton : menuButton,
                                 }}
                             >
@@ -364,21 +415,28 @@ export default function TopHeader(props) {
         return (
             <Grid container className={desktopMenuContainer}>
                 {headerMenuConfig.map((el, i) => {
-                    return el.menuType === "MAIN" && el.rolesAllowed.includes(role) && assignedOrgId !== "NONMT" && <Button
-                            {...{
-                                key: el.id,
-                                id: el.id,
-                                onClick: () => { 
-                                    el.onclick(assignedOrgId);
-                                    console.log(currentMenu + " === " + el.id);
-                                },
-                                style: { textDecoration: "none", color: "#000000", letterSpacing: "0.5px" },
-                                // component: RouterLink,
-                                className: currentMenu === el.id ? highlightedMenuButton : menuButton,
-                            }}
-                        >
-                            <Typography className={userMenuButtonText}>{el.title}</Typography>
-                        </Button>
+                    return el.menuType === "MAIN" && el.rolesAllowed.includes(role) && assignedOrgId !== "NONMT" && 
+                    <NavLink
+                        to = {!el.followOrg ? `/${el.id}` : `/${el.id}/${assignedOrgId}`}
+                        className = {currentMenu === el.id ? highlightedMenuButton : menuButton}
+                >
+                    <Typography className={userMenuButtonText}>{el.title}</Typography>
+                </NavLink>
+                //     <Button
+                //     {...{
+                //         key: el.id,
+                //         id: el.id,
+                //         onClick: () => { 
+                //             el.onclick(assignedOrgId);
+                //             // console.log(currentMenu + " === " + el.id);
+                //         },
+                //         style: { textDecoration: "none", color: "#000000", letterSpacing: "0.5px" },
+                //         // component: RouterLink,
+                //         className: currentMenu === el.id ? highlightedMenuButton : menuButton,
+                //     }}
+                // >
+                //     <Typography className={userMenuButtonText}>{el.title}</Typography>
+                // </Button>
                 })}
             </Grid>
 
@@ -392,14 +450,29 @@ export default function TopHeader(props) {
                     <Grid container justifyContent="center" alignItems="center" spacing={2}>
                         {(role !== "SUPERADMIN" && role !== "ADMIN") && <Grid item>
                             <div style={{ display: "flex", alignItems: "center" }}>
-                                <IconButton
-                                    style={{marginLeft: "5px"}}
+                            <IconButton
+                                    style={{marginLeft: "5px", color: currentMenu === "upload-translated-document" ? "#2C2799" : "rgba(0, 0, 0, 0.54)"}}
                                     {...{
                                         edge: "start",
                                         color: "#2C2799",
                                         "aria-label": "menu",
                                         "aria-haspopup": "true",
                                     }}
+                                    title={"Upload Translated Document"}
+                                    className={popOverIconButton}
+                                    onClick={(e) => history.push(`${process.env.PUBLIC_URL}/upload-translated-document`)}
+                                >
+                                    <PublishIcon fontSize="large" />
+                                </IconButton>
+                                <IconButton
+                                    style={{marginLeft: "5px", color: currentMenu === "view-document" || currentMenu === "document-digitization" ? "#2C2799" : "rgba(0, 0, 0, 0.54)"}}
+                                    {...{
+                                        edge: "start",
+                                        color: "#2C2799",
+                                        "aria-label": "menu",
+                                        "aria-haspopup": "true",
+                                    }}
+                                    className={popOverIconButton}
                                     title={"Dashboard"}
                                     onClick={(e) => setShowDashboardPopoverMenuAnchorEle(e.currentTarget)}
                                 >
@@ -449,20 +522,8 @@ export default function TopHeader(props) {
                                         "aria-label": "menu",
                                         "aria-haspopup": "true",
                                     }}
-                                    title={"Analytics"}
-                                    onClick={(e) => history.push(`${process.env.PUBLIC_URL}/analytics`)}
-                                >
-                                    <AssessmentIcon fontSize="large" />
-                                </IconButton>
-                                <IconButton
-                                    style={{marginLeft: "5px"}}
-                                    {...{
-                                        edge: "start",
-                                        color: "#2C2799",
-                                        "aria-label": "menu",
-                                        "aria-haspopup": "true",
-                                    }}
                                     title={"Settings"}
+                                    className={popOverIconButton}
                                     onClick={(e) => setShowSettingsPopoverMenuAnchorEle(e.currentTarget)}
                                 >
                                     <SettingsOutlinedIcon fontSize="large" />
@@ -505,6 +566,20 @@ export default function TopHeader(props) {
                                 </Popover>
                             </div>
                         </Grid>}
+                        <IconButton
+                                    style={{marginLeft: "5px", color: currentMenu === "analytics" ? "#2C2799" : "rgba(0, 0, 0, 0.54)"}}
+                                    {...{
+                                        edge: "start",
+                                        color: "#2C2799",
+                                        "aria-label": "menu",
+                                        "aria-haspopup": "true",
+                                    }}
+                                    title={"Analytics"}
+                                    className={popOverIconButton}
+                                    onClick={(e) => history.push(`${process.env.PUBLIC_URL}/analytics`)}
+                                >
+                                    <AssessmentIcon fontSize="large" />
+                                </IconButton>
                         <Grid item>
                             <div style={{ display: "flex", alignItems: "center" }}>
 

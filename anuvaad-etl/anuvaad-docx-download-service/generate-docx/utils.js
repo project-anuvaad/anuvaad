@@ -43,6 +43,7 @@ const generateTableArray = (data) => {
                 val: tgt.join(' '),
                 opts: {
                     b: false,
+                    cellColWidth: 1800,
                     sz: child.font_size + 'pt',
                     fontFamily: child.font_family
                 }
