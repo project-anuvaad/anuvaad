@@ -398,6 +398,16 @@ class DocumentEditor extends React.Component {
         this.informUserStatus(translate('common.page.label.SENTENCE_SAVED_SUCCESS'), true)
         TELEMETRY.sentenceChanged(sentence.s0_tgt, sentence.tgt, sentence.s_id, "translation", sentence.s0_src, sentence.bleu_score, sentence.time_spent_ms, score, eventArray)
         this.makeAPICallDocumentsTranslationProgress();
+        // call bulk api again here
+        const apiObj = new FetchDocument(
+          0,
+          this.props.job_details.count,
+          [],
+          false,
+          false,
+          false
+      );
+      APITransport(apiObj);
       }
     }).catch((error) => {
       this.informUserStatus(translate('common.page.label.SENTENCE_SAVED_FAILED'), false)
