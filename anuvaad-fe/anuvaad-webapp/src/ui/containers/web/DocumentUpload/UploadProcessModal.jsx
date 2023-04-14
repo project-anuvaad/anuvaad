@@ -225,15 +225,14 @@ export default function UploadProcessModal(props) {
         setActiveStep(0);
     };
 
-    const msToTime = (ms) => {
-        let seconds = (ms / 1000).toFixed(1);
-        let minutes = (ms / (1000 * 60)).toFixed(1);
-        let hours = (ms / (1000 * 60 * 60)).toFixed(1);
-        let days = (ms / (1000 * 60 * 60 * 24)).toFixed(1);
-        if (seconds < 60) return Math.ceil(seconds) + " Sec";
-        else if (minutes < 60) return Math.ceil(minutes) + " Min";
-        else if (hours < 24) return Math.ceil(hours) + " Hrs";
-        else return Math.ceil(days) + " Days"
+    const msToTime = (startTime, endTime) => {
+        let edate = new Date(endTime);
+        let sdate = new Date(startTime);
+        let sec = Math.trunc(Math.abs(edate.getTime() - sdate.getTime()) / 1000);
+        var date = new Date(0);
+        console.log("sec ---- ", sec);
+        date.setSeconds(sec == 0 ? 1 : sec); // specify value for SECONDS here
+        return date.toISOString().substr(11, 8);
     }
 
     useEffect(() => {
@@ -298,7 +297,7 @@ export default function UploadProcessModal(props) {
 
                             <StepContent>
                                 <Typography variant='body2'>{process?.status}</Typography>
-                                {process?.status === "SUCCESS" && <Typography variant='caption'>Time Taken : {msToTime(process?.endTimeProcess - process?.startTimeProcess)}</Typography>}
+                                {process?.status === "SUCCESS" && <Typography variant='caption'>Time Taken : {msToTime(process?.endTimeProcess,process?.startTimeProcess)}</Typography>}
                             </StepContent>
                         </Step>
                     )) :

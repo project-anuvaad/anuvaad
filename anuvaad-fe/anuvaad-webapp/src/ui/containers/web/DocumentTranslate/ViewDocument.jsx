@@ -429,7 +429,7 @@ class ViewDocument extends React.Component {
     let sdate = new Date(startTime);
     let sec = Math.trunc(Math.abs(edate.getTime() - sdate.getTime()) / 1000);
     var date = new Date(0);
-    date.setSeconds(sec); // specify value for SECONDS here
+    date.setSeconds(sec == 0 ? 1 : sec); // specify value for SECONDS here
     return date.toISOString().substr(11, 8);
   }
 
