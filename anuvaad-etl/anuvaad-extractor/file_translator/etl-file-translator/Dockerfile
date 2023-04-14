@@ -1,4 +1,4 @@
-FROM python:3.6-slim
+FROM python:3.8-slim
 RUN apt-get update
 RUN apt-get install -y build-essential libssl-dev libffi-dev python3-dev wget
 # RUN mkdir /usr/share/man/man1
