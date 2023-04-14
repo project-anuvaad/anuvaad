@@ -91,4 +91,5 @@ REDIS_OCRGV_DB            = os.environ.get('REDIS_OCR_DB',7)
 
 FONTS = False
 IS_DYNAMIC =True
+WATERMARK_REMOVE = True
 EXRACTION_RESOLUTION  =  300

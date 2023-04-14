@@ -1,0 +1,7 @@
+**__pycache__
+*.vscode
+*.log
+/env
+exp_result.py
+**.DS_Store
+/upload/*

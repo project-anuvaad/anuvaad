@@ -1,0 +1,115 @@
+swagger: "2.0"
+info:
+  version: 1.0.0
+  title: Anuvaad Document Pre-Processor - API Contract
+  description: A python based microservice to trigger and orchestrate the document preprocess part of anuvaad-extractor.
+  contact:
+    name: Kumar Deepak
+    email: kumar.deepak@tarento.com
+
+schemes:
+  - https
+basePath: '/api'
+
+
+
+
+paths: 
+  /v0/upload-file:
+    post:
+      summary: REST API to upload file.
+      description: This api takes a file and uploads it to server.
+      consumes:
+         - multipart/form-data
+      parameters:
+         - in: formData
+           name: file
+           type: file
+           description: The file to upload.
+            
+      tags:
+      - File Handler
+
+      responses:
+        200:
+          description: On successful completion of the job.
+          schema:
+            $ref: '#/definitions/FileUploaderResponse'
+        400:
+          description: On input errors causing a failure in the job.
+          schema:
+            $ref: '#/definitions/Error'
+            
+  /v0/download-file:
+    get:
+      summary: REST API to download file.
+      description: This api takes file name and user id and gives the file.
+      parameters:
+        - in: query
+          name: filename
+          type: string
+          description: The filename to be downloaded
+        - in: query
+          name: userid
+          type: string
+          description: The logged in userid
+            
+      tags:
+      - File Handler
+
+      responses:
+        200:
+          description: On successful completion of the job.
+        400:
+          description: On input errors causing a failure in the job.
+          schema:
+            $ref: '#/definitions/Error'
+
+
+
+
+definitions:
+        
+  HttpOutput:
+    type: object
+    properties:
+      status:
+        type: number
+        description: Status code.       
+        
+      
+
+        
+  PreProcessorResponse:
+    type: object
+    properties:        
+      data:
+        type: string
+        description: Output file id generated.
+      ok:
+        type: boolean
+        description: request successful indicator.
+      why:
+        type: string
+        description: Response message.
+      http:
+        type: object
+        description: Final output of this process.
+        $ref: '#/definitions/HttpOutput'
+      
+
+        
+        
+  Error:
+    type: object
+    properties:        
+      ok:
+        type: boolean
+        description: request successful indicator.
+      why:
+        type: string
+        description: Response message.
+      http:
+        type: object
+        description: Final output of this process.
+        $ref: '#/definitions/HttpOutput'

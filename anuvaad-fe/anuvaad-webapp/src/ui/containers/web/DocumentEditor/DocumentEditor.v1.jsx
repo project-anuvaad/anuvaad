@@ -30,10 +30,12 @@ import JobStatus from "../../../../flux/actions/apis/view_document/v1_jobprogres
 import FetchModel from "../../../../flux/actions/apis/common/fetchmodel";
 import { showPdf, clearShowPdf } from '../../../../flux/actions/apis/document_translate/showpdf';
 import { contentUpdateStarted, clearFetchContent } from '../../../../flux/actions/users/translator_actions';
+import clear_html_link from "../../../../flux/actions/apis/document_translate/clear_html_link";
 import { update_sentences, update_blocks } from '../../../../flux/actions/apis/document_translate/update_page_content';
 import { editorModeClear, editorModeNormal, editorModeMerge } from '../../../../flux/actions/editor/document_editor_mode';
 import { clearHighlighBlock } from '../../../../flux/actions/users/translator_actions';
 import { Button } from "@material-ui/core";
+import fetchTransliterationModelID from "../../../../flux/actions/apis/document_translate/fetchTransliterationModel";
 // import html2canvas from "html2canvas"
 // import { jsPDF } from "jspdf";
 import ReactToPrint, { PrintContextConsumer } from 'react-to-print';
@@ -41,6 +43,8 @@ import PageCardHtml from './PageCardHtml';
 import Split from 'react-split';
 import '../../../styles/web/InteractiveEditor.css';
 import Loader from "../../../components/web/common/CircularLoader";
+import UpdateGranularStatus from "../../../../flux/actions/apis/document_translate/update_granular_status";
+import FetchDocument from "../../../../flux/actions/apis/view_document/fetch_document";
 const LANG_MODEL = require('../../../../utils/language.model')
 const PAGE_OPS = require("../../../../utils/page.operations");
 const BLOCK_OPS = require("../../../../utils/block.operations");
@@ -72,7 +76,11 @@ class DocumentEditor extends React.Component {
       totalLoaderValue: 0,
       currentIndex: 0,
       download: false,
-
+      targLangCode: "",
+      srcLangCode: "",
+      transliterationChecked: false,
+      enableCompleteButton: false,
+      updateManualStartTime: false,
       fetchNext: true.valueOf,
     }
     this.forMergeSentences = []
@@ -82,23 +90,59 @@ class DocumentEditor extends React.Component {
    * life cycle methods
    */
   componentDidMount() {
+    // console.log("this.props ---- ", this.props);
     TELEMETRY.pageLoadCompleted('document-editor')
     let recordId = this.props.match.params.jobid;
-    let jobId = recordId ? recordId.split("|")[0] : ""
+    let jobId = recordId ? recordId.split("|")[0] : "";
+
+    // get current status of document start
+    const apiObj = new FetchDocument(
+      0,
+      this.props.job_details.count,
+      [jobId],
+      false,
+      false,
+      false
+    );
+
+    fetch(apiObj.apiEndPoint(), {
+      method: 'post',
+      body: JSON.stringify(apiObj.getBody()),
+      headers: apiObj.getHeaders().headers
+    }).then(async response => {
+      const rsp_data = await response.json();
+      console.log("rsp_data ---- ", rsp_data);
+      let docArr = rsp_data?.jobs;
+      if(docArr?.length > 0){
+        if(
+          (docArr[0]?.granularity && docArr[0]?.granularity?.manualEditingStatus === "IN PROGRESS") 
+          || 
+          (!docArr[0]?.granularity && docArr[0]?.status === "COMPLETED")){
+          this.setState({enableCompleteButton: true});
+        }
+        if(!docArr[0]?.granularity && docArr[0]?.status === "COMPLETED"){
+          this.setState({updateManualStartTime: true});
+        }
+      }
+    })
+
+    // get current status of document end
 
     localStorage.setItem("recordId", recordId);
     localStorage.setItem("inputFile", this.props.match.params.inputfileid)
     this.setState({ showLoader: true });
     this.makeAPICallFetchContent(1);
     this.makeAPICallDocumentsTranslationProgress();
-
     if (!this.props.fetch_models || !this.props.fetch_models.length > 0) {
       const apiModel = new FetchModel();
       this.props.APITransport(apiModel);
     } else {
       let model = LANG_MODEL.fetchModel(parseInt(this.props.match.params.modelId), this.props.fetch_models, this.props.match.params.source_language_code, this.props.match.params.target_language_code)
       if (model && model.hasOwnProperty('source_language_name') && model.hasOwnProperty('target_language_name')) {
-        TELEMETRY.startTranslatorFlow(model.source_language_name, model.target_language_name, this.props.match.params.inputfileid, jobId)
+        TELEMETRY.startTranslatorFlow(model.source_language_name, model.target_language_name, this.props.match.params.inputfileid, jobId);
+        this.setState({ targLangCode: model.target_language_code, srcLangCode: model.source_language_code }, () => {
+          this.getTransliterationModel(this.state.targLangCode, this.state.srcLangCode);
+        });
       }
     }
 
@@ -151,9 +195,59 @@ class DocumentEditor extends React.Component {
       let jobId = this.props.match.params.jobid ? this.props.match.params.jobid.split("|")[0] : ""
       let model = LANG_MODEL.fetchModel(parseInt(this.props.match.params.modelId), this.props.fetch_models, this.props.match.params.source_language_code, this.props.match.params.target_language_code)
       if (model && model.hasOwnProperty('source_language_name') && model.hasOwnProperty('target_language_name')) {
-        TELEMETRY.startTranslatorFlow(model.source_language_name, model.target_language_name, this.props.match.params.inputfileid, jobId)
+        TELEMETRY.startTranslatorFlow(model.source_language_name, model.target_language_name, this.props.match.params.inputfileid, jobId);
+        this.setState({ targLangCode: model.target_language_code, srcLangCode: model.source_language_code }, () => {
+          this.getTransliterationModel(this.state.targLangCode, this.state.srcLangCode);
+        });
       }
     }
+
+    if (prevProps.job_status !== this.props.job_status) {
+      let currentSavedandTotalSetencesArr = this.props.job_status?.status.split(" of ");
+      let previousSavedandTotalSetencesArr = prevProps.job_status?.status.split(" of ");
+      // console.log("currentSavedandTotalSetencesArr ----- ", currentSavedandTotalSetencesArr);
+      // console.log("previousSavedandTotalSetencesArr ----- ", previousSavedandTotalSetencesArr);
+      if (previousSavedandTotalSetencesArr[0] == 0 && currentSavedandTotalSetencesArr[0] == 1) {
+        // update granular status to manual editing started
+        this.updateGranularity(["manualEditingStartTime"]);
+      }
+    }
+
+  }
+
+  updateGranularity(status) {
+    let recordId = this.props.match.params.jobid;
+    let jobId = recordId ? recordId.split("|")[0] : ""
+    const apiObj = new UpdateGranularStatus(jobId, status);
+
+    fetch(apiObj.apiEndPoint(), {
+      method: 'post',
+      body: JSON.stringify(apiObj.getBody()),
+      headers: apiObj.getHeaders().headers
+    }).then(async response => {
+      const rsp_data = await response.json();
+      // console.log("rsp_data ---- ", rsp_data);
+      this.setState({enableCompleteButton: true});
+      const { APITransport } = this.props;
+      const apiObj = new FetchDocument(
+        0,
+        this.props.job_details.count,
+        [],
+        false,
+        false,
+        false
+      );
+      APITransport(apiObj);
+    }).catch(err => {
+      console.log(err);
+    })
+
+  }
+
+  getTransliterationModel(srcLang) {
+    const { APITransport } = this.props;
+    const apiObj = new fetchTransliterationModelID(this.state.srcLangCode, this.state.targLangCode);
+    APITransport(apiObj);
 
   }
 
@@ -174,11 +268,12 @@ class DocumentEditor extends React.Component {
     localStorage.setItem("inputFile", "");
 
     let recordId = this.props.match.params.jobid;
-    let jobId = recordId ? recordId.split("|")[0] : ""
-    TELEMETRY.endTranslatorFlow(jobId)
-    this.props.clearFetchContent()
-    this.props.clearHighlighBlock()
-    this.props.clearShowPdf()
+    let jobId = recordId ? recordId.split("|")[0] : "";
+    TELEMETRY.endTranslatorFlow(jobId);
+    this.props.clearFetchContent();
+    this.props.clear_html_link();
+    this.props.clearHighlighBlock();
+    this.props.clearShowPdf();
   }
 
   handleSourceScroll(id) {
@@ -245,7 +340,7 @@ class DocumentEditor extends React.Component {
     let model = LANG_MODEL.fetchModel(parseInt(this.props.match.params.modelId), this.props.fetch_models, this.props.match.params.source_language_code, this.props.match.params.target_language_code)
     this.informUserProgress(translate('common.page.label.SENTENCE_MERGED'))
     let apiObj = new WorkFlowAPI("WF_S_TR", updated_blocks.blocks, this.props.match.params.jobid, model.source_language_code,
-      '', '', model, sentence_ids)
+      model.target_language_code, '', model, sentence_ids)
     const apiReq = fetch(apiObj.apiEndPoint(), {
       method: 'post',
       body: JSON.stringify(apiObj.getBody()),
@@ -303,6 +398,16 @@ class DocumentEditor extends React.Component {
         this.informUserStatus(translate('common.page.label.SENTENCE_SAVED_SUCCESS'), true)
         TELEMETRY.sentenceChanged(sentence.s0_tgt, sentence.tgt, sentence.s_id, "translation", sentence.s0_src, sentence.bleu_score, sentence.time_spent_ms, score, eventArray)
         this.makeAPICallDocumentsTranslationProgress();
+        // call bulk api again here
+        const apiObj = new FetchDocument(
+          0,
+          this.props.job_details.count,
+          [],
+          false,
+          false,
+          false
+      );
+      APITransport(apiObj);
       }
     }).catch((error) => {
       this.informUserStatus(translate('common.page.label.SENTENCE_SAVED_FAILED'), false)
@@ -312,7 +417,7 @@ class DocumentEditor extends React.Component {
   makeAPICallReTranslateSentence = (sentences, pageNumber) => {
     let sentence_ids = sentences.s_id
     let updated_blocks = BLOCK_OPS.do_sentence_retranslation(this.props.document_contents.pages, sentence_ids);
-    console.log("updated_blocks", updated_blocks);
+    // console.log("updated_blocks", updated_blocks);
     /**
      * telemetry information.
      */
@@ -322,8 +427,8 @@ class DocumentEditor extends React.Component {
     let model = LANG_MODEL.fetchModel(parseInt(this.props.match.params.modelId), this.props.fetch_models, this.props.match.params.source_language_code, this.props.match.params.target_language_code, this.props.match.params.source_language_code, this.props.match.params.target_language_code)
     this.informUserProgress(translate('common.page.label.RETRANSLATE_SENTENCE'));
     console.log("model in retranslation === ", model);
-    let apiObj = new WorkFlowAPI("WF_S_TR", updated_blocks, this.props.match.params.jobid, model.source_language_code,
-      '', '', model, [sentence_ids], "", "", [], "", true)
+    let apiObj = new WorkFlowAPI("WF_S_TR", updated_blocks, this.props.match.params.jobid, model.source_language_code, model.target_language_code,
+      '', model, [sentence_ids], "", "", [], "", true)
     const apiReq = fetch(apiObj.apiEndPoint(), {
       method: 'post',
       body: JSON.stringify(apiObj.getBody()),
@@ -359,7 +464,7 @@ class DocumentEditor extends React.Component {
     let model = LANG_MODEL.fetchModel(parseInt(this.props.match.params.modelId), this.props.fetch_models, this.props.match.params.source_language_code, this.props.match.params.target_language_code)
     this.informUserProgress(translate('common.page.label.SENTENCE_SPLITTED'))
     let apiObj = new WorkFlowAPI("WF_S_TR", updated_blocks.blocks, this.props.match.params.jobid, model.source_language_code,
-      '', '', model, updated_blocks.selected_sentence_ids)
+      model.target_language_code, '', model, updated_blocks.selected_sentence_ids)
     const apiReq = fetch(apiObj.apiEndPoint(), {
       method: 'post',
       body: JSON.stringify(apiObj.getBody()),
@@ -392,7 +497,7 @@ class DocumentEditor extends React.Component {
     let model = LANG_MODEL.fetchModel(parseInt(this.props.match.params.modelId), this.props.fetch_models, this.props.match.params.source_language_code, this.props.match.params.target_language_code)
 
     let apiObj = new WorkFlowAPI("WF_S_TKTR", sentence, this.props.match.params.jobid, model.source_language_code,
-      '', '', model)
+      model.target_language_code, '', model)
     const apiReq = fetch(apiObj.apiEndPoint(), {
       method: 'post',
       body: JSON.stringify(apiObj.getBody()),
@@ -659,6 +764,10 @@ class DocumentEditor extends React.Component {
     this.setState({ docView: !this.state.docView })
   }
 
+  enableTransliteration = (value) => {
+    this.setState({ transliterationChecked: value })
+  }
+
   showPreview = () => {
     let pagesPerCall = this.state.totalPageCount < 30 ? 5 : (this.state.totalPageCount / 10)
     let count = Math.ceil(pagesPerCall)
@@ -760,6 +869,7 @@ class DocumentEditor extends React.Component {
           pages.map(page => page['translated_texts'].map((sentence, index) => {
             sentence.src = sentence.src.replace(/\s{2,}/g, ' ').trim()
             return < div key={sentence.s_id} ref={sentence.s_id} > <SentenceCard key={sentence.s_id}
+              enableTransliteration={this.state.transliterationChecked}
               pageNumber={page.page_no}
               recordId={this.props.match.params.jobid}
               model={LANG_MODEL.fetchModel(parseInt(this.props.match.params.modelId), this.props.fetch_models, this.props.match.params.source_language_code, this.props.match.params.target_language_code)}
@@ -779,7 +889,7 @@ class DocumentEditor extends React.Component {
    */
   processZoom = () => {
     return (
-      <div style={{ marginLeft: '1%', marginRight: "2%" }}>
+      <div style={{ marginLeft: '1%', marginRight: "1%" }}>
         <Button
           variant="outlined"
           color="primary"
@@ -811,8 +921,8 @@ class DocumentEditor extends React.Component {
   }
   render() {
     return (
-      <div style={{ marginTop : 5 }}>
-        <div style={{ height: "50px", marginBottom: "13px" }}> <InteractiveDocToolBar docView={this.state.docView} onAction={this.handleDocumentView} onShowPreview={this.showPreview} preview={this.state.preview} /></div>
+      <div style={{ marginTop: 5 }}>
+        <div style={{ height: "50px", marginBottom: "13px" }}> <InteractiveDocToolBar enableTransliteration={this.enableTransliteration} docView={this.state.docView} onAction={this.handleDocumentView} onShowPreview={this.showPreview} preview={this.state.preview} /></div>
 
         {!this.state.preview ?
           <>
@@ -822,6 +932,8 @@ class DocumentEditor extends React.Component {
             </Split>
             <div style={{ height: "65px", marginTop: "13px", bottom: "0px", position: "absolute", width: "100%" }}>
               <InteractivePagination count={this.props.document_contents.count}
+                enableCompleteButton={this.state.enableCompleteButton}
+                updateManualStartTime={this.state.updateManualStartTime}
                 data={this.props.document_contents.pages}
                 zoomPercent={this.state.zoomPercent}
                 processZoom={this.processZoom}
@@ -853,7 +965,9 @@ const mapStateToProps = state => ({
   active_page_number: state.active_page_number.page_number,
   document_editor_mode: state.document_editor_mode,
   fetchDocument: state.fetchDocument,
-  fetch_models: state.fetch_models.models
+  fetch_models: state.fetch_models.models,
+  job_status: state.job_status,
+  job_details: state.job_details
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators(
@@ -864,6 +978,7 @@ const mapDispatchToProps = dispatch => bindActionCreators(
     update_blocks,
     ClearContent,
     clearFetchContent,
+    clear_html_link,
     clearHighlighBlock,
     editorModeNormal, editorModeMerge, editorModeClear,
     showPdf,

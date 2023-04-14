@@ -117,7 +117,7 @@ class ViewDocumentDigitization extends React.Component {
 
     checkInprogressJobStatus = () => {
         let inprogressJobIds = this.props.digitizeddocument.documents
-            .filter((job) => job.status === "INPROGRESS")
+            .filter((job) => job.status === "INPROGRESS" || job.status === "STARTED")
             .map((job) => job.jobID);
         if (inprogressJobIds.length > 0) {
             this.makeAPICallJobsBulkSearch(
@@ -132,7 +132,7 @@ class ViewDocumentDigitization extends React.Component {
     };
 
     componentDidMount() {
-        this.timerId = setInterval(this.checkInprogressJobStatus.bind(this), 10000);
+        this.timerId = setInterval(this.checkInprogressJobStatus.bind(this), 30000);
         TELEMETRY.pageLoadStarted("document-digitization");
 
         if (this.props.digitizeddocument.documents.length < 1) {
@@ -167,7 +167,7 @@ class ViewDocumentDigitization extends React.Component {
     keyPress = (e) => {
         if (e.code === "Enter" && this.state.isInputActive) {
             // handleTransliterationModelClose();
-            console.log("enter key press.");
+            // console.log("enter key press.");
             this.onChangePageMAnually();
         }
     };
@@ -287,7 +287,7 @@ class ViewDocumentDigitization extends React.Component {
                 `${process.env.PUBLIC_URL}/interactive-digitization/${jobId}/${filename}/${job.converted_filename}/${Og_file_name}`,
                 this.state
             );
-        } else if (status === "INPROGRESS") {
+        } else if (status === "INPROGRESS" || job.status === "STARTED") {
             this.setState({
                 dialogMessage: "Please wait process is Inprogress!",
                 timeOut: 3000,
@@ -354,7 +354,7 @@ class ViewDocumentDigitization extends React.Component {
         let user_profile = JSON.parse(localStorage.getItem("userProfile"));
 
         let obj = new DownloadFile(job.converted_filename, user_profile.userID);
-
+        // console.log("job ----- ", job);
         const apiReq1 = fetch(obj.apiEndPoint(), {
             method: "get",
             headers: obj.getHeaders().headers,
@@ -364,7 +364,7 @@ class ViewDocumentDigitization extends React.Component {
                     this.setState({
                         dialogMessage: "Failed to download file...",
                         timeOut: 3000,
-                        variant: "info",
+                        variant: "error",
                     });
                     console.log("api failed");
                 } else {
@@ -377,7 +377,7 @@ class ViewDocumentDigitization extends React.Component {
                             let a = document.createElement("a");
                             let url = URL.createObjectURL(blob);
                             a.href = url;
-                            a.download = job.converted_filename;
+                            a.download = job.filename;
                             this.setState({ dialogMessage: null });
                             a.click();
                         });
@@ -387,7 +387,7 @@ class ViewDocumentDigitization extends React.Component {
                 this.setState({
                     dialogMessage: "Failed to download file...",
                     timeOut: 3000,
-                    variant: "info",
+                    variant: "error",
                 });
                 console.log("api failed because of server or network", error);
             });
@@ -695,6 +695,7 @@ class ViewDocumentDigitization extends React.Component {
                             <TableRow>
                                 <TableCell colSpan={12}>
                                     <div style={{ textAlign: "end", justifyContent: "space-evenly" }}>
+                                    <Typography variant="caption" style={{ fontSize: "0.9rem", fontWeight: "600", float: 'left',padding: '10px'}}>Total Documents - <b>{this.props.digitizeddocument.count}</b></Typography>
                                         <Typography variant="caption" style={{ fontSize: "0.9rem", fontWeight: "600" }}>Page No. - </Typography>
                                         <TextField
                                             type="number"
@@ -754,7 +755,7 @@ class ViewDocumentDigitization extends React.Component {
                     {!this.state.showLoader && (
                         <MuiThemeProvider theme={this.getMuiTheme()}>
                             <DataTable
-                                title={translate("common.page.title.document")}
+                                title={"Digitize " + translate("common.page.title.document")}
                                 data={this.getJobsSortedByTimestamp()}
                                 columns={columns}
                                 options={options}

@@ -1,0 +1,182 @@
+{
+  "languages": [
+    {
+      "code": "en",
+      "label": "English",
+      "active": true
+    },
+    {
+      "code": "hi",
+      "label": "Hindi",
+      "active": true
+    },
+    {
+      "code": "mr",
+      "label": "Marathi",
+      "active": true
+    },
+    {
+      "code": "ta",
+      "label": "Tamil",
+      "active": true
+    },
+    {
+      "code": "te",
+      "label": "Telugu",
+      "active": true
+    },
+    {
+      "code": "kn",
+      "label": "Kannada",
+      "active": true
+    },
+    {
+      "code": "gu",
+      "label": "Gujarati",
+      "active": true
+    },
+    {
+      "code": "pa",
+      "label": "Punjabi",
+      "active": true
+    },
+    {
+      "code": "bn",
+      "label": "Bengali",
+      "active": true
+    },
+    {
+      "code": "ml",
+      "label": "Malayalam",
+      "active": true
+    },
+    {
+      "code": "as",
+      "label": "Assamese",
+      "active": true
+    },
+    {
+      "code": "ne",
+      "label": "Nepali",
+      "active": true
+    },
+    {
+      "code": "or",
+      "label": "Odia",
+      "active": true
+    }
+  ],
+  "orgs": [
+    {
+      "code": "SUPREME COURT"
+    },
+    {
+      "code": "IITB"
+    },
+    {
+      "code": "CHATTISGARH"
+    },
+    {
+      "code": "NEPAL"
+    },
+    {
+      "code": "J & K"
+    },
+    {
+      "code": "JHARKHAND"
+    },
+    {
+      "code": "SIMLA"
+    },
+    {
+      "code": "JODHPUR"
+    },
+    {
+      "code": "JAIPUR"
+    },
+    {
+      "code": "MADRAS"
+    },
+    {
+      "code": "ARUNACHAL PRADESH"
+    },
+    {
+      "code": "TELANGANA"
+    },
+    {
+      "code": "BOMBAY"
+    },
+    {
+      "code": "DELHI"
+    },
+    {
+      "code": "ORISSA"
+    },
+    {
+      "code": "MIZORAM"
+    },
+    {
+      "code": "SIKKIM"
+    },
+    {
+      "code": "TRIPURA"
+    },
+    {
+      "code": "MANIPUR"
+    },
+    {
+      "code": "PATNA"
+    },
+    {
+      "code": "ALLAHABAD"
+    },
+    {
+      "code": "GUWAHATI"
+    },
+    {
+      "code": "ANDHRA PRADESH"
+    },
+    {
+      "code": "GUJARAT"
+    },
+    {
+      "code": "WEST BENGAL"
+    },
+    {
+      "code": "KERALA"
+    },
+    {
+      "code": "TAMILNADU"
+    },
+    {
+      "code": "HIMACHAL PRADESH"
+    },
+    {
+      "code": "KARNATAKA"
+    },
+    {
+      "code": "BIHAR"
+    },
+    {
+      "code": "MADHYAPRADESH"
+    },
+    {
+      "code": "CHANDIGARH"
+    },
+    {
+      "code": "RAJASTHAN"
+    },
+    {
+      "code": "HARYANA"
+    },
+    {
+      "code": "PUNJAB"
+    },
+    {
+      "code": "UTTARAKHAND"
+    },
+    {
+      "code": "ALL"
+    }
+  ]
+}

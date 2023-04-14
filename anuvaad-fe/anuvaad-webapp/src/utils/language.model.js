@@ -13,7 +13,7 @@ export const get_supported_languages = (languages, translate) => {
     let condition = translate ? `$..[?( @.status == 'ACTIVE' && @.is_primary == true)]` : `$..[?(@.status == 'INACTIVE' && @.is_primary == true)]`
     let result = jp.query(languages, condition)
     if (result.length > 0) {
-        return result.map((lang) => { return { language_code: lang.source_language_code, language_name: lang.source_language_name } }).filter((v, i, a) => a.findIndex(t => (t.language_code === v.language_code)) === i)
+        return result.map((lang) => { return { language_code: lang.source_language_code, language_name: lang.source_language_name } }).filter((v, i, a) => a.findIndex(t => (t.language_code === v.language_code)) === i).sort((a, b) => a.language_name.toLowerCase() > b.language_name.toLowerCase() ? 1 : -1)
     }
     return []
 }
@@ -29,7 +29,7 @@ export const get_counterpart_languages = (languages, language_code, translate) =
             language_code: lang.target_language_code,
             language_name: get_language_name(languages, lang.target_language_code, translate)
         }
-    })
+    }).sort((a, b) => a.language_name.toLowerCase() > b.language_name.toLowerCase() ? 1 : -1)
 }
 
 export const get_nmt_models = (models, source_language, target_language_code) => {
@@ -109,45 +109,45 @@ export const get_selected_users = (userDetails, uuid) => {
 }
 
 export const fetchModel = (modelId, docs, source_lang, targ_lang) => {
-    console.log("source_lang, targ_lang", source_lang, targ_lang);
+    // console.log("source_lang, targ_lang", source_lang, targ_lang);
     let model = ""
     if (docs && docs.length > 0) {
         let condition = `$[?(@.model_id == '${modelId}')]`;
         model = jp.query(docs, condition)
-        console.log("model list arr ----------- ", model);
+        // console.log("model list arr ----------- ", model);
         if(model.length == 0){
             let condition = `$[?(@.source_language_name == '${source_lang}' && @.target_language_name =='${targ_lang}' && @.status === "ACTIVE" && @.is_primary === true)]`;
             model = jp.query(docs, condition)
-            console.log("1. using the default model. UUID ======= ", model);
+            // console.log("1. using the default model. UUID ======= ", model);
         } else if (model[0].status === "INACTIVE") {
             let parsedUserProfile = JSON.parse(localStorage.getItem("userProfile"));
-            console.log("parsedUserProfile ", parsedUserProfile);
+            // console.log("parsedUserProfile ", parsedUserProfile);
             
             let getFilteredUserModels = parsedUserProfile && parsedUserProfile.models && parsedUserProfile.models.filter(el => el.src_lang === model[0].source_language_code && el.tgt_lang === model[0].target_language_code)
             
             let availableModelUuid = getFilteredUserModels && getFilteredUserModels.length > 0 ? getFilteredUserModels[0].uuid : null;
-            console.log("availableModelUuid ======= ", availableModelUuid);
+            // console.log("availableModelUuid ======= ", availableModelUuid);
 
             if (availableModelUuid) {
                 let condition = `$[?(@.source_language_code == '${model[0].source_language_code}' && @.target_language_code =='${model[0].target_language_code}' && @.uuid == '${availableModelUuid}' && @.status === "ACTIVE")]`;
                 model = jp.query(docs, condition);
-                console.log("using the user assigned model. UUID ======= ", model);
+                // console.log("using the user assigned model. UUID ======= ", model);
                 if(model.length == 0){
                     let condition = `$[?(@.source_language_name == '${source_lang}' && @.target_language_name =='${targ_lang}' && @.status === "ACTIVE" && @.is_primary === true)]`;
                     model = jp.query(docs, condition)
-                    console.log("2. using the default model. UUID ======= ", model);
+                    // console.log("2. using the default model. UUID ======= ", model);
                 }
             } else {
                 let condition = `$[?(@.source_language_code == '${model[0].source_language_code}' && @.target_language_code =='${model[0].target_language_code}' && @.status === "ACTIVE" && @.is_primary === true)]`;
                 model = jp.query(docs, condition);
-                console.log("model value at line 142", model);
+                // console.log("model value at line 142", model);
                 if(model.length == 0){
                     let condition = `$[?(@.source_language_name == '${source_lang}' && @.target_language_name =='${targ_lang}' && @.status === "INACTIVE" && @.is_primary === true)]`;
                     model = jp.query(docs, condition);
-                    console.log(`using inactive primary model for language pair ${source_lang} || ${targ_lang} `);
-                    console.log("model value at line 148", model);
+                    // console.log(`using inactive primary model for language pair ${source_lang} || ${targ_lang} `);
+                    // console.log("model value at line 148", model);
                 } else{
-                    console.log("3. using the default model. UUID ======= ", model);
+                    // console.log("3. using the default model. UUID ======= ", model);
                 }
             }
         }

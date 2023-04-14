@@ -3,7 +3,7 @@ import uuid
 import time
 import re
 import bcrypt
-from db import get_db
+from db import get_db,User_management_db
 from anuvaad_auditor.loghandler import log_info, log_exception
 from anuvaad_auditor.errorhandler import post_error
 import jwt
@@ -27,6 +27,8 @@ from config import (
 )
 from base64 import b64decode
 from nacl.secret import SecretBox
+from utilities.email_notification import send_email, generate_email_notification
+from email.mime.text import MIMEText
 
 SECRET_KEY = secrets.token_bytes()
 ex_secret_key = config.SECRET_KEY
@@ -40,6 +42,9 @@ token_life = config.AUTH_TOKEN_EXPIRY_HRS
 role_codes = []
 role_details = []
 
+
+db = User_management_db()
+db_connection = db.instantiate()
 
 class UserUtils:
     @staticmethod
@@ -128,7 +133,10 @@ class UserUtils:
                 hours=token_life
             )
             # creating payload for token
-            payload = {"user": str(userdetails["user_name"]).split('@')[0], "exp": time_limit}
+            payload = {
+                "user": str(userdetails["user_name"]).split("@")[0],
+                "exp": time_limit,
+            }
             # generating token
             token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
             log_info(
@@ -136,7 +144,8 @@ class UserUtils:
                 MODULE_CONTEXT,
             )
             # connecting to mongo instance/collection
-            collections = get_db()[collection]
+            # collections = get_db()[collection]
+            collections = db.get_mongo_instance(db_connection,collection)
             # storing token in database
             collections.insert(
                 {
@@ -173,7 +182,8 @@ class UserUtils:
         """
         try:
             # connecting to mongo instance/collection
-            collections = get_db()[USR_TOKEN_MONGO_COLLECTION]
+            # collections = get_db()[USR_TOKEN_MONGO_COLLECTION]
+            collections = db.get_mongo_instance(db_connection,USR_TOKEN_MONGO_COLLECTION)
             # searching for token from database
             result = collections.find(
                 {"token": token}, {"_id": 0, "user": 1, "active": 1, "secret_key": 1}
@@ -183,7 +193,8 @@ class UserUtils:
                     "Checking in extension users repo, for the token", MODULE_CONTEXT
                 )
                 # checking for extension users
-                collections = get_db()[EX_USR_TOKEN_MONGO_COLLECTION]
+                # collections = get_db()[EX_USR_TOKEN_MONGO_COLLECTION]
+                collections = db.get_mongo_instance(db_connection,EX_USR_TOKEN_MONGO_COLLECTION)
                 result = collections.find(
                     {"token": token},
                     {"_id": 0, "user": 1, "active": 1, "secret_key": 1},
@@ -241,11 +252,13 @@ class UserUtils:
             else:
                 document = USR_TOKEN_MONGO_COLLECTION
             # connecting to mongo instance/collection
-            collections = get_db()[document]
+            # collections = get_db()[document]
+            collections = db.get_mongo_instance(db_connection,document)
             # searching for database record matching token, getting user_name
             result = collections.find({"token": token}, {"_id": 0, "user": 1})
             if result.count() == 0:
-                collections = get_db()[EX_USR_TOKEN_MONGO_COLLECTION]
+                # collections = get_db()[EX_USR_TOKEN_MONGO_COLLECTION]
+                collections = db.get_mongo_instance(db_connection,EX_USR_TOKEN_MONGO_COLLECTION)
                 result = collections.find({"token": token}, {"_id": 0, "user": 1})
                 if result.count == 0:
                     return post_error(
@@ -257,7 +270,8 @@ class UserUtils:
                         MODULE_CONTEXT,
                     )
                     username = result[0]["user"]
-                    ex_usr_collection = get_db()[EX_USR_MONGO_COLLECTION]
+                    # ex_usr_collection = get_db()[EX_USR_MONGO_COLLECTION]
+                    ex_usr_collection = db.get_mongo_instance(db_connection,EX_USR_MONGO_COLLECTION)
                     ex_usr = ex_usr_collection.find({"userID": username}, {"_id": 0})
                     ex_usr_collection.update_one(
                         {"userID": username},
@@ -267,7 +281,8 @@ class UserUtils:
             else:
                 for record in result:
                     username = record["user"]
-                collections_usr = get_db()[USR_MONGO_COLLECTION]
+                # collections_usr = get_db()[USR_MONGO_COLLECTION]
+                collections_usr = db.get_mongo_instance(db_connection,USR_MONGO_COLLECTION)
                 # searching for database record matching username
                 result_usr = collections_usr.find(
                     {"userName": username, "is_verified": True},
@@ -303,8 +318,10 @@ class UserUtils:
         """
         try:
             # connecting to mongo instance/collection
-            collections = get_db()[USR_TOKEN_MONGO_COLLECTION]
+            collections = db.get_mongo_instance(db_connection,USR_TOKEN_MONGO_COLLECTION)
+            # collections = get_db()[USR_TOKEN_MONGO_COLLECTION]
             # searching for token against the user_name
+            log_info(f"get token model start {user_name}", MODULE_CONTEXT)
             record = collections.find(
                 {"user": user_name, "active": True},
                 {"_id": 0, "token": 1, "secret_key": 1},
@@ -347,6 +364,7 @@ class UserUtils:
                             e,
                         )
                         return {"status": False, "data": None}
+            log_info(f"get token model end {user_name}", MODULE_CONTEXT)
         except Exception as e:
             log_exception("Database connection exception ", MODULE_CONTEXT, e)
             return {"status": "Database connection exception", "data": None}
@@ -407,7 +425,8 @@ class UserUtils:
 
         try:
             # connecting to mongo instance/collection
-            collections = get_db()[USR_MONGO_COLLECTION]
+            # collections = get_db()[USR_MONGO_COLLECTION]
+            collections = db.get_mongo_instance(db_connection,USR_MONGO_COLLECTION)
             # searching username with verification status = True
             user_record = collections.find(
                 {"userName": user["userName"], "is_verified": True}
@@ -456,7 +475,8 @@ class UserUtils:
 
         try:
             # connecting to mongo instance/collection
-            collections = get_db()[USR_MONGO_COLLECTION]
+            # collections = get_db()[USR_MONGO_COLLECTION]
+            collections = db.get_mongo_instance(db_connection,USR_MONGO_COLLECTION)
             # searching User Id with verification status = True
             record = collections.find({"userID": user_id, "is_verified": True})
             if record.count() == 0:
@@ -540,16 +560,22 @@ class UserUtils:
         """
 
         try:
+            log_info(f"Initial Login validate start{username}", MODULE_CONTEXT)
             # connecting to mongo instance/collection
-            collections = get_db()[USR_MONGO_COLLECTION]
+            # collections = db.get_mongo_instance(db_connection,USR_MONGO_COLLECTION)
+            # collections = get_db()[USR_MONGO_COLLECTION]
+            collections = db.get_mongo_instance(db_connection,USR_MONGO_COLLECTION)
             # fetching the user details from db
+            log_info("{} find verified start".format(username), MODULE_CONTEXT)
             result = collections.find(
                 {"userName": username, "is_verified": True},
                 {"password": 1, "_id": 0, "is_active": 1},
             )
+            log_info("{} find verified end".format(username), MODULE_CONTEXT)
             if result.count() == 0:
                 log_info("{} is not a verified user".format(username), MODULE_CONTEXT)
                 return post_error("Not verified", "User account is not verified", None)
+            log_info("{} find active start".format(username), MODULE_CONTEXT)
             for value in result:
                 if value["is_active"] == False:
                     log_info(
@@ -560,8 +586,12 @@ class UserUtils:
                         "This operation is not allowed for an inactive user",
                         None,
                     )
+                log_info("{} find active end".format(username), MODULE_CONTEXT)
+                log_info("{} find password start".format(username), MODULE_CONTEXT)
                 password_in_db = value["password"].encode("utf-8")
+                log_info("{} find password encode".format(username), MODULE_CONTEXT)
                 try:
+                    log_info("{} find password checkpw".format(username), MODULE_CONTEXT)
                     if (
                         bcrypt.checkpw(password.encode("utf-8"), password_in_db)
                         == False
@@ -575,6 +605,7 @@ class UserUtils:
                             "Incorrect username or password",
                             None,
                         )
+                    log_info("{} find password checkpw stop".format(username), MODULE_CONTEXT)
                 except Exception as e:
                     log_exception(
                         "exception while decoding password", MODULE_CONTEXT, e
@@ -584,6 +615,8 @@ class UserUtils:
                         "exception:{}".format(str(e)),
                         None,
                     )
+            log_info("{} find password end".format(username), MODULE_CONTEXT)
+            log_info(f"Initial Login validate end{username}", MODULE_CONTEXT)
         except Exception as e:
             log_exception(
                 "exception while validating username and password" + str(e),
@@ -631,20 +664,34 @@ class UserUtils:
             for user in users:
                 email = user["userName"]
                 user_id = user["userID"]
-                msg = Message(
-                    subject="Welcome to Anuvaad",
-                    sender="anuvaad.support@tarento.com",
-                    recipients=[email],
+                message = generate_email_notification(email)
+                message["Subject"] = f" ANUVAAD - Verify Email {email} "
+                filename = "./templates/register_mail_template.html"
+                ui_link = mail_ui_link
+                activation_link = mail_ui_link + "user/activate/{}/{}/{}".format(
+                    email, user_id, eval(str(time.time()).replace(".", "")[0:13])
                 )
-                msg.html = render_template(
-                    "register_mail_template.html",
-                    ui_link=mail_ui_link,
-                    activation_link=mail_ui_link
-                    + "activate/{}/{}/{}".format(
-                        email, user_id, eval(str(time.time()).replace(".", "")[0:13])
-                    ),
-                )
-                mail.send(msg)
+                html_ = open(filename).read()
+                html_ = html_.replace("{{ui_link}}", ui_link)
+                html_ = html_.replace("{{activation_link}}", activation_link)
+                html_ = MIMEText(html_, "html")
+                message.add_alternative(html_, subtype="html")
+                send_email(message)
+
+                # msg = Message(
+                #     subject="Welcome to Anuvaad",
+                #     sender="anuvaad.support@tarento.com",
+                #     recipients=[email],
+                # )
+                # msg.html = render_template(
+                #     "register_mail_template.html",
+                #     ui_link=mail_ui_link,
+                #     activation_link=mail_ui_link
+                #     + "user/activate/{}/{}/{}".format(
+                #         email, user_id, eval(str(time.time()).replace(".", "")[0:13])
+                #     ),
+                # )
+                # mail.send(msg)
                 log_info(
                     "Generated email notification for user registration ",
                     MODULE_CONTEXT,
@@ -666,20 +713,33 @@ class UserUtils:
     def generate_email_reset_password(user_name, rand_id):
         try:
             email = user_name
-            msg = Message(
-                subject="[Anuvaad] Please reset your Password ",
-                sender="anuvaad.support@tarento.com",
-                recipients=[email],
+            message = generate_email_notification(email)
+            message["Subject"] = f" ANUVAAD - Reset Password for {email} "
+            filename = "./templates/reset_mail_template.html"
+            ui_link = mail_ui_link
+            reset_link = mail_ui_link + "user/set-password/{}/{}/{}".format(
+                email, rand_id, eval(str(time.time()).replace(".", "")[0:13])
             )
-            msg.html = render_template(
-                "reset_mail_template.html",
-                ui_link=mail_ui_link,
-                reset_link=mail_ui_link
-                + "set-password/{}/{}/{}".format(
-                    email, rand_id, eval(str(time.time()).replace(".", "")[0:13])
-                ),
-            )
-            mail.send(msg)
+            html_ = open(filename).read()
+            html_ = html_.replace("{{ui_link}}", ui_link)
+            html_ = html_.replace("{{reset_link}}", reset_link)
+            html_ = MIMEText(html_, "html")
+            message.add_alternative(html_, subtype="html")
+            send_email(message)
+            # msg = Message(
+            #     subject="[Anuvaad] Please reset your Password ",
+            #     sender="anuvaad.support@tarento.com",
+            #     recipients=[email],
+            # )
+            # msg.html = render_template(
+            #     "reset_mail_template.html",
+            #     ui_link=mail_ui_link,
+            #     reset_link=mail_ui_link
+            #     + "user/set-password/{}/{}/{}".format(
+            #         email, rand_id, eval(str(time.time()).replace(".", "")[0:13])
+            #     ),
+            # )
+            # mail.send(msg)
             log_info(
                 "Generated email notification for {} on reset password".format(email),
                 MODULE_CONTEXT,
@@ -702,7 +762,8 @@ class UserUtils:
 
         try:
             # connecting to mongo instance/collection
-            collections = get_db()[USR_MONGO_COLLECTION]
+            # collections = get_db()[USR_MONGO_COLLECTION]
+            collections = db.get_mongo_instance(db_connection,USR_MONGO_COLLECTION)
             # searching for record matching user_name
             valid = collections.find({"userName": user_name, "is_verified": True})
             if valid.count() == 0:

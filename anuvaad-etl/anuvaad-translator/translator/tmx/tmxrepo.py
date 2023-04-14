@@ -7,6 +7,7 @@ from anuvaad_auditor.loghandler import log_exception, log_info
 from configs.translatorconfig import redis_server_host, redis_server_port
 from configs.translatorconfig import mongo_server_host, mongo_translator_db, mongo_tmx_collection
 from configs.translatorconfig import mongo_suggestion_box_collection, tmx_org_enabled, tmx_user_enabled, tmx_redis_db
+from configs.translatorconfig import suggestion_box_order
 
 redis_client = None
 mongo_client_tmx = None
@@ -49,6 +50,8 @@ class TMXRepository:
     def upsert(self, key, value):
         try:
             client = self.get_redis_instance()
+            #log_info(f"Key to TMX DB: {key}",None)
+            #log_info(f"Value to TMX DB: {value}",None)
             client.set(key, json.dumps(value))
             return 1
         except Exception as e:
@@ -106,12 +109,16 @@ class TMXRepository:
             res_user = col.find({"locale": locale, "userID": user_id}, {'_id': False})
             if res_user:
                 for record in res_user:
+                    #log_info(f"Test68 USER TMX RECORDS: {record}",None)
                     user += 1
         if tmx_org_enabled:
             res_org = col.find({"locale": locale, "orgID": org_id}, {'_id': False})
             if res_org:
                 for record in res_org:
+                    #log_info(f"Test68 ORG TMX RECORDS: {record}",None)
                     org += 1
+        #log_info(f"Test68 USER TMX Records: {user}", None)
+        #log_info(f"Test68 ORG TMX Records: {org}", None)
         if user > 0 and org > 0:
             return "BOTH"
         else:
@@ -137,8 +144,10 @@ class TMXRepository:
 
     def suggestion_box_search(self, query, exclude):
         col = self.instantiate_mongo_suggestion()
-        res = col.find(query, exclude)
+        #Sort Suggestion Box Responses in order of Status (Approved, Pending and Rejected) in descending order of timestamp under each status.
+        res = col.find(query, exclude).sort([("status",pymongo.ASCENDING),("updatedOn",pymongo.DESCENDING)])
         result = []
         for record in res:
             result.append(record)
+        result.sort(key=lambda x: (suggestion_box_order[x["status"]],-x["updatedOn"]))
         return result

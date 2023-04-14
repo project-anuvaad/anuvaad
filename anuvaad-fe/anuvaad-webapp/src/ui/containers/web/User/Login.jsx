@@ -27,10 +27,12 @@ import CustomCard from "../../../components/web/common/Card";
 import Anuvaanlogo from "../../../../assets/Anuvaanlogo.png";
 import UpdatePassword from "./UpdatePassword";
 import SignUp from "./SignUp";
+import CircularProgressWithLabel from "../../../components/web/common/CircularLoader";
 
 class Login extends React.Component {
   constructor(props) {
     super(props);
+    this.currentPage = this.props.match.params.page;
     this.state = {
       email: "",
       password: "",
@@ -39,7 +41,9 @@ class Login extends React.Component {
       errMessage: "",
       password: "",
       showPassword: false,
-      currentFocusedComponent: "Login"
+      currentFocusedComponent: "Login",
+      reloadPage: false,
+      inputFocused: false,
     };
   }
 
@@ -50,12 +54,13 @@ class Login extends React.Component {
      */
     return null;
   }
-  componentDidUpdate(prevProps, prevState, snapshot) {}
+  componentDidUpdate(prevProps, prevState, snapshot) { }
 
   componentDidMount() {
     localStorage.removeItem("token");
     window.addEventListener("keypress", (key) => {
-      if (key.code === "Enter") {
+      if (key.code === "Enter" && this.state.inputFocused) {
+        this.setState({inputFocused: false});
         this.processLoginButtonPressed();
       }
     });
@@ -93,6 +98,7 @@ class Login extends React.Component {
           let resData = rsp_data && rsp_data.data;
           localStorage.setItem("token", resData.token);
           this.fetchUserProfileDetails(resData.token);
+          this.setState({ error: false, loading: false });
         }
       })
       .catch((error) => {
@@ -126,18 +132,18 @@ class Login extends React.Component {
           localStorage.setItem("lang", "en");
           localStorage.setItem("userProfile", JSON.stringify(resData));
           if (roles.includes("SUPERADMIN")) {
-            // history.push(`${process.env.PUBLIC_URL}/dummy-page`);
-            history.push(`${process.env.PUBLIC_URL}/user-details`);
-            // history.push(`${process.env.PUBLIC_URL}/create-user`)
+            history.push(`${process.env.PUBLIC_URL}/intro`);
+            // history.push(`${process.env.PUBLIC_URL}/user-details`);
           } else if (roles.includes("ADMIN")) {
-            history.push(`${process.env.PUBLIC_URL}/user-details`);
-            // history.push(`${process.env.PUBLIC_URL}/create-user`)
+            history.push(`${process.env.PUBLIC_URL}/intro`);
+            // history.push(`${process.env.PUBLIC_URL}/user-details`);
           } else if (roles.includes("TRANSLATOR")) {
-            history.push(`${process.env.PUBLIC_URL}/view-document`);
+            history.push(`${process.env.PUBLIC_URL}/intro`);
+            // history.push(`${process.env.PUBLIC_URL}/view-document`);
           } else {
-            history.push(`${process.env.PUBLIC_URL}/view-document`);
+            history.push(`${process.env.PUBLIC_URL}/intro`);
+            // history.push(`${process.env.PUBLIC_URL}/view-document`);
           }
-          // history.push(`${process.env.PUBLIC_URL}/create-user`)
         }
       })
       .catch((error) => {
@@ -206,6 +212,8 @@ class Login extends React.Component {
           <OutlinedTextField
             fullWidth
             name="email"
+            onFocus={()=>this.setState({inputFocused: true})} 
+            onBlur={()=>this.setState({inputFocused: false})}
             onChange={(event) => this.setState({ email: event.target.value })}
             value={this.state.email}
             placeholder="Enter your Email ID*"
@@ -218,6 +226,8 @@ class Login extends React.Component {
           <OutlinedTextField
             fullWidth
             name="password"
+            onFocus={()=>this.setState({inputFocused: true})} 
+            onBlur={()=>this.setState({inputFocused: false})}
             type={this.state.showPassword ? "text" : "password"}
             onChange={(event) =>
               this.setState({ password: event.target.value })
@@ -263,20 +273,24 @@ class Login extends React.Component {
             style={{ display: "flex", justifyContent: "space-between" }}
           >
             <Link
+              id="newaccount"
               onClick={() => {
-                this.handleChangeFocusedComponent("Signup")
-                // history.push(`${process.env.PUBLIC_URL}/signup`);
+                // this.handleChangeFocusedComponent("Signup")
+                history.push(`${process.env.PUBLIC_URL}/user/signup`);
               }}
+              href="#"
               className={classes.forgotPassLink}
             >
               Sign Up
             </Link>
 
             <Link
+              id="newaccount"
               onClick={() => {
-                this.handleChangeFocusedComponent("ForgetPassword")
-                // history.push(`${process.env.PUBLIC_URL}/forgot-password`);
+                // this.handleChangeFocusedComponent("ForgetPassword")
+                history.push(`${process.env.PUBLIC_URL}/user/forget-password`);
               }}
+              href="#"
               className={classes.forgotPassLink}
             >
               Forgot Password?
@@ -296,22 +310,52 @@ class Login extends React.Component {
   };
 
   renderLoginForm = () => {
-    return <form autoComplete="off">{this.renderCardContent()}</form>
+    return <form autoComplete="off" style={{marginLeft: "15rem"}}>{this.renderCardContent()}</form>
   }
 
   renderSignupForm = () => {
-    return <div style={{width: '100%'}}><SignUp navigateToLoginPress={()=>this.handleChangeFocusedComponent('Login')} /></div>
+    return <div style={{ width: '100%' }}>
+      <SignUp
+        navigateToLoginPress={() => {
+          //  this.handleChangeFocusedComponent('Login')
+          history.push(`${process.env.PUBLIC_URL}/user/login`);
+        }
+
+        } />
+    </div>
   }
 
   renderForgetPasswordForm = () => {
-    return <div style={{width: '100%'}}>
-      <UpdatePassword navigateToLoginPress={()=>this.handleChangeFocusedComponent('Login')} />
+    return <div style={{ width: '100%' }}>
+      <UpdatePassword navigateToLoginPress={() => {
+        //  this.handleChangeFocusedComponent('Login')
+        history.push(`${process.env.PUBLIC_URL}/user/login`);
+      }
+
+      } />
     </div>
-    
+
+  }
+
+  renderPage = () => {
+    switch (this.currentPage) {
+      case "login":
+        return this.renderLoginForm();
+
+      case "signup":
+        return this.renderSignupForm();
+
+      case "forget-password":
+        return this.renderForgetPasswordForm();
+
+      default:
+        return this.renderLoginForm();
+    }
   }
 
   handleChangeFocusedComponent = (value) => {
-    this.setState({currentFocusedComponent: value});
+    this.setState({ currentFocusedComponent: value });
+
   }
 
   render() {
@@ -319,7 +363,8 @@ class Login extends React.Component {
     return (
       <MuiThemeProvider theme={ThemeDefault}>
         <Grid container>
-          <Grid
+          {this.state.loading && <CircularProgressWithLabel value={100} />}
+          {/* <Grid
             item
             xs={12}
             sm={4}
@@ -329,11 +374,12 @@ class Login extends React.Component {
             className={classes.appInfo}
           >
             {this.renderLeftPanel()}
-          </Grid>
+          </Grid> */}
           <Grid item xs={12} sm={9} md={9} lg={9} className={classes.parent}>
-              {this.state.currentFocusedComponent === "Login" && this.renderLoginForm()}
-              {this.state.currentFocusedComponent === "Signup" && this.renderSignupForm()}
-              {this.state.currentFocusedComponent === "ForgetPassword" && this.renderForgetPasswordForm()}
+            {/* {this.renderPage()} */}
+            {this.renderLoginForm()}
+            {/* {this.state.currentFocusedComponent === "Signup" && this.renderSignupForm()}
+            {this.state.currentFocusedComponent === "ForgetPassword" && this.renderForgetPasswordForm()} */}
           </Grid>
         </Grid>
 

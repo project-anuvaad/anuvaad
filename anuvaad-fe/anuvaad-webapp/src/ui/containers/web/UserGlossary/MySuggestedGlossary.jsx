@@ -55,7 +55,7 @@ class SuggestedGlossaryList extends React.Component {
   getSuggestedGlossary = () => {
     const { APITransport } = this.props
 
-    let apiObj = new FetchSuggestions([this.userID], [], this.orgID ?  [this.orgID] : [], [], false, 0, 0, [], []);
+    let apiObj = new FetchSuggestions([this.userID], [], this.orgID ?  [this.orgID] : [], [], false, 0, 0, [], [], ["Pending", "Rejected"]);
     APITransport(apiObj)
   }
   componentDidMount() {
@@ -63,7 +63,7 @@ class SuggestedGlossaryList extends React.Component {
     // if (this.props.glossaryData.count === 0) {
     this.setState({ loading: true })
     this.getSuggestedGlossary();
-    console.log("this.props.suggestedGlossaryData", this.props.suggestedGlossaryData)
+    // console.log("this.props.suggestedGlossaryData", this.props.suggestedGlossaryData)
 
     // }
     // console.log("this.props.match.params.orgId", this.props.match.params.orgId)
@@ -82,8 +82,8 @@ class SuggestedGlossaryList extends React.Component {
 
   makeDeleteSuggestionAPICall = (userIds, uuIds, deleteAll, orgIds) => {
     this.setState({ open: true, message: 'Glossary deletion in progress...', variant: 'info', openConfirmDialog: false })
-    console.log("userIds, uuIds, deleteAll, orgIds");
-    console.log(userIds, uuIds, deleteAll, orgIds);
+    // console.log("userIds, uuIds, deleteAll, orgIds");
+    // console.log(userIds, uuIds, deleteAll, orgIds);
     let apiObj = new DeleteSuggestedGlossary(userIds, uuIds, deleteAll, orgIds);
     fetch(apiObj.apiEndPoint(), {
       method: 'post',
@@ -102,7 +102,7 @@ class SuggestedGlossaryList extends React.Component {
   }
 
   handleDeleteSuggestion = (dataArray) => {
-    console.log("dataArray", dataArray);
+    // console.log("dataArray", dataArray);
     // let reverseLocale = dataArray[3].split("|").reverse().join("|");
     this.makeDeleteSuggestionAPICall([], [dataArray[7]], false, [this.orgID]);
   }

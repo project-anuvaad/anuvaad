@@ -17,12 +17,15 @@ import FetchModel from "../../../../../flux/actions/apis/common/fetchmodel";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import APITransport from "../../../../../flux/actions/apitransport/apitransport";
+import FetchDigitizedDocument from "../../../../../flux/actions/apis/view_digitized_document/fetch_digitized_document";
 import history from "../../../../../web.history";
 import DocumentUpload from "../../../../../flux/actions/apis/document_upload/document_upload";
 import WorkFlow from "../../../../../flux/actions/apis/common/fileupload";
 import { createJobEntry } from '../../../../../flux/actions/users/async_job_management';
 import Snackbar from "../../../../components/web/common/Snackbar";
 import Spinner from "../../../../components/web/common/Spinner"
+import UploadProcessModal from '../../DocumentUpload/UploadProcessModal';
+import Axios from "axios";
 
 const theme = createMuiTheme({
     overrides: {
@@ -88,6 +91,8 @@ class StartDigitizationUpload extends React.Component {
             target_language_code: '',
             source_languages: [],
             target_languages: [],
+            showProcessModal: false,
+            documentState: ""
         }
     }
 
@@ -112,7 +117,7 @@ class StartDigitizationUpload extends React.Component {
         if (prevProps.documentUplaod !== this.props.documentUplaod) {
             var sourceLang = LANG_MODEL.get_language_name(this.props.fetch_models.models, this.state.source_language_code, true)
             const { APITransport } = this.props;
-            const apiObj = new WorkFlow(this.state.workflow, this.props.documentUplaod.data, this.state.fileName, this.state.source_language_code,
+            const apiObj = new WorkFlow(this.state.workflow, this.props.documentUplaod.data, this.state.workspaceName ? this.state.workspaceName : this.state.fileName, this.state.source_language_code,
                 this.state.target_language_code, this.state.path, this.state.model, "", sourceLang);
             APITransport(apiObj);
         }
@@ -124,9 +129,55 @@ class StartDigitizationUpload extends React.Component {
             var targetLang = LANG_MODEL.get_language_name(this.props.fetch_models.models, this.state.target_language_code, true)
 
             TELEMETRY.startWorkflow(sourceLang, targetLang, this.props.workflowStatus.input.jobName, this.props.workflowStatus.jobID)
-            history.push(`${process.env.PUBLIC_URL}/document-digitization`);
+
+            this.setState({ showProcessModal: true, showLoader: false });
+
+            this.fetchDocumentDigitizeProcess([this.props.workflowStatus.jobID]);
+
+            setInterval(() => {
+                if (this.state.documentState.status === "INPROGRESS") {
+                    this.fetchDocumentDigitizeProcess([this.props.workflowStatus.jobID]);
+                } else {
+                    return
+                  }
+            }, 15000);
         }
     }
+
+    fetchDocumentDigitizeProcess(jobIds) {
+        let apiObj = new FetchDigitizedDocument(
+            0,
+            0,
+            jobIds,
+            false,
+            false,
+            false
+        );
+
+        Axios.post(apiObj?.endpoint, apiObj?.getBody(), { headers: apiObj?.getHeaders().headers })
+            .then(res => {
+                // console.log("res -------- ", res);
+                this.setState({ documentState: res?.data?.jobs[0] })
+            }).catch(err => {
+                console.log("err -------- ", err);
+            })
+    }
+
+    onCopyClick() {
+        this.setState({
+            message:
+                "Job id Copied to clipboard.",
+            open: true,
+            variant: "info",
+        });
+    }
+
+    onUploadOtherDoc() {
+        this.handleDelete();
+        this.setState({ showProcessModal: false, documentState: "", source_language_code: "", target_language_code: "", workspaceName: "" });
+    }
+
+
 
     processSourceLanguageSelected = (event) => {
         this.setState({ source_language_code: event.target.value })
@@ -140,7 +191,6 @@ class StartDigitizationUpload extends React.Component {
         const { classes } = this.props
         return <MuiThemeProvider theme={theme}>
             <DropzoneArea className={classes.DropZoneArea}
-                showPreviewsInDropzone
                 key={this.state.key}
                 dropZoneClass={classes.dropZoneArea}
                 acceptedFiles={[".txt,audio/*,.ods,.pptx,image/*,.psd,.pdf,.xlsm,.xltx,.xltm,.xla,.xltm,.docx,.rtf", ".txt", ".pdf", ".doc", ".ppt", ".excel", ".xlsx", ".xls", ".log", ".xlsb"]}
@@ -156,7 +206,9 @@ class StartDigitizationUpload extends React.Component {
 
     handleDelete = () => {
         this.setState({
-            files: []
+            files: [],
+            fileName: "",
+            path: "",
         });
     };
 
@@ -190,7 +242,7 @@ class StartDigitizationUpload extends React.Component {
                         fontWeight: "600",
                         fontFamily: "Roboto",
                         marginBottom: 2
-                      }}
+                    }}
                 >
                     {translate("common.page.label.sourceLang")}{" "}
                 </Typography>
@@ -215,10 +267,10 @@ class StartDigitizationUpload extends React.Component {
                 >
                     {
                         this.state.source_languages.map(lang =>
-                            <MenuItem 
-                                id={lang.language_name} 
-                                key={lang.language_code} 
-                                style={{fontSize: "16px", fontFamily: "Roboto"}} 
+                            <MenuItem
+                                id={lang.language_name}
+                                key={lang.language_code}
+                                style={{ fontSize: "16px", fontFamily: "Roboto" }}
                                 value={lang.language_code + ''}
                             >{lang.language_name}</MenuItem>)
                     }
@@ -239,7 +291,7 @@ class StartDigitizationUpload extends React.Component {
                         fontWeight: "600",
                         fontFamily: "Roboto",
                         marginBottom: 2
-                      }}
+                    }}
                 >
                     {translate("Version")}{" "}
                 </Typography>
@@ -264,10 +316,10 @@ class StartDigitizationUpload extends React.Component {
                 >
                     {
                         this.state.worflow_codes.map((code, index) =>
-                            <MenuItem 
-                                id={code.code} 
-                                key={code.code} 
-                                style={{fontSize: "16px", fontFamily: "Roboto"}}
+                            <MenuItem
+                                id={code.code}
+                                key={code.code}
+                                style={{ fontSize: "16px", fontFamily: "Roboto" }}
                                 value={code.code + ''}>{code.version}</MenuItem>)
                     }
                 </Select>
@@ -279,13 +331,13 @@ class StartDigitizationUpload extends React.Component {
     renderTextField = () => {
         return <Grid item xs={12} sm={12} lg={12} xl={12}>
             <Grid item xs={12} sm={12} lg={12} xl={12}>
-                <Typography 
+                <Typography
                     style={{
                         fontSize: "0.9rem",
                         fontWeight: "600",
                         fontFamily: "Roboto",
                         marginBottom: 2
-                      }}
+                    }}
                 >
                     {translate("common.page.label.filename")}
                 </Typography>
@@ -338,24 +390,26 @@ class StartDigitizationUpload extends React.Component {
             <div style={{}}>
                 <Header />
 
-                <div className={classes.div} style={{paddingTop: "2%", fontSize: "19px", fontWeight: "500"}}>
+                <div className={classes.div} style={{ paddingTop: "2%", fontSize: "19px", fontWeight: "500" }}>
                     <Typography className={classes.typographyHeader}>
-                        {translate("common.page.label.uploadFile")}
+                        Digitize Document
                     </Typography>
                     <br />
-                    <Typography variant="subtitle1" style={{fontSize: "1rem"}}  className={classes.typographySubHeader}>{translate("doc_upload.page.label.uploadMessage")}</Typography>
+                    <Typography variant="subtitle1" style={{ fontSize: "1rem" }} className={classes.typographySubHeader}>{translate("doc_upload.page.label.uploadMessage")}</Typography>
                     <br />
                     <Paper elevation={3} className={classes.paper}>
                         <Grid container spacing={8}>
                             <Grid item xs={12} sm={6} lg={6} xl={6}>
                                 <MuiThemeProvider theme={theme}>
                                     <DropzoneArea className={classes.DropZoneArea}
-                                        showPreviewsInDropzone
+                                        showPreviewsInDropzone={
+                                            this.state.files.length ? true : false
+                                        }
                                         dropZoneClass={classes.dropZoneArea}
                                         acceptedFiles={[".txt,audio/*,.ods,.pptx,image/*,.psd,.pdf,.xlsm,.xltx,.xltm,.xla,.xltm,.docx,.rtf", ".txt", ".pdf", ".doc", ".ppt", ".excel", ".xlsx", ".xls", ".log", ".xlsb"]}
                                         onChange={this.handleChange.bind(this)}
                                         filesLimit={1}
-                                        maxFileSize={100000000}
+                                        maxFileSize={104857600}
                                         dropzoneText={translate("digitize_upload.page.label.addDropDocument")}
                                         onDelete={this.handleDelete.bind(this)}
                                     />
@@ -366,7 +420,7 @@ class StartDigitizationUpload extends React.Component {
                                 {localStorage.getItem("roles") === 'ANNOTATOR' && this.renderVersion()}
                                 {this.renderTextField()}
                             </Grid>
-                            <Grid item xs={12} sm={6} lg={6} xl={6} style={{ paddingTop: "25px" }}>
+                            {/* <Grid item xs={12} sm={6} lg={6} xl={6} style={{ paddingTop: "25px" }}>
                                 <Button
                                     id="back"
                                     variant="contained" color="primary"
@@ -381,8 +435,8 @@ class StartDigitizationUpload extends React.Component {
                                 >
                                     {translate("common.page.button.back")}
                                 </Button>
-                            </Grid>
-                            <Grid item xs={6} sm={6} lg={6} xl={6} style={{ paddingTop: "25px" }}>
+                            </Grid> */}
+                            <Grid item xs={12} sm={12} lg={12} xl={12} style={{ paddingTop: "25px" }}>
                                 <Grid item xs={12} sm={12} lg={12} xl={12}>
                                     <Button
                                         id="upload"
@@ -417,6 +471,14 @@ class StartDigitizationUpload extends React.Component {
                         }
                     </Paper>
                 </div>
+                {this.state.documentState && this.state.showProcessModal &&
+                    <UploadProcessModal
+                        progressData={this.state.documentState}
+                        onCopyClick={() => this.onCopyClick()}
+                        onUploadOtherDoc={() => this.onUploadOtherDoc()}
+                        goToDashboardLink={`${process.env.PUBLIC_URL}/document-digitization`}
+                    />
+                }
             </div >
         );
     }

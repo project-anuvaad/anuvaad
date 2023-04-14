@@ -1,12 +1,12 @@
 import React from "react";
 import { MuiThemeProvider } from "@material-ui/core/styles";
-import { Link, withRouter } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import Button from "@material-ui/core/Button";
 import Grid from '@material-ui/core/Grid';
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { withStyles, Typography } from "@material-ui/core";
-
+import { withStyles, Typography, Link } from "@material-ui/core";
+import history from "../../../../web.history";
 import ThemeDefault from "../../../theme/web/theme-anuvaad";
 import LoginStyles from "../../../styles/web/LoginStyles";
 import TextField from '../../../components/web/common/TextField';
@@ -89,14 +89,15 @@ class UpdatePassword extends React.Component {
                                 }} onClick={this.handleSubmit.bind(this)}>
                                 {translate("common.page.button.submit")}
                             </Button>
-                            <div><Button
-                                id="submit"
+                            <br />
+                            <Button
+                                id="back"
                                 variant="contained" aria-label="edit" style={{
                                     width: '40%', marginBottom: '2%', borderRadius: "20px 20px 20px 20px", height: '45px',
                                     backgroundColor: '#2C2799', color: 'white',
-                                }} onClick={()=>this.props.navigateToLoginPress()}>
+                                }} onClick={()=>history.push(`${process.env.PUBLIC_URL}/user/login`)}>
                                 Back to Login
-                            </Button></div>                
+                            </Button>
 
                         </Grid>
                     {/* </Grid> */}

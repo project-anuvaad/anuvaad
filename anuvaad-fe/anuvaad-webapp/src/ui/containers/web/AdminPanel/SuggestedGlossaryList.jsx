@@ -12,7 +12,9 @@ import NewCorpusStyle from "../../../styles/web/Newcorpus";
 import Header from './SuggestedGlossaryListHeader';
 import APITransport from "../../../../flux/actions/apitransport/apitransport";
 import DeleteIcon from "@material-ui/icons/Delete";
+import CloseIcon from '@material-ui/icons/Close';
 import CheckIcon from '@material-ui/icons/Check';
+import EditIcon from '@material-ui/icons/Edit';
 import Spinner from "../../../components/web/common/Spinner";
 import Snackbar from "../../../components/web/common/Snackbar";
 import FetchSuggestions from "../../../../flux/actions/apis/organization/fetch_glossary_suggestions";
@@ -21,6 +23,8 @@ import CreateOrgGlossary from "../../../../flux/actions/apis/organization/create
 import UpdateSuggestedGlossaryStatus from "../../../../flux/actions/apis/organization/update_glossary_suggestion_status";
 import DataTable from "../../../components/web/common/DataTable";
 import ConfirmBox from "../../../components/web/common/ConfirmBox";
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from "@material-ui/core";
+import { IndicTransliterate } from "@ai4bharat/indic-transliterate";
 
 var delete_glossary = require("../../../../utils/deleteSuggestions.operation");
 
@@ -51,7 +55,9 @@ class SuggestedGlossaryList extends React.Component {
       rowsToDelete: [],
       openConfirmDialog: false,
       openSingleSuggestionDeleteConfirmBox: false,
-      singleDeletionArr: []
+      singleDeletionArr: [],
+      updateObj: [],
+      showUpdateModal: false
     }
   }
 
@@ -60,15 +66,15 @@ class SuggestedGlossaryList extends React.Component {
   getSuggestedGlossary = () => {
     const { APITransport } = this.props
 
-    let apiObj = new FetchSuggestions([], [], this.orgID ?  [this.orgID] : [], [], false, 0, 0, [], [], ["Pending"]);
+    let apiObj = new FetchSuggestions([], [], this.orgID ? [this.orgID] : [], [], false, 0, 0, [], [], ["Pending"]);
     APITransport(apiObj)
   }
   componentDidMount() {
-    
+
     // if (this.props.glossaryData.count === 0) {
     this.setState({ loading: true })
     this.getSuggestedGlossary();
-    console.log("this.props.suggestedGlossaryData", this.props.suggestedGlossaryData)
+    // console.log("this.props.suggestedGlossaryData", this.props.suggestedGlossaryData)
 
     // }
     // console.log("this.props.match.params.orgId", this.props.match.params.orgId)
@@ -85,28 +91,28 @@ class SuggestedGlossaryList extends React.Component {
   }
 
   makeCreateGlossaryAPICall = (orgID, src, tgt, locale, uuId, createdOn) => {
-    this.setState({ open: true, variant: 'info', message:"Suggestion accepting...", loading: true })
+    this.setState({ open: true, variant: 'info', message: "Suggestion accepting...", loading: true })
     let apiObj = new CreateOrgGlossary(orgID, src, tgt, locale, 'JUDICIARY')
     fetch(apiObj.apiEndPoint(), {
-        method: 'post',
-        body: JSON.stringify(apiObj.getBody()),
-        headers: apiObj.getHeaders().headers
+      method: 'post',
+      body: JSON.stringify(apiObj.getBody()),
+      headers: apiObj.getHeaders().headers
     })
-        .then(async res => {
-            if (res.ok) {
-              this.makeDeleteSuggestionAPICall([], [uuId], false, [this.orgID], "Approved", false);
-              this.setState({ open: true, variant: 'success', message:"Suggestion accepted Successfully...", loading: false })
-            } else {
-              this.setState({ open: true, variant: 'error', message:"Error in accepting suggestion...", loading: false })
-            }
-        })
-}
+      .then(async res => {
+        if (res.ok) {
+          this.updateSuggestionStatusAPICall([], [uuId], false, [this.orgID], "Approved", false);
+          this.setState({ open: true, variant: 'success', message: "Suggestion accepted Successfully...", loading: false })
+        } else {
+          this.setState({ open: true, variant: 'error', message: "Error in accepting suggestion...", loading: false })
+        }
+      })
+  }
 
-  makeDeleteSuggestionAPICall = (userIds, uuIds, deleteAll, orgIds, status, showMessage) => {
+  updateSuggestionStatusAPICall = (userIds, uuIds, deleteAll, orgIds, status, showMessage, srcText, tgtText) => {
     this.setState({ open: true, message: 'Glossary suggestion deletion in progress...', variant: 'info', openConfirmDialog: false, showMessage })
-    console.log("userIds, uuIds, deleteAll, orgIds");
-    console.log(userIds, uuIds, deleteAll, orgIds);
-    let apiObj = new UpdateSuggestedGlossaryStatus( uuIds, status);
+    // console.log("userIds, uuIds, deleteAll, orgIds");
+    // console.log(userIds, uuIds, deleteAll, orgIds);
+    let apiObj = new UpdateSuggestedGlossaryStatus(uuIds, status, srcText, tgtText);
     fetch(apiObj.apiEndPoint(), {
       method: 'post',
       headers: apiObj.getHeaders().headers,
@@ -130,10 +136,10 @@ class SuggestedGlossaryList extends React.Component {
   }
 
   handleDeleteSuggestion = (dataArray) => {
-    console.log("dataArray", dataArray);
+    // console.log("dataArray", dataArray);
     // let reverseLocale = dataArray[3].split("|").reverse().join("|");
-    this.makeDeleteSuggestionAPICall([], [dataArray[6]], false, [this.orgID], "Rejected", true);
-    this.setState({openSingleSuggestionDeleteConfirmBox: false, singleDeletionArr: [] })
+    this.updateSuggestionStatusAPICall([], [dataArray[6]], false, [this.orgID], "Rejected", true);
+    this.setState({ openSingleSuggestionDeleteConfirmBox: false, singleDeletionArr: [] })
   }
 
   handleClose = () => {
@@ -143,28 +149,40 @@ class SuggestedGlossaryList extends React.Component {
   deleteMultipleRows = () => {
     // let isOrg = delete_glossary.isOrg(this.props.suggestedGlossaryData, this.state.rowsToDelete)
     let rowsToBeDeleted = delete_glossary.getBulkDeletionArray(this.props.suggestedGlossaryData, this.state.rowsToDelete)
-    console.log("rowsToBeDeleted", rowsToBeDeleted);
-    let IdArrOfSelectedRows = rowsToBeDeleted?.map((el,index)=>{
+    // console.log("rowsToBeDeleted", rowsToBeDeleted);
+    let IdArrOfSelectedRows = rowsToBeDeleted?.map((el, index) => {
       return el.id
     });
 
-    this.makeDeleteSuggestionAPICall([], IdArrOfSelectedRows, false, [this.orgID],  "Rejected", true);
+    this.updateSuggestionStatusAPICall([], IdArrOfSelectedRows, false, [this.orgID], "Rejected", true);
   }
 
   renderSingleGlossaryConfirmBox = () => {
     return (
       <div style={{ textAlign: "end", marginBottom: "1rem" }}>
         <ConfirmBox
-            open={this.state.openSingleSuggestionDeleteConfirmBox && this.state.singleDeletionArr.length > 0}
-            onClose={() => this.setState({ openSingleSuggestionDeleteConfirmBox: false })}
-            title="Delete glossary"
-            contentText={"Are you sure you want to delete ` " + this.state.singleDeletionArr[0] + " - " + this.state.singleDeletionArr[1] + " ` glossary suggestion?"}
-            onConfirm={() => this.handleDeleteSuggestion(this.state.singleDeletionArr)}
+          open={this.state.openSingleSuggestionDeleteConfirmBox && this.state.singleDeletionArr.length > 0}
+          onClose={() => this.setState({ openSingleSuggestionDeleteConfirmBox: false })}
+          title="Delete glossary"
+          contentText={"Are you sure you want to delete ` " + this.state.singleDeletionArr[0] + " - " + this.state.singleDeletionArr[1] + " ` glossary suggestion?"}
+          onConfirm={() => this.handleDeleteSuggestion(this.state.singleDeletionArr)}
         />
       </div>
     )
   }
 
+  handleUpdateModalToggle = (val) => {
+    this.setState({ showUpdateModal: val });
+  }
+
+  onConfirmUpdateSuggestion = (obj) => {
+    this.handleUpdateModalToggle(false);
+    this.updateSuggestionStatusAPICall([], [this.state.updateObj[6]], false, [], "Modified", false, this.state.updateObj[0], this.state.updateObj[1]);
+    setTimeout(() => {
+      this.handleAcceptSuggestion(this.state.updateObj);
+    }, 1500);
+    
+  }
 
   render() {
     const columns = [
@@ -276,15 +294,30 @@ class SuggestedGlossaryList extends React.Component {
                       <CheckIcon />
                     </IconButton>
                   </Tooltip>
-                  <Tooltip title="Delete Glossary" placement="left">
+                  <Tooltip title="Edit Suggestion" placement="left">
                     <IconButton
                       style={{ color: "#233466", padding: "5px" }}
                       component="a"
-                      onClick={()=>this.setState({singleDeletionArr: tableMeta.rowData, openSingleSuggestionDeleteConfirmBox: true})}
-                      // onClick={() => this.handleDeleteSuggestion(tableMeta.rowData)}
+                      onClick={() => {
+                        console.log("tableMeta.rowData ---- ", tableMeta.rowData);
+                        this.setState({ updateObj: tableMeta.rowData }, () => {
+                          this.handleUpdateModalToggle(true);
+                        })
+                      }
+                      }
+                    >
+                      <EditIcon />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title="Reject Glossary" placement="left">
+                    <IconButton
+                      style={{ color: "#233466", padding: "5px" }}
+                      component="a"
+                      onClick={() => this.setState({ singleDeletionArr: tableMeta.rowData, openSingleSuggestionDeleteConfirmBox: true })}
+                    // onClick={() => this.handleDeleteSuggestion(tableMeta.rowData)}
                     // disabled={tableMeta.rowData[5] === "Organization"}
                     >
-                      <DeleteIcon />
+                      <CloseIcon />
                     </IconButton>
                   </Tooltip>
                 </div>
@@ -327,8 +360,9 @@ class SuggestedGlossaryList extends React.Component {
         this.deleteMultipleRows()
       }
     };
+
     return (
-      <div style={{ }}>
+      <div style={{}}>
         <div style={{ margin: "0% 3% 3% 3%", paddingTop: "2%" }}>
           <Header />
           {this.state.loading ?
@@ -356,6 +390,115 @@ class SuggestedGlossaryList extends React.Component {
             variant={this.state.variant}
           />
         }
+        <Dialog
+          open={this.state.showUpdateModal}
+          onClose={() => this.handleUpdateModalToggle(false)}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+          PaperProps={{ elevation: 0 }}
+        >
+          <DialogTitle id="alert-dialog-title">Update Suggestion</DialogTitle>
+
+          <DialogContent>
+            <div 
+            style={{height: window.innerHeight*0.3}}
+            >
+              {
+              this.state.updateObj[4]?.split("|")[0] === "en" ? 
+              <TextField
+                autoFocus
+                margin="dense"
+                id="name"
+                label="Source Text"
+                type="text"
+                fullWidth
+                value={this.state.updateObj[0]}
+                onChange={(e)=>{
+                  let updatedArr = this.state.updateObj;
+                  updatedArr[0] = e.target.value
+                  this.setState({ updateObj: updatedArr })
+                }}
+              /> : 
+              <IndicTransliterate
+                renderComponent={(props) => {
+                  const inputRef = props.ref;
+                  delete props["ref"];
+                  return (<TextField
+                    autoFocus
+                    margin="dense"
+                    id="name"
+                    label="Source Text"
+                    type="text"
+                    fullWidth
+                    inputRef={inputRef}
+                    {...props}
+                  />)
+                }
+                }
+                value={this.state.updateObj[0]}
+                onChangeText={(text) => {
+                  let updatedArr = this.state.updateObj;
+                  updatedArr[0] = text
+                  this.setState({ updateObj: updatedArr })
+                  // this.setState({ text: text })
+                }}
+                lang={this.state.updateObj[4]?.split("|")[0]}
+              />
+            }
+
+            <br />
+            {
+              this.state.updateObj[4]?.split("|")[1] === "en" ? <TextField
+                margin="dense"
+                id="name"
+                label="Target Text"
+                type="text"
+                fullWidth
+                value={this.state.updateObj[1]}
+                onChange={(e)=>{
+                  let updatedArr = this.state.updateObj;
+                  updatedArr[1] = e.target.value
+                  this.setState({ updateObj: updatedArr })
+                }}
+              /> : <IndicTransliterate
+              renderComponent={(props) => {
+                const inputRef = props.ref;
+                delete props["ref"];
+                return (<TextField
+                  autoFocus
+                  margin="dense"
+                  id="name"
+                  label="Source Text"
+                  type="text"
+                  fullWidth
+                  inputRef={inputRef}
+                  {...props}
+                />)
+              }
+              }
+              value={this.state.updateObj[1]}
+              onChangeText={(text) => {
+                let updatedArr = this.state.updateObj;
+                updatedArr[1] = text
+                this.setState({ updateObj: updatedArr })
+                // this.setState({ text: text })
+              }}
+              lang={this.state.updateObj[4]?.split("|")[1]}
+            />
+            }
+            </div>
+            
+
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => this.onConfirmUpdateSuggestion()} style={{ textTransform: "none" }} color="primary">
+              Update
+            </Button>
+            <Button onClick={() => this.handleUpdateModalToggle(false)} style={{ textTransform: "none" }} color="primary" autoFocus>
+              Cancel
+            </Button>
+          </DialogActions>
+        </Dialog>
       </div>
     )
   }

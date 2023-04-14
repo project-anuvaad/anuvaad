@@ -1,7 +1,7 @@
 import C from '../../actions/constants';
 
 const initialState = {
-    option: 'View1'
+    option: 'View2'
 }
 
 export default (state = initialState, action) => {

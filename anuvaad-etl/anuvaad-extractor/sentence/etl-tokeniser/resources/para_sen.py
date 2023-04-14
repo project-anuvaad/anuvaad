@@ -10,6 +10,7 @@ from utilities.utils import FileOperation
 from utilities.model_response import Status
 import config
 import time
+import json
 
 # sentence tokenisation
 file_ops = FileOperation()
@@ -70,3 +71,15 @@ class BlockTokenize(Resource):
         except FormatError as e:
             log_error("Resource BlockTokenize : Input json format is not correct or dict_key is missing", json_data, e)
             return Status.ERR_request_input_format.value
+
+
+# class AnuvaadFeedback(Resource):
+#     def post(self):
+       
+#         try:
+#             with open ('feedbackQ.json','r') as f :
+#                 res = json.load(f)
+#             return(res)
+#         except FormatError as e:
+#             log_error("Resource BlockTokenize : Input json format is not correct or dict_key is missing", json_data, e)
+#             return Status.ERR_request_input_format.value

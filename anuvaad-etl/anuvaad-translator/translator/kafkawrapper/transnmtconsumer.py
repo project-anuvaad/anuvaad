@@ -45,6 +45,7 @@ def consume_nmt():
     try:
         utils = TranslatorUtils()
         topics = utils.get_topics_from_models()
+        #topics = [] #for local debug only
         topics.append(anu_nmt_output_topic)
         consumer = instantiate(topics)
         service = TranslatorService()

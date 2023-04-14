@@ -42,6 +42,7 @@ WORKDIR /app
 # RUN apt install -y libopencv-dev python3-opencv
 #
 # RUN pip3 install -r requirements.txt
+# RUN pip install anuvaad-auditor==1.0.0
 #RUN pip install 'git+https://github.com/facebookresearch/detectron2.git#egg=detectron2'
 
 #RUN pip cache purge
