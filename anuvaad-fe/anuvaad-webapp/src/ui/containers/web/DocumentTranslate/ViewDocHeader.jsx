@@ -28,7 +28,7 @@ class ViewDocHeader extends React.Component {
     renderOption() {
         return (
             <div>
-                <Button
+                {/* <Button
                     id="start-translate"
                     variant="contained"
                     color="primary"
@@ -46,8 +46,8 @@ class ViewDocHeader extends React.Component {
                     }}
                 >
                     Start Translate
-                </Button>
-                <Button
+                </Button> */}
+                {/* <Button
                     id="start-translate"
                     variant="contained"
                     color="primary"
@@ -64,7 +64,7 @@ class ViewDocHeader extends React.Component {
                     }}
                 >
                     Data collection
-                </Button>
+                </Button> */}
             </div >
         );
     }

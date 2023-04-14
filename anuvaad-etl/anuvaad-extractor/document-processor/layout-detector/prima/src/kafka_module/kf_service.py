@@ -101,9 +101,9 @@ def layout_detector_request_worker():
     while True:
         data            = Queue.get(block=True)
         #################
-        task_id         = str("layout_detector" + str(time.time()).replace('.', ''))
+        task_id         = str("layout_detector" + str(time.time()).replace('.', '')[0:13])
         ###################
-        task_starttime  = str(time.time()).replace('.', '')
+        task_starttime  = eval(str(time.time()).replace('.', '')[0:13])
         input_files, workflow_id, jobid, tool_name, step_order = file_ops.json_input_format(data)
         
         log_info("layout_detector_request_worker processing -- received message "+str(jobid), data)

@@ -97,7 +97,7 @@ class UpdatePassword extends React.Component {
                                     backgroundColor: '#2C2799', color: 'white',
                                 }} onClick={()=>history.push(`${process.env.PUBLIC_URL}/user/login`)}>
                                 Back to Login
-                            </Button>               
+                            </Button>
 
                         </Grid>
                     {/* </Grid> */}

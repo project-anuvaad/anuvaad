@@ -7,6 +7,6 @@ pandas==1.1.2
 pdftotext==2.1.5
 python-docx==0.8.10
 reportlab==3.5.66
-anuvaad-auditor==0.1.2
+anuvaad_auditor==0.1.6
 jsonpath-rw==1.4.0
 xlsxwriter==1.3.7
