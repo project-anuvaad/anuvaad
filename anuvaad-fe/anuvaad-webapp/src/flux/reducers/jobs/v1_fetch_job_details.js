@@ -72,7 +72,7 @@ function get_document_details(input) {
         startTime: job.startTime,
         endTime: job.endTime,
         status: job.status,
-        module: "TRANSLATION",
+        module: "AUTO TRANSLATION",
         state: job.state
       };
       granularStatusArr.push(granularStatusObj);
@@ -80,7 +80,7 @@ function get_document_details(input) {
       let granularStatusObj = {
         startTime: job.startTime,
         status: job.status,
-        module: "TRANSLATION",
+        module: "AUTO TRANSLATION",
         state: job.state
       };
       granularStatusArr.push(granularStatusObj);
@@ -92,7 +92,7 @@ function get_document_details(input) {
           let granularStatusObj = {
             startTime: job["granularity"]["manualEditingStartTime"],
             status: job["granularity"]["manualEditingStatus"],
-            module: "MANUAL EDITING",
+            module: "FINAL EDITING",
             state: job["granularity"]["manualEditingStatus"]
           };
           granularStatusArr.push(granularStatusObj);
@@ -101,7 +101,7 @@ function get_document_details(input) {
             startTime: job["granularity"]["manualEditingStartTime"],
             endTime: job["granularity"]["manualEditingEndTime"],
             status: job["granularity"]["manualEditingStatus"],
-            module: "MANUAL EDITING",
+            module: "FINAL EDITING",
             state: job["granularity"]["manualEditingStatus"]
           };
           granularStatusArr.push(granularStatusObj);
@@ -113,7 +113,7 @@ function get_document_details(input) {
         let granularStatusObj = {
           uploadTime: job["granularity"]["parallelDocumentUpload"],
           status: job["granularity"]["parallelDocumentUploadStatus"],
-          module: "PARALLEL DOCUMENT UPLOAD",
+          module: "FINAL DOCUMENT UPLOADED",
           state: job["granularity"]["parallelDocumentUploadStatus"]
         };
         granularStatusArr.push(granularStatusObj);
@@ -124,7 +124,8 @@ function get_document_details(input) {
     document["granularStatus"] = granularStatusArr;
     // Granular status end
 
-    document["currentGranularStatus"] = `${granularStatusArr[granularStatusArr.length-1]?.module} - ${granularStatusArr[granularStatusArr.length-1]?.status}`
+    document["currentGranularStatus"] = `${granularStatusArr[granularStatusArr.length-1]?.module} ${granularStatusArr[granularStatusArr.length-1]?.module !== "FINAL DOCUMENT UPLOADED" ? `- ${granularStatusArr[granularStatusArr.length-1]?.status}` : ""} 
+    `
 
     job["taskDetails"].forEach((task) => {
       let timeline = {};

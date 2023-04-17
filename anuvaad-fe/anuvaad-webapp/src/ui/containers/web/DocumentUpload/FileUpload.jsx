@@ -705,6 +705,7 @@ class PdfUpload extends Component {
             onCopyClick={()=>this.onCopyClick()} 
             onUploadOtherDoc={()=>this.onUploadOtherDoc()} 
             goToDashboardLink={`${process.env.PUBLIC_URL}/view-document`} 
+            uploadOtherDocLink={`${process.env.PUBLIC_URL}/document-upload`}
           />
         }
       </div>

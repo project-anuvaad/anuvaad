@@ -1,5 +1,8 @@
-import { Box, Typography } from '@material-ui/core';
+import { Box, Button, Grid, Icon, IconButton, Tooltip, Typography } from '@material-ui/core';
 import React from 'react';
+import TranslateIcon from '@material-ui/icons/Translate';
+import DescriptionIcon from '@material-ui/icons/Description';
+import history from "../../../../web.history";
 
 const description = (
     <>
@@ -32,10 +35,10 @@ const description = (
         </a>{" "}
         (SUVAS) and{" "}
         <b
-        style={{
-            color: "#000",
-            textDecoration: "underline",
-        }}
+            style={{
+                color: "#000",
+                textDecoration: "underline",
+            }}
         //   className={classes.homeLink}
         >Supreme Court of Bangladesh</b> (Amar
         Vasha).
@@ -45,19 +48,69 @@ const description = (
 const Intro = () => {
     return (
         <>
-            <Box
+            {/*  */}
+            
+            <Grid
+                style={{
+                    // flexDirection: "row",
+                    alignItems: "center",
+                    // justifyContent: "space-around",
+                    // display: "flex",
+                    marginTop: 80,
+                    width: "100%",
+                    textAlign: "center",
+                    // height: "90%"
+                }}
+            ><Box
                 style={{
                     background: "url('img/slide1-bg.jpg')",
                     backgroundRepeat: "no-repeat",
                     backgroundSize: "cover",
                     backgroundPosition: "center",
-                    padding: "0 5%",
+                    padding: "200px 5%",
                     display: "flex",
                     alignItems: "center",
+                    justifyContent: "space-around",
                 }}
                 marginTop={{ xs: 2, md: 0 }}
-            >
-                <Box style={{ width: "100%", }}>
+            ><Tooltip
+                    title='Digitize Document'
+                >
+                    <div
+                        onClick={() => history.push(`${process.env.PUBLIC_URL}/digitize-document-upload`)}
+                        style={{ cursor: "pointer", width: "40%", border: "0.5px solid rgba(0,0,0,0.4)", padding: 5, borderRadius: 10  }}
+                    >
+                        <DescriptionIcon fontSize='large' style={{ fontSize: "10rem"}} htmlColor='rgb(44, 39, 153)' />
+                        <div><Typography variant='subtitle1'>Digitize Document</Typography></div>
+                        <Typography variant='caption'>Digitize Document helps to convert scanned documents into digital format. This process recognizes text in scanned (non hand-written) documents and converts it into searchable text.</Typography>
+                    </div>
+                </Tooltip>
+                <Tooltip
+                    title='Translate Document'
+                >
+                    <div
+                        onClick={() => history.push(`${process.env.PUBLIC_URL}/document-upload`)}
+                        style={{ cursor: "pointer", width: "40%", border: "0.5px solid rgba(0,0,0,0.4)", padding: 5, borderRadius: 10  }}
+                    >
+                        <TranslateIcon fontSize='large' style={{ fontSize: "10rem"}} htmlColor='orange' />
+                        <div><Typography variant='subtitle1'>Translate Document</Typography></div>
+                        <Typography variant='caption'>Translate Document helps to convert documents from one language to another. Currently, English-Indic and Indic-English translations are supported.</Typography>
+                    </div>
+                </Tooltip></Box>
+                <Typography variant='body2'>Pro tip: If the document to be translated does not contain unicode fonts, please perform document digitization and then translate the digitized document.</Typography>
+            </Grid>
+            <p
+                direction="left"
+                width="100%"
+                bgcolor="white"
+                style={{
+                    color: "rgb(44, 39, 153)",
+                    position: "absolute",
+                    bottom: 5,
+                    right: 10
+                }}
+            >For best performance, use Chrome Version 88 or above.</p>
+            {/*<Box style={{ width: "100%", }}>
                     <Typography variant="h1" style={{
                         color: "#3a3a3a",
                         margin: "24px 0",
@@ -71,13 +124,13 @@ const Intro = () => {
                         textAlign: "justify",
                     }}>{description}</Typography>
                     <Box>
-                        {/* <CustomButtonGroup buttonGroup={buttonGroupConfig} /> */}
                     </Box>
                 </Box>
                 <Box display={{ xs: 'none', md: 'inherit' }}>
                     <img src={"img/anuvaad-bg.png"} style={{ width: "85%" }} />
-                </Box>
-            </Box>
+                </Box>*/}
+            {/* </Box>  */}
+
         </>
     )
 }
