@@ -15,7 +15,7 @@ const headerMenuConfig = [
     },
     {
         id : "my-glossary",
-        title: "My Glossary",
+        title: "My Glossary List",
         followOrg : false,
         onclick : ()=>history.push(`${process.env.PUBLIC_URL}/my-glossary`),
         rolesAllowed : [userRoles[0], userRoles[1]],

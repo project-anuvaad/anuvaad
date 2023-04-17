@@ -477,6 +477,7 @@ class StartDigitizationUpload extends React.Component {
                         onCopyClick={() => this.onCopyClick()}
                         onUploadOtherDoc={() => this.onUploadOtherDoc()}
                         goToDashboardLink={`${process.env.PUBLIC_URL}/document-digitization`}
+                        uploadOtherDocLink={`${process.env.PUBLIC_URL}/digitize-document-upload`}
                     />
                 }
             </div >
