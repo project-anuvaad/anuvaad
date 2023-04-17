@@ -206,9 +206,9 @@ class DocumentConversion(object):
                         worksheet.write(row, column + 1, tokenised_sentence['tgt']) 
                         row += 1
             workbook.close()
-            out_xlsx_filename_zip = zipfile_creation(output_filepath_xlsx)
-            log_info("xlsx file write completed!! filename: %s"%out_xlsx_filename_zip, MODULE_CONTEXT)
-            return out_xlsx_filename_zip
+            # out_xlsx_filename_zip = zipfile_creation(output_filepath_xlsx)
+            log_info("xlsx file write completed!! filename: %s"%output_filepath_xlsx, MODULE_CONTEXT)
+            return output_filepath_xlsx
         except Exception as e:
             log_exception("xlsx file formation failed", MODULE_CONTEXT, e)
 
