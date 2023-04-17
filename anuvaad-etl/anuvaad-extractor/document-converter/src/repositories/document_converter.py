@@ -208,7 +208,7 @@ class DocumentConversion(object):
             workbook.close()
             # out_xlsx_filename_zip = zipfile_creation(output_filepath_xlsx)
             log_info("xlsx file write completed!! filename: %s"%output_filepath_xlsx, MODULE_CONTEXT)
-            return output_filepath_xlsx
+            return out_xlsx_filename
         except Exception as e:
             log_exception("xlsx file formation failed", MODULE_CONTEXT, e)
 
