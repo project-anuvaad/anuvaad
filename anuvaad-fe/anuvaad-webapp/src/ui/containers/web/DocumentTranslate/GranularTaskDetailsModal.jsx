@@ -90,7 +90,7 @@ export default class GranularTaskDetailsModal extends React.Component {
                                     <Typography variant='caption'>Copied to clipboard.</Typography> :
                                     <IconButton
                                         onClick={() => {
-                                            let copyErrorMessage = message.errorMessage ? `Errpr: ${message.errorMessage}` : "";
+                                            let copyErrorMessage = message.errorMessage ? `Error: ${message.errorMessage}` : "";
                                             navigator.clipboard.writeText(
                                                 `Job ID: ${message.jobID} \n File Name: ${message.filename} \n User: ${JSON.parse(localStorage.getItem("userProfile"))?.userName} \n ${copyErrorMessage}`
                                             );

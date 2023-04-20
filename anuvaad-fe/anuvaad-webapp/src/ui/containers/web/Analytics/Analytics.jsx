@@ -11,8 +11,8 @@ import TranslatedAndVarifiedSentenceByLang from "../../../components/web/Analyti
 import DocumentCountByOrg from "../../../components/web/Analytics/DocumentCountByOrg";
 import getAnuvaadSupportedLanguages from "../../../../flux/actions/apis/analytics/getSupportedLangList";
 import { Button, Grid, Typography } from "@material-ui/core";
-import ImageTwoTone from "@material-ui/icons/ImageTwoTone";
-import PictureAsPdfOutlined from "@material-ui/icons/PictureAsPdfOutlined";
+// import ImageTwoTone from "@material-ui/icons/ImageTwoTone";
+// import PictureAsPdfOutlined from "@material-ui/icons/PictureAsPdfOutlined";
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import downloadReportClick from "../../../../utils/downloadChart";
 import GetAppIcon from '@material-ui/icons/GetApp';
