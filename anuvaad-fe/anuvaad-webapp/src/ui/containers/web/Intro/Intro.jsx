@@ -2,6 +2,7 @@ import { Box, Button, Grid, Icon, IconButton, Tooltip, Typography } from '@mater
 import React from 'react';
 import TranslateIcon from '@material-ui/icons/Translate';
 import DescriptionIcon from '@material-ui/icons/Description';
+import SubjectIcon from '@material-ui/icons/Subject';
 import history from "../../../../web.history";
 
 const description = (
@@ -49,14 +50,14 @@ const Intro = () => {
     return (
         <>
             {/*  */}
-            
+
             <Grid
                 style={{
                     // flexDirection: "row",
                     alignItems: "center",
                     // justifyContent: "space-around",
                     // display: "flex",
-                    marginTop: 80,
+                    marginTop: 40,
                     width: "100%",
                     textAlign: "center",
                     // height: "90%"
@@ -67,36 +68,53 @@ const Intro = () => {
                     backgroundRepeat: "no-repeat",
                     backgroundSize: "cover",
                     backgroundPosition: "center",
-                    padding: "200px 5%",
+                    padding: "5% 5%",
                     display: "flex",
-                    alignItems: "center",
+                    // alignItems: "center",
                     justifyContent: "space-around",
+                    flexWrap: "wrap",
+                    rowGap: "20px",
+                    height: "110%"
                 }}
                 marginTop={{ xs: 2, md: 0 }}
-            ><Tooltip
-                    title='Digitize Document'
-                >
-                    <div
-                        onClick={() => history.push(`${process.env.PUBLIC_URL}/digitize-document-upload`)}
-                        style={{ cursor: "pointer", width: "40%", border: "0.5px solid rgba(0,0,0,0.4)", padding: 5, borderRadius: 10  }}
+            >
+                    <Tooltip
+                        title='Digitize Document'
                     >
-                        <DescriptionIcon fontSize='large' style={{ fontSize: "10rem"}} htmlColor='rgb(44, 39, 153)' />
-                        <div><Typography variant='subtitle1'>Digitize Document</Typography></div>
-                        <Typography variant='caption'>Digitize Document helps to convert scanned documents into digital format. This process recognizes text in scanned (non hand-written) documents and converts it into searchable text.</Typography>
-                    </div>
-                </Tooltip>
-                <Tooltip
-                    title='Translate Document'
-                >
-                    <div
-                        onClick={() => history.push(`${process.env.PUBLIC_URL}/document-upload`)}
-                        style={{ cursor: "pointer", width: "40%", border: "0.5px solid rgba(0,0,0,0.4)", padding: 5, borderRadius: 10  }}
+                        <div
+                            onClick={() => history.push(`${process.env.PUBLIC_URL}/digitize-document-upload`)}
+                            style={{ cursor: "pointer", width: "40%", border: "0.5px solid rgba(0,0,0,0.4)", padding: 5, maxHeight: "270px", borderRadius: 10 }}
+                        >
+                            <DescriptionIcon fontSize='large' style={{ fontSize: "10rem" }} htmlColor='rgb(44, 39, 153)' />
+                            <div><Typography variant='subtitle1'>Digitize Document</Typography></div>
+                            <Typography variant='caption'>Digitize Document helps to convert scanned documents into digital format. This process recognizes text in scanned (non hand-written) documents and converts it into searchable text.</Typography>
+                        </div>
+                    </Tooltip>
+                    <Tooltip
+                        title='Translate Document'
                     >
-                        <TranslateIcon fontSize='large' style={{ fontSize: "10rem"}} htmlColor='orange' />
-                        <div><Typography variant='subtitle1'>Translate Document</Typography></div>
-                        <Typography variant='caption'>Translate Document helps to convert documents from one language to another. Currently, English-Indic and Indic-English translations are supported.</Typography>
-                    </div>
-                </Tooltip></Box>
+                        <div
+                            onClick={() => history.push(`${process.env.PUBLIC_URL}/document-upload`)}
+                            style={{ cursor: "pointer", width: "40%", border: "0.5px solid rgba(0,0,0,0.4)", padding: 5, maxHeight: "270px", borderRadius: 10 }}
+                        >
+                            <TranslateIcon fontSize='large' style={{ fontSize: "10rem" }} htmlColor='orange' />
+                            <div><Typography variant='subtitle1'>Translate Document</Typography></div>
+                            <Typography variant='caption'>Translate Document helps to convert documents from one language to another. Currently, English-Indic and Indic-English translations are supported.</Typography>
+                        </div>
+                    </Tooltip>
+                    <Tooltip
+                        title='Translate Sentence'
+                    >
+                        <div
+                            onClick={() => history.push(`${process.env.PUBLIC_URL}/instant-translate`)}
+                            style={{ cursor: "pointer", width: "40%", border: "0.5px solid rgba(0,0,0,0.4)", padding: 5, maxHeight: "270px", borderRadius: 10 }}
+                        >
+                            <SubjectIcon fontSize='large' style={{ fontSize: "10rem" }} htmlColor='rgb(44, 39, 153)'  />
+                            <div><Typography variant='subtitle1'>Translate Sentence</Typography></div>
+                            <Typography variant='caption'>Translate Sentence helps to convert sentences from one language to another.</Typography>
+                        </div>
+                    </Tooltip>
+                    </Box>
                 <Typography variant='body2'>Pro tip: If the document to be translated does not contain unicode fonts, please perform document digitization and then translate the digitized document.</Typography>
             </Grid>
             <p
