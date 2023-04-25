@@ -6,6 +6,7 @@ from common.errors import ServiceError,DataEmptyError
 import os
 import time
 from random import randint
+from .libre_converter import convert_to
 
 output_file_folder  = config.DATA_OUTPUT_DIR
 
@@ -24,11 +25,13 @@ class DocumentExporterService:
                 return False
             
             if file_type == 'pdf':
-                output_filename=os.path.join(output_file_folder,record_id+'_'+str(randint(100, 999))+".pdf") 
-                export_result=exportRepo.create_pdf(data,output_filename,'arial-unicode-ms',34, 4)
-                zip_file= FileUtilities.zipfile_creation(export_result)
-                log_info("pdf file formation done!! file folder: %s"%zip_file, MODULE_CONTEXT)
-                return zip_file
+                record_filename=os.path.join(output_file_folder,record_id.rsplit('.',1)[0],record_id+'_'+str(randint(100, 999))+".pdf") 
+                os.makedirs(os.path.dirname(record_filename), exist_ok=True) # create extra directory
+                export_result=exportRepo.create_pdf(data,record_filename,'arial-unicode-ms',34, 4)
+                output_filename = convert_to(output_file_folder, export_result)
+                # zip_file= FileUtilities.zipfile_creation(export_result)
+                log_info("pdf file formation done!! file folder: %s"%output_filename, MODULE_CONTEXT)
+                return output_filename
 
             if file_type == 'txt':
                 log_info("document type %s formation started"%file_type, MODULE_CONTEXT)
