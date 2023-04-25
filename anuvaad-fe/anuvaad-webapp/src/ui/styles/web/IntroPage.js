@@ -8,15 +8,15 @@ const LoginStyles = theme => ({
         paddingBottom: 25
     },
     introPageLinkCard: {
-        cursor: "pointer", 
-        width: "30%", 
-        border: "0.5px solid rgba(0,0,0,0.4)", 
-        padding: 5, 
-        maxHeight: "270px", 
+        cursor: "pointer",
+        width: "30%",
+        border: "0.5px solid rgba(0,0,0,0.4)",
+        padding: 5,
+        maxHeight: "270px",
         backgroundColor: "#F5F5F5",
         textDecoration: "none",
         borderRadius: 10,
-            "&:hover": {
+        "&:hover": {
             backgroundColor: "#0606065c",
             color: "white"
         }
@@ -38,6 +38,13 @@ const LoginStyles = theme => ({
     linkStyle: {
         textDecoration: "none",
         display: "contents"
+    },
+    footerContainer: {
+        color: "rgb(44, 39, 153)",
+        position: "fixed",
+        bottom: 0,
+        backgroundColor: 'white',
+        width: "100%",
     }
 })
 
