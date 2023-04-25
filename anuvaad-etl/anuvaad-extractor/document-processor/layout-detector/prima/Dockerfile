@@ -71,6 +71,7 @@ RUN apt install -y curl
 # #   pip install scikit-build &&\
 # #   pip install cmake &&\
 # RUN apt install -y libopencv-dev python3-opencv
+RUN pip install anuvaad-auditor==1.0.0
 
 #FROM anuvaadio/python-opencv-slim:2
 COPY / /app
