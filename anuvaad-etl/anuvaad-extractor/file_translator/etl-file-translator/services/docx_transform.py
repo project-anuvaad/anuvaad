@@ -16,9 +16,13 @@ from services.service import common_obj
 class DocxTransform(object):
     def __init__(self, input_filename, json_data, is_new_flow=True):
         self.json_data = json_data
+        log_info(f"Test32: jsondata = {self.json_data}",None)
         self.is_new_flow = is_new_flow
+        log_info(f"Test32: newflow = {self.is_new_flow}",None)
         self.file_name_without_ext = os.path.splitext(input_filename)[0]
+        log_info(f"Test32: filenamewithoutext = {self.file_name_without_ext}", None)
         self.file_id = self.file_name_without_ext
+        log_info(f"Test32: fileid = {self.file_id}",None)
 
         # variables to track para, run, word count for "PAGE BREAK LOGIC" **IMPORTANT**
         self.para_count = 0  # Total no of Para indivisual and in table combined for page limit
@@ -55,6 +59,7 @@ class DocxTransform(object):
     def read_docx_file(self, input_filename):
         log_info("read_docx_file :: started the reading docx file: %s" % input_filename, self.json_data)
         input_docx_filepath = common_obj.input_path(input_filename)
+
         input_docx = Document(input_docx_filepath)
         self.document = input_docx
         return input_docx

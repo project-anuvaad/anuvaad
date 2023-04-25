@@ -211,7 +211,7 @@ export default function UploadProcessModal(props) {
     const [activeStep, setActiveStep] = React.useState(1);
     const [steps, setSteps] = useState([]);
 
-    const { progressData, onCopyClick, onUploadOtherDoc, goToDashboardLink } = props;
+    const { progressData, onCopyClick, onUploadOtherDoc, goToDashboardLink, uploadOtherDocLink } = props;
 
     const handleNext = () => {
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -315,7 +315,11 @@ export default function UploadProcessModal(props) {
                             color='primary'
                             variant='contained'
                             style={{ marginLeft: 5 }}
-                            onClick={() => onUploadOtherDoc()}
+                            onClick={() => {
+                                progressData.status === "INPROGRESS" ?
+                                window.open(uploadOtherDocLink) :
+                                onUploadOtherDoc()
+                            }}
                         >Upload another document</Button>
                     </div>
                 </Stepper>

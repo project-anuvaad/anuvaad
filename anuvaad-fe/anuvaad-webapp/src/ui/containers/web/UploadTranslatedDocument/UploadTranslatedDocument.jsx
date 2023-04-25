@@ -8,12 +8,9 @@ import Grid from "@material-ui/core/Grid";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import MenuItem from "@material-ui/core/MenuItem";
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import TextField from "@material-ui/core/TextField";
-import Select from "@material-ui/core/Select";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
-import OutlinedInput from "@material-ui/core/OutlinedInput";
 
 import history from "../../../../web.history";
 import Snackbar from "../../../components/web/common/Snackbar";
@@ -22,13 +19,9 @@ import FileUploadStyles from "../../../styles/web/FileUpload";
 // import Toolbar from "./FileUploadHeader";
 
 import APITransport from "../../../../flux/actions/apitransport/apitransport";
-import FetchModel from "../../../../flux/actions/apis/common/fetchmodel";
-import WorkFlow from "../../../../flux/actions/apis/common/fileupload";
 import DocumentUpload from "../../../../flux/actions/apis/document_upload/document_upload";
 import { createJobEntry } from "../../../../flux/actions/users/async_job_management";
 import FetchDocument from "../../../../flux/actions/apis/view_document/fetch_document";
-import Dialog from "@material-ui/core/Dialog";
-import { Container } from "@material-ui/core";
 // import UploadProcessModal from "./UploadProcessModal";
 import Axios from "axios";
 import UploadDocToS3 from "../../../../flux/actions/apis/document_translate/s3_upload_doc";
@@ -148,81 +141,84 @@ class UploadTranslatedDocument extends Component {
         })
     }
 
-    handleSubmit(e) {
-        this.setState({ showCompleteConfirmBox: false })
-        if (
-            this.state.files.length > 0 && this.state.selectedJob
-        ) {
+    validationCheckBeforeFinalSubmit = () => {
+        if (this.state.files.length > 0 && this.state.selectedJob) {
             let uploadJobName = this.state.files[0]?.name;
             let selectedJobName = this.state.selectedJob?.input?.jobName;
 
-
             let uploadFileName = uploadJobName?.substr(0, uploadJobName?.lastIndexOf("."));
             let selectedFileName = selectedJobName?.substr(0, selectedJobName?.lastIndexOf("."))
-
-            // console.log("uploadFileName ---- ", uploadFileName);
-            // console.log("selectedFileName ---- ", selectedFileName);
-
-
-            if(selectedFileName+"_translated" !== uploadFileName){
+            if (selectedFileName + "_translated" !== uploadFileName) {
                 alert(`Translated file name should be "${selectedFileName}_translated". Please rename the file and try again.`)
             } else {
-                const fData = new FormData();
-                fData.append("file", this.state.files[0]);
-                fData.append("job_id", this.state.selectedJob?.jobID);
-                fData.append("src_file", this.state.selectedJob?.input?.files[0].path);
-    
-                console.log("fData --- ", Object.fromEntries(fData));
-    
-                const apiObj = new UploadDocToS3(fData);
-    
-                fetch(apiObj.apiEndPoint(), {
-                    method: 'post',
-                    body: fData,
-                    headers: apiObj.getHeaders().headers
-                }).then(async response => {
-                    const rsp_data = await response.json();
-                    console.log("rsp_data ----- ", rsp_data);
-                    if (!rsp_data.ok) {
-                        this.setState({
-                            open: true,
-                            message: "Request Failed.",
-                            variant: "error"
-                        })
-                    } else {
-                        this.setState({
-                            open: true,
-                            message: "Translated File Uploaded",
-                            variant: "success"
-                        });
-                        // call bulk again -----
-                        const { APITransport } = this.props;
-                        const apiObj = new FetchDocument(
-                            0,
-                            this.props.job_details.count,
-                            [],
-                            false,
-                            false,
-                            false
-                        );
-                        APITransport(apiObj);
-                        setTimeout(() => {
-                            history.push(`${process.env.PUBLIC_URL}/view-document`);
-                        }, 2500);
-                    }
-                }).catch(err => {
-                    console.log(err);
-                    this.setState({
-                        open: true,
-                        message: "Request Failed.",
-                        variant: "error"
-                    })
-                })
-    
+                this.setState({ showCompleteConfirmBox: true })
             }
         } else {
             alert("Field should not be empty!");
         }
+    }
+
+    handleSubmit(e) {
+        this.setState({ showCompleteConfirmBox: false })
+
+        let uploadJobName = this.state.files[0]?.name;
+        let selectedJobName = this.state.selectedJob?.input?.jobName;
+
+
+        let uploadFileName = uploadJobName?.substr(0, uploadJobName?.lastIndexOf("."));
+        let selectedFileName = selectedJobName?.substr(0, selectedJobName?.lastIndexOf("."))
+
+        const fData = new FormData();
+        fData.append("file", this.state.files[0]);
+        fData.append("job_id", this.state.selectedJob?.jobID);
+        fData.append("src_file", this.state.selectedJob?.input?.files[0].path);
+
+        console.log("fData --- ", Object.fromEntries(fData));
+
+        const apiObj = new UploadDocToS3(fData);
+
+        fetch(apiObj.apiEndPoint(), {
+            method: 'post',
+            body: fData,
+            headers: apiObj.getHeaders().headers
+        }).then(async response => {
+            const rsp_data = await response.json();
+            console.log("rsp_data ----- ", rsp_data);
+            if (!rsp_data.ok) {
+                this.setState({
+                    open: true,
+                    message: "Request Failed.",
+                    variant: "error"
+                })
+            } else {
+                this.setState({
+                    open: true,
+                    message: "Translated File Uploaded",
+                    variant: "success"
+                });
+                // call bulk again -----
+                const { APITransport } = this.props;
+                const apiObj = new FetchDocument(
+                    0,
+                    this.props.job_details.count,
+                    [],
+                    false,
+                    false,
+                    false
+                );
+                APITransport(apiObj);
+                setTimeout(() => {
+                    history.push(`${process.env.PUBLIC_URL}/view-document`);
+                }, 2500);
+            }
+        }).catch(err => {
+            console.log(err);
+            this.setState({
+                open: true,
+                message: "Request Failed.",
+                variant: "error"
+            })
+        })
         setTimeout(() => {
             this.setState({ open: false, varaint: "success" });
         }, 3000);
@@ -344,7 +340,7 @@ class UploadTranslatedDocument extends Component {
                     <br />
 
                     <Typography variant="subtitle1" style={{ fontSize: "1rem" }} className={classes.note}>
-                        Select source document from dropdown and uplaod the translated file.
+                        Select source document from dropdown and upload the translated file.
                     </Typography>
                     <br />
                     <Paper elevation={3} className={classes.paper}>
@@ -386,7 +382,7 @@ class UploadTranslatedDocument extends Component {
                             <Grid item xs={12} sm={6} lg={6} xl={6}>
                                 {this.state.files[0]?.name &&
                                     <Typography variant="subtitle2">Upload file name - {this.state.files[0]?.name}</Typography>
-                            }
+                                }
                             </Grid>
                             {/* this.state.files[0]?.name */}
                             <Grid
@@ -404,7 +400,9 @@ class UploadTranslatedDocument extends Component {
                                         color="primary"
                                         className={classes.btnStyle}
                                         size="large"
-                                        onClick={() => this.setState({ showCompleteConfirmBox: true })}
+                                        onClick={() => {
+                                            this.validationCheckBeforeFinalSubmit()
+                                        }}
                                     // disabled={!this.state.files.length}
                                     >
                                         {translate("common.page.button.upload")}

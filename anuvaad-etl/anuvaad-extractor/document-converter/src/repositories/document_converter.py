@@ -64,6 +64,7 @@ class DocumentConversion(object):
                 font_families    = []
                 font_colors      = []
                 text_values      = []
+                src_values       = []
                 b64_images       = []
                 if 'images' not in list(page.keys()) or 'text_blocks' not in list(page.keys()):
                     log_info('looks like one of the key is missing {}'.format(page.keys()), MODULE_CONTEXT)
@@ -86,6 +87,7 @@ class DocumentConversion(object):
                     b64_images.append(None)
                     
                     text_value = []
+                    src_value = []
                     for processed_text in text['tokenized_sentences']:
                         if 'tgt' in processed_text:
                             if processed_text['tgt'] != None:
@@ -95,8 +97,10 @@ class DocumentConversion(object):
                                 text_value.append("This line is Not Translated")
                         else:
                             text_value.append(processed_text['src'])
+                        src_value.append(processed_text['src'])
                     if text_value:
                         text_values.append(' '.join(text_value))
+                        src_values.append(' '.join(src_value))
                 if images:                       
                     for image in images:
                         text_tops.append(image['text_top'])
@@ -105,13 +109,14 @@ class DocumentConversion(object):
                         text_heights.append(image['text_height'])
                         b64_images.append(image['base64'])
                         text_values.append(None)
+                        src_values.append(None)
                         font_sizes.append(None)
                         font_families.append(None)
                         font_colors.append(None)
                 
-                df = pd.DataFrame(list(zip(text_tops, text_lefts, text_widths, text_heights,
+                df = pd.DataFrame(list(zip(text_tops, text_lefts, text_widths, text_heights, src_values,
                                                         text_values, font_sizes, font_families, font_colors, b64_images)), 
-                                        columns =['text_top', 'text_left', 'text_width', 'text_height',
+                                        columns =['text_top', 'text_left', 'text_width', 'text_height', 'src_text',
                                                     'text', 'font_size', 'font_family', 'font_color', 'base64'])
                 df.sort_values('text_top', axis = 0, ascending = True, inplace=True) 
                 df = df.reset_index()
@@ -170,9 +175,8 @@ class DocumentConversion(object):
             out_filename = os.path.splitext(os.path.basename(record_id.split('|')[0]))[0] + str(uuid.uuid4()) + '_translated_docx.docx'
             output_filepath = os.path.join(self.DOWNLOAD_FOLDER , out_filename)
             document.save(output_filepath)
-            out_filename_zip = zipfile_creation(output_filepath)
-            log_info("docx file formation done!! filename: %s"%out_filename_zip, MODULE_CONTEXT)
-            return out_filename_zip
+            log_info("docx file formation done!! filename: %s"%out_filename, MODULE_CONTEXT)
+            return out_filename
         except Exception as e:
             log_exception("dataframe to doc formation failed", MODULE_CONTEXT, e)
 
@@ -206,9 +210,9 @@ class DocumentConversion(object):
                         worksheet.write(row, column + 1, tokenised_sentence['tgt']) 
                         row += 1
             workbook.close()
-            out_xlsx_filename_zip = zipfile_creation(output_filepath_xlsx)
-            log_info("xlsx file write completed!! filename: %s"%out_xlsx_filename_zip, MODULE_CONTEXT)
-            return out_xlsx_filename_zip
+            # out_xlsx_filename_zip = zipfile_creation(output_filepath_xlsx)
+            log_info("xlsx file write completed!! filename: %s"%output_filepath_xlsx, MODULE_CONTEXT)
+            return out_xlsx_filename
         except Exception as e:
             log_exception("xlsx file formation failed", MODULE_CONTEXT, e)
 
@@ -294,8 +298,71 @@ class DocumentConversion(object):
                             for item in sub_string_list:
                                 out_txt_file_write.write("%s\n"%item)
             out_txt_file_write.close()
-            out_txt_zip = zipfile_creation(output_filepath_txt)
-            log_info("txt file write completed!! filename: %s"%out_txt_zip, MODULE_CONTEXT)
-            return out_txt_zip
+            log_info("txt file write completed!! filename: %s"%out_translated_txt_filename, MODULE_CONTEXT)
+            return out_translated_txt_filename
         except Exception as e:
-            log_exception("txt file formation failed", MODULE_CONTEXT, e)
+            log_exception("translated txt file formation failed", MODULE_CONTEXT, e)
+
+    # create txt file for source sentences 
+    def create_source_txt_file(self, record_id, dataframes, page_layout):
+        try:
+            out_source_txt_filename = os.path.splitext(os.path.basename(record_id.split('|')[0]))[0] + str(uuid.uuid4()) + '_source_txt.txt'
+            out_src_filepath_txt = os.path.join(self.DOWNLOAD_FOLDER , out_source_txt_filename)
+            out_src_file_write = open(out_src_filepath_txt, 'w')
+            max_chars_in_line = int(page_layout['page_width']/13) if page_layout['page_width'] else 500
+            for idx, df in enumerate(dataframes):
+                for idx, row in df.iterrows():
+                    if row['src_text'] != None and idx+1 < df.shape[0]:
+                        extra_spaces = int((row['text_left'] - 50)/13) if row['text_left'] else 50
+                        write_str = re.sub(r'^', ' '*extra_spaces, row['src_text'])
+                        if row['text_top'] != df.iloc[idx+1]['text_top']:
+                            if len(write_str) < max_chars_in_line:
+                                out_src_file_write.write("%s\n"%write_str)
+                            else:
+                                sub_string_list = self.break_large_sentence(write_str, max_chars_in_line)
+                                for item in sub_string_list:
+                                    out_src_file_write.write("%s\n"%item)
+                        else:
+                            same_line_index = 0
+                            same_line_status = bool(row['text_top'] == df.iloc[idx+same_line_index+1]['text_top'])
+                            while same_line_status:
+                                if idx+same_line_index+1 < df.shape[0]:
+                                    
+                                    try:
+                                        onwards_line_space =    int((df.iloc[idx+same_line_index+1]['text_left'] - df.iloc[idx+same_line_index]['text_left'] \
+                                                            - df.iloc[idx+same_line_index]['text_width'])/13)
+                                    except:
+                                        onwards_line_space = 50
+
+                                    if df.iloc[idx+same_line_index+1]['src_text'] != None:
+                                        write_str += ' '*onwards_line_space + df.iloc[idx+same_line_index+1]['src_text']
+                                        df = df.replace({df.iloc[idx+same_line_index+1]['src_text'] : None})
+                                    else:
+                                        write_str += ' '*onwards_line_space + ''
+                                    same_line_index += 1
+                                    if idx+same_line_index+1 < df.shape[0]:
+                                        same_line_status = bool(df.iloc[idx+same_line_index]['text_top'] == df.iloc[idx+same_line_index+1]['text_top'])
+                                    else:
+                                        same_line_status = False
+                                else:
+                                    same_line_status = False
+                            if len(write_str) < max_chars_in_line:
+                                out_src_file_write.write("%s\n"%write_str)
+                            else:
+                                sub_string_list = self.break_large_sentence(write_str, max_chars_in_line)
+                                for item in sub_string_list:
+                                    out_src_file_write.write("%s\n"%item)
+                    elif row['src_text'] != None and idx+1 == df.shape[0]:
+                        extra_spaces = int((row['text_left'] - 50)/13) if row['text_left'] else 50
+                        write_str = re.sub(r'^', ' '*extra_spaces, row['src_text'])
+                        if len(write_str) < max_chars_in_line:
+                            out_src_file_write.write("%s\n"%write_str)
+                        else:
+                            sub_string_list = self.break_large_sentence(write_str, max_chars_in_line)
+                            for item in sub_string_list:
+                                out_src_file_write.write("%s\n"%item)
+            out_src_file_write.close()
+            log_info("src txt file write completed!! filename: %s"%out_source_txt_filename, MODULE_CONTEXT)
+            return out_source_txt_filename
+        except Exception as e:
+            log_exception("source txt file formation failed", MODULE_CONTEXT, e)

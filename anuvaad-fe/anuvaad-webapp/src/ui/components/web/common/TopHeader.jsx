@@ -413,7 +413,7 @@ export default function TopHeader(props) {
 
     const getMenuButtons = () => {
         return (
-            <Grid container className={desktopMenuContainer}>
+            currentMenu !=="intro" && <Grid container className={desktopMenuContainer}>
                 {headerMenuConfig.map((el, i) => {
                     return el.menuType === "MAIN" && el.rolesAllowed.includes(role) && assignedOrgId !== "NONMT" && 
                     <NavLink

@@ -49,6 +49,7 @@ export default class GranularTaskDetailsModal extends React.Component {
                         {title}
                     </DialogTitle> */}
                     <DialogContent style={{ minWidth: "500px" }}>
+                    {this.props.type && this.props.type !== "warning" ?
                         <div style={{ display: "flex", justifyContent: "space-between" }}>
                             <div>
                                 <div style={{ display: "flex", flexDirection: "row" }}><Typography style={{ fontWeight: "bold", fontSize: "15px" }}>Job ID: </Typography><Typography style={{ fontSize: "15px" }}>&nbsp; {message.jobID}</Typography></div>
@@ -89,8 +90,9 @@ export default class GranularTaskDetailsModal extends React.Component {
                                     <Typography variant='caption'>Copied to clipboard.</Typography> :
                                     <IconButton
                                         onClick={() => {
+                                            let copyErrorMessage = message.errorMessage ? `Error: ${message.errorMessage}` : "";
                                             navigator.clipboard.writeText(
-                                                `Job ID: ${message.jobID} \n File Name: ${message.filename} \n User: ${JSON.parse(localStorage.getItem("userProfile"))?.userName}`
+                                                `Job ID: ${message.jobID} \n File Name: ${message.filename} \n User: ${JSON.parse(localStorage.getItem("userProfile"))?.userName} \n ${copyErrorMessage}`
                                             );
                                             this.setState({ textCopy: true });
                                             setTimeout(() => {
@@ -102,10 +104,20 @@ export default class GranularTaskDetailsModal extends React.Component {
                                     </IconButton>}
                             </div>
                         </div>
+                        : <DialogContentText id="alert-dialog-slide-description">
+                        {message}
+                    </DialogContentText>
+                    }
+
                     </DialogContent>
-                    <DialogActions>
-                        <Button onClick={(event) => { this.props.handleClose() }} color="primary">OK</Button>
-                    </DialogActions>
+                    {
+                        this.props.type ? <DialogActions>
+                            <Button onClick={(event) => { this.props.handleClose() }} color="primary">OK</Button>
+                        </DialogActions> : <DialogActions>
+                            <Button onClick={(event) => { handleClose() }} color="primary">{translate("common.page.label.no")}</Button>
+                            <Button onClick={(event) => { handleSubmit(value, status) }} color="primary">{translate("common.page.label.yes")}</Button>
+                        </DialogActions>
+                    }
                 </Dialog>
 
             </div>
