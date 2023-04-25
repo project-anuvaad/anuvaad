@@ -6,9 +6,9 @@ import Typography from "@material-ui/core/Typography";
 import Divider from "@material-ui/core/Divider";
 import Chip from "@material-ui/core/Chip";
 import TextField from "@material-ui/core/TextField";
-import Autocomplete from "@material-ui/lab/Autocomplete";
+// import Autocomplete from "@material-ui/lab/Autocomplete";
 import Checkbox from "@material-ui/core/Checkbox";
-import CircularProgress from "@material-ui/core/CircularProgress";
+// import CircularProgress from "@material-ui/core/CircularProgress";
 import CardActions from "@material-ui/core/CardActions";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -52,7 +52,7 @@ const TELEMETRY = require("../../../../utils/TelemetryManager");
 const BLEUCALCULATOR = require("../../../../utils/BleuScoreCalculator");
 const TMX_HIGHLIGHT = require("../../../../utils/TmxHighlight");
 
-var time = 0;
+// var time = 0;
 const styles = {
   card_active: {
     background: "rgb(211,211,211)",
@@ -102,7 +102,7 @@ const theme = createMuiTheme({
   },
 });
 
-const filterOptions = (options, { inputValue }) => options;
+// const filterOptions = (options, { inputValue }) => options;
 
 class SentenceCard extends React.Component {
   constructor(props) {
@@ -1002,7 +1002,7 @@ class SentenceCard extends React.Component {
       />)}
 
           {/* <Autocomplete
-                        filterOptions={filterOptions}
+                        // // filterOptions={filterOptions}
                         id={this.props.sentence.s_id}
                         getOptionLabel={option => option.name ? option.name : ""}
                         getOptionSelected={(option, value) => option.name === value.name}

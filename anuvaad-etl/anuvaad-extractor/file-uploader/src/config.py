@@ -32,5 +32,27 @@ DEFAULT_MONGO_DB_IDENTIFIER = 'preprocessing'
 MONGO_SERVER_URL = os.environ.get(MONGO_IP, DEFAULT_VALUE)
 MONGO_DB = os.environ.get(MONGO_DB_IDENTIFIER, DEFAULT_MONGO_DB_IDENTIFIER)
 
+aws_access_key = os.environ.get('FT_AWS_S3_ACCESS_KEY', '**********')
+aws_secret_key = os.environ.get('FT_AWS_S3_SECRET_KEY', '**********')
+aws_bucket_name = os.environ.get('FT_AWS_BUCKET_NAME', 'anuvaad1')
+aws_link_prefix = f'https://{aws_bucket_name}.s3.amazonaws.com/'
+
+
+# Content Handler
+FETCH_CONTENT_URL_DEFAULT = 'http://gateway_anuvaad-content-handler:5001/'
+FETCH_CONTENT_URL_VAR = 'CONTENT_HANDLER_URL'
+CH_URL = os.environ.get(FETCH_CONTENT_URL_VAR, FETCH_CONTENT_URL_DEFAULT)
+
+#Workflow manager Granularity
+WFM_GRANULARITY_DEFAULT = 'http://gateway_anuvaad-etl-wf-manager:5001/'
+WFM_GRANULARITY_VAR = 'WORKFLOW_MANAGER_URL'
+WFM_GRANULARITY =  os.environ.get(WFM_GRANULARITY_VAR, WFM_GRANULARITY_DEFAULT)
+
+WFM_GRANULARITY_END_POINT = "anuvaad-etl/wf-manager/v1/workflow/setGranularity"
+
+FETCH_CONTENT_ENDPOINT = 'anuvaad/content-handler/v0/fetch-content'
+REF_LINK_STORE_ENDPOINT = 'anuvaad/content-handler/v0/ref-link/store'
+
 # Application configuration
 MAX_UPLOAD_SIZE = os.environ.get('MAX_FILE_UPLOAD_SIZE', 100)
+page_limit = 200

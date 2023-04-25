@@ -626,6 +626,13 @@ class ViewDocument extends React.Component {
           filter: true,
           sort: false,
           empty: true,
+          customBodyRender: (value, tableMeta, updateValue) => {
+            // if(value.includes("FAILED")){
+            //   return <Typography variant="body2" style={{color: "red"}}>{value}</Typography>
+            // } else {
+              return <Typography variant="body2">{value}</Typography>
+            // }
+          }
         },
       },
       {
@@ -644,12 +651,13 @@ class ViewDocument extends React.Component {
                     <IconButton
                       style={{ color: "#233466", padding: "5px" }}
                       component="a"
-                      onClick={() =>
+                      onClick={() =>{
+                        console.log("tableMeta ---- ", tableMeta)
                         this.processJobTimelinesClick(
                           tableMeta.rowData[1],
                           tableMeta.rowData[2]
                         )
-                      }
+                      }}
                     >
                       <InfoIcon />
                     </IconButton>

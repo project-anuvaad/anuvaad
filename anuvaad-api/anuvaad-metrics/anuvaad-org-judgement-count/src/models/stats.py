@@ -277,10 +277,10 @@ class jud_stats(object):
             df.dropna(subset=['orgID'], inplace=True)
             # result = df1.merge(df, indicator=True, how="right")
             result = df.sort_values(by=["orgID"], ascending=True)
-            mask = result["orgID"].isin(
-                ["ANUVAAD", "TARENTO_TESTORG", "NONMT", "ECOMMITTEE "]
-            )
-            result = result[~mask]
+#             mask = result["orgID"].isin(
+#                 ["ANUVAAD", "TARENTO_TESTORG", "NONMT", "ECOMMITTEE "]
+#             )
+#             result = result[~mask]
         else:
             df = pd.read_csv(file_name1)
             df1 = pd.read_csv(file_name2)
@@ -293,10 +293,10 @@ class jud_stats(object):
             df.dropna(subset=['orgID'], inplace=True)
             result = df1.merge(df, indicator=True, how="right")
             result = df.sort_values(by=["orgID"], ascending=True)
-            mask = result["orgID"].isin(
-                ["ANUVAAD", "TARENTO_TESTORG", "NONMT", "ECOMMITTEE "]
-            )
-            result = result[~mask]
+#             mask = result["orgID"].isin(
+#                 ["ANUVAAD", "TARENTO_TESTORG", "NONMT", "ECOMMITTEE "]
+#             )
+#             result = result[~mask]
         return result, True
 
     def doc_count(self, result):
