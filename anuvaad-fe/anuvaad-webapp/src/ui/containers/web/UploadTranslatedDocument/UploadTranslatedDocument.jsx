@@ -340,7 +340,7 @@ class UploadTranslatedDocument extends Component {
                     <br />
 
                     <Typography variant="subtitle1" style={{ fontSize: "1rem" }} className={classes.note}>
-                        Select source document from dropdown and uplaod the translated file.
+                        Select source document from dropdown and upload the translated file.
                     </Typography>
                     <br />
                     <Paper elevation={3} className={classes.paper}>
