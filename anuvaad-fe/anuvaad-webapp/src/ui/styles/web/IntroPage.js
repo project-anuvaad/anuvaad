@@ -13,6 +13,8 @@ const LoginStyles = theme => ({
         border: "0.5px solid rgba(0,0,0,0.4)", 
         padding: 5, 
         maxHeight: "270px", 
+        backgroundColor: "#F5F5F5",
+        textDecoration: "none",
         borderRadius: 10,
             "&:hover": {
             backgroundColor: "#040003",
@@ -32,6 +34,10 @@ const LoginStyles = theme => ({
         flexWrap: "wrap",
         rowGap: "5rem",
         height: "110%"
+    },
+    linkStyle: {
+        textDecoration: "none",
+        display: "contents"
     }
 })
 

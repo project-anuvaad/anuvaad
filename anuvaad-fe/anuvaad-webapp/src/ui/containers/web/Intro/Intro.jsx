@@ -3,7 +3,7 @@ import React from 'react';
 import TranslateIcon from '@material-ui/icons/Translate';
 import DescriptionIcon from '@material-ui/icons/Description';
 import SubjectIcon from '@material-ui/icons/Subject';
-import { withRouter } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
 import history from "../../../../web.history";
 import LoginStyles from "../../../styles/web/IntroPage";
@@ -63,37 +63,43 @@ const Intro = (props) => {
                     <Tooltip
                         title='Digitize Document'
                     >
-                        <div
-                            onClick={() => history.push(`${process.env.PUBLIC_URL}/digitize-document-upload`)}
-                            className={classes.introPageLinkCard}
-                        >
-                            <DescriptionIcon fontSize='large' style={{ fontSize: "10rem" }} htmlColor='rgb(44, 39, 153)' />
-                            <div><Typography variant='subtitle1'>Digitize Document</Typography></div>
-                            <Typography variant='caption'>Digitize Document helps to convert scanned documents into digital format. This process recognizes text in scanned (non hand-written) documents and converts it into searchable text.</Typography>
-                        </div>
+                        <Link to="/digitize-document-upload" className={classes.linkStyle}>
+                            <div
+                                className={classes.introPageLinkCard}
+                            >
+                                <DescriptionIcon fontSize='large' style={{ fontSize: "10rem" }} htmlColor='rgb(44, 39, 153)' />
+                                <div><Typography variant='subtitle1'>Digitize Document</Typography></div>
+                                <Typography variant='caption'>Digitize Document helps to convert scanned documents into digital format. This process recognizes text in scanned (non hand-written) documents and converts it into searchable text.</Typography>
+                            </div>
+                        </Link>
+
                     </Tooltip>
                     <Tooltip
                         title='Translate Document'
                     >
-                        <div
-                            onClick={() => history.push(`${process.env.PUBLIC_URL}/document-upload`)}
-                            className={classes.introPageLinkCard}                        >
-                            <TranslateIcon fontSize='large' style={{ fontSize: "10rem" }} htmlColor='rgb(44, 39, 153)' />
-                            <div><Typography variant='subtitle1'>Translate Document</Typography></div>
-                            <Typography variant='caption'>Translate Document helps to convert documents from one language to another. Currently, English-Indic and Indic-English translations are supported.</Typography>
-                        </div>
+                        <Link to="/document-upload" className={classes.linkStyle}>
+                            <div
+                                className={classes.introPageLinkCard}                        >
+                                <TranslateIcon fontSize='large' style={{ fontSize: "10rem" }} htmlColor='rgb(44, 39, 153)' />
+                                <div><Typography variant='subtitle1'>Translate Document</Typography></div>
+                                <Typography variant='caption'>Translate Document helps to convert documents from one language to another. Currently, English-Indic and Indic-English translations are supported.</Typography>
+                            </div>
+                        </Link>
+
                     </Tooltip>
                     <Tooltip
                         title='Translate Sentence'
                     >
-                        <div
-                            onClick={() => history.push(`${process.env.PUBLIC_URL}/instant-translate`)}
-                            className={classes.introPageLinkCard}
-                        >
-                            <SubjectIcon fontSize='large' style={{ fontSize: "10rem" }} htmlColor='rgb(44, 39, 153)' />
-                            <div><Typography variant='subtitle1'>Translate Sentence</Typography></div>
-                            <Typography variant='caption'>Translate Sentence helps to convert sentences from one language to another.</Typography>
-                        </div>
+                        <Link to="/instant-translate" className={classes.linkStyle}>
+                            <div
+                                className={classes.introPageLinkCard}
+                            >
+                                <SubjectIcon fontSize='large' style={{ fontSize: "10rem" }} htmlColor='rgb(44, 39, 153)' />
+                                <div><Typography variant='subtitle1'>Translate Sentence</Typography></div>
+                                <Typography variant='caption'>Translate Sentence helps to convert sentences from one language to another.</Typography>
+                            </div>
+                        </Link>
+
                     </Tooltip>
                 </Box>
                 {/* <Typography variant='body2'>Pro tip: If the document to be translated does not contain unicode fonts, please perform document digitization and then translate the digitized document.</Typography> */}
