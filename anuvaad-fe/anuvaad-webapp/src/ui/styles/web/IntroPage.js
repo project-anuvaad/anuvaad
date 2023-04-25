@@ -17,7 +17,7 @@ const LoginStyles = theme => ({
         textDecoration: "none",
         borderRadius: 10,
             "&:hover": {
-            backgroundColor: "#040003",
+            backgroundColor: "#0606065c",
             color: "white"
         }
     },
