@@ -46,7 +46,7 @@ WORKDIR /app
 #RUN pip install 'git+https://github.com/facebookresearch/detectron2.git#egg=detectron2'
 
 #RUN pip cache purge
-RUN pip install anuvaad-auditor==1.0.0
+RUN pip3 install anuvaad-auditor==1.0.0
 
 
 COPY start.sh /usr/bin/start.sh
