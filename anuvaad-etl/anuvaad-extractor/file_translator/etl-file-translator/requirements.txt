@@ -5,7 +5,7 @@ flask==1.1.2
 flask-cors==3.0.8
 flask-restful==0.3.9
 elasticsearch==7.8.0
-anuvaad-auditor==0.1.6
+anuvaad-auditor==1.0.0
 requests==2.25.1
 python-pptx==0.6.19
 PyDocX==0.9.10
@@ -16,4 +16,5 @@ python-magic==0.4.24
 itsdangerous==2.0.1
 Jinja2==3.0.3
 MarkupSafe==2.1.1
+g==1.0.0
 Werkzeug==1.0.0

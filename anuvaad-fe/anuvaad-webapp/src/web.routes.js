@@ -7,17 +7,17 @@ import Layout from "./ui/containers/web/common/Layout";
 import NotFound from "./ui/containers/web/common/NotFound";
 
 import history from "./web.history";
-import Login from "./ui/containers/web/User/Login";
+// import Login from "./ui/containers/web/User/Login";
 import UserProfile from "./ui/containers/web/User/UserProfile";
 
 import InstantTranslate from "./ui/containers/web/TranslateSentence/Dashboard";
 
-import Signup from "./ui/containers/web/User/SignUp";
-import Activate from "./ui/containers/web/User/Activate";
+// import Signup from "./ui/containers/web/User/SignUp";
+// import Activate from "./ui/containers/web/User/Activate";
 // import IntractiveTranslate from "./ui/containers/web/IntractiveTranslation";
 import { translate } from '../src/assets/localisation';
 import UpdatePassword from './ui/containers/web/User/UpdatePassword';
-import SetPassword from './ui/containers/web/User/SetPassword';
+// import SetPassword from './ui/containers/web/User/SetPassword';
 import DocumentEditorV1 from './ui/containers/web/DocumentEditor/DocumentEditor.v1';
 
 import FileUpload from './ui/containers/web/DocumentUpload/FileUpload';

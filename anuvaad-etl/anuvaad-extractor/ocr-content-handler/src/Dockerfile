@@ -1,4 +1,5 @@
-FROM python:3.6-slim-stretch
+#FROM python:3.6-slim-stretch
+FROM python:3.6.15-slim
 COPY / /app
 WORKDIR /app
 RUN apt update

@@ -8,18 +8,18 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import APITransport from "../../../../flux/actions/apitransport/apitransport";
 
-import Toolbar from "@material-ui/core/Toolbar";
-import AppBar from "@material-ui/core/AppBar";
-import Typography from "@material-ui/core/Typography";
+// import Toolbar from "@material-ui/core/Toolbar";
+// import AppBar from "@material-ui/core/AppBar";
+// import Typography from "@material-ui/core/Typography";
 
-import MenuIcon from '@material-ui/icons/Menu';
-import CloseIcon from '@material-ui/icons/Close';
-import IconButton from '@material-ui/core/IconButton';
+// import MenuIcon from '@material-ui/icons/Menu';
+// import CloseIcon from '@material-ui/icons/Close';
+// import IconButton from '@material-ui/core/IconButton';
 
 import { showSidebar } from '../../../../flux/actions/apis/common/showSidebar';
 import GlobalStyles from "../../../styles/web/styles";
 import Theme from "../../../theme/web/theme-anuvaad";
-import classNames from "classnames";
+// import classNames from "classnames";
 
 class UserDetailsHeader extends React.Component {
 

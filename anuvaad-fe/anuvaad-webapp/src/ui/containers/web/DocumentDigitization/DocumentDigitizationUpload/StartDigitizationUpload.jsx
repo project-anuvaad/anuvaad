@@ -214,13 +214,14 @@ class StartDigitizationUpload extends React.Component {
 
     handleChange = files => {
         if (files.length > 0) {
+            console.log(files[0]);
             let path = files[0].name.split('.');
             let fileType = path[path.length - 1];
             let fileName = path.splice(0, path.length - 1).join('.')
             this.setState({
                 files,
                 fileName: files[0].name,
-                workspaceName: this.state.workspaceName ? this.state.workspaceName : fileName,
+                workspaceName: files[0].name,
                 path: fileType
             });
         } else {
@@ -477,6 +478,7 @@ class StartDigitizationUpload extends React.Component {
                         onCopyClick={() => this.onCopyClick()}
                         onUploadOtherDoc={() => this.onUploadOtherDoc()}
                         goToDashboardLink={`${process.env.PUBLIC_URL}/document-digitization`}
+                        uploadOtherDocLink={`${process.env.PUBLIC_URL}/digitize-document-upload`}
                     />
                 }
             </div >

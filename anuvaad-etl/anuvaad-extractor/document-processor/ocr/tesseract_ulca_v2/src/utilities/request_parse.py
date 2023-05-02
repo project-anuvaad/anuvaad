@@ -124,7 +124,9 @@ class File:
 
     @log_error
     def get_lang(self):
-        return self.file["config"]["language"]["sourceLanguage"]
+        lang = self.file["config"]["languages"]
+        for i in lang:
+            return i["sourceLanguage"]
 
     @log_error
     def check_key(self):
