@@ -3,7 +3,7 @@ Flask-Cors==3.0.10
 anuvaad-auditor==1.0.0
 Flask-RESTful==0.3.8
 six==1.15.0
-Flask==2.1.0
+Flask==2.3.2
 uuid==1.30
 Flask-Mail==0.9.1
 requests
