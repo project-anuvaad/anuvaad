@@ -6,7 +6,7 @@ anuvaad-auditor==0.1.6
 Flask-RESTful==0.3.8
 six==1.15.0
 kafka-python==2.0.2
-Flask==1.1.2
+Flask==2.3.2
 #ctranslate2==1.17.0
 python-dateutil==2.7.3
 sentencepiece==0.1.81
