@@ -1,6 +1,6 @@
 numpy==1.19.2
 pytesseract==0.3.4
-Flask==1.1.2
+Flask==2.3.2
 anuvaad_auditor==0.1.6
 kafka_python==2.0.1
 Flask_RESTful==0.3.8
