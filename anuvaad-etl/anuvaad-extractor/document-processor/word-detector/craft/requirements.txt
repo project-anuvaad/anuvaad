@@ -6,7 +6,7 @@
 # scikit-build
 # opencv_python==4.4.0.42
 # kafka_python==2.0.1
-# Flask==1.1.2
+# Flask==2.3.2
 # imagesize==1.2.0
 # imutils~=0.5.3
 # numpy==1.19.2
@@ -34,7 +34,7 @@ fvcore==0.1.5.post20210722
 imagesize
 tqdm==4.61.0
 kafka_python==2.0.1
-Flask==1.1.2
+Flask==2.3.2
 # anuvaad_auditor==0.1.6
 anuvaad-auditor==1.0.0
 shapely==1.7.0

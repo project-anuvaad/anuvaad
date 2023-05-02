@@ -3,7 +3,7 @@
 torchvision==0.6.0
 anuvaad_auditor==0.1.6
 #opencv_python==4.4.0.42
-Flask==1.1.2
+Flask==2.3.2
 pandas==1.0.3
 pdf2image==1.12.1
 kafka_python==2.0.1
