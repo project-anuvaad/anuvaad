@@ -1,7 +1,7 @@
 anuvaad_auditor==0.1.6
 bcrypt==3.2.0
 DateTime==4.3
-Flask==2.1.0
+Flask==2.3.2
 Flask-Cors==3.0.8
 Flask-Mail==0.9.1
 Flask-RESTful==0.3.9
