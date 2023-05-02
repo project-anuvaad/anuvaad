@@ -48,7 +48,7 @@ class Response(object):
                     response = Service(app_context=app_context)
                     ##############################
                     if response['code'] == 200:
-                        
+                        log_info("response: {}".format(response['rsp']),app_context.application_context)
                         output_filename_json = file_ops.writing_json_file(i, response['rsp'], self.DOWNLOAD_FOLDER)
                         file_res = file_ops.one_filename_response(output_filename_json)
                         output_file_response.append(file_res)
