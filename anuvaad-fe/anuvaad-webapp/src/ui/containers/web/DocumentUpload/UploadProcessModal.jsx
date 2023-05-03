@@ -230,7 +230,11 @@ export default function UploadProcessModal(props) {
         let sdate = new Date(startTime);
         let sec = Math.trunc(Math.abs(edate.getTime() - sdate.getTime()) / 1000);
         var date = new Date(0);
-        console.log("sec ---- ", sec);
+        // console.log("sec ---- ", sec);
+        if (isNaN(sec)) {
+            return "Failed to calculate time"
+        }
+
         date.setSeconds(sec == 0 ? 1 : sec); // specify value for SECONDS here
         return date.toISOString().substr(11, 8);
     }
@@ -247,10 +251,10 @@ export default function UploadProcessModal(props) {
                     el["endTimeProcess"] = parseInt(el["taskendTime"]);
                 }
 
-                if ("taskStarttime" in el) {
-                    el["startTimeProcess"] = parseInt(el["taskStarttime"]);
-                } else {
+                if ("taskStartTime" in el) {
                     el["startTimeProcess"] = parseInt(el["taskStartTime"]);
+                } else {
+                    el["startTimeProcess"] = parseInt(el["taskStarttime"]);
                 }
 
                 return el;
@@ -297,14 +301,14 @@ export default function UploadProcessModal(props) {
 
                             <StepContent>
                                 <Typography variant='body2'>{process?.status}</Typography>
-                                {process?.status === "SUCCESS" && <Typography variant='caption'>Time Taken : {msToTime(process?.endTimeProcess,process?.startTimeProcess)}</Typography>}
+                                {process?.status === "SUCCESS" && <Typography variant='caption'>Time Taken : {msToTime(process?.endTimeProcess, process?.startTimeProcess)}</Typography>}
                             </StepContent>
                         </Step>
                     )) :
                         <Typography variant='body2'>Processing...</Typography>
                     }
                     {progressData.status === "INPROGRESS" && <CircularProgress />}
-                    {progressData.status === "FAILED" && <Typography style={{color: "red"}} variant='body2'>Failed To Process The Docuemnt.</Typography>}
+                    {progressData.status === "FAILED" && <Typography style={{ color: "red" }} variant='body2'>Failed To Process The Docuemnt.</Typography>}
                     <div style={{ width: "100%", textAlign: "end", alignItems: "center" }}>
                         <Button
                             color='primary'
@@ -317,8 +321,8 @@ export default function UploadProcessModal(props) {
                             style={{ marginLeft: 5 }}
                             onClick={() => {
                                 progressData.status === "INPROGRESS" ?
-                                window.open(uploadOtherDocLink) :
-                                onUploadOtherDoc()
+                                    window.open(uploadOtherDocLink) :
+                                    onUploadOtherDoc()
                             }}
                         >Upload another document</Button>
                     </div>
