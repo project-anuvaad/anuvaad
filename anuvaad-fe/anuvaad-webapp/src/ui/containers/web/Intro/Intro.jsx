@@ -104,14 +104,7 @@ const Intro = (props) => {
                 </Box>
                 {/* <Typography variant='body2'>Pro tip: If the document to be translated does not contain unicode fonts, please perform document digitization and then translate the digitized document.</Typography> */}
                 <div
-                    style={{
-                        color: "rgb(44, 39, 153)",
-                        position: "fixed",
-                        bottom: 0,
-                        // right: 10,
-                        backgroundColor: 'white',
-                        width: "100%",
-                    }}
+                    className = {classes.footerContainer}
                 >
                     <Typography variant='caption'> For best performance, use Chrome Version 88 or above.</Typography>
                     <Typography variant='body2'>Pro tip: If the document to be translated does not contain unicode fonts, please perform document digitization and then translate the digitized document.</Typography>
