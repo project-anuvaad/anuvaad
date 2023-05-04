@@ -48,7 +48,7 @@ class ValidationResponse(object):
                         raise FileErrors("FILE_TYPE_ERROR", "This file type is not allowed.")
 
                     elif file_ops.check_file_mime_type(file_path=input_filepath, in_file_type=in_file_type, json_data=self.json_data) is False:
-                        raise FileErrors("FILE_MIME_TYPE_ERROR", "This file MIME type is not allowed.")
+                        raise FileErrors("FILE_MIME_TYPE_ERROR", "This file format is not supported - ( " + file_ops.get_mime_type(self, file_path = input_filepath, in_file_type=in_file_type, json_data=None)+ " )")
 
                     elif in_file_type not in ['json'] and file_ops.check_path_exists(input_filepath) is False:
                         raise FileErrors("DIRECTORY_ERROR", "There is no file: ")

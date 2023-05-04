@@ -48,7 +48,14 @@ class FileOperation(object):
         mime_type = magic.from_file(file_path, mime=True)
         log_info(f"check_file_mime_type :: FILE: {file_path}  MIME TYPE: {mime_type}", json_data)
         return mime_type in config.ALLOWED_MIME_TYPES
+    
+    def get_mime_type(self, file_path, in_file_type, json_data=None):
+        if in_file_type == 'json':
+            return True
+        mime_type = magic.from_file(file_path, mime=True)
+        mime_type = config.REJECTED_MIME_TYPES[mime_type]
 
+        return  mime_type
     # generating input filepath for input filename
     def input_path(self, input_filename):
         input_filepath = os.path.join('upload', input_filename)
