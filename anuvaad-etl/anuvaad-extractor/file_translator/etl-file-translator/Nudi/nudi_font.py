@@ -168,25 +168,25 @@ def find_mapping(op, txt, current_pos):
                 op.append(t)
             
     return [n, op]
-def process_line(line):
-    """Splits the line into words and processes each word
-    """
-    print('lines-----',line)
-    # Clean the input
-    # line = line.strip() #----------------- changed
+# def process_line(line):
+#     """Splits the line into words and processes each word
+#     """
+#     print('lines-----',line)
+#     # Clean the input
+#     # line = line.strip() #----------------- changed
 
-    # Into words
-    words = line.split(' ')
+#     # Into words
+#     words = line.split(' ')
 
-    # To stote converted words
-    op_words = []
+#     # To stote converted words
+#     op_words = []
 
-    # Process and append to main array
-    for word in words:
-        op_words.append(process_word(word))
-    print('done',op_words)
-    # Return converted line
-    return ' '.join(op_words)
+#     # Process and append to main array
+#     for word in words:
+#         op_words.append(process_word(word))
+#     print('done',op_words)
+#     # Return converted line
+#     return ' '.join(op_words)
 def process_word(word):
     """Main program to process the word letter by letter
     """
@@ -236,7 +236,7 @@ def process_line(line):
         op_words.append(process_word(word))
 #     print('done',op_words)
     # Return converted line
-    return ''.join(op_words)
+    return ' '.join(op_words)
 
 
 mapping = {
