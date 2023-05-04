@@ -11,7 +11,6 @@ from docx.text.paragraph import Paragraph
 from enums.tags import DocxTag
 from errors.errors_exception import FileErrors
 from services.service import common_obj
-# from Nudi.nudi_font import process_line
 
 
 
@@ -66,18 +65,9 @@ class DocxTransform(object):
         self.document = input_docx
         return input_docx
     
-    def write_dup_docx_file_fonts(self,out_name):
-        out_name = 'Doc_dup_' + self.file_name_without_ext + '.docx'
-        return out_name
-
     def write_json_file(self, transformed_obj):
         #out_file_name = config.DOCX_FILE_PREFIX + self.file_name_without_ext + '.json'
         out_file_name = config.DOCX1_FILE_PREFIX + self.file_name_without_ext + '.json'
-        return common_obj.write_json_file(out_file_name=out_file_name, transformed_obj=transformed_obj)
-
-    def write_json_file_dup(self, transformed_obj):
-        #out_file_name = config.DOCX_FILE_PREFIX + self.file_name_without_ext + '.json'
-        out_file_name = config.DOCX1_FILE_PREFIX + 'Doc_dup_' + self.file_name_without_ext + '.json'
         return common_obj.write_json_file(out_file_name=out_file_name, transformed_obj=transformed_obj)
 
     def distribute_over_runs(self, iterable_obj, trans_para):
@@ -191,11 +181,6 @@ class DocxTransform(object):
         valid_fonts.extend(valid_locale_fonts)
         valid_fonts.extend(common_fonts)
         return valid_fonts
-    
-    def check_fonts_for_nudi(self, in_locale):
-        self.get_all_the_fonts_used()
-        # print('violet', str(self.fonts_used))
-        return self.fonts_used
 
     def check_if_valid_fonts_used(self, in_locale):
         self.get_all_the_fonts_used()

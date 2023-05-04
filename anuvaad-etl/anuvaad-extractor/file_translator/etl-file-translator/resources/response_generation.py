@@ -1,7 +1,5 @@
 import copy
 import time
-import docx
-from docx import Document
 
 from anuvaad_auditor.loghandler import log_exception
 from anuvaad_auditor.loghandler import log_info
@@ -20,10 +18,7 @@ from services.pptx_transform import PptxTransform
 from utilities.model_response import CustomResponse
 from utilities.model_response import Status
 from utilities.utils import FileOperation
-from Nudi.nudi_font import *
 file_ops = FileOperation()
-
-doc_file = docx.Document()
 
 class Response(object):
     def __init__(self, json_data, DOWNLOAD_FOLDER):
@@ -52,66 +47,31 @@ class Response(object):
                         #
                         log_info(f"Test31: docx_transform_object = {docx_transform_obj}",None)
                         docx_obj = docx_transform_obj.read_docx_file(input_filename)
-                        check_nudi_font = docx_transform_obj.check_fonts_for_nudi(self)
-                        print('NOOOOOOOOOOOO', check_nudi_font)
-                        if "Nudi kvk e" in check_nudi_font or "NudiAkshar" in check_nudi_font:
-                            print('yes')
-                            whole_data = []
-
-                            for doc_para in docx_obj.paragraphs:
-                                # s = ''.join(process_line(doc_para.text))
-                                whole_data.append(''.join(process_line(doc_para.text)))
-                            for whole in whole_data:
-                                doc_file.add_paragraph(whole)
-                                fil = docx_transform_obj.write_dup_docx_file_fonts(self)
-                            doc_file.save(config.download_folder+'/'+fil)
-                            dup_file_loc = config.download_folder+'/'+ docx_transform_obj.write_dup_docx_file_fonts(self)
-                            input_filename_dup = docx_transform_obj.write_dup_docx_file_fonts(self)
-                            print('----------------',input_filename_dup)
-                            print('ddd',dup_file_loc)
-                            doc = docx.Document(dup_file_loc)
-                            transformed_obj_dup = docx_transform_obj.generate_json_structure(doc)
-                            print('dupli',transformed_obj_dup)
-                            out_json_filepath = docx_transform_obj.write_json_file_dup(transformed_obj_dup)
-                            output_filename = out_json_filepath
-                            print('out',out_json_filepath)
-                            out_file_type = 'json'
-                            html_convert_obj = HtmlConvert(input_filename=input_filename_dup, file_type=config.TYPE_DOCX, json_data=self.json_data)
+                        # if in_locale != config.LOCALE_ENGLISH and config.DOCX_FONT_VALIDATION_ENABLED:
+                        #     docx_transform_obj.check_if_valid_fonts_used(in_locale=in_locale)
+                        
+                        transformed_obj = docx_transform_obj.generate_json_structure(docx_obj)
                         #
-                            log_info(f"Test31: html_convert_obj = {html_convert_obj}",None)
+                        # log_info(f"Test31: transformed_obj = {transformed_obj}",None)
+                        out_json_filepath = docx_transform_obj.write_json_file(transformed_obj)
+                        output_filename = out_json_filepath
+                        out_file_type = 'json'
 
-                            out_files_url = html_convert_obj.generate_html(input_filename=input_filename_dup)
-                            #
-                            log_info(f"Test31:out_files_url = {out_files_url}",None)
-                            log_info(f"URL TO HTML FILE FOR JOBID {jobid}: {str(out_files_url)}", self.json_data)
+                        #read modified docx
 
-                            fc_obj = FetchContent(record_id=input_filename_dup, json_data=self.json_data)
-                            fc_obj.store_reference_link(job_id=jobid, location=out_files_url)
-                            #
-                            log_info(f"Test31:fc_object = {fc_obj}",None)
-                        else:
-                            transformed_obj = docx_transform_obj.generate_json_structure(docx_obj)
-                            #
-                            # log_info(f"Test31: transformed_obj = {transformed_obj}",None)
-                            out_json_filepath = docx_transform_obj.write_json_file(transformed_obj)
-                            output_filename = out_json_filepath
-                            out_file_type = 'json'
+                        html_convert_obj = HtmlConvert(input_filename=input_filename, file_type=config.TYPE_DOCX, json_data=self.json_data)
+                        #
+                        log_info(f"Test31: html_convert_obj = {html_convert_obj}",None)
 
-                            #read modified docx
+                        out_files_url = html_convert_obj.generate_html(input_filename=input_filename)
+                        #
+                        log_info(f"Test31:out_files_url = {out_files_url}",None)
+                        log_info(f"URL TO HTML FILE FOR JOBID {jobid}: {str(out_files_url)}", self.json_data)
 
-                            html_convert_obj = HtmlConvert(input_filename=input_filename, file_type=config.TYPE_DOCX, json_data=self.json_data)
-                            #
-                            log_info(f"Test31: html_convert_obj = {html_convert_obj}",None)
-
-                            out_files_url = html_convert_obj.generate_html(input_filename=input_filename)
-                            #
-                            log_info(f"Test31:out_files_url = {out_files_url}",None)
-                            log_info(f"URL TO HTML FILE FOR JOBID {jobid}: {str(out_files_url)}", self.json_data)
-
-                            fc_obj = FetchContent(record_id=input_filename, json_data=self.json_data)
-                            fc_obj.store_reference_link(job_id=jobid, location=out_files_url)
-                            #
-                            log_info(f"Test31:fc_object = {fc_obj}",None)
+                        fc_obj = FetchContent(record_id=input_filename, json_data=self.json_data)
+                        fc_obj.store_reference_link(job_id=jobid, location=out_files_url)
+                        #
+                        log_info(f"Test31:fc_object = {fc_obj}",None)
 
 
 
