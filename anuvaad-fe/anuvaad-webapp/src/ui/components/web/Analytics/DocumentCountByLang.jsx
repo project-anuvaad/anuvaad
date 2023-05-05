@@ -4,7 +4,6 @@ import { Box, CircularProgress, FormControl, Grid, InputLabel, MenuItem, Paper, 
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import {
-    
     ResponsiveContainer,
     BarChart,
     Bar,
