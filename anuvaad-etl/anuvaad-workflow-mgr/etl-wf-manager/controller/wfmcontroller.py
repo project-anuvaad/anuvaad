@@ -113,6 +113,30 @@ def mark_inactive():
         log_exception("Something went wrong: " + str(e), None, e)
         return {"status": "FAILED", "message": "Something went wrong"}, 400
 
+#REST endpoint to set manual editing start and end time
+@wfmapp.route(context_path + '/v1/workflow/setGranularity', methods=["POST"])
+def set_granularity():
+    service = WFMService()
+    validator = WFMValidator()
+    req_criteria = request.get_json()
+    try:
+        error = validator.validate_granularity(req_criteria)
+        if error is not None:
+            return error, 400        
+        # data = add_headers(req_criteria, request)
+        # if "userIDs" in req_criteria.keys():
+        #     if not req_criteria["userIDs"]:
+        #         req_criteria["userIDs"] = [request.headers["x-user-id"]]
+        # else:
+        #     req_criteria["userIDs"] = [request.headers["x-user-id"]]
+        response = service.set_granularity(req_criteria)
+        if response:
+            return jsonify(response), 200
+        else:
+            return jsonify({[]}), 400
+    except Exception as e:
+        log_exception("Something went wrong: " + str(e), None, e)
+        return {"status": "FAILED", "message": "Something went wrong"}, 400
 
 # REST endpoint to fetch configs
 @wfmapp.route(context_path + '/v1/workflow/configs/search', methods=["GET"])
