@@ -60,6 +60,7 @@ class TranslatorService:
             translate_wf_input["output"], translate_wf_input["status"] = error_list, "FAILED"
             translate_wf_input["error"] = error
             translate_wf_input["taskEndTime"] = eval(str(time.time()).replace('.', '')[0:13])
+            log_info("Input to kafka topic: "+translate_wf_input,translate_wf_input)
             producer.produce(translate_wf_input, anu_translator_output_topic, None)
             return {"status": "failed", "message": "Some/All files failed"}
         return {"status": "success", "message": "Sentences sent to NMT"}
@@ -165,7 +166,10 @@ class TranslatorService:
         for batch_id in batches.keys():
             batch = batches[batch_id]
             record_id_enhanced = record_id + "|" + str(len(batch))
-            nmt_in = {"record_id": record_id_enhanced, "id": file["model"]["model_id"], "message": batch}
+            nmt_in = {"record_id": record_id_enhanced, "id": file["model"]["model_id"], "message": batch, 
+                        "source_language_code" : file["model"]["source_language_code"],
+                        "target_language_code" : file["model"]["target_language_code"]}
+            #log_info("NMT INPUT DATA"+str(nmt_in)+"TO TOPIC:"+str(topic),translate_wf_input)
             if nonmt_user:
                 producer.produce(nmt_in, anu_translator_nonmt_topic, partition)
             else:
@@ -207,6 +211,7 @@ class TranslatorService:
                         post_error_wf("API_ERROR", "No API URL found!", translate_wf_input, None)
                         break
                     url = str(api_host) + str(api_ep)
+                    log_info("NMT_INPUT : "+nmt_in,translate_wf_input)
                     response = utils.call_api(url, "POST", nmt_in, None, "userID")
                     if response["data"]:
                         log_info("B_ID: " + batch_id + " | SENTENCES: " + str(len(batch)) +
