@@ -1,0 +1,44 @@
+[2022-12-25 14:51:47,596] {loghandler.py:21} wfm-cons-th INFO in loghandler: Reading WF Configs from: https://raw.githubusercontent.com/project-anuvaad/anuvaad/wfmrefactoring/anuvaad-etl/anuvaad-workflow-mgr/config/etl-wf-manager-workflow-config-dev.yml
+[2022-12-25 14:51:47,599] {loghandler.py:21} wfm-core-cons-th INFO in loghandler: WFM-Core-(ANmh) | Running..........
+[2022-12-25 14:51:47,599] {loghandler.py:21} wfm-core-cons-th INFO in loghandler: WFM-Core-(ANmh) | Topics: ['anuvaad-etl-wf-initiate-v3']
+[2022-12-25 14:51:47,600] {loghandler.py:21} wfm-error-cons-th INFO in loghandler: WFM-Error-(lVVi) | Running..........
+[2022-12-25 14:51:47,600] {loghandler.py:21} wfm-error-cons-th INFO in loghandler: WFM-Error-(lVVi) | Topics: ['anuvaad-etl-wf-errors-v1']
+[2022-12-25 14:51:47,603] {_internal.py:225} MainThread WARNING in _internal:  * Running on all addresses.
+   WARNING: This is a development server. Do not use it in a production deployment.
+[2022-12-25 14:51:47,604] {_internal.py:225} MainThread INFO in _internal:  * Running on http://192.168.0.108:5001/ (Press CTRL+C to quit)
+[2022-12-25 14:51:47,669] {wfmutils.py:80} wfm-cons-th INFO in wfmutils: PWD: /home/rathan/Downloads/Code/anuvaad/anuvaad-etl/anuvaad-workflow-mgr
+[2022-12-25 14:51:47,669] {wfmutils.py:81} wfm-cons-th INFO in wfmutils: File Path: /configs/wfconfig.yml
+[2022-12-25 14:51:47,669] {loghandler.py:78} wfm-cons-th ERROR in loghandler: Exception while reading configs: [Errno 2] No such file or directory: '/configs/wfconfig.yml'
+Traceback (most recent call last):
+  File "/home/rathan/Downloads/Code/anuvaad/anuvaad-etl/anuvaad-workflow-mgr/etl-wf-manager/utilities/wfmutils.py", line 82, in read_all_configs
+    open(file_path, 'wb').write(file.content)
+FileNotFoundError: [Errno 2] No such file or directory: '/configs/wfconfig.yml'
+[2022-12-25 14:51:47,670] {loghandler.py:78} wfm-cons-th ERROR in loghandler: Exception while starting the wfm consumer: 'workflowCodes'
+Traceback (most recent call last):
+  File "/home/rathan/Downloads/Code/anuvaad/anuvaad-etl/anuvaad-workflow-mgr/etl-wf-manager/kafkawrapper/wfmconsumer.py", line 49, in consume
+    topics = wfmutils.fetch_output_topics(configs)
+  File "/home/rathan/Downloads/Code/anuvaad/anuvaad-etl/anuvaad-workflow-mgr/etl-wf-manager/utilities/wfmutils.py", line 120, in fetch_output_topics
+    for key in all_configs["workflowCodes"]:
+KeyError: 'workflowCodes'
+[2022-12-25 14:52:29,607] {loghandler.py:21} wfm-cons-th INFO in loghandler: Reading WF Configs from: https://raw.githubusercontent.com/project-anuvaad/anuvaad/wfmrefactoring/anuvaad-etl/anuvaad-workflow-mgr/config/etl-wf-manager-workflow-config-dev.yml
+[2022-12-25 14:52:29,609] {loghandler.py:21} wfm-core-cons-th INFO in loghandler: WFM-Core-(pSHd) | Running..........
+[2022-12-25 14:52:29,609] {loghandler.py:21} wfm-core-cons-th INFO in loghandler: WFM-Core-(pSHd) | Topics: ['anuvaad-etl-wf-initiate-v3']
+[2022-12-25 14:52:29,613] {loghandler.py:21} wfm-error-cons-th INFO in loghandler: WFM-Error-(eWrj) | Running..........
+[2022-12-25 14:52:29,614] {loghandler.py:21} wfm-error-cons-th INFO in loghandler: WFM-Error-(eWrj) | Topics: ['anuvaad-etl-wf-errors-v1']
+[2022-12-25 14:52:29,614] {_internal.py:225} MainThread WARNING in _internal:  * Running on all addresses.
+   WARNING: This is a development server. Do not use it in a production deployment.
+[2022-12-25 14:52:29,615] {_internal.py:225} MainThread INFO in _internal:  * Running on http://192.168.0.108:5001/ (Press CTRL+C to quit)
+[2022-12-25 14:52:29,669] {wfmutils.py:80} wfm-cons-th INFO in wfmutils: PWD: /home/rathan/Downloads/Code/anuvaad/anuvaad-etl/anuvaad-workflow-mgr
+[2022-12-25 14:52:29,669] {wfmutils.py:81} wfm-cons-th INFO in wfmutils: File Path: /configs/wfconfig.yml
+[2022-12-25 14:52:29,669] {loghandler.py:78} wfm-cons-th ERROR in loghandler: Exception while reading configs: [Errno 2] No such file or directory: '/configs/wfconfig.yml'
+Traceback (most recent call last):
+  File "/home/rathan/Downloads/Code/anuvaad/anuvaad-etl/anuvaad-workflow-mgr/etl-wf-manager/utilities/wfmutils.py", line 82, in read_all_configs
+    open(file_path, 'wb').write(file.content)
+FileNotFoundError: [Errno 2] No such file or directory: '/configs/wfconfig.yml'
+[2022-12-25 14:52:29,669] {loghandler.py:78} wfm-cons-th ERROR in loghandler: Exception while starting the wfm consumer: 'workflowCodes'
+Traceback (most recent call last):
+  File "/home/rathan/Downloads/Code/anuvaad/anuvaad-etl/anuvaad-workflow-mgr/etl-wf-manager/kafkawrapper/wfmconsumer.py", line 49, in consume
+    topics = wfmutils.fetch_output_topics(configs)
+  File "/home/rathan/Downloads/Code/anuvaad/anuvaad-etl/anuvaad-workflow-mgr/etl-wf-manager/utilities/wfmutils.py", line 120, in fetch_output_topics
+    for key in all_configs["workflowCodes"]:
+KeyError: 'workflowCodes'
