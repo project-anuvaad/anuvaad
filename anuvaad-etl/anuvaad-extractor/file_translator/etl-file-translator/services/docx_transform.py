@@ -13,6 +13,7 @@ from errors.errors_exception import FileErrors
 from services.service import common_obj
 
 
+
 class DocxTransform(object):
     def __init__(self, input_filename, json_data, is_new_flow=True):
         self.json_data = json_data
@@ -63,7 +64,7 @@ class DocxTransform(object):
         input_docx = Document(input_docx_filepath)
         self.document = input_docx
         return input_docx
-
+    
     def write_json_file(self, transformed_obj):
         #out_file_name = config.DOCX_FILE_PREFIX + self.file_name_without_ext + '.json'
         out_file_name = config.DOCX1_FILE_PREFIX + self.file_name_without_ext + '.json'

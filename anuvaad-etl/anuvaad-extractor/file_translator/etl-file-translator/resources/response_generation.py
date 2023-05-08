@@ -18,9 +18,7 @@ from services.pptx_transform import PptxTransform
 from utilities.model_response import CustomResponse
 from utilities.model_response import Status
 from utilities.utils import FileOperation
-
 file_ops = FileOperation()
-
 
 class Response(object):
     def __init__(self, json_data, DOWNLOAD_FOLDER):
@@ -51,12 +49,15 @@ class Response(object):
                         docx_obj = docx_transform_obj.read_docx_file(input_filename)
                         # if in_locale != config.LOCALE_ENGLISH and config.DOCX_FONT_VALIDATION_ENABLED:
                         #     docx_transform_obj.check_if_valid_fonts_used(in_locale=in_locale)
+                        
                         transformed_obj = docx_transform_obj.generate_json_structure(docx_obj)
                         #
-                        log_info(f"Test31: transformed_obj = {transformed_obj}",None)
+                        # log_info(f"Test31: transformed_obj = {transformed_obj}",None)
                         out_json_filepath = docx_transform_obj.write_json_file(transformed_obj)
                         output_filename = out_json_filepath
                         out_file_type = 'json'
+
+                        #read modified docx
 
                         html_convert_obj = HtmlConvert(input_filename=input_filename, file_type=config.TYPE_DOCX, json_data=self.json_data)
                         #
@@ -71,6 +72,7 @@ class Response(object):
                         fc_obj.store_reference_link(job_id=jobid, location=out_files_url)
                         #
                         log_info(f"Test31:fc_object = {fc_obj}",None)
+
 
 
                     elif in_file_type == "pptx" and transform_flow:
