@@ -1014,6 +1014,127 @@
             "role":"SUPERADMIN",
             "actionID": "7aec74a1-7feb-45c7-900b-a6a4458a4fef",
             "active":true
-        }
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "f61dc1c6-f93a-44da-a8d2-32e5c9bf9d26",
+            "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "f61dc1c6-f93a-44da-a8d2-32e5c9bf9d26",
+            "active":true
+        },
+        {
+            "role":"SUPERADMIN",
+            "actionID": "f61dc1c6-f93a-44da-a8d2-32e5c9bf9d26",
+            "active":true
+        },
+        {
+            "role":"REVIEWER",
+            "actionID": "400bf52e-d7ef-4bdb-9ce5-8f64b42ada9c",
+            "active":true
+        },
+        {
+            "role":"REVIEWER",
+            "actionID": "41e9fca3-fa0b-425c-af2b-847ef35c4734",
+            "active":true
+        },
+        {
+            "role":"REVIEWER",
+            "actionID": "36677274-7ac3-4319-8170-f2e007341ecf",
+            "active":true
+        },
+        {
+            "role":"REVIEWER",
+            "actionID": "420add6a-c61f-4520-88ab-025378b626b8",
+            "active":true
+        },
+        {
+            "role":"REVIEWER",
+            "actionID": "d0875fd6-4ae3-40ca-bb0d-b93feafe459a",
+            "active":true
+        },
+        {
+            "role":"REVIEWER",
+            "actionID": "80e2444d-9270-4877-b79b-182d122744a7",
+            "active":true
+        },
+        {
+            "role":"REVIEWER",
+            "actionID": "36122d56-6077-48eb-a2d8-303b1460d4ac",
+            "active":true
+        },
+        {
+            "role":"REVIEWER",
+            "actionID": "0f2e4131-1207-4f22-9ddd-77ba8d22066f",
+            "active":true
+        },
+        {
+            "role":"REVIEWER",
+            "actionID": "1bf2b56f-9b83-404f-98c6-e59ab89e24a6",
+            "active":true
+        },
+        {
+            "role":"REVIEWER",
+            "actionID": "b5ff81c9-8c7b-44eb-ad19-92c4d21b239c",
+            "active":true
+        },
+        {
+            "role":"REVIEWER",
+            "actionID": "bde39a83-8a4f-400e-bcf0-d14b8895f0ae",
+            "active":true
+        },
+        {
+            "role":"REVIEWER",
+            "actionID": "b533843f-5259-4723-b670-b9f483d9db43",
+            "active":true
+        },
+        {
+            "role":"REVIEWER",
+            "actionID": "9cb0222b-a4c1-41da-baa3-67fb84924ada",
+            "active":true
+        },
+        {
+            "role":"REVIEWER",
+            "actionID": "a1d46e6d-bbe6-4ffc-bb8e-cc8412e0353d",
+            "active":true
+        },
+        {
+            "role":"REVIEWER",
+            "actionID": "736e5d42-e8da-4a6d-b89d-1cca1b54c787",
+            "active":true
+        },
+        {
+            "role":"REVIEWER",
+            "actionID": "95d0525e-d654-496d-a77e-049bffe46ab0",
+            "active":true
+        },
+        {
+            "role":"REVIEWER",
+            "actionID": "a50d17b9-1db3-448b-a3b2-90777938fe03",
+            "active":true
+        },
+        {
+            "role":"REVIEWER",
+            "actionID": "604a9915-194d-44b3-87c2-300935adc932",
+            "active":true
+        },
+        {
+            "role":"REVIEWER",
+            "actionID": "9b8af8f1-c2a1-4a49-9b10-d7c125712395",
+            "active":true
+        },
+        {
+            "role":"REVIEWER",
+            "actionID": "8ef47a2a-0a85-4efe-865e-8c52b567bf74",
+            "active":true
+        },
+        {
+            "role":"REVIEWER",
+            "actionID": "986bb1b6-ac89-4430-a7ec-ba04f1ab470d",
+            "active":true
+        }                                
+
     ]
 }
