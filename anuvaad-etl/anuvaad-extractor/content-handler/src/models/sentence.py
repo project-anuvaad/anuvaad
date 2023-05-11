@@ -5,7 +5,7 @@ import sacrebleu
 from nltk.translate.bleu_score import corpus_bleu
 import json
 
-DB_SCHEMA_NAME  = 'example'
+DB_SCHEMA_NAME  = 'file_content'
 redis_client = None
 class SentenceModel(object):
 
