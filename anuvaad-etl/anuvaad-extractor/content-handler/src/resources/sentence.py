@@ -53,21 +53,22 @@ class SaveSentenceResource(Resource):
 
         sentences       = body['sentences']
         workflowCode    = body['workflowCode']
-
+        review = None
         AppContext.addRecordID(None)
         log_info("SaveSentenceResource for user {}, number of sentences to update : {}, workflowCode :{} ".format(user_id, len(sentences),workflowCode), AppContext.getContext())
-
+        if 'review' in body.keys():
+            review = body['review']
         try:
-            result = sentenceRepo.update_sentences(user_id, sentences, workflowCode)
+            result = sentenceRepo.update_sentences(user_id, sentences, workflowCode,review)
             if result == False:
                 res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
                 return res.getresjson(), 400
-            
-            if USER_TRANSLATION_ENABLED:
-                try:
-                    result=sentenceRepo.save_sentences(user_id, sentences) 
-                except Exception as e:
-                    log_exception("SaveSentenceResource",  AppContext.getContext(), e)
+            if review != True:
+                if USER_TRANSLATION_ENABLED:
+                    try:
+                        result=sentenceRepo.save_sentences(user_id, sentences) 
+                    except Exception as e:
+                        log_exception("SaveSentenceResource",  AppContext.getContext(), e)
 
             res = CustomResponse(Status.SUCCESS.value, sentences)
             return res.getres()

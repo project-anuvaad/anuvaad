@@ -5,7 +5,7 @@ import sacrebleu
 from nltk.translate.bleu_score import corpus_bleu
 import json
 
-DB_SCHEMA_NAME  = 'file_content'
+DB_SCHEMA_NAME  = 'example'
 redis_client = None
 class SentenceModel(object):
 
@@ -75,6 +75,28 @@ class SentenceModel(object):
         except Exception as e:
             log_exception("db connection exception ",  AppContext.getContext(), e)
             return False
+        
+    def update_sentence_by_s_id_reviewer(self, record_id, user_id, sentence):
+        SENTENCE_KEYS   = ['n_id', 'pred_score', 's_id', 'src', 'tgt']
+        try:
+            collections     = get_db()[DB_SCHEMA_NAME]
+
+            results         = collections.update({'$and': [{'record_id': record_id}, {'created_by': user_id}, { 'data.tokenized_sentences': {'$elemMatch': {'s_id': {'$eq': sentence['s_id']}}}}]},
+                                                {
+                                                    '$set':
+                                                    {
+                                                        "data.tokenized_sentences.$.comments" : sentence['comments'],
+                                                        "data.tokenized_sentences.$.redo" : sentence['redo']
+                                                    }
+                                                }, upsert=False)
+
+            if 'writeError' in list(results.keys()):
+                return False
+            return True        
+        except Exception as e:
+            log_exception("db connection exception ",  AppContext.getContext(), e)
+            return False
+
 
     def get_total_tokenized_sentences_count(self, record_id):
         try:
