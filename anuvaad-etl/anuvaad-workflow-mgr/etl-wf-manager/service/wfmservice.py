@@ -10,6 +10,8 @@ from configs.wfmconfig import anu_etl_wfm_core_topic, log_msg_start, log_msg_end
 from anuvaad_auditor.errorhandler import post_error_wf, post_error, log_exception
 from anuvaad_auditor.loghandler import log_info, log_error
 from configs.wfmconfig import app_context
+import datetime 
+import dateutil.relativedelta
 
 log = logging.getLogger('file')
 producer = Producer()
@@ -423,13 +425,42 @@ class WFMService:
                 if 'granularity' not in job_details.keys():
                     job_details['granularity'] = {}
                 if each_granularity not in job_details['granularity'].keys():
-                    job_details['granularity'][each_granularity] = eval(str(time.time()).replace('.', '')[0:13]) 
+                    job_details['granularity'][each_granularity] = eval(str(time.time()).replace('.', '')[0:13])
+                    #Manual Editing Start Time
                     if each_granularity == 'manualEditingStartTime':
+                        if 'reviewerInProgress' in job_details['granularity'].keys():
+                            job_details['granularity']['reviewerInProgress'] = False
                         job_details['granularity']['manualEditingStatus'] = "IN PROGRESS"
+                    #Manual Editing End Time
                     elif each_granularity == 'manualEditingEndTime':
                         if 'manualEditingStartTime' not in job_details['granularity'].keys():
                             return {"status": "FAILED","message":"Setting editing end time failed"}
-                        job_details['granularity']['manualEditingStatus'] = "COMPLETED"                    
+                        job_details['granularity']['manualEditingStatus'] = "COMPLETED"        
+                        #Calculate manual editing time  
+                        if "manualEditingDuration" not in job_details['granularity']:
+                            dt1 = datetime.datetime.fromtimestamp(job_details['granularity']['manualEditingStartTime']) # 1973-11-29 22:33:09
+                            dt2 = datetime.datetime.fromtimestamp(job_details['granularity']['manualEditingEndTime']) # 1977-06-07 23:44:50
+                            rd = dateutil.relativedelta.relativedelta(dt2, dt1)
+                            job_details['granularity']['manualEditingDuration'] = rd
+                        else:
+                            dt1 = datetime.datetime.fromtimestamp(job_details['granularity']['manualEditingStartTime']) # 1973-11-29 22:33:09
+                            dt2 = datetime.datetime.fromtimestamp(job_details['granularity']['manualEditingEndTime']) # 1977-06-07 23:44:50
+                            rd = dateutil.relativedelta.relativedelta(dt2, dt1)
+                            job_details['granularity']['manualEditingDuration'] = job_details['granularity']['manualEditingDuration']+rd
+                    #Reviewer In Progress
+                    elif each_granularity == "reviewerInProgress":
+                        if job_details['granularity']['manualEditingStatus'] == "COMPLETED":
+                            job_details['granularity']['reviewerInProgress'] = True
+                        else:
+                            return {'status': 'FAILED','message':'Cannot start reviewing if manual editing is not completed'}
+                    #Reviewer Completed
+                    elif each_granularity == "reviewerCompleted":
+                        if job_details['granularity']['reviewerInProgress'] == True:
+                            job_details['granularity']['reviewerInProgress'] = False
+                            job_details['granularity']['reviewerCompleted'] = True
+                        else:
+                            return {'status': 'FAILED','message':'Cannot end reviewer status now since it is not started'}                        
+                    #Parallel Document Upload          
                     elif each_granularity == "parallelDocumentUpload":
                         job_details['granularity']['parallelDocumentUploadStatus'] = "COMPLETED"     
                         if 'manualEditingStartTime' in job_details['granularity'].keys():
