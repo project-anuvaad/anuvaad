@@ -458,6 +458,7 @@ class WFMService:
                         if job_details['granularity']['reviewerInProgress'] == True:
                             job_details['granularity']['reviewerInProgress'] = False
                             job_details['granularity']['reviewerCompleted'] = True
+                            job_details['granularity']['parallelDocumentUploadStatus'] = "COMPLETED"     
                         else:
                             return {'status': 'FAILED','message':'Cannot end reviewer status now since it is not started'}                        
                     #Parallel Document Upload          
