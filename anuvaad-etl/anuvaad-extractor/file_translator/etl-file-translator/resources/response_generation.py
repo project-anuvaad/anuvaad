@@ -68,36 +68,21 @@ class Response(object):
                                     texts = j.text
                                     
                                     setof = (fonts,texts)
-                                    # print(f'{fonts=}')
-                                    # print(f'{texts=}')
                                     if not "Nudi" in setof[0]:
                                         break
                                     else:
                                         ascii = True
                                         break
-                                new_para = new_doc.add_paragraph().add_run()
-
                                 if ascii == True:
                                     nativ_lng = process_line(doc_para.text)
-                                    print('------', nativ_lng)
-                                    new_para.add_text(nativ_lng)
-
-                                    # print('native', nativ_lng)
-                                    # new_para = dil.add_paragraph(nativ_lng)
+                                    new_para = new_doc.add_paragraph(nativ_lng)
                                     # print(new_para)
                                 else:
                                     # print(i.text)
-                                    new_para.add_text(doc_para.text)
-                                    # new_para = dil.add_paragraph(doc_para.text)
-                                # print('neww', dir(new_para))
+                                    
+                                    new_para = new_doc.add_paragraph(doc_para.text)
                                 
                                 new_para.alignment = alignment 
-
-                                # dil.add_text('text')
-                                font = new_para.font
-                                font.complex_script = True
-                                font.name = "Noto Serif Kannada"
-                                print('font', new_para.element.xml)
                                 # s = ''.join(process_line(doc_para.text))
                             #     whole_data.append(''.join(process_line(doc_para.text)))
                             # for whole in whole_data:
