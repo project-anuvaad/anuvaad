@@ -382,7 +382,7 @@ class WFMService:
                         if orgID:
                             orgIDs.append(orgID)
                         if len(orgIDs) > 0:
-                            criteria["metadata"]["orgID"] = {"$in": orgIDs}
+                            criteria["metadata.orgID"] = {"$in": orgIDs}
             if 'filterByStartTime' in req_criteria.keys():
                 if 'startTimeStamp' in req_criteria['filterByStartTime'].keys() and 'endTimeStamp' in req_criteria['filterByStartTime'].keys():
                             criteria["startTime"] = { "$gte": req_criteria['filterByStartTime']['startTimeStamp'], "$lte": req_criteria['filterByStartTime']['endTimeStamp']}
