@@ -448,13 +448,13 @@ class WFMService:
                         job_details['granularity']['manualEditingStatus'] = "COMPLETED"        
                         #Calculate manual editing time  
                         if "manualEditingDuration" not in job_details['granularity']:
-                            dt1 = datetime.datetime.fromtimestamp(job_details['granularity']['manualEditingStartTime']) # 1973-11-29 22:33:09
-                            dt2 = datetime.datetime.fromtimestamp(job_details['granularity']['manualEditingEndTime']) # 1977-06-07 23:44:50
+                            dt1 = datetime.datetime.fromtimestamp(job_details['granularity']['manualEditingStartTime']/1000) # 1973-11-29 22:33:09
+                            dt2 = datetime.datetime.fromtimestamp(job_details['granularity']['manualEditingEndTime']/1000) # 1977-06-07 23:44:50
                             rd = dateutil.relativedelta.relativedelta(dt2, dt1)
                             job_details['granularity']['manualEditingDuration'] = rd
                         else:
-                            dt1 = datetime.datetime.fromtimestamp(job_details['granularity']['manualEditingStartTime']) # 1973-11-29 22:33:09
-                            dt2 = datetime.datetime.fromtimestamp(job_details['granularity']['manualEditingEndTime']) # 1977-06-07 23:44:50
+                            dt1 = datetime.datetime.fromtimestamp(job_details['granularity']['manualEditingStartTime']/1000) # 1973-11-29 22:33:09
+                            dt2 = datetime.datetime.fromtimestamp(job_details['granularity']['manualEditingEndTime']/1000) # 1977-06-07 23:44:50
                             rd = dateutil.relativedelta.relativedelta(dt2, dt1)
                             job_details['granularity']['manualEditingDuration'] = job_details['granularity']['manualEditingDuration']+rd
                     #Reviewer In Progress
@@ -465,7 +465,7 @@ class WFMService:
                             return {'status': 'FAILED','message':'Cannot start reviewing if manual editing is not completed'}
                     #Reviewer Completed
                     elif each_granularity == "reviewerCompleted":
-                        if job_details['granularity']['reviewerInProgress'] == True:
+                        if 'reviewerInProgress' in job_details['granularity'] and job_details['granularity']['reviewerInProgress'] == True:
                             job_details['granularity']['reviewerInProgress'] = False
                             job_details['granularity']['reviewerCompleted'] = True
                             job_details['granularity']['parallelDocumentUploadStatus'] = "COMPLETED"     
