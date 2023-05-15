@@ -124,8 +124,7 @@ function get_document_details(input) {
     document["granularStatus"] = granularStatusArr;
     // Granular status end
 
-    document["currentGranularStatus"] = `${granularStatusArr[granularStatusArr.length-1]?.module} ${granularStatusArr[granularStatusArr.length-1]?.module !== "FINAL DOCUMENT UPLOADED" ? `- ${granularStatusArr[granularStatusArr.length-1]?.status}` : ""} 
-    `
+    document["currentGranularStatus"] = `${granularStatusArr[granularStatusArr.length-1]?.module} ${granularStatusArr[granularStatusArr.length-1]?.module !== "FINAL DOCUMENT UPLOADED" ? `- ${granularStatusArr[granularStatusArr.length-1]?.status}` : ""}`
 
     job["taskDetails"].forEach((task) => {
       let timeline = {};

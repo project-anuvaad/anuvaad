@@ -22,6 +22,7 @@ import Modal from '@material-ui/core/Modal';
 import LockOpenIcon from '@material-ui/icons/LockOpen';
 import SetPasswordApi from "../../../../flux/actions/apis/user/setpassword";
 import AssessmentOutlinedIcon from '@material-ui/icons/AssessmentOutlined';
+import RateReviewIcon from '@material-ui/icons/RateReview';
 import history from "../../../../web.history";
 import clearStatus from '../../../../flux/actions/apis/admin/clear_job_status';
 import DataTable from "../../../components/web/common/DataTable";
@@ -79,7 +80,7 @@ class UserDetails extends React.Component {
     this.setState({ showLoader: true, })
     this.props.clearStatus();
     let roleArr = [];
-    roleArr = this.state.role === "ADMIN" ? ["ANNOTATOR","TRANSLATOR"] : [];
+    roleArr = this.state.role === "ADMIN" ? ["ANNOTATOR","TRANSLATOR", "REVIEWER"] : this.state.role === "REVIEWER" ? ["ANNOTATOR","TRANSLATOR"] : [];
     this.processFetchBulkUserDetailAPI(this.state.offset, this.state.limit, false, false, [], [], roleArr);
   }
 
@@ -196,6 +197,18 @@ class UserDetails extends React.Component {
           component="a"
           onClick={() => this.handleUserViewClick(id, name)} >
           <AssessmentOutlinedIcon />
+        </IconButton>
+      </Tooltip>
+    );
+  }
+
+  processUserDocReview = (id, name) => {
+    return (
+      <Tooltip title="View User Documents To Review" placement="right">
+        <IconButton style={{ color: '#233466', padding: '5px' }}
+          component="a"
+          onClick={() => history.push(`${process.env.PUBLIC_URL}/review-user-docs/${id}/${name}`)} >
+          <RateReviewIcon />
         </IconButton>
       </Tooltip>
     );
@@ -370,9 +383,10 @@ class UserDetails extends React.Component {
             if (tableMeta.rowData) {
               return (
                 <div>
-                  {this.processSwitch(tableMeta.rowData[0], tableMeta.rowData[1], tableMeta.rowData[4], tableMeta.rowData[7])}
-                  {this.processModal(tableMeta.rowData[1])}
-                  {this.processUserView(tableMeta.rowData[0], tableMeta.rowData[2])}
+                  {this.state.role !== "REVIEWER" && this.processSwitch(tableMeta.rowData[0], tableMeta.rowData[1], tableMeta.rowData[4], tableMeta.rowData[7])}
+                  {this.state.role !== "REVIEWER" && this.processModal(tableMeta.rowData[1])}
+                  {this.state.role !== "REVIEWER" && this.processUserView(tableMeta.rowData[0], tableMeta.rowData[2])}
+                  {this.processUserDocReview(tableMeta.rowData[0], tableMeta.rowData[2])}
                 </div>
               );
             }
@@ -426,7 +440,7 @@ class UserDetails extends React.Component {
       <div style={{}}>
 
         <div style={{ margin: '0% 3% 3% 3%', paddingTop: "2%" }}>
-          <ToolBar />
+          {this.state.role !== "REVIEWER" && <ToolBar />}
           {
             (!this.state.showLoader || this.props.count) &&
             <MuiThemeProvider theme={this.getMuiTheme()}>

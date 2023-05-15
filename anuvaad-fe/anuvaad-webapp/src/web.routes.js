@@ -49,6 +49,7 @@ import UserManagement from "./ui/containers/web/User/UserManagement";
 import Analytics from "./ui/containers/web/Analytics/Analytics";
 import Intro from "./ui/containers/web/Intro/Intro";
 import UploadTranslatedDocument from "./ui/containers/web/UploadTranslatedDocument/UploadTranslatedDocument";
+import ReviewDocumentList from "./ui/containers/web/AdminPanel/ReviewDocumentList";
 
 const PrivateRoute = ({ headerAttribute: headerAttribute, component: Component, userRoles, title, drawer, showLogo, forDemo, dontShowLoader, dontShowHeader, currentMenu, authenticate, ...rest }) => (
   <Route
@@ -319,7 +320,7 @@ class AppRoutes extends React.Component {
               path={`${process.env.PUBLIC_URL}/user-details`}
               dontShowLoader
               title={"User Details"}
-              userRoles={["ADMIN", "SUPERADMIN"]}
+              userRoles={["ADMIN", "SUPERADMIN", "REVIEWER"]}
               component={UserDetails}
               authenticate={this.authenticateUser}
               currentMenu="user-details"
@@ -388,12 +389,24 @@ class AppRoutes extends React.Component {
               path={`${process.env.PUBLIC_URL}/user-report/:id/:name`}
               dontShowLoader
               title={"User Report"}
-              userRoles={["ADMIN", "SUPERADMIN"]}
+              userRoles={["ADMIN", "SUPERADMIN", "REVIEWER"]}
               component={UserReport}
               authenticate={this.authenticateUser}
               currentMenu="user-report"
               dontShowHeader={false}
             />
+
+            <PrivateRoute
+              path={`${process.env.PUBLIC_URL}/review-user-docs/:id/:name`}
+              dontShowLoader
+              title={"User Report"}
+              userRoles={["ADMIN", "SUPERADMIN", "REVIEWER"]}
+              component={ReviewDocumentList}
+              authenticate={this.authenticateUser}
+              currentMenu="user-report"
+              dontShowHeader={false}
+            />
+
             <PrivateRoute
               path={`${process.env.PUBLIC_URL}/document-stats/:recordId/:fname`}
               dontShowLoader

@@ -291,7 +291,7 @@ export default function UploadProcessModal(props) {
                         <FileCopyIcon color='primary' />
                     </IconButton>
                 </Grid>
-
+                {progressData?.status === "COMPLETED" && <Typography style={{ margin: 5 }} variant="subtitle1">Job Status : <b>COMPLETED</b> </Typography>}
 
                 <Divider />
                 <Stepper activeStep={steps.length - 1} orientation="vertical">

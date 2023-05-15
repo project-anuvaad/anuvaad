@@ -5,6 +5,10 @@ const adminConfig = {
             "roleCode": "TRANSLATOR",
             "roleDesc": "Has access to translation related resources"
         },
+        {
+            "roleCode":"REVIEWER",
+            "roleDesc":"Has access to user document for review and verify of an org"
+        }
         // {
 
         //     "roleCode": "ANNOTATOR",
@@ -33,6 +37,10 @@ const superAdminConfig = {
             "roleCode": "ADMIN",
             "roleDesc": "Has access to user management related resources for a org"
 
+        },
+        {
+            "roleCode":"REVIEWER",
+            "roleDesc":"Has access to user document for review and verify of an org"
         }
 
     ],

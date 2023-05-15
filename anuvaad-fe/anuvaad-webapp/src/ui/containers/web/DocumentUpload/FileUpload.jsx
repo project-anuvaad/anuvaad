@@ -525,7 +525,7 @@ class PdfUpload extends Component {
           <Select
             labelId="demo-simple-select-outlined-label"
             id="target-lang"
-            value={this.state.target}
+            // value={this.state.target}
             onChange={this.processTargetLanguageSelected}
             value={this.state.target_language_code}
             fullWidth

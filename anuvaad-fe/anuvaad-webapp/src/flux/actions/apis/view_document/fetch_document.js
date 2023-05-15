@@ -3,7 +3,7 @@ import C from "../../constants";
 import ENDPOINTS from "../../../../configs/apiendpoints";
 
 export default class BulkSearchAPI extends API {
-  constructor(offset, limit, jobIds = [''], searchForNewJob = false, isNextPage = false, updateExisting = false, userId = [], filterByStartTime={}, timeout = 2000) {
+  constructor(offset, limit, jobIds = [''], searchForNewJob = false, isNextPage = false, updateExisting = false, userId = [], filterByStartTime={}, orgIDs=[], timeout = 2000) {
     super("POST", timeout, false);
     this.type = C.FETCHDOCUMENT;
 
@@ -24,7 +24,8 @@ export default class BulkSearchAPI extends API {
     this.offset = offset;
     this.limit = limit;
     this.jobIds = jobIds;
-    this.userId = userId
+    this.userId = userId;
+    this.orgIDs = orgIDs;
     this.endpoint = `${super.apiEndPointAuto()}${ENDPOINTS.fetchducuments}`
   }
 
@@ -54,7 +55,8 @@ export default class BulkSearchAPI extends API {
       "taskDetails": true,
       "workflowCodes": ["DP_WFLOW_FBT", "WF_A_FCBMTKTR", "DP_WFLOW_FBTTR","WF_A_FTTKTR"],
       "userIDs": this.userId,
-      "filterByStartTime": this.filterByStartTime
+      "filterByStartTime": this.filterByStartTime,
+      "orgIDs": this.orgIDs
     }
   }
 
