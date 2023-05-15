@@ -364,9 +364,10 @@ class WFMService:
         return client_output
 
     # Method to search jobs on multiple criteria.
-    def get_job_details_bulk(self, req_criteria, skip_pagination):
+    def get_job_details_bulk(self, req_criteria, skip_pagination, isReviewer=False):
         try:
-            criteria = {"metadata.userID": {"$in": req_criteria["userIDs"]}}
+            if isReviewer == False:
+                criteria = {"metadata.userID": {"$in": req_criteria["userIDs"]}}
             if 'jobIDs' in req_criteria.keys():
                 if req_criteria["jobIDs"]:
                     jobIDs = []

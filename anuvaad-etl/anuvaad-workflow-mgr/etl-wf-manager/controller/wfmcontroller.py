@@ -85,7 +85,10 @@ def search_all_jobs():
                 req_criteria["userIDs"] = [request.headers["x-user-id"]]
         else:
             req_criteria["userIDs"] = [request.headers["x-user-id"]]
-        response = service.get_job_details_bulk(req_criteria, False)
+        if "isReviewer" in req_criteria.keys():
+            response = service.get_job_details_bulk(req_criteria, False, req_criteria['isReviewer'])
+        else:
+            response = service.get_job_details_bulk(req_criteria, False)
         if response:
             return jsonify(response), 200
         else:
