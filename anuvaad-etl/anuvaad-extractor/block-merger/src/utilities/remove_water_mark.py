@@ -17,7 +17,7 @@ def clean_image(image):
      img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
 
-     img_gray[img_gray >= 215] = 255
+     img_gray[img_gray >= 205] = 255
 
      mask1 = HSV_mask(img_hsv, [0, 0, 155])[..., None].astype(np.float32)
 
