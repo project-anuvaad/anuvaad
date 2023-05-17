@@ -437,9 +437,6 @@ class WFMService:
                     job_details['granularity'][each_granularity] = eval(str(time.time()).replace('.', '')[0:13])
                     #Manual Editing Start Time
                     if each_granularity == 'manualEditingStartTime':
-                        if 'reviewerInProgress' in job_details['granularity'].keys() and job_details['granularity']['reviewerInProgress'] == True:
-                            job_details['granularity']['reviewerInProgress'] = False
-                            job_details['granularity']['reviewerStatus'] = "Re-Edit"
                         job_details['granularity']['manualEditingStatus'] = "IN PROGRESS"
                     #Manual Editing End Time
                     elif each_granularity == 'manualEditingEndTime':
@@ -480,6 +477,12 @@ class WFMService:
                             if 'manualEditingEndTime' not in job_details['granularity'].keys():
                                 job_details['granularity']['manualEditingStatus'] = "COMPLETED"                    
                                 job_details['granularity']['manualEditingEndTime'] = eval(str(time.time()).replace('.', '')[0:13]) 
+                    self.update_job_details(job_details, False)
+                elif each_granularity == 'manualEditingStartTime' and 'reviewerInProgress' in job_details['granularity'].keys() and job_details['granularity']['reviewerInProgress'] == True:
+                    job_details['granularity']['reviewerInProgress'] = False
+                    job_details['granularity']['reviewerStatus'] = "Re-Edit"
+                    job_details['granularity'][each_granularity] = eval(str(time.time()).replace('.', '')[0:13])
+                    job_details['granularity']['manualEditingStatus'] = "IN PROGRESS"
                     self.update_job_details(job_details, False)
                 else:
                     return {"status": "SUCCESS","message":"Granularity already exists"}
