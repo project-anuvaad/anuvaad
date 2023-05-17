@@ -483,6 +483,7 @@ class WFMService:
                     job_details['granularity']['reviewerStatus'] = "Re-Edit"
                     job_details['granularity'][each_granularity] = eval(str(time.time()).replace('.', '')[0:13])
                     job_details['granularity']['manualEditingStatus'] = "IN PROGRESS"
+                    del job_details['granularity'['manualEditingEndTime']]
                     self.update_job_details(job_details, False)
                 else:
                     return {"status": "SUCCESS","message":"Granularity already exists"}
