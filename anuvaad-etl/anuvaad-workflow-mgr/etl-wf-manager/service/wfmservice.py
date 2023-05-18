@@ -467,7 +467,7 @@ class WFMService:
                             job_details['granularity']['reviewerInProgress'] = False
                             job_details['granularity']['reviewerCompleted'] = True
                             job_details['granularity']['reviewerStatus'] = "Completed"
-                            job_details['granularity']['parallelDocumentUploadStatus'] = "COMPLETED"     
+                            #job_details['granularity']['parallelDocumentUploadStatus'] = "COMPLETED"     
                         else:
                             return {'status': 'FAILED','message':'Cannot end reviewer status now since it is not started'}                        
                     #Parallel Document Upload          
@@ -483,8 +483,16 @@ class WFMService:
                     job_details['granularity']['reviewerStatus'] = "Re-Edit"
                     job_details['granularity'][each_granularity] = eval(str(time.time()).replace('.', '')[0:13])
                     job_details['granularity']['manualEditingStatus'] = "IN PROGRESS"
-                    del job_details['granularity'['manualEditingEndTime']]
+                    del job_details['granularity']['manualEditingEndTime']
                     self.update_job_details(job_details, False)
+                elif each_granularity == "reviewerInProgress":
+                    if job_details['granularity']['manualEditingStatus'] == "COMPLETED":
+                        job_details['granularity']['reviewerInProgress'] = True
+                        job_details['granularity']['reviewerStatus'] = "In Progress"
+                        self.update_job_details(job_details, False)
+                    else:
+                        return {'status': 'FAILED','message':'Cannot start reviewing if manual editing is not completed'}
+
                 else:
                     return {"status": "SUCCESS","message":"Granularity already exists"}
             return {"status": "SUCCESS","message":"Granularity set successfully"}
