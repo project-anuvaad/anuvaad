@@ -743,6 +743,30 @@
             "active":true,
             "whiteList":false,
             "description":"API for setting granularity status"
-        }    
+        },
+        {
+            "id":"2e156f1a-fe0d-42db-88a3-14331a978cda",
+            "uri":"/anuvaad/user-mgmt/v1/mfa/register",
+            "module":"USER-MANAGEMENT-SYSTEM",
+            "active":true,
+            "whiteList":false,
+            "description":"API for setting granularity status"
+        },
+        {
+            "id":"2b952ce0-f26b-460c-8783-ba07285acb12",
+            "uri":"/anuvaad/user-mgmt/v1/mfa/verify ",
+            "module":"USER-MANAGEMENT-SYSTEM",
+            "active":true,
+            "whiteList":false,
+            "description":"API for setting granularity status"
+        },
+        {
+            "id":"bef8ac88-ed4c-4e21-be15-a36fd7c7c768",
+            "uri":"/anuvaad/user-mgmt/v1/mfa/reset",
+            "module":"USER-MANAGEMENT-SYSTEM",
+            "active":true,
+            "whiteList":false,
+            "description":"API for setting granularity status"
+        }                
     ]
 }

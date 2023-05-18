@@ -1134,7 +1134,87 @@
             "role":"REVIEWER",
             "actionID": "986bb1b6-ac89-4430-a7ec-ba04f1ab470d",
             "active":true
-        }                                
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "f61dc1c6-f93a-44da-a8d2-32e5c9bf9d26",
+            "active":true
+        },
+        {
+            "role":"SUPERADMIN",
+            "actionID": "f61dc1c6-f93a-44da-a8d2-32e5c9bf9d26",
+            "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "9cb0222b-a4c1-41da-baa3-67fb84924ada",
+            "active":true
+        },
+        {
+            "role":"SUPERADMIN",
+            "actionID": "9cb0222b-a4c1-41da-baa3-67fb84924ada",
+            "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "2e156f1a-fe0d-42db-88a3-14331a978cda",
+            "active":true
+        },
+        {
+            "role":"SUPERADMIN",
+            "actionID": "2e156f1a-fe0d-42db-88a3-14331a978cda",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "2e156f1a-fe0d-42db-88a3-14331a978cda",
+            "active":true
+        },
+        {
+            "role":"REVIEWER",
+            "actionID": "2e156f1a-fe0d-42db-88a3-14331a978cda",
+            "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "2b952ce0-f26b-460c-8783-ba07285acb12",
+            "active":true
+        },
+        {
+            "role":"SUPERADMIN",
+            "actionID": "2b952ce0-f26b-460c-8783-ba07285acb12",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "2b952ce0-f26b-460c-8783-ba07285acb12",
+            "active":true
+        },
+        {
+            "role":"REVIEWER",
+            "actionID": "2b952ce0-f26b-460c-8783-ba07285acb12",
+            "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "bef8ac88-ed4c-4e21-be15-a36fd7c7c768",
+            "active":true
+        },
+        {
+            "role":"SUPERADMIN",
+            "actionID": "bef8ac88-ed4c-4e21-be15-a36fd7c7c768",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "bef8ac88-ed4c-4e21-be15-a36fd7c7c768",
+            "active":true
+        },
+        {
+            "role":"REVIEWER",
+            "actionID": "bef8ac88-ed4c-4e21-be15-a36fd7c7c768",
+            "active":true
+        }               
 
     ]
 }
