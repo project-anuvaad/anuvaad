@@ -81,7 +81,7 @@ class SentenceModel(object):
         try:
             collections     = get_db()[DB_SCHEMA_NAME]
 
-            results         = collections.update({'$and': [{'record_id': record_id}, {'created_by': user_id}, { 'data.tokenized_sentences': {'$elemMatch': {'s_id': {'$eq': sentence['s_id']}}}}]},
+            results         = collections.update({'$and': [{'record_id': record_id}, { 'data.tokenized_sentences': {'$elemMatch': {'s_id': {'$eq': sentence['s_id']}}}}]},
                                                 {
                                                     '$set':
                                                     {
