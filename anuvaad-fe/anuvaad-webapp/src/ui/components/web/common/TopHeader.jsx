@@ -401,7 +401,7 @@ export default function TopHeader(props) {
             className={logo}
             ref={logoRef}
             onClick={() => {
-                let defaultPagePath = (role === "TRANSLATOR" || role === "ANNOTATOR") ? "" : "user-details"
+                let defaultPagePath = (role === "TRANSLATOR" || role === "ANNOTATOR") ? "" : (role === "REVIEWER") ? "review-documents" : "user-details"
                 history.push(`${process.env.PUBLIC_URL}/${defaultPagePath}`)}
             }
             onError={(({ currentTarget }) => {

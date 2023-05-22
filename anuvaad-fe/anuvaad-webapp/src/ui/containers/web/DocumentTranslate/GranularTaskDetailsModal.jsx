@@ -19,13 +19,20 @@ export default class GranularTaskDetailsModal extends React.Component {
         }
     }
 
-    msToTime = (startTime, endTime) => {
-        let edate = new Date(endTime);
-        let sdate = new Date(startTime);
-        let sec = Math.trunc(Math.abs(edate.getTime() - sdate.getTime()) / 1000);
-        var date = new Date(0);
-        date.setSeconds(sec == 0 ? 1 : sec); // specify value for SECONDS here
-        return date.toISOString().substr(11, 8);
+    msToTime = (startTime, endTime, durationInSecond) => {
+        if (durationInSecond && durationInSecond !== null) {
+            var date = new Date(0);
+            date.setSeconds(durationInSecond == 0 ? 1 : durationInSecond); // specify value for SECONDS here
+            return date.toISOString().substr(11, 8);
+        } else {
+            let edate = new Date(endTime);
+            let sdate = new Date(startTime);
+            let sec = Math.trunc(Math.abs(edate.getTime() - sdate.getTime()) / 1000);
+            var date = new Date(0);
+            date.setSeconds(sec == 0 ? 1 : sec); // specify value for SECONDS here
+            return date.toISOString().substr(11, 8);
+        }
+
     }
 
     render() {
@@ -49,65 +56,65 @@ export default class GranularTaskDetailsModal extends React.Component {
                         {title}
                     </DialogTitle> */}
                     <DialogContent style={{ minWidth: "500px" }}>
-                    {this.props.type && this.props.type !== "warning" ?
-                        <div style={{ display: "flex", justifyContent: "space-between" }}>
-                            <div>
-                                <div style={{ display: "flex", flexDirection: "row" }}><Typography style={{ fontWeight: "bold", fontSize: "15px" }}>Job ID: </Typography><Typography style={{ fontSize: "15px" }}>&nbsp; {message.jobID}</Typography></div>
-                                <div style={{ display: "flex", flexDirection: "row" }}><Typography style={{ fontWeight: "bold", fontSize: "15px" }}>File Name: </Typography><Typography style={{ fontSize: "15px" }}>&nbsp; {message.filename}</Typography></div>
-                                <div style={{ display: "flex", flexDirection: "row" }}><Typography style={{ fontWeight: "bold", fontSize: "15px" }}>Status: </Typography><Typography style={{ fontSize: "15px" }}>&nbsp; {message.status}</Typography></div>
-                                {message.errorMessage && <div style={{ display: "flex", flexDirection: "row" }}><Typography style={{ fontWeight: "bold", fontSize: "15px" }}>Error: </Typography><Typography style={{ fontSize: "15px" }}>&nbsp; {message.errorMessage}</Typography></div>}
-                                {message.granularStatus && Array.isArray(message.granularStatus) && message.granularStatus.length > 0 &&
-                                    <div>
-                                        <div>&nbsp;</div>
-                                        <Typography style={{ fontWeight: "bold", fontSize: "15px" }}>Completed Tasks:</Typography>
-                                        {
-                                            message.granularStatus.map((task, i) => {
-                                                return (
-                                                    <div key={i}>
-                                                        <div>&nbsp;</div>
-                                                        <div style={{ display: "flex", flexDirection: "row" }}>
-                                                            <Typography style={{ fontWeight: "bold", fontSize: "15px" }}>State: </Typography>
-                                                            <Typography style={{ fontSize: "15px" }}>&nbsp; {task.module}</Typography>
-                                                        </div>
-                                                        <div style={{ display: "flex", flexDirection: "row" }}>
-                                                            <Typography style={{ fontWeight: "bold", fontSize: "15px" }}>Status: </Typography>
-                                                            <Typography style={{ fontSize: "15px" }}>&nbsp; {task.status}</Typography>
-                                                        </div>
-                                                        {task.endTime && task.status === "COMPLETED" &&
+                        {this.props.type && this.props.type !== "warning" ?
+                            <div style={{ display: "flex", justifyContent: "space-between" }}>
+                                <div>
+                                    <div style={{ display: "flex", flexDirection: "row" }}><Typography style={{ fontWeight: "bold", fontSize: "15px" }}>Job ID: </Typography><Typography style={{ fontSize: "15px" }}>&nbsp; {message.jobID}</Typography></div>
+                                    <div style={{ display: "flex", flexDirection: "row" }}><Typography style={{ fontWeight: "bold", fontSize: "15px" }}>File Name: </Typography><Typography style={{ fontSize: "15px" }}>&nbsp; {message.filename}</Typography></div>
+                                    <div style={{ display: "flex", flexDirection: "row" }}><Typography style={{ fontWeight: "bold", fontSize: "15px" }}>Status: </Typography><Typography style={{ fontSize: "15px" }}>&nbsp; {message.status}</Typography></div>
+                                    {message.errorMessage && <div style={{ display: "flex", flexDirection: "row" }}><Typography style={{ fontWeight: "bold", fontSize: "15px" }}>Error: </Typography><Typography style={{ fontSize: "15px" }}>&nbsp; {message.errorMessage}</Typography></div>}
+                                    {message.granularStatus && Array.isArray(message.granularStatus) && message.granularStatus.length > 0 &&
+                                        <div>
+                                            <div>&nbsp;</div>
+                                            <Typography style={{ fontWeight: "bold", fontSize: "15px" }}>Completed Tasks:</Typography>
+                                            {
+                                                message.granularStatus.map((task, i) => {
+                                                    return (
+                                                        <div key={i}>
+                                                            <div>&nbsp;</div>
                                                             <div style={{ display: "flex", flexDirection: "row" }}>
-                                                                <Typography style={{ fontWeight: "bold", fontSize: "15px" }}>Time Taken: </Typography>
-                                                                <Typography style={{ fontSize: "15px" }}>&nbsp; {this.msToTime(task.endTime,task.startTime)}</Typography>
+                                                                <Typography style={{ fontWeight: "bold", fontSize: "15px" }}>State: </Typography>
+                                                                <Typography style={{ fontSize: "15px" }}>&nbsp; {task.module}</Typography>
                                                             </div>
-                                                        }
-                                                    </div>
-                                                )
-                                            })
-                                        }
-                                    </div>}
+                                                            <div style={{ display: "flex", flexDirection: "row" }}>
+                                                                <Typography style={{ fontWeight: "bold", fontSize: "15px" }}>Status: </Typography>
+                                                                <Typography style={{ fontSize: "15px" }}>&nbsp; {task.status}</Typography>
+                                                            </div>
+                                                            {task.endTime && task.status === "COMPLETED" &&
+                                                                <div style={{ display: "flex", flexDirection: "row" }}>
+                                                                    <Typography style={{ fontWeight: "bold", fontSize: "15px" }}>Time Taken: </Typography>
+                                                                    <Typography style={{ fontSize: "15px" }}>&nbsp; {this.msToTime(task.endTime, task.startTime, task.duration ? task.duration : null)}</Typography>
+                                                                </div>
+                                                            }
+                                                        </div>
+                                                    )
+                                                })
+                                            }
+                                        </div>}
+                                </div>
+                                <div>
+                                    {this.state.textCopy ?
+                                        <Typography variant='caption'>Copied to clipboard.</Typography> :
+                                        <IconButton
+                                            onClick={() => {
+                                                let copyErrorMessage = message.errorMessage ? `Error: ${message.errorMessage}` : "";
+                                                navigator.clipboard.writeText(
+                                                    `Job ID: ${message.jobID} \n File Name: ${message.filename} \n User: ${JSON.parse(localStorage.getItem("userProfile"))?.userName} \n ${copyErrorMessage}`
+                                                );
+                                                this.setState({ textCopy: true });
+                                                setTimeout(() => {
+                                                    this.setState({ textCopy: false });
+                                                }, 5000);
+                                            }}
+                                        >
+                                            <FileCopyIcon color='primary' />
+                                        </IconButton>}
+                                </div>
                             </div>
-                            <div>
-                                {this.state.textCopy ?
-                                    <Typography variant='caption'>Copied to clipboard.</Typography> :
-                                    <IconButton
-                                        onClick={() => {
-                                            let copyErrorMessage = message.errorMessage ? `Error: ${message.errorMessage}` : "";
-                                            navigator.clipboard.writeText(
-                                                `Job ID: ${message.jobID} \n File Name: ${message.filename} \n User: ${JSON.parse(localStorage.getItem("userProfile"))?.userName} \n ${copyErrorMessage}`
-                                            );
-                                            this.setState({ textCopy: true });
-                                            setTimeout(() => {
-                                                this.setState({ textCopy: false });
-                                            }, 5000);
-                                        }}
-                                    >
-                                        <FileCopyIcon color='primary' />
-                                    </IconButton>}
-                            </div>
-                        </div>
-                        : <DialogContentText id="alert-dialog-slide-description">
-                        {message}
-                    </DialogContentText>
-                    }
+                            : <DialogContentText id="alert-dialog-slide-description">
+                                {message}
+                            </DialogContentText>
+                        }
 
                     </DialogContent>
                     {

@@ -136,7 +136,7 @@ class Login extends React.Component {
           } else if (roles.includes("ADMIN")) {
             history.push(`${process.env.PUBLIC_URL}/user-details`);
           } else if(roles.includes("REVIEWER")) { 
-            history.push(`${process.env.PUBLIC_URL}/user-details`);
+            history.push(`${process.env.PUBLIC_URL}/review-documents`);
           } else if (roles.includes("TRANSLATOR")) {
             history.push(`${process.env.PUBLIC_URL}/intro`);
             // history.push(`${process.env.PUBLIC_URL}/view-document`);

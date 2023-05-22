@@ -50,6 +50,7 @@ import Analytics from "./ui/containers/web/Analytics/Analytics";
 import Intro from "./ui/containers/web/Intro/Intro";
 import UploadTranslatedDocument from "./ui/containers/web/UploadTranslatedDocument/UploadTranslatedDocument";
 import ReviewDocumentList from "./ui/containers/web/AdminPanel/ReviewDocumentList";
+import DocumentReview from "./ui/containers/web/AdminPanel/DocumentReview";
 
 const PrivateRoute = ({ headerAttribute: headerAttribute, component: Component, userRoles, title, drawer, showLogo, forDemo, dontShowLoader, dontShowHeader, currentMenu, authenticate, ...rest }) => (
   <Route
@@ -171,7 +172,7 @@ class AppRoutes extends React.Component {
             /> */}
 
             <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/interactive-document/:jobid/:inputfileid/:modelId/:filename/:workflow/:source_language_code/:target_language_code`}
+              path={`${process.env.PUBLIC_URL}/interactive-document/:jobid/:inputfileid/:modelId/:filename/:workflow/:source_language_code/:target_language_code/:granularStatus`}
               userRoles={["TRANSLATOR", "ANNOTATOR"]}
               component={DocumentEditorV1}
               title="Translate file"
@@ -389,7 +390,7 @@ class AppRoutes extends React.Component {
               path={`${process.env.PUBLIC_URL}/user-report/:id/:name`}
               dontShowLoader
               title={"User Report"}
-              userRoles={["ADMIN", "SUPERADMIN", "REVIEWER"]}
+              userRoles={["ADMIN", "SUPERADMIN"]}
               component={UserReport}
               authenticate={this.authenticateUser}
               currentMenu="user-report"
@@ -397,13 +398,13 @@ class AppRoutes extends React.Component {
             />
 
             <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/review-user-docs/:id/:name`}
+              path={`${process.env.PUBLIC_URL}/review-documents`}
               dontShowLoader
-              title={"User Report"}
-              userRoles={["ADMIN", "SUPERADMIN", "REVIEWER"]}
+              title={"Review Documents"}
+              userRoles={["ADMIN", "REVIEWER"]}
               component={ReviewDocumentList}
               authenticate={this.authenticateUser}
-              currentMenu="user-report"
+              currentMenu="review-documents"
               dontShowHeader={false}
             />
 
@@ -413,6 +414,17 @@ class AppRoutes extends React.Component {
               title={"Document Stats"}
               userRoles={["ADMIN", "SUPERADMIN"]}
               component={DocumentStats}
+              authenticate={this.authenticateUser}
+              currentMenu="document-stats"
+              dontShowHeader={false}
+            />
+
+            <PrivateRoute
+              path={`${process.env.PUBLIC_URL}/review-doc/:recordId/:fname/:jobId/:currentStatus`}
+              dontShowLoader
+              title={"Review Document"}
+              userRoles={["ADMIN", "REVIEWER"]}
+              component={DocumentReview}
               authenticate={this.authenticateUser}
               currentMenu="document-stats"
               dontShowHeader={false}

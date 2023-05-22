@@ -14,6 +14,14 @@ const headerMenuConfig = [
         menuType : menuTypes[0],
     },
     {
+        id : "review-documents",
+        title: "Review Documents",
+        followOrg : false,
+        onclick : ()=>history.push(`${process.env.PUBLIC_URL}/review-documents`),
+        rolesAllowed : [userRoles[2], userRoles[4] ],
+        menuType : menuTypes[2],
+    },
+    {
         id : "my-glossary",
         title: "My Glossary List",
         followOrg : false,
@@ -82,7 +90,7 @@ const headerMenuConfig = [
         title: "User Details",
         followOrg : false,
         onclick : ()=>history.push(`${process.env.PUBLIC_URL}/user-details`),
-        rolesAllowed : [userRoles[2], userRoles[3], userRoles[4]],
+        rolesAllowed : [userRoles[2], userRoles[3]],
         menuType : menuTypes[2]
     },
     {

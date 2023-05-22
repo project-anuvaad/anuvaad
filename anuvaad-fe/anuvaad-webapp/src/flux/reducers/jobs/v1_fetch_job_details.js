@@ -67,7 +67,7 @@ function get_document_details(input) {
 
     // Granular status start
 
-    if(job["status"] === "COMPLETED"){
+    if (job["status"] === "COMPLETED") {
       let granularStatusObj = {
         startTime: job.startTime,
         endTime: job.endTime,
@@ -76,7 +76,7 @@ function get_document_details(input) {
         state: job.state
       };
       granularStatusArr.push(granularStatusObj);
-    } else if(job["status"] === "FAILED" || job["status"] === "INPROGRESS"){
+    } else if (job["status"] === "FAILED" || job["status"] === "INPROGRESS") {
       let granularStatusObj = {
         startTime: job.startTime,
         status: job.status,
@@ -86,8 +86,8 @@ function get_document_details(input) {
       granularStatusArr.push(granularStatusObj);
     }
 
-    if(job["granularity"]){
-      if(job["granularity"]["manualEditingStatus"]){
+    if (job["granularity"]) {
+      if (job["granularity"]["manualEditingStatus"]) {
         if (job["granularity"]["manualEditingStatus"] === "IN PROGRESS") {
           let granularStatusObj = {
             startTime: job["granularity"]["manualEditingStartTime"],
@@ -102,14 +102,33 @@ function get_document_details(input) {
             endTime: job["granularity"]["manualEditingEndTime"],
             status: job["granularity"]["manualEditingStatus"],
             module: "FINAL EDITING",
-            state: job["granularity"]["manualEditingStatus"]
+            state: job["granularity"]["manualEditingStatus"],
+            duration: job["granularity"]["manualEditingDuration"]
           };
           granularStatusArr.push(granularStatusObj);
         }
       }
-      
 
-      if(job["granularity"]["parallelDocumentUploadStatus"] && job["granularity"]["parallelDocumentUploadStatus"] === "COMPLETED"){
+      if (job["granularity"]["reviewerStatus"]) {
+        if (job["granularity"]["reviewerInProgress"]) {
+          let granularStatusObj = {
+            status: job["granularity"]["reviewerStatus"]?.toUpperCase(),
+            module: "REVIEWER",
+            state: job["granularity"]["reviewerStatus"]?.toUpperCase()
+          };
+          granularStatusArr.push(granularStatusObj);
+        } else if (job["granularity"]["reviewerCompleted"]) {
+          let granularStatusObj = {
+            status: job["granularity"]["reviewerStatus"]?.toUpperCase(),
+            module: "REVIEWER",
+            state: job["granularity"]["reviewerStatus"]?.toUpperCase(),
+          };
+          granularStatusArr.push(granularStatusObj);
+        }
+      }
+
+
+      if (job["granularity"]["parallelDocumentUploadStatus"] && job["granularity"]["parallelDocumentUploadStatus"] === "COMPLETED") {
         let granularStatusObj = {
           uploadTime: job["granularity"]["parallelDocumentUpload"],
           status: job["granularity"]["parallelDocumentUploadStatus"],
@@ -124,7 +143,7 @@ function get_document_details(input) {
     document["granularStatus"] = granularStatusArr;
     // Granular status end
 
-    document["currentGranularStatus"] = `${granularStatusArr[granularStatusArr.length-1]?.module} ${granularStatusArr[granularStatusArr.length-1]?.module !== "FINAL DOCUMENT UPLOADED" ? `- ${granularStatusArr[granularStatusArr.length-1]?.status}` : ""}`
+    document["currentGranularStatus"] = `${granularStatusArr[granularStatusArr.length - 1]?.module} ${granularStatusArr[granularStatusArr.length - 1]?.module !== "FINAL DOCUMENT UPLOADED" ? `- ${granularStatusArr[granularStatusArr.length - 1]?.status}` : ""}`
 
     job["taskDetails"].forEach((task) => {
       let timeline = {};
@@ -187,11 +206,10 @@ function update_documents_progress(documents, progresses) {
         document[
           "word_count"
         ] = `${progress["completed_word_count"]} of ${progress["total_word_count"]}`;
-        document["bleu_score"] = `${
-          Number(progress["avg_bleu_score"]) > 0
+        document["bleu_score"] = `${Number(progress["avg_bleu_score"]) > 0
             ? Number(progress["avg_bleu_score"]).toFixed(2)
             : "0"
-        } `;
+          } `;
         document["spent_time"] = timeCalculate(
           `${progress["total_time_spent_ms"]}`
         );

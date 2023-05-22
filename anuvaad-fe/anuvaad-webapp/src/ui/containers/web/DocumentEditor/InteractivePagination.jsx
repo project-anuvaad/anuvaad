@@ -156,7 +156,8 @@ class InteractivePagination extends React.Component {
           onClick={this.processMergeButtonClicked}
           variant="contained" color="secondary"
           title="Merge"
-          style={{ backgroundColor: "#2C2799" }}
+          disabled={!this.props.enableCompleteButton}
+          style={{ backgroundColor: !this.props.enableCompleteButton ? "#F5F5F5" : "#2C2799" }}
         >
           <MergeTypeIcon />
         </IconButton>

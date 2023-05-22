@@ -326,13 +326,22 @@ class ViewDocument extends React.Component {
     // this.makeAPICallJobDelete(jobId);
   };
 
-  processViewDocumentClick = (jobId, recordId, status, workflowCode) => {
+  processViewDocumentClick = (jobId, recordId, status, workflowCode, granularStatus) => {
     let role = localStorage.getItem("roles")
     let job = this.getJobIdDetail(jobId);
     job.filename = job.filename?.includes("#") ? job.filename?.split("#").join("%23") : job.filename;
+    // if(granularStatus === "REVIEWER - IN PROGRESS" || granularStatus === "FINAL EDITING - COMPLETED"){
+    //   this.setState({
+    //     dialogMessage: "Document is under review process!",
+    //     timeOut: 3000,
+    //     variant: "info",
+    //   });
+    //   this.handleMessageClear();
+    //   return
+    // }
     if (status === "COMPLETED") {
       history.push(
-        `${process.env.PUBLIC_URL}/interactive-document/${job.recordId}/${job.converted_filename}/${job.model_id}/${job.filename}/${workflowCode}/${job.source_language_code}/${job.target_language_code}`,
+        `${process.env.PUBLIC_URL}/interactive-document/${job.recordId}/${job.converted_filename}/${job.model_id}/${job.filename}/${workflowCode}/${job.source_language_code}/${job.target_language_code}/${granularStatus}`,
         this.state
       );
 
@@ -346,7 +355,7 @@ class ViewDocument extends React.Component {
       this.handleMessageClear();
     } else {
       this.setState({
-        dialogMessage: "Document conversion failed!",
+        dialogMessage: "Document Translation Failed!",
         timeOut: 3000,
         variant: "error",
       });
@@ -672,7 +681,8 @@ class ViewDocument extends React.Component {
                           tableMeta.rowData[1],
                           tableMeta.rowData[2],
                           tableMeta.rowData[6],
-                          tableMeta.rowData[14]
+                          tableMeta.rowData[14],
+                          tableMeta.rowData[15].trim()
                         )
                       }
                     >

@@ -383,10 +383,9 @@ class UserDetails extends React.Component {
             if (tableMeta.rowData) {
               return (
                 <div>
-                  {this.state.role !== "REVIEWER" && this.processSwitch(tableMeta.rowData[0], tableMeta.rowData[1], tableMeta.rowData[4], tableMeta.rowData[7])}
-                  {this.state.role !== "REVIEWER" && this.processModal(tableMeta.rowData[1])}
-                  {this.state.role !== "REVIEWER" && this.processUserView(tableMeta.rowData[0], tableMeta.rowData[2])}
-                  {this.processUserDocReview(tableMeta.rowData[0], tableMeta.rowData[2])}
+                  {this.processSwitch(tableMeta.rowData[0], tableMeta.rowData[1], tableMeta.rowData[4], tableMeta.rowData[7])}
+                  {this.processModal(tableMeta.rowData[1])}
+                  {this.processUserView(tableMeta.rowData[0], tableMeta.rowData[2])}
                 </div>
               );
             }
@@ -440,7 +439,7 @@ class UserDetails extends React.Component {
       <div style={{}}>
 
         <div style={{ margin: '0% 3% 3% 3%', paddingTop: "2%" }}>
-          {this.state.role !== "REVIEWER" && <ToolBar />}
+          <ToolBar />
           {
             (!this.state.showLoader || this.props.count) &&
             <MuiThemeProvider theme={this.getMuiTheme()}>

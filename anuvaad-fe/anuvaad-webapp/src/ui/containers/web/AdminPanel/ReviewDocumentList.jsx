@@ -39,7 +39,7 @@ class ReviewDocumentList extends React.Component {
             dialogMessage: null,
             timeOut: 3000,
             variant: "info",
-            userID: [this.props.match.params.id]
+            // userID: [this.props.match.params.id]
 
         };
     }
@@ -73,7 +73,7 @@ class ReviewDocumentList extends React.Component {
                 false,
                 this.state.userID,
             )
-            this.makeAPICallDocumentsTranslationProgress();
+            // this.makeAPICallDocumentsTranslationProgress();
             this.setState({ showLoader: true })
         }
     }
@@ -97,7 +97,7 @@ class ReviewDocumentList extends React.Component {
              * update job progress status only progress_updated is false
              */
             if (!this.props.job_details.progress_updated) {
-                this.makeAPICallDocumentsTranslationProgress();
+                // this.makeAPICallDocumentsTranslationProgress();
                 this.setState({ showLoader: false });
             }
 
@@ -118,7 +118,7 @@ class ReviewDocumentList extends React.Component {
             this.setState({ showLoader: false });
         }
         else if (this.props.fetch_document.result.count !== prevProps.fetch_document.result.count) {
-            this.makeAPICallDocumentsTranslationProgress();
+            // this.makeAPICallDocumentsTranslationProgress();
             this.setState({ showLoader: false });
         }
         else if (this.props.fetch_document.result.jobIDs !== undefined &&
@@ -153,7 +153,6 @@ class ReviewDocumentList extends React.Component {
         searchNextPage = false,
         updateExisting = false,
         userIDs = [],
-        orgIDs = [JSON.parse(localStorage.getItem("userProfile"))?.orgID]
     ) {
         const { APITransport } = this.props;
         const apiObj = new FetchDocument(
@@ -163,9 +162,9 @@ class ReviewDocumentList extends React.Component {
             searchForNewJob,
             searchNextPage,
             updateExisting,
-            [""],
+            [],
             true,
-            orgIDs
+            true
         );
         APITransport(apiObj);
     }
@@ -267,7 +266,7 @@ class ReviewDocumentList extends React.Component {
     handleDocumentView = (fid, fname, status, sentenceCount) => {
             const recordID = this.props.job_details.documents.filter(doc => doc.jobID === fid)[0].recordId
             console.log("recordID", recordID);
-            history.push(`${process.env.PUBLIC_URL}/document-stats/${recordID}/${fname}`)
+            history.push(`${process.env.PUBLIC_URL}/review-doc/${recordID}/${fname}/${fid}/${status}`)
     }
 
 
@@ -325,67 +324,67 @@ class ReviewDocumentList extends React.Component {
         }
     };
 
-    processDocumentDownload = (jobId) => {
-        return <Tooltip title="Download input file" placement="left">
-            <IconButton
-                style={{ color: "#233466", padding: "5px" }}
-                component="a"
-                onClick={() =>
-                    this.processDownloadInputFileClick(jobId)
-                }
-            >
-                <CloudDownloadIcon />
-            </IconButton>
-        </Tooltip>
-    }
+    // processDocumentDownload = (jobId) => {
+    //     return <Tooltip title="Download input file" placement="left">
+    //         <IconButton
+    //             style={{ color: "#233466", padding: "5px" }}
+    //             component="a"
+    //             onClick={() =>
+    //                 this.processDownloadInputFileClick(jobId)
+    //             }
+    //         >
+    //             <CloudDownloadIcon />
+    //         </IconButton>
+    //     </Tooltip>
+    // }
 
-    processDownloadInputFileClick = (jobId) => {
-        this.setState({
-            dialogMessage: "Downloading file...",
-            timeOut: null,
-            variant: "info",
-        });
-        let job = this.getJobIdDetail(jobId);
-        let user_profile = JSON.parse(localStorage.getItem("userProfile"));
-        let obj = new DownloadFile(job.converted_filename, this.props.match.params.id);
+    // processDownloadInputFileClick = (jobId) => {
+    //     this.setState({
+    //         dialogMessage: "Downloading file...",
+    //         timeOut: null,
+    //         variant: "info",
+    //     });
+    //     let job = this.getJobIdDetail(jobId);
+    //     let user_profile = JSON.parse(localStorage.getItem("userProfile"));
+    //     let obj = new DownloadFile(job.converted_filename, this.props.match.params.id);
 
-        const apiReq1 = fetch(obj.apiEndPoint(), {
-            method: "get",
-            headers: obj.getHeaders().headers,
-        })
-            .then(async (response) => {
-                if (!response.ok) {
-                    this.setState({
-                        dialogMessage: "Failed to download file...",
-                        timeOut: 3000,
-                        variant: "info",
-                    });
-                    console.log("api failed");
-                } else {
-                    const buffer = new Uint8Array(await response.arrayBuffer());
-                    let res = Buffer.from(buffer).toString("base64");
+    //     const apiReq1 = fetch(obj.apiEndPoint(), {
+    //         method: "get",
+    //         headers: obj.getHeaders().headers,
+    //     })
+    //         .then(async (response) => {
+    //             if (!response.ok) {
+    //                 this.setState({
+    //                     dialogMessage: "Failed to download file...",
+    //                     timeOut: 3000,
+    //                     variant: "info",
+    //                 });
+    //                 console.log("api failed");
+    //             } else {
+    //                 const buffer = new Uint8Array(await response.arrayBuffer());
+    //                 let res = Buffer.from(buffer).toString("base64");
 
-                    fetch("data:image/jpeg;base64," + res)
-                        .then((res) => res.blob())
-                        .then((blob) => {
-                            let a = document.createElement("a");
-                            let url = URL.createObjectURL(blob);
-                            a.href = url;
-                            a.download = job.converted_filename;
-                            this.setState({ dialogMessage: null });
-                            a.click();
-                        });
-                }
-            })
-            .catch((error) => {
-                this.setState({
-                    dialogMessage: "Failed to download file...",
-                    timeOut: 3000,
-                    variant: "info",
-                });
-                console.log("api failed because of server or network", error);
-            });
-    };
+    //                 fetch("data:image/jpeg;base64," + res)
+    //                     .then((res) => res.blob())
+    //                     .then((blob) => {
+    //                         let a = document.createElement("a");
+    //                         let url = URL.createObjectURL(blob);
+    //                         a.href = url;
+    //                         a.download = job.converted_filename;
+    //                         this.setState({ dialogMessage: null });
+    //                         a.click();
+    //                     });
+    //             }
+    //         })
+    //         .catch((error) => {
+    //             this.setState({
+    //                 dialogMessage: "Failed to download file...",
+    //                 timeOut: 3000,
+    //                 variant: "info",
+    //             });
+    //             console.log("api failed because of server or network", error);
+    //         });
+    // };
 
     processEventView = (jobId, status, sentenceCount) => {
         return <Tooltip title="View Events" placement="right">
@@ -476,6 +475,7 @@ class ReviewDocumentList extends React.Component {
                     filter: true,
                     sort: false,
                     empty: true,
+                    display: "excluded",
                 },
             },
             {
@@ -485,19 +485,22 @@ class ReviewDocumentList extends React.Component {
                     filter: true,
                     sort: false,
                     empty: true,
+                    display: "excluded",
                 },
             }, {
                 name: "bleu_score",
                 label: "Average Bleu",
                 options: {
                     hint: "Total bleu score / Total saved sentence",
-                    sort: false
+                    sort: false,
+                    display: "excluded",
                 }
             }, {
                 name: "spent_time",
                 label: "Time Spent",
                 options: {
-                    sort: false
+                    sort: false,
+                    display: "excluded",
                 }
             },
             {
@@ -561,7 +564,7 @@ class ReviewDocumentList extends React.Component {
                             return (
                                 <div>
                                     {this.processDocumentView(tableMeta.rowData[1], tableMeta.rowData[0], tableMeta.rowData[5], tableMeta.rowData[6])}
-                                    {this.processDocumentDownload(tableMeta.rowData[1])}
+                                    {/* {this.processDocumentDownload(tableMeta.rowData[1])} */}
                                     {/* {this.processEventView(tableMeta.rowData[1], tableMeta.rowData[5], tableMeta.rowData[6])} */}
                                 </div>
                             );
@@ -597,7 +600,7 @@ class ReviewDocumentList extends React.Component {
                         break;
                     case "changeRowsPerPage":
                         this.setState({ showLoader: true, limit: tableState.rowsPerPage, currentPageIndex: tableState.page })
-                        this.makeAPICallDocumentsTranslationProgress(tableState.rowsPerPage);
+                        // this.makeAPICallDocumentsTranslationProgress(tableState.rowsPerPage);
                         break;
                     default:
                 }
@@ -622,7 +625,7 @@ class ReviewDocumentList extends React.Component {
                     {/* {!this.state.showLoader && ( */}
                     <MuiThemeProvider theme={this.getMuiTheme()}>
                         <DataTable
-                            title={`${this.props.match.params.name}'s Documents To Review`}
+                            title={`Documents To Review`}
                             data={this.getJobsSortedByTimestamp()}
                             columns={columns}
                             options={options}
@@ -641,9 +644,10 @@ class ReviewDocumentList extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-    const documents = state.job_details.documents.filter((el, i) => el.currentGranularStatus === "FINAL EDITING - COMPLETED");
+    const documents = state.job_details.documents.filter((el, i) => el.currentGranularStatus === "FINAL EDITING - COMPLETED" || el.currentGranularStatus === "REVIEWER - IN PROGRESS");
     const count = documents.length
-    let jobDetailsData = {...state.job_details, documents: documents,  count: count }
+    let jobDetailsData = {...state.job_details, documents: documents,  count: count };
+    console.log("jobDetailsData ---- ", jobDetailsData);
     return {
         apistatus: state.apistatus,
         job_details: jobDetailsData,
