@@ -1512,6 +1512,7 @@ class SentenceCard extends React.Component {
   renderReviewerComment = () => {
     console.log("this.isSentenceIncorrect() && this.props.sentence.comments ---- ");
     console.log(this.isSentenceIncorrect() + "   -------  " + this.props.sentence.comments);
+    console.log("this.props.granularStatus.trim() ---- ", this.props.granularStatus.trim());
     return <div>
       <Divider />
       <Typography variant="subtitle1" gutterBottom>
@@ -1561,12 +1562,12 @@ class SentenceCard extends React.Component {
                 {this.renderMTTargetSentence()}
                 <br />
                 {userRole === "ANNOTATOR" &&
-                  orgID !== "NONMT" && this.props.granularStatus === "FINAL EDITING - IN PROGRESS" && this.props.granularStatus === "AUTO TRANSLATION - COMPLETED" &&
+                  orgID !== "NONMT" && (this.props.granularStatus.trim() === "FINAL EDITING - IN PROGRESS" || this.props.granularStatus.trim() === "AUTO TRANSLATION - COMPLETED") &&
                   this.renderRating()}
-                {this.props.granularStatus === "FINAL EDITING - IN PROGRESS" && this.props.granularStatus === "AUTO TRANSLATION - COMPLETED" && this.renderUserInputArea()}
+                {(this.props.granularStatus.trim() === "FINAL EDITING - IN PROGRESS" || this.props.granularStatus.trim() === "AUTO TRANSLATION - COMPLETED") && this.renderUserInputArea()}
               </CardContent>
               <CardActions style={{ padding: "10px" }}>
-                {this.props.granularStatus === "FINAL EDITING - IN PROGRESS" && this.props.granularStatus === "AUTO TRANSLATION - COMPLETED" && this.renderNormaModeButtons()}
+                {(this.props.granularStatus.trim() === "FINAL EDITING - IN PROGRESS" || this.props.granularStatus.trim() === "AUTO TRANSLATION - COMPLETED") && this.renderNormaModeButtons()}
               </CardActions>
             </Collapse>
           </Card>
