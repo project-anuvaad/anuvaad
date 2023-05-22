@@ -3,10 +3,11 @@ import C from "../../constants";
 import ENDPOINTS from "../../../../configs/apiendpoints";
 
 export default class saveConetent extends API {
-  constructor(sentenceObj, timeout = 2000) {
+  constructor(sentenceObj, review=false, timeout = 2000) {
     super("POST", timeout, false);
     this.type = C.SAVE_CONTENT;
     this.sentenceObj = sentenceObj;
+    this.review = review;
     this.endpoint = `${super.apiEndPointAuto()}${ENDPOINTS.save_content}`;
   }
 
@@ -28,7 +29,7 @@ export default class saveConetent extends API {
   getBody() {
     let reqObj = {}
     var sentences = [];
-
+    reqObj.review = this.review;
     sentences.push(this.sentenceObj);
 
     reqObj.workflowCode = "DP_WFLOW_S_C"
@@ -40,7 +41,8 @@ export default class saveConetent extends API {
     this.headers = {
       headers: {
         'auth-token': `${decodeURI(localStorage.getItem("token"))}`,
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "x-user-id": `${JSON.parse(localStorage.getItem('userProfile')).userID}`,
       }
     };
     return this.headers;

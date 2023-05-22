@@ -132,11 +132,11 @@ class Login extends React.Component {
           localStorage.setItem("lang", "en");
           localStorage.setItem("userProfile", JSON.stringify(resData));
           if (roles.includes("SUPERADMIN")) {
-            history.push(`${process.env.PUBLIC_URL}/intro`);
-            // history.push(`${process.env.PUBLIC_URL}/user-details`);
+            history.push(`${process.env.PUBLIC_URL}/user-details`);
           } else if (roles.includes("ADMIN")) {
-            history.push(`${process.env.PUBLIC_URL}/intro`);
-            // history.push(`${process.env.PUBLIC_URL}/user-details`);
+            history.push(`${process.env.PUBLIC_URL}/user-details`);
+          } else if(roles.includes("REVIEWER")) { 
+            history.push(`${process.env.PUBLIC_URL}/review-documents`);
           } else if (roles.includes("TRANSLATOR")) {
             history.push(`${process.env.PUBLIC_URL}/intro`);
             // history.push(`${process.env.PUBLIC_URL}/view-document`);

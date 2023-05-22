@@ -849,6 +849,7 @@ class DocumentEditor extends React.Component {
   renderSentences = () => {
 
     let pages = this.getPages()
+    console.log("pages --- ", pages);
     if (pages.length < 1) {
       return (
         <div></div>
@@ -875,6 +876,7 @@ class DocumentEditor extends React.Component {
               model={LANG_MODEL.fetchModel(parseInt(this.props.match.params.modelId), this.props.fetch_models, this.props.match.params.source_language_code, this.props.match.params.target_language_code)}
               jobId={jobId}
               sentence={sentence}
+              granularStatus={this.props.match.params.granularStatus}
               onAction={this.processSentenceAction} />
             </div>
           })
