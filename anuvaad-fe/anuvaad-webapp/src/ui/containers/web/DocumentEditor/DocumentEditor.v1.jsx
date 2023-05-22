@@ -876,7 +876,7 @@ class DocumentEditor extends React.Component {
               model={LANG_MODEL.fetchModel(parseInt(this.props.match.params.modelId), this.props.fetch_models, this.props.match.params.source_language_code, this.props.match.params.target_language_code)}
               jobId={jobId}
               sentence={sentence}
-              granularStatus={this.props.match.params.granularStatus}
+              granularStatus={this.props.match.params.granularStatus.trim()}
               onAction={this.processSentenceAction} />
             </div>
           })
