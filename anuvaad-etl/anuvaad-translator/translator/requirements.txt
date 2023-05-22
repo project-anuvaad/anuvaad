@@ -22,7 +22,7 @@ pylint==2.4.4
 pymongo==3.10.1
 python-dateutil==2.8.1
 PyYAML==5.3
-requests==2.23.0
+requests==2.31.0
 redis==3.5.3
 scikit-learn==0.22.2.post1
 scipy==1.4.1
