@@ -1561,12 +1561,12 @@ class SentenceCard extends React.Component {
                 {this.renderMTTargetSentence()}
                 <br />
                 {userRole === "ANNOTATOR" &&
-                  orgID !== "NONMT" && this.props.granularStatus !== "FINAL EDITING - COMPLETED" && this.props.granularStatus !== "REVIEWER - IN PROGRESS" &&
+                  orgID !== "NONMT" && this.props.granularStatus === "FINAL EDITING - IN PROGRESS" && this.props.granularStatus === "AUTO TRANSLATION - COMPLETED" &&
                   this.renderRating()}
-                {this.props.granularStatus !== "FINAL EDITING - COMPLETED" && this.props.granularStatus !== "REVIEWER - IN PROGRESS" && this.renderUserInputArea()}
+                {this.props.granularStatus === "FINAL EDITING - IN PROGRESS" && this.props.granularStatus === "AUTO TRANSLATION - COMPLETED" && this.renderUserInputArea()}
               </CardContent>
               <CardActions style={{ padding: "10px" }}>
-                {this.props.granularStatus !== "FINAL EDITING - COMPLETED" && this.props.granularStatus !== "REVIEWER - IN PROGRESS" && this.renderNormaModeButtons()}
+                {this.props.granularStatus === "FINAL EDITING - IN PROGRESS" && this.props.granularStatus === "AUTO TRANSLATION - COMPLETED" && this.renderNormaModeButtons()}
               </CardActions>
             </Collapse>
           </Card>
