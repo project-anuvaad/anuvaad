@@ -86,7 +86,7 @@ class DocumentReview extends React.Component {
   };
 
   handleCloseInfo = () => {
-    let currentInfoState = this.state.snackbarInfo;
+    let currentInfoState = {...this.state.snackbarInfo};
     currentInfoState = {
       open: false,
       message: "",
@@ -108,7 +108,7 @@ class DocumentReview extends React.Component {
       // console.log("rsp_data ---- ", rsp_data);
       if (rsp_data?.status == "SUCCESS") {
         // show info for granularity
-        let currentInfoState = this.state.snackbarInfo;
+        let currentInfoState = {...this.state.snackbarInfo};
         currentInfoState = {
           open: true,
           message: successMessage,
@@ -122,7 +122,7 @@ class DocumentReview extends React.Component {
       }
 
     }).catch(err => {
-      let currentInfoState = this.state.snackbarInfo;
+      let currentInfoState = {...this.state.snackbarInfo};
       currentInfoState = {
         open: true,
         message: "Failed to update granularity.",
@@ -179,7 +179,7 @@ class DocumentReview extends React.Component {
   }
 
   onSubmitIndividualReview = (senetenceData) => {
-
+    this.handleCloseInfo();
     let senetenceObj = {
       "comments": senetenceData.review,
       "redo": true,

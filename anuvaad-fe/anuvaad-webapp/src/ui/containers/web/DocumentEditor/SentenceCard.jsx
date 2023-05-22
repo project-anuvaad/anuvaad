@@ -258,6 +258,7 @@ class SentenceCard extends React.Component {
       if (this.props.onAction) {
         let sentence = { ...this.props.sentence };
         sentence.save = true;
+        sentence.redo = false;
         sentence.tgt = this.props.sentence.s0_tgt;
         delete sentence.block_identifier;
         let timeCalc = sentence.hasOwnProperty("time_spent_ms")
@@ -303,6 +304,7 @@ class SentenceCard extends React.Component {
         this.setState({ userEnteredText: false });
         let sentence = { ...this.props.sentence };
         sentence.save = true;
+        sentence.redo = false;
         sentence.tgt = this.state.value;
         delete sentence.block_identifier;
         sentence.bleu_score =
