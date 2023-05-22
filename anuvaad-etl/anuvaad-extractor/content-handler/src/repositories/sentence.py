@@ -37,8 +37,12 @@ class SentenceRepositories:
                 if update_s0:
                     sentence['s0_tgt']    = sentence['tgt']
                     sentence['s0_src']    = sentence['src']
+                    
                 if 'save' not in sentence:
                     sentence['save'] = False
+
+                if 'redo' not in sentence:
+                    sentence['redo'] =False
 
                 if 'bleu_score' not in sentence:
                     sentence['bleu_score'] = 0
