@@ -85,6 +85,11 @@ def search_all_jobs():
                 req_criteria["userIDs"] = [request.headers["x-user-id"]]
         else:
             req_criteria["userIDs"] = [request.headers["x-user-id"]]
+        if "orgIDs" in req_criteria.keys():
+            if not req_criteria["orgIDs"]:
+                req_criteria["orgIDs"] = [request.headers["x-org-id"]]
+        else:
+            req_criteria["orgIDs"] = [request.headers["x-org-id"]]
         if "isReviewer" in req_criteria.keys():
             response = service.get_job_details_bulk(req_criteria, False, req_criteria['isReviewer'])
         else:
