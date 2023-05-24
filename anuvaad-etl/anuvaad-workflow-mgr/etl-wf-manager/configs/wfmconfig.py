@@ -70,4 +70,7 @@ tool_config_url = os.environ.get('ANUVAAD_ETL_TOOL_CONFIG_FILE_URL',
 log_msg_start = " process started."
 log_msg_end = " process ended."
 log_msg_error = " has encountered an exception, job ended."
+
+#Specific variables
 granularity_list = ["manualEditingStartTime","manualEditingEndTime","parallelDocumentUpload","reviewerInProgress","reviewerCompleted"]
+workflowCodesTranslation = ["DP_WFLOW_FBT","WF_A_FCBMTKTR","DP_WFLOW_FBTTR","WF_A_FTTKTR"]

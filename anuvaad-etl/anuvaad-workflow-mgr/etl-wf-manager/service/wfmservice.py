@@ -9,7 +9,7 @@ from validator.wfmvalidator import WFMValidator
 from configs.wfmconfig import anu_etl_wfm_core_topic, log_msg_start, log_msg_end, module_wfm_name, page_default_limit, anu_etl_notifier_input_topic, total_no_of_partitions
 from anuvaad_auditor.errorhandler import post_error_wf, post_error, log_exception
 from anuvaad_auditor.loghandler import log_info, log_error
-from configs.wfmconfig import app_context
+from configs.wfmconfig import app_context, workflowCodesTranslation
 import datetime 
 
 log = logging.getLogger('file')
@@ -284,6 +284,7 @@ class WFMService:
                 else:
                     log_info("Job COMPLETED: " + task_output["jobID"], task_output)
                     client_output = self.get_wf_details_async(None, task_output, True, None)
+                    log.info("JOB COMPLETED Client Output Data: ",client_output)
                     self.update_job_details(client_output, False)
             else:  # Safety else block, in case module fails to push data to error topic
                 log_error("Job FAILED: " + task_output["jobID"], task_output, None)
@@ -351,6 +352,10 @@ class WFMService:
                 wf_details["taskDetails"] = task_details
             client_output = wf_details
             if isfinal:
+                client_output["granularity"] = {}
+                if "workflowCode" in client_output.keys():
+                    if client_output["workflowCode"] in workflowCodesTranslation:
+                        client_output["granularity"]["currentStatus"] = "auto_translation_completed"
                 client_output["status"] = "COMPLETED"
                 client_output["endTime"] = eval(str(time.time()).replace('.', '')[0:13])
             else:
@@ -374,16 +379,24 @@ class WFMService:
                     for jobID in req_criteria["jobIDs"]:
                         if jobID:
                             jobIDs.append(jobID)
-                        if len(jobIDs) > 0:
-                            criteria["jobID"] = {"$in": jobIDs}
+                    if len(jobIDs) > 0:
+                        criteria["jobID"] = {"$in": jobIDs}
             if 'orgIDs' in req_criteria.keys():
                 if req_criteria["orgIDs"]:
                     orgIDs = []
                     for orgID in req_criteria["orgIDs"]:
                         if orgID:
                             orgIDs.append(orgID)
-                        if len(orgIDs) > 0:
-                            criteria["metadata.orgID"] = {"$in": orgIDs}
+                    if len(orgIDs) > 0:
+                        criteria["metadata.orgID"] = {"$in": orgIDs}
+            if 'currentStatus' in req_criteria.keys():
+                if req_criteria["currentStatus"]:
+                    currentStatus = []
+                    for currentStat in req_criteria["currentStatus"]:
+                        if currentStat:
+                            currentStatus.append(currentStat)
+                    if len(currentStatus) > 0:
+                        criteria["granularity.currentStatus"] = {"$in": currentStatus}
             if 'filterByStartTime' in req_criteria.keys():
                 if 'startTimeStamp' in req_criteria['filterByStartTime'].keys() and 'endTimeStamp' in req_criteria['filterByStartTime'].keys():
                             criteria["startTime"] = { "$gte": req_criteria['filterByStartTime']['startTimeStamp'], "$lte": req_criteria['filterByStartTime']['endTimeStamp']}
@@ -438,11 +451,13 @@ class WFMService:
                     #Manual Editing Start Time
                     if each_granularity == 'manualEditingStartTime':
                         job_details['granularity']['manualEditingStatus'] = "IN PROGRESS"
+                        job_details['granularity']['currentStatus'] = "manual_editing_in_progress"
                     #Manual Editing End Time
                     elif each_granularity == 'manualEditingEndTime':
                         if 'manualEditingStartTime' not in job_details['granularity'].keys():
                             return {"status": "FAILED","message":"Setting editing end time failed"}
                         job_details['granularity']['manualEditingStatus'] = "COMPLETED"        
+                        job_details['granularity']['currentStatus'] = "manual_editing_completed"
                         #Calculate manual editing time  
                         if "manualEditingDuration" not in job_details['granularity']:
                             dt1 = datetime.datetime.fromtimestamp(job_details['granularity']['manualEditingStartTime']/1000) # 1973-11-29 22:33:09
@@ -459,6 +474,7 @@ class WFMService:
                         if job_details['granularity']['manualEditingStatus'] == "COMPLETED":
                             job_details['granularity']['reviewerInProgress'] = True
                             job_details['granularity']['reviewerStatus'] = "In Progress"
+                            job_details['granularity']['currentStatus'] = "reviewer_in_progress"
                         else:
                             return {'status': 'FAILED','message':'Cannot start reviewing if manual editing is not completed'}
                     #Reviewer Completed
@@ -467,12 +483,14 @@ class WFMService:
                             job_details['granularity']['reviewerInProgress'] = False
                             job_details['granularity']['reviewerCompleted'] = True
                             job_details['granularity']['reviewerStatus'] = "Completed"
+                            job_details['granularity']['currentStatus'] = "reviewer_completed"
                             #job_details['granularity']['parallelDocumentUploadStatus'] = "COMPLETED"     
                         else:
                             return {'status': 'FAILED','message':'Cannot end reviewer status now since it is not started'}                        
                     #Parallel Document Upload          
                     elif each_granularity == "parallelDocumentUpload":
                         job_details['granularity']['parallelDocumentUploadStatus'] = "COMPLETED"     
+                        job_details['granularity']['currentStatus'] = "parallel_document_uploaded"
                         if 'manualEditingStartTime' in job_details['granularity'].keys():
                             if 'manualEditingEndTime' not in job_details['granularity'].keys():
                                 job_details['granularity']['manualEditingStatus'] = "COMPLETED"                    
@@ -483,12 +501,14 @@ class WFMService:
                     del job_details['granularity']['reviewerStatus']
                     job_details['granularity'][each_granularity] = eval(str(time.time()).replace('.', '')[0:13])
                     job_details['granularity']['manualEditingStatus'] = "IN PROGRESS"
+                    job_details['granularity']['currentStatus'] = "manual_editing_in_progress"
                     del job_details['granularity']['manualEditingEndTime']
                     self.update_job_details(job_details, False)
                 elif each_granularity == "reviewerInProgress":
                     if job_details['granularity']['manualEditingStatus'] == "COMPLETED":
                         job_details['granularity']['reviewerInProgress'] = True
                         job_details['granularity']['reviewerStatus'] = "In Progress"
+                        job_details['granularity']['currentStatus'] = "reviewer_in_progress"
                         self.update_job_details(job_details, False)
                     else:
                         return {'status': 'FAILED','message':'Cannot start reviewing if manual editing is not completed'}
