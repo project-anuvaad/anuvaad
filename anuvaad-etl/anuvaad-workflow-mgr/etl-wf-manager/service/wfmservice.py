@@ -480,7 +480,7 @@ class WFMService:
                     self.update_job_details(job_details, False)
                 elif each_granularity == 'manualEditingStartTime' and 'reviewerInProgress' in job_details['granularity'].keys() and job_details['granularity']['reviewerInProgress'] == True:
                     job_details['granularity']['reviewerInProgress'] = False
-                    job_details['granularity']['reviewerStatus'] = "Re-Edit"
+                    del job_details['granularity']['reviewerStatus']
                     job_details['granularity'][each_granularity] = eval(str(time.time()).replace('.', '')[0:13])
                     job_details['granularity']['manualEditingStatus'] = "IN PROGRESS"
                     del job_details['granularity']['manualEditingEndTime']
