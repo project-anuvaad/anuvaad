@@ -42,8 +42,8 @@ def doc_pre_processing(filename, base_dir, lang):
         img_filepath = pdf_image_paths[idx]
 
         image        = cv2.imread(img_filepath,0)
-        image = clean_image(image)
-        cv2.imwrite(img_filepath, image)
+        # image = clean_image(image)
+        # cv2.imwrite(img_filepath, image)
         pdf_image_height, pdf_image_width = image.shape[:2]
         # pdf_image_height  = image.shape[0]
         pdf_img_height.append(pdf_image_height)
