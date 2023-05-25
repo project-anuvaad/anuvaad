@@ -456,7 +456,9 @@ class WFMService:
                     elif each_granularity == 'manualEditingEndTime':
                         if 'manualEditingStartTime' not in job_details['granularity'].keys():
                             return {"status": "FAILED","message":"Setting editing end time failed"}
-                        job_details['granularity']['manualEditingStatus'] = "COMPLETED"        
+                        job_details['granularity']['manualEditingStatus'] = "COMPLETED"     
+                        if job_details['granularity']['currentStatus'] == "manual_reediting_in_progress":
+                                job_details['granularity']['currentStatus'] = "manual_reediting_completed"
                         job_details['granularity']['currentStatus'] = "manual_editing_completed"
                         #Calculate manual editing time  
                         if "manualEditingDuration" not in job_details['granularity']:
@@ -501,7 +503,7 @@ class WFMService:
                     del job_details['granularity']['reviewerStatus']
                     job_details['granularity'][each_granularity] = eval(str(time.time()).replace('.', '')[0:13])
                     job_details['granularity']['manualEditingStatus'] = "IN PROGRESS"
-                    job_details['granularity']['currentStatus'] = "manual_editing_in_progress"
+                    job_details['granularity']['currentStatus'] = "manual_reediting_in_progress"
                     del job_details['granularity']['manualEditingEndTime']
                     self.update_job_details(job_details, False)
                 elif each_granularity == "reviewerInProgress":
