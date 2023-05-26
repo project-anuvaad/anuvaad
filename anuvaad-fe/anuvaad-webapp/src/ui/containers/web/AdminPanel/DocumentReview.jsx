@@ -21,6 +21,7 @@ import saveConetent from "../../../../flux/actions/apis/document_translate/savec
 import ConfirmBox from "../../../components/web/common/ConfirmBox";
 import UpdateGranularStatus from "../../../../flux/actions/apis/document_translate/update_granular_status";
 import FetchDocument from "../../../../flux/actions/apis/view_document/fetch_document";
+import { get_document_details } from "../../../../utils/getFormattedJobData";
 
 class DocumentReview extends React.Component {
   constructor(props) {
@@ -29,6 +30,9 @@ class DocumentReview extends React.Component {
       role: localStorage.getItem("roles"),
       data: [],
       showLoading: false,
+      currentJobDetails: null,
+      disableActions: false,
+      // (this.props.match.params.currentStatus === "REVIEWER - COMPLETED" || this.props.match.params.currentStatus === "FINAL EDITING - IN PROGRESS") ? true : false,
       confirmDialogue: {
         open: false,
         message: "",
@@ -44,11 +48,49 @@ class DocumentReview extends React.Component {
   }
 
   componentDidMount() {
+    this.getCurrentJobDetail();
+    this.fetchDocumentContent();
+  }
+
+  fetchDocumentContent = () => {
     const { APITransport } = this.props
     const apiObj = new FileContent(this.props.match.params.recordId, "0", "0", false, true);
     APITransport(apiObj)
+  }
 
-    console.log("this.props.count --- ", this.props.count);
+  getCurrentJobDetail = () => {
+    let jobId = this.props.match.params.jobId;
+
+    // get current status of document start
+    const apiObj = new FetchDocument(
+      0,
+      0,
+      [jobId],
+      false,
+      false,
+      false,
+      [],
+      false,
+      true
+    );
+
+    fetch(apiObj.apiEndPoint(), {
+      method: 'post',
+      body: JSON.stringify(apiObj.getBody()),
+      headers: apiObj.getHeaders().headers
+    }).then(async response => {
+      const rsp_data = await response.json();
+      console.log("rsp_data ---- ", rsp_data);
+      let docArr = get_document_details(rsp_data);
+      this.setState({currentJobDetails: docArr[0]})
+      console.log("docArr ------- ", docArr);
+      if(docArr?.length > 0){
+        if(docArr[0].currentGranularStatus === "FINAL EDITING - IN PROGRESS" || docArr[0].currentGranularStatus === "REVIEWER - COMPLETED"){
+          this.setState({disableActions: true});
+        }
+      }
+    })
+
   }
 
   fetchDocumentsToReview = () => {
@@ -86,7 +128,7 @@ class DocumentReview extends React.Component {
   };
 
   handleCloseInfo = () => {
-    let currentInfoState = {...this.state.snackbarInfo};
+    let currentInfoState = { ...this.state.snackbarInfo };
     currentInfoState = {
       open: false,
       message: "",
@@ -108,7 +150,7 @@ class DocumentReview extends React.Component {
       // console.log("rsp_data ---- ", rsp_data);
       if (rsp_data?.status == "SUCCESS") {
         // show info for granularity
-        let currentInfoState = {...this.state.snackbarInfo};
+        let currentInfoState = { ...this.state.snackbarInfo };
         currentInfoState = {
           open: true,
           message: successMessage,
@@ -116,13 +158,14 @@ class DocumentReview extends React.Component {
         };
         this.setState({ snackbarInfo: currentInfoState });
         this.fetchDocumentsToReview();
+        this.getCurrentJobDetail();
         shouldGoBack && setTimeout(() => {
           history.goBack()
         }, 2000);
       }
 
     }).catch(err => {
-      let currentInfoState = {...this.state.snackbarInfo};
+      let currentInfoState = { ...this.state.snackbarInfo };
       currentInfoState = {
         open: true,
         message: "Failed to update granularity.",
@@ -143,14 +186,14 @@ class DocumentReview extends React.Component {
   }
 
   onApproveClick = () => {
-    let statusArr = this.props.match.params.currentStatus === "FINAL EDITING - COMPLETED" ? ["reviewerInProgress", "reviewerCompleted"] : ["reviewerCompleted"]
+    let statusArr = this.state.currentJobDetails !== null && this.state.currentJobDetails.currentGranularStatus === "FINAL EDITING - COMPLETED" ? ["reviewerInProgress", "reviewerCompleted"] : ["reviewerCompleted"]
     this.updateGranularity(statusArr, "Document Verified!");
     // console.log("this.props.match.params.jobId --- ", this.props.match.params.jobId);
     this.onCloseConfirmBox()
   }
 
   sendForCorrectionClick = () => {
-    let statusArr = this.props.match.params.currentStatus === "FINAL EDITING - COMPLETED" ? ["reviewerInProgress", "manualEditingStartTime"] : ["manualEditingStartTime"]
+    let statusArr = this.state.currentJobDetails !== null && this.state.currentJobDetails.currentGranularStatus === "FINAL EDITING - COMPLETED" ? ["reviewerInProgress", "manualEditingStartTime"] : ["manualEditingStartTime"]
     this.updateGranularity(statusArr, "Document Sent For Correction!")
     this.onCloseConfirmBox()
   }
@@ -158,7 +201,7 @@ class DocumentReview extends React.Component {
   openAprroveConfirmBox = () => {
     let currentconfirmDialogueState = this.state.confirmDialogue;
     currentconfirmDialogueState.open = true;
-    currentconfirmDialogueState.message = "Are you sure you want to mark the document translation to be accurate and upload this document to improve the model?";
+    currentconfirmDialogueState.message = "Are you sure you want to mark the document translation accurate?";
     currentconfirmDialogueState.onConfirm = this.onApproveClick;
     this.setState({ confirmDialogue: currentconfirmDialogueState })
   }
@@ -166,7 +209,7 @@ class DocumentReview extends React.Component {
   openSendForCorrectionConfirmBox = () => {
     let currentconfirmDialogueState = this.state.confirmDialogue;
     currentconfirmDialogueState.open = true;
-    currentconfirmDialogueState.message = "Are you sure you want to mark the document translation to be inaccurate and have the translator re-edit it?";
+    currentconfirmDialogueState.message = "Are you sure you want to mark the document for re-editing by translator?";
     currentconfirmDialogueState.onConfirm = this.sendForCorrectionClick;
     this.setState({ confirmDialogue: currentconfirmDialogueState })
   }
@@ -197,7 +240,12 @@ class DocumentReview extends React.Component {
       .then(response => response.json())
       .then(result => {
         console.log(result);
-        this.updateGranularity(["reviewerInProgress"], "Review Comment Updated!", false)
+        if(this.state.currentJobDetails.currentGranularStatus === "FINAL EDITING - COMPLETED"){
+          this.updateGranularity(["reviewerInProgress"], "Review Comment Updated!", false)
+        } else{
+          this.getCurrentJobDetail();
+        }
+        
       }
       )
       .catch(error => console.log('error', error));
@@ -255,6 +303,7 @@ class DocumentReview extends React.Component {
         options: {
           filter: false,
           sort: false,
+          display: false
         }
       },
       {
@@ -271,6 +320,7 @@ class DocumentReview extends React.Component {
         options: {
           filter: false,
           sort: false,
+          display: this.state.disableActions ? "excluded" : true,
           setCellHeaderProps: () => { return { align: "center" } },
           setCellProps: () => { return { align: "center" } },
           customBodyRender: (value, tableMeta, updateValue) => {
@@ -281,6 +331,7 @@ class DocumentReview extends React.Component {
                     placeholder="Add Review"
                     defaultValue={tableMeta.tableData[tableMeta.rowIndex]?.comments ? tableMeta.tableData[tableMeta.rowIndex]?.comments : ""}
                     onChange={e => this.onReviewChange(e, tableMeta)}
+                    style={{borderColor : tableMeta.tableData[tableMeta.rowIndex]?.comments ? "rgb(97 231 55 / 87%)" : "#2C2799"}}
                     fullWidth
                     endAdornment={
                       <InputAdornment position="end">
@@ -317,14 +368,14 @@ class DocumentReview extends React.Component {
         },
         options: { sortDirection: 'desc' }
       },
-      onTableChange: (action, tableState) => {
-        switch (action) {
-          case 'changePage':
-            this.processTableClickedNextOrPrevious(tableState.page)
-            break;
-          default:
-        }
-      },
+      // onTableChange: (action, tableState) => {
+      //   switch (action) {
+      //     case 'changePage':
+      //       this.processTableClickedNextOrPrevious(tableState.page)
+      //       break;
+      //     default:
+      //   }
+      // },
       count: this.props.count,
       rowsPerPageOptions: [10, 25, this.props.fetchContent?.data ? this.props.fetchContent?.data?.length : 100],
       filterType: "checkbox",
@@ -346,7 +397,7 @@ class DocumentReview extends React.Component {
         // overflow: 'auto'
       }}>
 
-        <div style={{ margin: '0% 3% 3% 3%', paddingTop: "4%" }}>
+        {this.state.currentJobDetails && <div style={{ margin: '0% 3% 3% 3%', paddingTop: "4%" }}>
           {/* <UserReportHeader /> */}
           <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 2, alignItems: "center" }}>
             <div>
@@ -359,19 +410,25 @@ class DocumentReview extends React.Component {
                 <BackIcon />
               </IconButton>
             </div>
-            <div style={{ display: "flex" }}>
-              <Button variant="contained" color="primary" size="small" onClick={this.openAprroveConfirmBox}>Approve</Button>
-              <Button variant="contained" color="primary" size="small" style={{ marginLeft: 2 }} onClick={this.openSendForCorrectionConfirmBox}>Send For Correction</Button>
-            </div>
+
           </div>
-          {
-            <MuiThemeProvider theme={this.getMuiTheme()}>
-              <DataTable title={this.props.match.params.fname}
-                columns={columns} options={options}
-                data={this.props.apistatus.progress ? [] : this.props.fetchContent.data} />
-            </MuiThemeProvider>
-          }
-        </div>
+          <MuiThemeProvider theme={this.getMuiTheme()}>
+            <DataTable title={this.props.match.params.fname}
+              columns={columns} options={options}
+              data={this.props.apistatus.progress ? [] : this.props.fetchContent.data} />
+          </MuiThemeProvider>
+          {!this.state.disableActions && <div style={{ textAlign: "end", marginTop: 15, alignItems: "center" }}>
+            <Button variant="contained" color="primary" size="small" onClick={this.openAprroveConfirmBox}>Approve</Button>
+            <Button
+              variant="contained"
+              color="primary"
+              size="small"
+              style={{ marginLeft: 2 }}
+              onClick={this.openSendForCorrectionConfirmBox}
+              disabled={this.state.currentJobDetails !== null && this.state.currentJobDetails.currentGranularStatus === "FINAL EDITING - COMPLETED"}
+            >Send For Correction</Button>
+          </div>}
+        </div>}
         <ConfirmBox
           open={this.state.confirmDialogue.open}
           onClose={this.state.confirmDialogue.onCancle}

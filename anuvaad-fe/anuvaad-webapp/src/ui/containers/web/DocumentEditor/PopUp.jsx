@@ -20,7 +20,7 @@ class MenuClass extends React.Component {
     return (
       <Popover
         id="menu-appbar"
-        open={this.props.isopenMenuItems}
+        open={this.props.isopenMenuItems && this.props.enableActionButtons}
         anchorReference="anchorPosition"
         anchorPosition={{ top: positionY, left: positionX }}
         onClose={() => this.props.handleClose()}

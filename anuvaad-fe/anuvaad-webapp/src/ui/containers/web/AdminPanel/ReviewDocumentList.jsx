@@ -23,6 +23,7 @@ import DownloadFile from "../../../../flux/actions/apis/download/download_file";
 import EventIcon from '@material-ui/icons/Event';
 import clearEvent from '../../../../flux/actions/apis/admin/clear_user_event_report';
 import DataTable from "../../../components/web/common/DataTable";
+import { FormControl, InputLabel, MenuItem, Select } from "@material-ui/core";
 
 
 const TELEMETRY = require("../../../../utils/TelemetryManager");
@@ -39,7 +40,32 @@ class ReviewDocumentList extends React.Component {
             dialogMessage: null,
             timeOut: 3000,
             variant: "info",
+            filterOptionData: [
+                {
+                    label: "Pending/In-Progress",
+                    value: ["manual_editing_completed", "reviewer_in_progress", "manual_reediting_completed"]
+                },
+                {
+                    label: "Sent For Correction",
+                    value: ["reviewer_completed"]
+                },
+                {
+                    label: "Completed",
+                    value: ["reviewer_completed"]
+                }
+            ],
             // userID: [this.props.match.params.id]
+
+            //             auto_translation_completed
+            // manual_editing_in_progress
+            // manual_editing_completed
+            // reviewer_in_progress
+            // reviewer_completed
+            // manual_reediting_in_progress
+            // manual_reediting_completed
+            // parallel_document_uploaded
+
+            selectedFilter: 0,
 
         };
     }
@@ -60,7 +86,7 @@ class ReviewDocumentList extends React.Component {
                 false,
                 false,
                 this.state.userID,
-
+                this.state.filterOptionData[this.state.selectedFilter].value
             );
         }
         else {
@@ -72,6 +98,7 @@ class ReviewDocumentList extends React.Component {
                 false,
                 false,
                 this.state.userID,
+                this.state.filterOptionData[this.state.selectedFilter].value
             )
             // this.makeAPICallDocumentsTranslationProgress();
             this.setState({ showLoader: true })
@@ -83,7 +110,20 @@ class ReviewDocumentList extends React.Component {
         TELEMETRY.pageLoadCompleted("user-report");
     }
 
-    componentDidUpdate(prevProps) {
+    componentDidUpdate(prevProps, prevState) {
+        console.log("prevState ----- ", prevState.selectedFilter);
+        if (prevState.selectedFilter !== this.state.selectedFilter) {
+            this.makeAPICallJobsBulkSearch(
+                this.state.offset,
+                this.state.limit,
+                [""],
+                false,
+                false,
+                false,
+                this.state.userID,
+                this.state.filterOptionData[this.state.selectedFilter].value
+            );
+        }
         if (this.props.job_details.changedJob && this.props.job_details.changedJob.hasOwnProperty("jobID") && prevProps.job_details.changedJob !== this.props.job_details.changedJob) {
             this.setState({ showLoader: false })
             TELEMETRY.endWorkflow(this.props.job_details.changedJob.source_language_code, this.props.job_details.changedJob.target_language_code, this.props.job_details.changedJob.filename, this.props.job_details.changedJob.jobID, this.props.job_details.changedJob.status)
@@ -153,6 +193,7 @@ class ReviewDocumentList extends React.Component {
         searchNextPage = false,
         updateExisting = false,
         userIDs = [],
+        jobCurrentStatus = [],
     ) {
         const { APITransport } = this.props;
         const apiObj = new FetchDocument(
@@ -164,7 +205,10 @@ class ReviewDocumentList extends React.Component {
             updateExisting,
             [],
             true,
-            true
+            true,
+            jobCurrentStatus
+            // ["auto_translation_completed"]
+            // ["manual_editing_completed", "reviewer_in_progress"]
         );
         APITransport(apiObj);
     }
@@ -264,9 +308,9 @@ class ReviewDocumentList extends React.Component {
     }
 
     handleDocumentView = (fid, fname, status, sentenceCount) => {
-            const recordID = this.props.job_details.documents.filter(doc => doc.jobID === fid)[0].recordId
-            console.log("recordID", recordID);
-            history.push(`${process.env.PUBLIC_URL}/review-doc/${recordID}/${fname}/${fid}/${status}`)
+        const recordID = this.props.job_details.documents.filter(doc => doc.jobID === fid)[0].recordId
+        console.log("recordID", recordID);
+        history.push(`${process.env.PUBLIC_URL}/review-doc/${recordID}/${fname}/${fid}`)
     }
 
 
@@ -618,11 +662,46 @@ class ReviewDocumentList extends React.Component {
             },
             page: this.state.currentPageIndex,
         };
+
         return (
             <div style={{ minHeight: window.innerHeight - 2 }}>
                 <div style={{ margin: "0% 3% 3% 3%", paddingTop: "7%", paddingBottom: "1%" }}>
                     <UserReportHeader />
                     {/* {!this.state.showLoader && ( */}
+                    <div
+                        style={{
+                            width: "100%",
+                            textAlign: "end",
+                            marginBottom: 10
+                        }}
+                    >
+                        <FormControl style={{textAlign: "start"}}>
+                            <InputLabel id="demo-simple-select-label">Filter By Status</InputLabel>
+                            <Select
+                                labelId="demo-simple-select-label"
+                                id="demo-simple-select"
+                                value={this.state.selectedFilter}
+                                // defaultValue={this.state.selectedFilter}
+                                style={{ width: 300 }}
+                                onChange={(e) => {
+                                    console.log("e.target.value   ", e.target.value);
+                                    this.setState({ selectedFilter: e.target.value})
+                                }}
+                            >
+                                {
+                                    this.state.filterOptionData.map((el, i) => {
+                                        return <MenuItem
+                                            selected={i===0}
+                                            value={i}
+                                        >
+                                            {el.label}
+                                        </MenuItem>
+                                    })
+                                }
+                            </Select>
+                        </FormControl>
+                    </div>
+
                     <MuiThemeProvider theme={this.getMuiTheme()}>
                         <DataTable
                             title={`Documents To Review`}
@@ -644,13 +723,9 @@ class ReviewDocumentList extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-    const documents = state.job_details.documents.filter((el, i) => el.currentGranularStatus === "FINAL EDITING - COMPLETED" || el.currentGranularStatus === "REVIEWER - IN PROGRESS");
-    const count = documents.length
-    let jobDetailsData = {...state.job_details, documents: documents,  count: count };
-    console.log("jobDetailsData ---- ", jobDetailsData);
     return {
         apistatus: state.apistatus,
-        job_details: jobDetailsData,
+        job_details: state.job_details,
         fetch_document: state.fetchDocument
     }
 };
