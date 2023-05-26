@@ -1345,6 +1345,7 @@ class SentenceCard extends React.Component {
         hideSplit={this.state.hideSplit}
         isopenMenuItems={this.state.isopenMenuItems}
         handleOperation={this.handleOperation.bind(this)}
+        enableActionButtons={this.props.enableActionButtons}
       />
     );
   };

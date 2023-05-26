@@ -45,6 +45,7 @@ import '../../../styles/web/InteractiveEditor.css';
 import Loader from "../../../components/web/common/CircularLoader";
 import UpdateGranularStatus from "../../../../flux/actions/apis/document_translate/update_granular_status";
 import FetchDocument from "../../../../flux/actions/apis/view_document/fetch_document";
+import { get_document_details } from "../../../../utils/getFormattedJobData";
 const LANG_MODEL = require('../../../../utils/language.model')
 const PAGE_OPS = require("../../../../utils/page.operations");
 const BLOCK_OPS = require("../../../../utils/block.operations");
@@ -79,9 +80,10 @@ class DocumentEditor extends React.Component {
       targLangCode: "",
       srcLangCode: "",
       transliterationChecked: false,
-      enableCompleteButton: false,
+      enableActionButtons: false,
       updateManualStartTime: false,
       fetchNext: true.valueOf,
+      currentJobDetails: [],
     }
     this.forMergeSentences = []
   }
@@ -95,38 +97,7 @@ class DocumentEditor extends React.Component {
     let recordId = this.props.match.params.jobid;
     let jobId = recordId ? recordId.split("|")[0] : "";
 
-    // get current status of document start
-    const apiObj = new FetchDocument(
-      0,
-      this.props.job_details.count,
-      [jobId],
-      false,
-      false,
-      false
-    );
-
-    fetch(apiObj.apiEndPoint(), {
-      method: 'post',
-      body: JSON.stringify(apiObj.getBody()),
-      headers: apiObj.getHeaders().headers
-    }).then(async response => {
-      const rsp_data = await response.json();
-      console.log("rsp_data ---- ", rsp_data);
-      let docArr = rsp_data?.jobs;
-      if(docArr?.length > 0){
-        if(
-          (docArr[0]?.granularity && docArr[0]?.granularity?.manualEditingStatus === "IN PROGRESS") 
-          || 
-          (!docArr[0]?.granularity && docArr[0]?.status === "COMPLETED")){
-          this.setState({enableCompleteButton: true});
-        }
-        if(!docArr[0]?.granularity && docArr[0]?.status === "COMPLETED"){
-          this.setState({updateManualStartTime: true});
-        }
-      }
-    })
-
-    // get current status of document end
+    this.getCurrentJobDetail()
 
     localStorage.setItem("recordId", recordId);
     localStorage.setItem("inputFile", this.props.match.params.inputfileid)
@@ -148,6 +119,43 @@ class DocumentEditor extends React.Component {
 
     window.addEventListener('popstate', this.handleOnClose);
     // window.addEventListener('beforeunload',this.handleOnClose);
+
+  }
+
+  getCurrentJobDetail = () => {
+    let recordId = this.props.match.params.jobid;
+    let jobId = recordId ? recordId.split("|")[0] : "";
+
+    // get current status of document start
+    const apiObj = new FetchDocument(
+      0,
+      this.props.job_details.count,
+      [jobId],
+      false,
+      false,
+      false
+    );
+
+    fetch(apiObj.apiEndPoint(), {
+      method: 'post',
+      body: JSON.stringify(apiObj.getBody()),
+      headers: apiObj.getHeaders().headers
+    }).then(async response => {
+      const rsp_data = await response.json();
+      console.log("rsp_data ---- ", rsp_data);
+      let docArr = get_document_details(rsp_data);
+      this.setState({currentJobDetails: docArr[0]})
+      console.log("docArr ------- ", docArr);
+      if(docArr?.length > 0){
+        if(docArr[0].currentGranularStatus === "FINAL EDITING - IN PROGRESS" || docArr[0].currentGranularStatus === "AUTO TRANSLATION - COMPLETED"){
+          this.setState({enableActionButtons: true});
+        }
+
+        if(docArr[0].currentGranularStatus === "AUTO TRANSLATION - COMPLETED"){
+          this.setState({updateManualStartTime: true});
+        }
+      }
+    })
 
   }
 
@@ -202,7 +210,7 @@ class DocumentEditor extends React.Component {
       }
     }
 
-    if (prevProps.job_status !== this.props.job_status) {
+    if (prevProps.job_status !== this.props.job_status && this.state.currentJobDetails.currentGranularStatus === "AUTO TRANSLATION - COMPLETED") {
       let currentSavedandTotalSetencesArr = this.props.job_status?.status.split(" of ");
       let previousSavedandTotalSetencesArr = prevProps.job_status?.status.split(" of ");
       // console.log("currentSavedandTotalSetencesArr ----- ", currentSavedandTotalSetencesArr);
@@ -227,8 +235,9 @@ class DocumentEditor extends React.Component {
     }).then(async response => {
       const rsp_data = await response.json();
       // console.log("rsp_data ---- ", rsp_data);
-      this.setState({enableCompleteButton: true});
+      // this.setState({enableActionButtons: true});
       const { APITransport } = this.props;
+      this.getCurrentJobDetail();
       const apiObj = new FetchDocument(
         0,
         this.props.job_details.count,
@@ -871,12 +880,13 @@ class DocumentEditor extends React.Component {
             sentence.src = sentence.src.replace(/\s{2,}/g, ' ').trim()
             return < div key={sentence.s_id} ref={sentence.s_id} > <SentenceCard key={sentence.s_id}
               enableTransliteration={this.state.transliterationChecked}
+              enableActionButtons={this.state.enableActionButtons}
               pageNumber={page.page_no}
               recordId={this.props.match.params.jobid}
               model={LANG_MODEL.fetchModel(parseInt(this.props.match.params.modelId), this.props.fetch_models, this.props.match.params.source_language_code, this.props.match.params.target_language_code)}
               jobId={jobId}
               sentence={sentence}
-              granularStatus={this.props.match.params.granularStatus.trim()}
+              granularStatus={this.state.currentJobDetails.currentGranularStatus.trim()}
               onAction={this.processSentenceAction} />
             </div>
           })
@@ -934,7 +944,7 @@ class DocumentEditor extends React.Component {
             </Split>
             <div style={{ height: "65px", marginTop: "13px", bottom: "0px", position: "absolute", width: "100%" }}>
               <InteractivePagination count={this.props.document_contents.count}
-                enableCompleteButton={this.state.enableCompleteButton}
+                enableActionButtons={this.state.enableActionButtons}
                 updateManualStartTime={this.state.updateManualStartTime}
                 data={this.props.document_contents.pages}
                 zoomPercent={this.state.zoomPercent}

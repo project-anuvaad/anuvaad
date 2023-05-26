@@ -172,7 +172,7 @@ class AppRoutes extends React.Component {
             /> */}
 
             <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/interactive-document/:jobid/:inputfileid/:modelId/:filename/:workflow/:source_language_code/:target_language_code/:granularStatus`}
+              path={`${process.env.PUBLIC_URL}/interactive-document/:jobid/:inputfileid/:modelId/:filename/:workflow/:source_language_code/:target_language_code`}
               userRoles={["TRANSLATOR", "ANNOTATOR"]}
               component={DocumentEditorV1}
               title="Translate file"
@@ -420,7 +420,7 @@ class AppRoutes extends React.Component {
             />
 
             <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/review-doc/:recordId/:fname/:jobId/:currentStatus`}
+              path={`${process.env.PUBLIC_URL}/review-doc/:recordId/:fname/:jobId`}
               dontShowLoader
               title={"Review Document"}
               userRoles={["ADMIN", "REVIEWER"]}
