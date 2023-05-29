@@ -211,7 +211,7 @@ export default function UploadProcessModal(props) {
     const [activeStep, setActiveStep] = React.useState(1);
     const [steps, setSteps] = useState([]);
 
-    const { progressData, onCopyClick, onUploadOtherDoc, goToDashboardLink, uploadOtherDocLink } = props;
+    const { progressData, fileName, onCopyClick, onUploadOtherDoc, goToDashboardLink, uploadOtherDocLink } = props;
 
     const handleNext = () => {
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -284,7 +284,7 @@ export default function UploadProcessModal(props) {
                     <Typography style={{ margin: 5 }} variant="subtitle1">Job ID : <b>{progressData?.jobID}</b> </Typography>
                     <IconButton
                         onClick={() => {
-                            navigator.clipboard.writeText(progressData?.jobID);
+                            navigator.clipboard.writeText(`Job ID: ${progressData?.jobID} \n File Name: ${fileName} \n User: ${JSON.parse(localStorage.getItem("userProfile"))?.userName} `);
                             onCopyClick();
                         }}
                     >

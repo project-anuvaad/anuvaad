@@ -706,6 +706,7 @@ class PdfUpload extends Component {
             onUploadOtherDoc={()=>this.onUploadOtherDoc()} 
             goToDashboardLink={`${process.env.PUBLIC_URL}/view-document`} 
             uploadOtherDocLink={`${process.env.PUBLIC_URL}/document-upload`}
+            fileName={this.state.files[0].name}
           />
         }
       </div>
