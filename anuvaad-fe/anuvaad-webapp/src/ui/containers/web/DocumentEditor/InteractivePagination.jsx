@@ -133,7 +133,7 @@ class InteractivePagination extends React.Component {
       }
 
     }).catch(err => {
-      console.log(err);
+      // console.log(err);
     })
 
   }
@@ -211,7 +211,7 @@ class InteractivePagination extends React.Component {
   }
 
   setConfPercentage = (event) => {
-    console.log(event.target.value)
+    // console.log(event.target.value)
   }
 
   adjustFontPixel = (event, pixel) => {

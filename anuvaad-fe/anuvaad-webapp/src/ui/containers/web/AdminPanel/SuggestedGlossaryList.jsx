@@ -130,7 +130,7 @@ class SuggestedGlossaryList extends React.Component {
   }
 
   handleAcceptSuggestion = (dataArray) => {
-    console.log("dataArray", dataArray);
+    // console.log("dataArray", dataArray);
     // console.log("this.props.suggestedGlossaryData", this.props.suggestedGlossaryData)
     this.makeCreateGlossaryAPICall(dataArray[2], dataArray[0], dataArray[1], dataArray[4], dataArray[6], dataArray[5]);
   }
@@ -299,7 +299,7 @@ class SuggestedGlossaryList extends React.Component {
                       style={{ color: "#233466", padding: "5px" }}
                       component="a"
                       onClick={() => {
-                        console.log("tableMeta.rowData ---- ", tableMeta.rowData);
+                        // console.log("tableMeta.rowData ---- ", tableMeta.rowData);
                         this.setState({ updateObj: tableMeta.rowData }, () => {
                           this.handleUpdateModalToggle(true);
                         })

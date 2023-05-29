@@ -281,7 +281,7 @@ class PdfUpload extends Component {
 
   componentDidMount() {
     TELEMETRY.pageLoadStarted("document-upload");
-    console.log("this.props.match --- ", this.props.match);
+    // console.log("this.props.match --- ", this.props.match);
     const { APITransport } = this.props;
     const apiModel = new FetchModel();
     APITransport(apiModel);
@@ -385,7 +385,7 @@ class PdfUpload extends Component {
         // console.log("res -------- ", res);
         this.setState({ documentState: res?.data?.jobs[0]})
       }).catch(err => {
-        console.log("err -------- ", err);
+        // console.log("err -------- ", err);
       })
   }
 

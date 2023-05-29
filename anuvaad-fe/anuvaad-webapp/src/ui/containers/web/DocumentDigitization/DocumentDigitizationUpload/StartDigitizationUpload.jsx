@@ -159,7 +159,7 @@ class StartDigitizationUpload extends React.Component {
                 // console.log("res -------- ", res);
                 this.setState({ documentState: res?.data?.jobs[0] })
             }).catch(err => {
-                console.log("err -------- ", err);
+                // console.log("err -------- ", err);
             })
     }
 
@@ -214,7 +214,7 @@ class StartDigitizationUpload extends React.Component {
 
     handleChange = files => {
         if (files.length > 0) {
-            console.log(files[0]);
+            // console.log(files[0]);
             let path = files[0].name.split('.');
             let fileType = path[path.length - 1];
             let fileName = path.splice(0, path.length - 1).join('.')

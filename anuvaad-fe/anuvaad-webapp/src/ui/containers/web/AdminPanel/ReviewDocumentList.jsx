@@ -124,7 +124,7 @@ class ReviewDocumentList extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        console.log("prevState ----- ", prevState.selectedFilter);
+        // console.log("prevState ----- ", prevState.selectedFilter);
         if (prevState.selectedFilter !== this.state.selectedFilter) {
             this.makeAPICallJobsBulkSearch(
                 this.state.offset,
@@ -322,7 +322,7 @@ class ReviewDocumentList extends React.Component {
 
     handleDocumentView = (fid, fname, status, sentenceCount) => {
         const recordID = this.props.job_details.documents.filter(doc => doc.jobID === fid)[0].recordId
-        console.log("recordID", recordID);
+        // console.log("recordID", recordID);
         history.push(`${process.env.PUBLIC_URL}/review-doc/${recordID}/${fname}/${fid}`)
     }
 
@@ -762,7 +762,7 @@ class ReviewDocumentList extends React.Component {
                                 // defaultValue={this.state.selectedFilter}
                                 style={{ width: 300, fontSize: "1rem" }}
                                 onChange={(e) => {
-                                    console.log("e.target.value   ", e.target.value);
+                                    // console.log("e.target.value   ", e.target.value);
                                     this.setState({ selectedFilter: e.target.value })
                                 }}
                             >

@@ -465,7 +465,7 @@ class CreateUser extends React.Component {
                   }
                 }
               }).catch((error) => {
-                console.log('api failed because of server or network')
+                // console.log('api failed because of server or network')
               });
             }, 3000)
           }
