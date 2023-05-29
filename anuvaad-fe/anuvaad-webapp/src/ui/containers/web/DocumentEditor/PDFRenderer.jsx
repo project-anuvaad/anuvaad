@@ -38,7 +38,7 @@ class PDFRenderer extends React.Component {
     }).then(async response => {
       if (!response.ok) {
         this.setState({ msg: "Failed to load file..." })
-        console.log("api failed")
+        // console.log("api failed")
       } else {
         this.setState({ msg: null })
 
@@ -54,7 +54,7 @@ class PDFRenderer extends React.Component {
       }
     }).catch((error) => {
       this.setState({ msg: "Failed to load file..." })
-      console.log('api failed because of server or network', error)
+      // console.log('api failed because of server or network', error)
     });
 
   }

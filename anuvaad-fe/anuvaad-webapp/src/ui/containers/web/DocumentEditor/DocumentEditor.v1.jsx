@@ -142,10 +142,10 @@ class DocumentEditor extends React.Component {
       headers: apiObj.getHeaders().headers
     }).then(async response => {
       const rsp_data = await response.json();
-      console.log("rsp_data ---- ", rsp_data);
+      // console.log("rsp_data ---- ", rsp_data);
       let docArr = get_document_details(rsp_data);
       this.setState({currentJobDetails: docArr[0]})
-      console.log("docArr ------- ", docArr);
+      // console.log("docArr ------- ", docArr);
       if(docArr?.length > 0){
         if(docArr[0].currentGranularStatus === "FINAL EDITING - IN PROGRESS" || docArr[0].currentGranularStatus === "AUTO TRANSLATION - COMPLETED"){
           this.setState({enableActionButtons: true});
@@ -248,7 +248,7 @@ class DocumentEditor extends React.Component {
       );
       APITransport(apiObj);
     }).catch(err => {
-      console.log(err);
+      // console.log(err);
     })
 
   }
@@ -435,7 +435,7 @@ class DocumentEditor extends React.Component {
     // TELEMETRY.mergeSentencesEvent(initial_sentences, final_sentence)
     let model = LANG_MODEL.fetchModel(parseInt(this.props.match.params.modelId), this.props.fetch_models, this.props.match.params.source_language_code, this.props.match.params.target_language_code, this.props.match.params.source_language_code, this.props.match.params.target_language_code)
     this.informUserProgress(translate('common.page.label.RETRANSLATE_SENTENCE'));
-    console.log("model in retranslation === ", model);
+    // console.log("model in retranslation === ", model);
     let apiObj = new WorkFlowAPI("WF_S_TR", updated_blocks, this.props.match.params.jobid, model.source_language_code, model.target_language_code,
       '', model, [sentence_ids], "", "", [], "", true)
     const apiReq = fetch(apiObj.apiEndPoint(), {
@@ -858,7 +858,7 @@ class DocumentEditor extends React.Component {
   renderSentences = () => {
 
     let pages = this.getPages()
-    console.log("pages --- ", pages);
+    // console.log("pages --- ", pages);
     if (pages.length < 1) {
       return (
         <div></div>
@@ -940,7 +940,7 @@ class DocumentEditor extends React.Component {
           <>
             <Split className='split'>
               <div>{!this.state.docView && this.renderDocumentPages()}</div>
-              <div>{!this.props.show_pdf ? this.renderSentences() : this.renderPDFDocument()}</div>
+              <div>{!this.props.show_pdf && (this.state.currentJobDetails && this.state.currentJobDetails.currentGranularStatus) ? this.renderSentences() : this.renderPDFDocument()}</div>
             </Split>
             <div style={{ height: "65px", marginTop: "13px", bottom: "0px", position: "absolute", width: "100%" }}>
               <InteractivePagination count={this.props.document_contents.count}

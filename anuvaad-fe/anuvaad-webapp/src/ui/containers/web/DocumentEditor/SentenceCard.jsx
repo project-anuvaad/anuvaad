@@ -1092,7 +1092,7 @@ class SentenceCard extends React.Component {
   };
 
   retranslateSentence = () => {
-    console.log("this.state.value", this.state.value);
+    // console.log("this.state.value", this.state.value);
     if (this.props.onAction) {
       let eventArray = this.handleTimeCalc(
         "Retranslate",
@@ -1103,7 +1103,7 @@ class SentenceCard extends React.Component {
       );
       this.setState({ eventArray });
       this.setState({ value: "" });
-      console.log("eventArray", eventArray);
+      // console.log("eventArray", eventArray);
       this.props.onAction(
         SENTENCE_ACTION.RETRANSLATE_SENTENCE,
         this.props.pageNumber,
@@ -1513,9 +1513,9 @@ class SentenceCard extends React.Component {
   };
 
   renderReviewerComment = () => {
-    console.log("this.isSentenceIncorrect() && this.props.sentence.comments ---- ");
-    console.log(this.isSentenceIncorrect() + "   -------  " + this.props.sentence.comments);
-    console.log("this.props.granularStatus.trim() ---- ", this.props.granularStatus.trim());
+    // console.log("this.isSentenceIncorrect() && this.props.sentence.comments ---- ");
+    // console.log(this.isSentenceIncorrect() + "   -------  " + this.props.sentence.comments);
+    // console.log("this.props.granularStatus.trim() ---- ", this.props.granularStatus.trim());
     return <div>
       <Divider />
       <Typography variant="subtitle1" gutterBottom>
@@ -1729,7 +1729,7 @@ class SentenceCard extends React.Component {
       locale,
       "JUDICIARY"
     );
-    console.log("apiObj", apiObj);
+    // console.log("apiObj", apiObj);
     fetch(apiObj.apiEndPoint(), {
       method: "post",
       body: JSON.stringify(apiObj.getBody()),

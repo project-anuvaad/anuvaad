@@ -80,10 +80,10 @@ class DocumentReview extends React.Component {
       headers: apiObj.getHeaders().headers
     }).then(async response => {
       const rsp_data = await response.json();
-      console.log("rsp_data ---- ", rsp_data);
+      // console.log("rsp_data ---- ", rsp_data);
       let docArr = get_document_details(rsp_data);
       this.setState({currentJobDetails: docArr[0]})
-      console.log("docArr ------- ", docArr);
+      // console.log("docArr ------- ", docArr);
       if(docArr?.length > 0){
         if(docArr[0].currentGranularStatus === "FINAL EDITING - IN PROGRESS" || docArr[0].currentGranularStatus === "REVIEWER - COMPLETED"){
           this.setState({disableActions: true});
@@ -172,7 +172,7 @@ class DocumentReview extends React.Component {
         variant: "error"
       };
       this.setState({ snackbarInfo: currentInfoState });
-      console.log(err);
+      // console.log(err);
     })
 
   }
@@ -239,7 +239,7 @@ class DocumentReview extends React.Component {
     })
       .then(response => response.json())
       .then(result => {
-        console.log(result);
+        // console.log(result);
         if(this.state.currentJobDetails.currentGranularStatus === "FINAL EDITING - COMPLETED"){
           this.updateGranularity(["reviewerInProgress"], "Review Comment Updated!", false)
         } else{

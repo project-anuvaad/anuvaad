@@ -171,7 +171,7 @@ class InteractiveDocHeader extends React.Component {
                     showStatus: false,
                     message: null,
                   });
-                  console.log("api failed");
+                  // console.log("api failed");
                 } else {
                   const buffer = new Uint8Array(await response.arrayBuffer());
                   let res = Buffer.from(buffer).toString("base64");
@@ -182,7 +182,7 @@ class InteractiveDocHeader extends React.Component {
               })
               .catch((error) => {
                 this.setState({ dialogMessage: "Unable to download file" });
-                console.log("api failed because of server or network", error);
+                // console.log("api failed because of server or network", error);
               });
           } else {
             this.setState({
@@ -199,7 +199,7 @@ class InteractiveDocHeader extends React.Component {
           message: null,
           dialogMessage: "Unable to download file",
         });
-        console.log("api failed because of server or network", error);
+        // console.log("api failed because of server or network", error);
       });
   }
 
@@ -216,7 +216,7 @@ class InteractiveDocHeader extends React.Component {
       })
       .catch((error) => {
         this.setState({ dialogMessage: "Unable to download file" });
-        console.log("Unable to download file");
+        // console.log("Unable to download file");
       });
   };
 
@@ -274,7 +274,7 @@ class InteractiveDocHeader extends React.Component {
                   showStatus: false,
                   message: null,
                 });
-                console.log("api failed");
+                // console.log("api failed");
               } else {
                 const buffer = new Uint8Array(await response.arrayBuffer());
                 let res = Buffer.from(buffer).toString("base64");
@@ -285,7 +285,7 @@ class InteractiveDocHeader extends React.Component {
             })
             .catch((error) => {
               this.setState({ dialogMessage: "Unable to download file" });
-              console.log("api failed because of server or network", error);
+              // console.log("api failed because of server or network", error);
             });
         } else {
           this.setState({

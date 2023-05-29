@@ -303,13 +303,13 @@ class ViewDocument extends React.Component {
 
   processJobTimelinesClick(jobId, recordId) {
     let taskDetails = this.getJobIdDetail(jobId);
-    console.log("taskDetails ---- ", taskDetails);
+    // console.log("taskDetails ---- ", taskDetails);
     this.setState({ showInfo: true, message: taskDetails, dialogType: "info", dialogTitle: "File Process Information" });
   }
 
   processGranularStausInfoClick(jobId, recordId) {
     let taskDetails = this.getJobIdDetail(jobId);
-    console.log("taskDetails ---- ", taskDetails);
+    // console.log("taskDetails ---- ", taskDetails);
     this.setState({ showInfo: true, message: taskDetails, dialogType: "info", dialogTitle: "File Process Information" });
   }
 
@@ -399,7 +399,7 @@ class ViewDocument extends React.Component {
             timeOut: 3000,
             variant: "error",
           });
-          console.log("api failed");
+          // console.log("api failed");
         } else {
           const buffer = new Uint8Array(await response.arrayBuffer());
           let res = Buffer.from(buffer).toString("base64");
@@ -422,7 +422,7 @@ class ViewDocument extends React.Component {
           timeOut: 3000,
           variant: "error",
         });
-        console.log("api failed because of server or network", error);
+        // console.log("api failed because of server or network", error);
       });
   };
 
@@ -654,7 +654,7 @@ class ViewDocument extends React.Component {
                       style={{ color: "#233466", padding: "5px" }}
                       component="a"
                       onClick={() => {
-                        console.log("tableMeta ---- ", tableMeta)
+                        // console.log("tableMeta ---- ", tableMeta)
                         this.processJobTimelinesClick(
                           tableMeta.rowData[1],
                           tableMeta.rowData[2]
