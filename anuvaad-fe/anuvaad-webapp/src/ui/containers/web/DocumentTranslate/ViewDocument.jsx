@@ -34,6 +34,7 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import UploadProcessModal from "../DocumentUpload/UploadProcessModal";
 import GranularTaskDetailsModal from "./GranularTaskDetailsModal";
+import { CustomTableFooter } from "../../../components/web/common/CustomTableFooter";
 
 const TELEMETRY = require("../../../../utils/TelemetryManager");
 
@@ -107,7 +108,7 @@ class ViewDocument extends React.Component {
     // console.log("limit (Number(this.state.inputPageNumber)-1)*10 ---> ", this.props.job_details.count);
     // this.makeAPICallJobsBulkSearch(0, (Number(this.state.inputPageNumber)-1)*10, false, false, true)
     this.tableRef.current.changePage(Number(this.state.inputPageNumber) - 1);
-    this.setState({ currentPageIndex: this.state.inputPageNumber - 1 }, ()=> {
+    this.setState({ currentPageIndex: this.state.inputPageNumber - 1 }, () => {
       this.makeAPICallDocumentsTranslationProgress();
     });
   }
@@ -252,10 +253,10 @@ class ViewDocument extends React.Component {
   getJobsAsPerPageAndLimit = (page, limit) => {
     // console.log("this.getJobsSortedByTimestamp() ------- ", this.getJobsSortedByTimestamp());
     return this.getJobsSortedByTimestamp()
-    .slice(
-      page * limit,
-      page * limit + limit
-    );
+      .slice(
+        page * limit,
+        page * limit + limit
+      );
   };
 
   getRecordIds = () => {
@@ -306,7 +307,7 @@ class ViewDocument extends React.Component {
     this.setState({ showInfo: true, message: taskDetails, dialogType: "info", dialogTitle: "File Process Information" });
   }
 
-  processGranularStausInfoClick(jobId, recordId){
+  processGranularStausInfoClick(jobId, recordId) {
     let taskDetails = this.getJobIdDetail(jobId);
     console.log("taskDetails ---- ", taskDetails);
     this.setState({ showInfo: true, message: taskDetails, dialogType: "info", dialogTitle: "File Process Information" });
@@ -631,7 +632,7 @@ class ViewDocument extends React.Component {
             // if(value.includes("FAILED")){
             //   return <Typography variant="body2" style={{color: "red"}}>{value}</Typography>
             // } else {
-              return <Typography variant="body2">{value}</Typography>
+            return <Typography variant="body2">{value}</Typography>
             // }
           }
         },
@@ -652,7 +653,7 @@ class ViewDocument extends React.Component {
                     <IconButton
                       style={{ color: "#233466", padding: "5px" }}
                       component="a"
-                      onClick={() =>{
+                      onClick={() => {
                         console.log("tableMeta ---- ", tableMeta)
                         this.processJobTimelinesClick(
                           tableMeta.rowData[1],
@@ -786,66 +787,34 @@ class ViewDocument extends React.Component {
         const startIndex = page * rowsPerPage;
         const endIndex = (page + 1) * rowsPerPage;
         const totalPageCount = Math.ceil(this.props.job_details.count / 10);
-        // totalPageCount = totalPageCount > 0 && 
-        // console.log("this.state.currentPageIndex", this.state.currentPageIndex);
-        // console.log("totalPageCount", totalPageCount);
         return (
-
-          <TableFooter>
-            {totalPageCount > 0 &&
-              <TableRow>
-                <TableCell colSpan={12}>
-                  <div style={{ textAlign: "end", justifyContent: "space-evenly" }}>
-                  <Typography variant="caption" style={{ fontSize: "0.9rem", fontWeight: "600", float: 'left',padding: '10px'}}>Total Documents - <b>{this.props.job_details.count}</b></Typography>
-                    <Typography variant="caption" style={{ fontSize: "0.9rem", fontWeight: "600" }}>Page No. - </Typography>
-                    <TextField
-                      type="number"
-                      style={{ width: "4%", marginRight: "1%", marginLeft: "1%" }}
-                      ref={this.pageInputRef}
-                      onFocus={() => this.setState({ isInputActive: true })}
-                      onBlur={() => this.setState({ isInputActive: false })}
-                      InputProps={{
-
-                        inputProps: {
-                          style: { textAlign: "center" },
-                          max: totalPageCount, min: 1
-                        }
-                      }}
-                      onChange={(event) => this.handleInputPageChange(event, totalPageCount)}
-                      value={this.state.inputPageNumber}
-                    />
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      style={{ borderRadius: "15%" }}
-                      onClick={() => {
-                        this.onChangePageMAnually()
-                      }}
-                    >Go</Button>
-                    <IconButton
-                      onClick={() => {
-                        this.setState({ currentPageIndex: this.state.currentPageIndex - 1 }, ()=>this.makeAPICallDocumentsTranslationProgress())
-                        this.tableRef.current.changePage(Number(this.state.currentPageIndex - 1))
-                      }}
-                      tabIndex={this.state.currentPageIndex - 1}
-                      disabled={this.state.currentPageIndex == 0}>
-                      <ChevronLeftIcon />
-                    </IconButton>
-                    <Typography variant="caption" style={{ fontSize: "0.9rem", fontWeight: "600" }}>Page {parseInt(this.state.currentPageIndex + 1)} of {parseInt(totalPageCount)} </Typography>
-                    <IconButton
-                      onClick={() => {
-                        this.setState({ currentPageIndex: this.state.currentPageIndex + 1 }, ()=>this.makeAPICallDocumentsTranslationProgress())
-                        this.tableRef.current.changePage(Number(this.state.currentPageIndex + 1))
-                      }}
-                      tabIndex={this.state.currentPageIndex + 1}
-                      disabled={this.state.currentPageIndex == totalPageCount}>
-                      <ChevronRightIcon />
-                    </IconButton>
-                  </div>
-                </TableCell>
-              </TableRow>}
-          </TableFooter>
-
+          <CustomTableFooter
+            renderCondition={totalPageCount > 0}
+            countLabel={"Total Documents"}
+            totalCount={this.props.job_details.count}
+            pageInputRef={this.pageInputRef}
+            inputValue={this.state.inputPageNumber}
+            onInputFocus={()=>this.setState({ isInputActive: true })}
+            onInputBlur={()=>this.setState({ isInputActive: false })}
+            handleInputChange={this.handleInputPageChange}
+            totalPageCount={totalPageCount}
+            onGoToPageClick={this.onChangePageMAnually}
+            onBackArrowClick={() => {
+              this.setState({ currentPageIndex: this.state.currentPageIndex - 1 }, ()=>this.makeAPICallDocumentsTranslationProgress())
+              this.tableRef.current.changePage(Number(this.state.currentPageIndex - 1))
+            }
+            }
+            onRightArrowClick={() => {
+              this.setState({ currentPageIndex: this.state.currentPageIndex + 1 }, () => this.makeAPICallDocumentsTranslationProgress())
+              this.tableRef.current.changePage(Number(this.state.currentPageIndex + 1))
+            }
+            }
+            backArrowTabIndex={this.state.currentPageIndex - 1}
+            backArrowDisable={this.state.currentPageIndex == 0}
+            rightArrowTabIndex={this.state.currentPageIndex + 1}
+            rightArrowDisable={this.state.currentPageIndex == totalPageCount}
+            pageTextInfo={`Page ${parseInt(this.state.currentPageIndex + 1)} of ${parseInt(totalPageCount)}`}
+          />
         );
       }
     };
@@ -857,7 +826,7 @@ class ViewDocument extends React.Component {
           {!this.state.showLoader && (
             <MuiThemeProvider theme={this.getMuiTheme()}>
               <DataTable
-                title={"Translate " +  translate("common.page.title.document")}
+                title={"Translate " + translate("common.page.title.document")}
                 data={this.getJobsSortedByTimestamp()}
                 columns={columns}
                 options={options}

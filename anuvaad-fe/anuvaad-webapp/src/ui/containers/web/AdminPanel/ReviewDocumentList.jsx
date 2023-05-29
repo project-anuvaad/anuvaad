@@ -24,6 +24,7 @@ import EventIcon from '@material-ui/icons/Event';
 import clearEvent from '../../../../flux/actions/apis/admin/clear_user_event_report';
 import DataTable from "../../../components/web/common/DataTable";
 import { FormControl, InputLabel, MenuItem, Select } from "@material-ui/core";
+import { CustomTableFooter } from "../../../components/web/common/CustomTableFooter";
 
 
 const TELEMETRY = require("../../../../utils/TelemetryManager");
@@ -31,6 +32,8 @@ const TELEMETRY = require("../../../../utils/TelemetryManager");
 class ReviewDocumentList extends React.Component {
     constructor(props) {
         super(props);
+        this.tableRef = React.createRef();
+        this.pageInputRef = React.createRef();
         this.state = {
             role: localStorage.getItem("roles"),
             showInfo: false,
@@ -43,20 +46,24 @@ class ReviewDocumentList extends React.Component {
             filterOptionData: [
                 {
                     label: "Pending/In-Progress",
-                    value: ["manual_editing_completed", "reviewer_in_progress", "manual_reediting_completed"]
+                    value: ["manual_editing_completed", "reviewer_in_progress", "manual_reediting_completed"],
+                    tableTitle: "Document Review Pending/In-Progress"
                 },
                 {
                     label: "Sent For Correction",
-                    value: ["reviewer_completed"]
+                    value: ["reviewer_completed"],
+                    tableTitle: "Document Sent For Correction"
                 },
                 {
                     label: "Completed",
-                    value: ["reviewer_completed"]
+                    value: ["reviewer_completed"],
+                    tableTitle: "Review Completed"
                 }
             ],
+            selectedFilter: 0,
             // userID: [this.props.match.params.id]
 
-            //             auto_translation_completed
+            // auto_translation_completed
             // manual_editing_in_progress
             // manual_editing_completed
             // reviewer_in_progress
@@ -64,9 +71,10 @@ class ReviewDocumentList extends React.Component {
             // manual_reediting_in_progress
             // manual_reediting_completed
             // parallel_document_uploaded
-
-            selectedFilter: 0,
-
+            isInputActive: false,
+            inputPageNumber: 1,
+            currentPageIndex: 0,
+                    
         };
     }
 
@@ -102,6 +110,11 @@ class ReviewDocumentList extends React.Component {
             )
             // this.makeAPICallDocumentsTranslationProgress();
             this.setState({ showLoader: true })
+        }
+
+        window.addEventListener("keydown", (e) => this.keyPress(e));
+        return () => {
+            window.removeEventListener("keydown", (e) => this.keyPress(e));
         }
     }
 
@@ -462,6 +475,31 @@ class ReviewDocumentList extends React.Component {
         }, 3000)
     }
 
+    keyPress = (e) => {
+        if (e.code === "Enter" && this.state.isInputActive) {
+            // handleTransliterationModelClose();
+            // console.log("enter key press.");
+            this.onChangePageMAnually();
+        }
+    };
+
+    onChangePageMAnually = () => {
+        this.tableRef.current.changePage(Number(this.state.inputPageNumber) - 1)
+        this.setState({ currentPageIndex: this.state.inputPageNumber - 1 })
+    }
+
+    handleInputPageChange = (event, totalPageCount) => {
+        if (event.target.value <= totalPageCount) {
+            this.setState({ inputPageNumber: event.target.value })
+        } else if (event.target.value > totalPageCount) {
+            this.setState({ inputPageNumber: totalPageCount })
+        } else if (event.target.value == 0) {
+            this.setState({ inputPageNumber: 1 })
+        } else if (event.target.value < 0) {
+            this.setState({ inputPageNumber: 1 })
+        }
+    }
+
     render() {
         const columns = [
             {
@@ -634,21 +672,21 @@ class ReviewDocumentList extends React.Component {
                 options: { sortDirection: "desc" },
             },
 
-            onTableChange: (action, tableState) => {
-                switch (action) {
-                    case "changePage":
-                        this.processTableClickedNextOrPrevious(
-                            tableState.page
-                        );
-                        this.setState({ showLoader: true, limit: tableState.rowsPerPage })
-                        break;
-                    case "changeRowsPerPage":
-                        this.setState({ showLoader: true, limit: tableState.rowsPerPage, currentPageIndex: tableState.page })
-                        // this.makeAPICallDocumentsTranslationProgress(tableState.rowsPerPage);
-                        break;
-                    default:
-                }
-            },
+            // onTableChange: (action, tableState) => {
+            //     switch (action) {
+            //         case "changePage":
+            //             this.processTableClickedNextOrPrevious(
+            //                 tableState.page
+            //             );
+            //             this.setState({ showLoader: true, limit: tableState.rowsPerPage })
+            //             break;
+            //         case "changeRowsPerPage":
+            //             this.setState({ showLoader: true, limit: tableState.rowsPerPage, currentPageIndex: tableState.page })
+            //             // this.makeAPICallDocumentsTranslationProgress(tableState.rowsPerPage);
+            //             break;
+            //         default:
+            //     }
+            // },
             count: this.props.job_details.count,
             filterType: "checkbox",
             download: false,
@@ -661,11 +699,51 @@ class ReviewDocumentList extends React.Component {
                 direction: "desc",
             },
             page: this.state.currentPageIndex,
+            customFooter: (
+                count,
+                page,
+                rowsPerPage,
+                changeRowsPerPage,
+                changePage
+            ) => {
+                const startIndex = page * rowsPerPage;
+                const endIndex = (page + 1) * rowsPerPage;
+                const totalPageCount = Math.ceil(this.props.job_details.count / 10);
+                return (
+                    <CustomTableFooter
+                        renderCondition={totalPageCount > 0}
+                        countLabel={"Total Documents"}
+                        totalCount={this.props.job_details.count}
+                        pageInputRef={this.pageInputRef}
+                        inputValue={this.state.inputPageNumber}
+                        onInputFocus={() => this.setState({ isInputActive: true })}
+                        onInputBlur={() => this.setState({ isInputActive: false })}
+                        handleInputChange={this.handleInputPageChange}
+                        totalPageCount={totalPageCount}
+                        onGoToPageClick={this.onChangePageMAnually}
+                        onBackArrowClick={() => {
+                            this.setState({ currentPageIndex: this.state.currentPageIndex - 1 })
+                            this.tableRef.current.changePage(Number(this.state.currentPageIndex - 1))
+                        }
+                        }
+                        onRightArrowClick={() => {
+                            this.setState({ currentPageIndex: this.state.currentPageIndex + 1 })
+                            this.tableRef.current.changePage(Number(this.state.currentPageIndex + 1))
+                        }
+                        }
+                        backArrowTabIndex={this.state.currentPageIndex - 1}
+                        backArrowDisable={this.state.currentPageIndex == 0}
+                        rightArrowTabIndex={this.state.currentPageIndex + 1}
+                        rightArrowDisable={this.state.currentPageIndex == totalPageCount}
+                        pageTextInfo={`Page ${parseInt(this.state.currentPageIndex + 1)} of ${parseInt(totalPageCount)}`}
+                    />
+                );
+            }
         };
 
         return (
-            <div style={{ minHeight: window.innerHeight - 2 }}>
-                <div style={{ margin: "0% 3% 3% 3%", paddingTop: "7%", paddingBottom: "1%" }}>
+            <div style={{}}>
+                <div style={{ margin: "0% 3% 3% 3%", paddingTop: "2%" }}>
                     <UserReportHeader />
                     {/* {!this.state.showLoader && ( */}
                     <div
@@ -675,24 +753,25 @@ class ReviewDocumentList extends React.Component {
                             marginBottom: 10
                         }}
                     >
-                        <FormControl style={{textAlign: "start"}}>
+                        <FormControl style={{ textAlign: "start" }}>
                             <InputLabel id="demo-simple-select-label">Filter By Status</InputLabel>
                             <Select
                                 labelId="demo-simple-select-label"
                                 id="demo-simple-select"
                                 value={this.state.selectedFilter}
                                 // defaultValue={this.state.selectedFilter}
-                                style={{ width: 300 }}
+                                style={{ width: 300, fontSize: "1rem" }}
                                 onChange={(e) => {
                                     console.log("e.target.value   ", e.target.value);
-                                    this.setState({ selectedFilter: e.target.value})
+                                    this.setState({ selectedFilter: e.target.value })
                                 }}
                             >
                                 {
                                     this.state.filterOptionData.map((el, i) => {
                                         return <MenuItem
-                                            selected={i===0}
+                                            selected={i === 0}
                                             value={i}
+                                            style={{fontSize: "1rem"}}
                                         >
                                             {el.label}
                                         </MenuItem>
@@ -704,10 +783,11 @@ class ReviewDocumentList extends React.Component {
 
                     <MuiThemeProvider theme={this.getMuiTheme()}>
                         <DataTable
-                            title={`Documents To Review`}
+                            title={this.state.filterOptionData[this.state.selectedFilter].tableTitle}
                             data={this.getJobsSortedByTimestamp()}
                             columns={columns}
                             options={options}
+                            innerRef={this.tableRef}
                         />
                     </MuiThemeProvider>
                     {/* )} */}

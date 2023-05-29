@@ -96,23 +96,16 @@ class UploadTranslatedDocument extends Component {
             false,
             false,
             [],
-            this.getStartAndEndTimeForDocuments()
+            {},
+            true,
+            ["auto_translation_completed", "manual_editing_in_progress"]
         );
 
         Axios.post(apiObj?.endpoint, apiObj?.getBody(), { headers: apiObj?.getHeaders().headers })
             .then(res => {
-                // console.log("res -------- ", res);
                 let data = res?.data?.jobs;
                 let result = [];
-                data.filter((el, i) => {
-                    if (
-                        (el.status === "COMPLETED" && el?.granularity && el.granularity?.manualEditingStatus === "IN PROGRESS")
-                        || (el.status === "COMPLETED" && !el?.granularity)
-                    ) {
-                        result.push(el);
-                    }
-                })
-                this.setState({ jobs: result });
+                this.setState({ jobs: data });
             }).catch(err => {
                 console.log("err -------- ", err);
             })
