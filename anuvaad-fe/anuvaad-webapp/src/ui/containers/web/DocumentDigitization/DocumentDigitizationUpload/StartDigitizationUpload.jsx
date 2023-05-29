@@ -479,6 +479,7 @@ class StartDigitizationUpload extends React.Component {
                         onUploadOtherDoc={() => this.onUploadOtherDoc()}
                         goToDashboardLink={`${process.env.PUBLIC_URL}/document-digitization`}
                         uploadOtherDocLink={`${process.env.PUBLIC_URL}/digitize-document-upload`}
+                        fileName={this.state.fileName}
                     />
                 }
             </div >
