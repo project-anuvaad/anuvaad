@@ -1647,7 +1647,7 @@ class SentenceCard extends React.Component {
   };
 
   isSentenceIncorrect = () => {
-    if (this.props.sentence.redo) {
+    if (this.props.sentence.redo && this.props.granularStatus.trim() === "FINAL EDITING - IN PROGRESS") {
       return true
     } else {
       return false

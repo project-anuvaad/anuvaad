@@ -255,9 +255,13 @@ class DocumentEditor extends React.Component {
 
   getTransliterationModel(srcLang) {
     const { APITransport } = this.props;
-    const apiObj = new fetchTransliterationModelID(this.state.srcLangCode, this.state.targLangCode);
-    APITransport(apiObj);
-
+    if(this.state.srcLangCode === "en"){
+      const apiObj = new fetchTransliterationModelID(this.state.srcLangCode, this.state.targLangCode);
+      APITransport(apiObj);
+    } else {
+      const apiObj = new fetchTransliterationModelID("en", this.state.srcLangCode);
+      APITransport(apiObj);
+    }
   }
 
   fetchPages(page_no, index) {

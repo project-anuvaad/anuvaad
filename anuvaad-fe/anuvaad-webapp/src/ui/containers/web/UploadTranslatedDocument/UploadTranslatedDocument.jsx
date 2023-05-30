@@ -105,7 +105,7 @@ class UploadTranslatedDocument extends Component {
                 let data = get_document_details(res?.data);
                     let result = [];
                     data.filter((el,i)=>{
-                        if(el.currentGranularStatus === "AUTO TRANSLATION - COMPLETED" || el.currentGranularStatus === "FINAL EDITING - IN PROGRESS"){
+                        if(el.currentGranularStatus === "AUTO TRANSLATION - COMPLETED"){
                             result.push(el);
                         }
                     })
