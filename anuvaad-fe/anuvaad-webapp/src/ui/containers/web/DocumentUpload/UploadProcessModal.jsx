@@ -281,7 +281,12 @@ export default function UploadProcessModal(props) {
                     alignItems='center'
                     style={{ display: "flex" }}
                 >
-                    <Typography style={{ margin: 5 }} variant="subtitle1">Job ID : <b>{progressData?.jobID}</b> </Typography>
+                    <div>
+                        <Typography style={{ margin: 5 }} variant="subtitle1">Job ID : <b>{progressData?.jobID}</b> </Typography>
+                        <Typography style={{ margin: 5 }} variant="subtitle1">File Name : <b>{fileName}</b> </Typography>
+                        <Typography style={{ margin: 5 }} variant="subtitle1">Status : <b>{progressData?.status}</b> </Typography>
+                    </div>
+                    
                     <IconButton
                         onClick={() => {
                             navigator.clipboard.writeText(`Job ID: ${progressData?.jobID} \n File Name: ${fileName} \n User: ${JSON.parse(localStorage.getItem("userProfile"))?.userName} `);
@@ -291,7 +296,7 @@ export default function UploadProcessModal(props) {
                         <FileCopyIcon color='primary' />
                     </IconButton>
                 </Grid>
-                {progressData?.status === "COMPLETED" && <Typography style={{ margin: 5 }} variant="subtitle1">Job Status : <b>COMPLETED</b> </Typography>}
+                {/* {progressData?.status === "COMPLETED" && <Typography style={{ margin: 5 }} variant="subtitle1">Job Status : <b>COMPLETED</b> </Typography>} */}
 
                 <Divider />
                 <Stepper activeStep={steps.length - 1} orientation="vertical">

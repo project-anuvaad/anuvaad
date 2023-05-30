@@ -51,7 +51,7 @@ class ReviewDocumentList extends React.Component {
                 },
                 {
                     label: "Sent For Correction",
-                    value: ["reviewer_completed"],
+                    value: ["manual_reediting_in_progress"],
                     tableTitle: "Document Sent For Correction"
                 },
                 {
@@ -660,7 +660,7 @@ class ReviewDocumentList extends React.Component {
             textLabels: {
                 body: {
                     noMatch:
-                        this.props.fetch_document.state,
+                        this.props.job_details.state,
                 },
                 toolbar: {
                     search: translate("graderReport.page.muiTable.search"),
