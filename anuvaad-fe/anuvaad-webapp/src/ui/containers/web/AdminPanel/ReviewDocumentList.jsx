@@ -23,13 +23,17 @@ import DownloadFile from "../../../../flux/actions/apis/download/download_file";
 import EventIcon from '@material-ui/icons/Event';
 import clearEvent from '../../../../flux/actions/apis/admin/clear_user_event_report';
 import DataTable from "../../../components/web/common/DataTable";
+import { FormControl, InputLabel, MenuItem, Select } from "@material-ui/core";
+import { CustomTableFooter } from "../../../components/web/common/CustomTableFooter";
 
 
 const TELEMETRY = require("../../../../utils/TelemetryManager");
 
-class UserReport extends React.Component {
+class ReviewDocumentList extends React.Component {
     constructor(props) {
         super(props);
+        this.tableRef = React.createRef();
+        this.pageInputRef = React.createRef();
         this.state = {
             role: localStorage.getItem("roles"),
             showInfo: false,
@@ -39,8 +43,38 @@ class UserReport extends React.Component {
             dialogMessage: null,
             timeOut: 3000,
             variant: "info",
-            userID: [this.props.match.params.id]
+            filterOptionData: [
+                {
+                    label: "Pending/In-Progress",
+                    value: ["manual_editing_completed", "reviewer_in_progress", "manual_reediting_completed"],
+                    tableTitle: "Document Review Pending/In-Progress"
+                },
+                {
+                    label: "Sent For Correction",
+                    value: ["manual_reediting_in_progress"],
+                    tableTitle: "Document Sent For Correction"
+                },
+                {
+                    label: "Completed",
+                    value: ["reviewer_completed"],
+                    tableTitle: "Review Completed"
+                }
+            ],
+            selectedFilter: 0,
+            // userID: [this.props.match.params.id]
 
+            // auto_translation_completed
+            // manual_editing_in_progress
+            // manual_editing_completed
+            // reviewer_in_progress
+            // reviewer_completed
+            // manual_reediting_in_progress
+            // manual_reediting_completed
+            // parallel_document_uploaded
+            isInputActive: false,
+            inputPageNumber: 1,
+            currentPageIndex: 0,
+                    
         };
     }
 
@@ -60,7 +94,7 @@ class UserReport extends React.Component {
                 false,
                 false,
                 this.state.userID,
-
+                this.state.filterOptionData[this.state.selectedFilter].value
             );
         }
         else {
@@ -72,9 +106,15 @@ class UserReport extends React.Component {
                 false,
                 false,
                 this.state.userID,
+                this.state.filterOptionData[this.state.selectedFilter].value
             )
-            this.makeAPICallDocumentsTranslationProgress();
+            // this.makeAPICallDocumentsTranslationProgress();
             this.setState({ showLoader: true })
+        }
+
+        window.addEventListener("keydown", (e) => this.keyPress(e));
+        return () => {
+            window.removeEventListener("keydown", (e) => this.keyPress(e));
         }
     }
 
@@ -83,7 +123,20 @@ class UserReport extends React.Component {
         TELEMETRY.pageLoadCompleted("user-report");
     }
 
-    componentDidUpdate(prevProps) {
+    componentDidUpdate(prevProps, prevState) {
+        // console.log("prevState ----- ", prevState.selectedFilter);
+        if (prevState.selectedFilter !== this.state.selectedFilter) {
+            this.makeAPICallJobsBulkSearch(
+                this.state.offset,
+                this.state.limit,
+                [""],
+                false,
+                false,
+                false,
+                this.state.userID,
+                this.state.filterOptionData[this.state.selectedFilter].value
+            );
+        }
         if (this.props.job_details.changedJob && this.props.job_details.changedJob.hasOwnProperty("jobID") && prevProps.job_details.changedJob !== this.props.job_details.changedJob) {
             this.setState({ showLoader: false })
             TELEMETRY.endWorkflow(this.props.job_details.changedJob.source_language_code, this.props.job_details.changedJob.target_language_code, this.props.job_details.changedJob.filename, this.props.job_details.changedJob.jobID, this.props.job_details.changedJob.status)
@@ -97,7 +150,7 @@ class UserReport extends React.Component {
              * update job progress status only progress_updated is false
              */
             if (!this.props.job_details.progress_updated) {
-                this.makeAPICallDocumentsTranslationProgress();
+                // this.makeAPICallDocumentsTranslationProgress();
                 this.setState({ showLoader: false });
             }
 
@@ -118,7 +171,7 @@ class UserReport extends React.Component {
             this.setState({ showLoader: false });
         }
         else if (this.props.fetch_document.result.count !== prevProps.fetch_document.result.count) {
-            this.makeAPICallDocumentsTranslationProgress();
+            // this.makeAPICallDocumentsTranslationProgress();
             this.setState({ showLoader: false });
         }
         else if (this.props.fetch_document.result.jobIDs !== undefined &&
@@ -152,7 +205,8 @@ class UserReport extends React.Component {
         searchForNewJob = false,
         searchNextPage = false,
         updateExisting = false,
-        userIDs = this.state.userID,
+        userIDs = [],
+        jobCurrentStatus = [],
     ) {
         const { APITransport } = this.props;
         const apiObj = new FetchDocument(
@@ -162,8 +216,12 @@ class UserReport extends React.Component {
             searchForNewJob,
             searchNextPage,
             updateExisting,
-            userIDs,
-            true
+            [],
+            true,
+            true,
+            jobCurrentStatus
+            // ["auto_translation_completed"]
+            // ["manual_editing_completed", "reviewer_in_progress"]
         );
         APITransport(apiObj);
     }
@@ -174,9 +232,9 @@ class UserReport extends React.Component {
         } else {
             var recordIds = this.getRecordIds();
         }
-       
+
         if (recordIds.length > 0) {
-            const uniqueIDs = recordIds.filter((val,id,array) => array.indexOf(val) == id);
+            const uniqueIDs = recordIds.filter((val, id, array) => array.indexOf(val) == id);
             const { APITransport } = this.props;
             const apiObj = new JobStatus(uniqueIDs, true);
             // const apiObj = new JobStatus(recordIds, true);
@@ -199,7 +257,7 @@ class UserReport extends React.Component {
     };
 
     getJobsAsPerPageAndLimit = (page, limit) => {
-        if(limit === 0) {
+        if (limit === 0) {
             // limit = 10  
             this.setState({ limit: 10 });
         }
@@ -252,7 +310,7 @@ class UserReport extends React.Component {
 
     processDocumentView = (fid, fname, status, sentenceCount) => {
         return (
-            <Tooltip title="View User Details" placement="right">
+            <Tooltip title="View Document Details" placement="right">
                 <IconButton style={{ color: '#233466', padding: '5px' }}
                     component="a"
                     onClick={() => this.handleDocumentView(fid, fname, status, sentenceCount)}>
@@ -263,23 +321,9 @@ class UserReport extends React.Component {
     }
 
     handleDocumentView = (fid, fname, status, sentenceCount) => {
-        if (status === 'COMPLETED' && sentenceCount[0] !== '.' && sentenceCount[0] !== '0') {
-            const recordID = this.props.job_details.documents.filter(doc => doc.jobID === fid)[0].recordId
-            history.push(`${process.env.PUBLIC_URL}/document-stats/${recordID}/${fname}`)
-        } else {
-            if (status === 'FAILED') {
-                this.setState({ dialogMessage: 'Document translation is failed' })
-            }
-            else if (status === 'INPROGRESS') {
-                this.setState({ dialogMessage: 'Document still in progress' })
-
-            } else {
-                this.setState({ dialogMessage: 'No sentences are saved' })
-            }
-        }
-        setTimeout(() => {
-            this.setState({ dialogMessage: "" })
-        }, 3000)
+        const recordID = this.props.job_details.documents.filter(doc => doc.jobID === fid)[0].recordId
+        // console.log("recordID", recordID);
+        history.push(`${process.env.PUBLIC_URL}/review-doc/${recordID}/${fname}/${fid}`)
     }
 
 
@@ -337,67 +381,67 @@ class UserReport extends React.Component {
         }
     };
 
-    processDocumentDownload = (jobId) => {
-        return <Tooltip title="Download input file" placement="left">
-            <IconButton
-                style={{ color: "#233466", padding: "5px" }}
-                component="a"
-                onClick={() =>
-                    this.processDownloadInputFileClick(jobId)
-                }
-            >
-                <CloudDownloadIcon />
-            </IconButton>
-        </Tooltip>
-    }
+    // processDocumentDownload = (jobId) => {
+    //     return <Tooltip title="Download input file" placement="left">
+    //         <IconButton
+    //             style={{ color: "#233466", padding: "5px" }}
+    //             component="a"
+    //             onClick={() =>
+    //                 this.processDownloadInputFileClick(jobId)
+    //             }
+    //         >
+    //             <CloudDownloadIcon />
+    //         </IconButton>
+    //     </Tooltip>
+    // }
 
-    processDownloadInputFileClick = (jobId) => {
-        this.setState({
-            dialogMessage: "Downloading file...",
-            timeOut: null,
-            variant: "info",
-        });
-        let job = this.getJobIdDetail(jobId);
-        let user_profile = JSON.parse(localStorage.getItem("userProfile"));
-        let obj = new DownloadFile(job.converted_filename, this.props.match.params.id);
+    // processDownloadInputFileClick = (jobId) => {
+    //     this.setState({
+    //         dialogMessage: "Downloading file...",
+    //         timeOut: null,
+    //         variant: "info",
+    //     });
+    //     let job = this.getJobIdDetail(jobId);
+    //     let user_profile = JSON.parse(localStorage.getItem("userProfile"));
+    //     let obj = new DownloadFile(job.converted_filename, this.props.match.params.id);
 
-        const apiReq1 = fetch(obj.apiEndPoint(), {
-            method: "get",
-            headers: obj.getHeaders().headers,
-        })
-            .then(async (response) => {
-                if (!response.ok) {
-                    this.setState({
-                        dialogMessage: "Failed to download file...",
-                        timeOut: 3000,
-                        variant: "info",
-                    });
-                    // console.log("api failed");
-                } else {
-                    const buffer = new Uint8Array(await response.arrayBuffer());
-                    let res = Buffer.from(buffer).toString("base64");
+    //     const apiReq1 = fetch(obj.apiEndPoint(), {
+    //         method: "get",
+    //         headers: obj.getHeaders().headers,
+    //     })
+    //         .then(async (response) => {
+    //             if (!response.ok) {
+    //                 this.setState({
+    //                     dialogMessage: "Failed to download file...",
+    //                     timeOut: 3000,
+    //                     variant: "info",
+    //                 });
+    //                 console.log("api failed");
+    //             } else {
+    //                 const buffer = new Uint8Array(await response.arrayBuffer());
+    //                 let res = Buffer.from(buffer).toString("base64");
 
-                    fetch("data:image/jpeg;base64," + res)
-                        .then((res) => res.blob())
-                        .then((blob) => {
-                            let a = document.createElement("a");
-                            let url = URL.createObjectURL(blob);
-                            a.href = url;
-                            a.download = job.converted_filename;
-                            this.setState({ dialogMessage: null });
-                            a.click();
-                        });
-                }
-            })
-            .catch((error) => {
-                this.setState({
-                    dialogMessage: "Failed to download file...",
-                    timeOut: 3000,
-                    variant: "info",
-                });
-                // console.log("api failed because of server or network", error);
-            });
-    };
+    //                 fetch("data:image/jpeg;base64," + res)
+    //                     .then((res) => res.blob())
+    //                     .then((blob) => {
+    //                         let a = document.createElement("a");
+    //                         let url = URL.createObjectURL(blob);
+    //                         a.href = url;
+    //                         a.download = job.converted_filename;
+    //                         this.setState({ dialogMessage: null });
+    //                         a.click();
+    //                     });
+    //             }
+    //         })
+    //         .catch((error) => {
+    //             this.setState({
+    //                 dialogMessage: "Failed to download file...",
+    //                 timeOut: 3000,
+    //                 variant: "info",
+    //             });
+    //             console.log("api failed because of server or network", error);
+    //         });
+    // };
 
     processEventView = (jobId, status, sentenceCount) => {
         return <Tooltip title="View Events" placement="right">
@@ -429,6 +473,31 @@ class UserReport extends React.Component {
         setTimeout(() => {
             this.setState({ dialogMessage: "" })
         }, 3000)
+    }
+
+    keyPress = (e) => {
+        if (e.code === "Enter" && this.state.isInputActive) {
+            // handleTransliterationModelClose();
+            // console.log("enter key press.");
+            this.onChangePageMAnually();
+        }
+    };
+
+    onChangePageMAnually = () => {
+        this.tableRef.current.changePage(Number(this.state.inputPageNumber) - 1)
+        this.setState({ currentPageIndex: this.state.inputPageNumber - 1 })
+    }
+
+    handleInputPageChange = (event, totalPageCount) => {
+        if (event.target.value <= totalPageCount) {
+            this.setState({ inputPageNumber: event.target.value })
+        } else if (event.target.value > totalPageCount) {
+            this.setState({ inputPageNumber: totalPageCount })
+        } else if (event.target.value == 0) {
+            this.setState({ inputPageNumber: 1 })
+        } else if (event.target.value < 0) {
+            this.setState({ inputPageNumber: 1 })
+        }
     }
 
     render() {
@@ -473,7 +542,7 @@ class UserReport extends React.Component {
                 },
             },
             {
-                name: "status",
+                name: "currentGranularStatus",
                 label: translate("common.page.table.status"),
                 options: {
                     filter: true,
@@ -488,6 +557,7 @@ class UserReport extends React.Component {
                     filter: true,
                     sort: false,
                     empty: true,
+                    display: "excluded",
                 },
             },
             {
@@ -497,19 +567,22 @@ class UserReport extends React.Component {
                     filter: true,
                     sort: false,
                     empty: true,
+                    display: "excluded",
                 },
             }, {
                 name: "bleu_score",
                 label: "Average Bleu",
                 options: {
                     hint: "Total bleu score / Total saved sentence",
-                    sort: false
+                    sort: false,
+                    display: "excluded",
                 }
             }, {
                 name: "spent_time",
                 label: "Time Spent",
                 options: {
-                    sort: false
+                    sort: false,
+                    display: "excluded",
                 }
             },
             {
@@ -573,7 +646,7 @@ class UserReport extends React.Component {
                             return (
                                 <div>
                                     {this.processDocumentView(tableMeta.rowData[1], tableMeta.rowData[0], tableMeta.rowData[5], tableMeta.rowData[6])}
-                                    {this.processDocumentDownload(tableMeta.rowData[1])}
+                                    {/* {this.processDocumentDownload(tableMeta.rowData[1])} */}
                                     {/* {this.processEventView(tableMeta.rowData[1], tableMeta.rowData[5], tableMeta.rowData[6])} */}
                                 </div>
                             );
@@ -587,7 +660,7 @@ class UserReport extends React.Component {
             textLabels: {
                 body: {
                     noMatch:
-                        this.props.fetch_document.state,
+                        this.props.job_details.state,
                 },
                 toolbar: {
                     search: translate("graderReport.page.muiTable.search"),
@@ -599,21 +672,21 @@ class UserReport extends React.Component {
                 options: { sortDirection: "desc" },
             },
 
-            onTableChange: (action, tableState) => {
-                switch (action) {
-                    case "changePage":
-                        this.processTableClickedNextOrPrevious(
-                            tableState.page
-                        );
-                        this.setState({ showLoader: true, limit: tableState.rowsPerPage })
-                        break;
-                    case "changeRowsPerPage":
-                        this.setState({ showLoader: true, limit: tableState.rowsPerPage, currentPageIndex: tableState.page  })
-                        this.makeAPICallDocumentsTranslationProgress(tableState.rowsPerPage);
-                        break;
-                    default:
-                }
-            },
+            // onTableChange: (action, tableState) => {
+            //     switch (action) {
+            //         case "changePage":
+            //             this.processTableClickedNextOrPrevious(
+            //                 tableState.page
+            //             );
+            //             this.setState({ showLoader: true, limit: tableState.rowsPerPage })
+            //             break;
+            //         case "changeRowsPerPage":
+            //             this.setState({ showLoader: true, limit: tableState.rowsPerPage, currentPageIndex: tableState.page })
+            //             // this.makeAPICallDocumentsTranslationProgress(tableState.rowsPerPage);
+            //             break;
+            //         default:
+            //     }
+            // },
             count: this.props.job_details.count,
             filterType: "checkbox",
             download: false,
@@ -626,18 +699,95 @@ class UserReport extends React.Component {
                 direction: "desc",
             },
             page: this.state.currentPageIndex,
+            customFooter: (
+                count,
+                page,
+                rowsPerPage,
+                changeRowsPerPage,
+                changePage
+            ) => {
+                const startIndex = page * rowsPerPage;
+                const endIndex = (page + 1) * rowsPerPage;
+                const totalPageCount = Math.ceil(this.props.job_details.count / 10);
+                return (
+                    <CustomTableFooter
+                        renderCondition={totalPageCount > 0}
+                        countLabel={"Total Documents"}
+                        totalCount={this.props.job_details.count}
+                        pageInputRef={this.pageInputRef}
+                        inputValue={this.state.inputPageNumber}
+                        onInputFocus={() => this.setState({ isInputActive: true })}
+                        onInputBlur={() => this.setState({ isInputActive: false })}
+                        handleInputChange={this.handleInputPageChange}
+                        totalPageCount={totalPageCount}
+                        onGoToPageClick={this.onChangePageMAnually}
+                        onBackArrowClick={() => {
+                            this.setState({ currentPageIndex: this.state.currentPageIndex - 1 })
+                            this.tableRef.current.changePage(Number(this.state.currentPageIndex - 1))
+                        }
+                        }
+                        onRightArrowClick={() => {
+                            this.setState({ currentPageIndex: this.state.currentPageIndex + 1 })
+                            this.tableRef.current.changePage(Number(this.state.currentPageIndex + 1))
+                        }
+                        }
+                        backArrowTabIndex={this.state.currentPageIndex - 1}
+                        backArrowDisable={this.state.currentPageIndex == 0}
+                        rightArrowTabIndex={this.state.currentPageIndex + 1}
+                        rightArrowDisable={this.state.currentPageIndex == totalPageCount}
+                        pageTextInfo={`Page ${parseInt(this.state.currentPageIndex + 1)} of ${parseInt(totalPageCount)}`}
+                    />
+                );
+            }
         };
+
         return (
-            <div style={{ minHeight: window.innerHeight - 2 }}>
-                <div style={{ margin: "0% 3% 3% 3%", paddingTop: "7%", paddingBottom: "1%" }}>
+            <div style={{}}>
+                <div style={{ margin: "0% 3% 3% 3%", paddingTop: "2%" }}>
                     <UserReportHeader />
                     {/* {!this.state.showLoader && ( */}
+                    <div
+                        style={{
+                            width: "100%",
+                            textAlign: "end",
+                            marginBottom: 10
+                        }}
+                    >
+                        <FormControl style={{ textAlign: "start" }}>
+                            <InputLabel id="demo-simple-select-label">Filter By Status</InputLabel>
+                            <Select
+                                labelId="demo-simple-select-label"
+                                id="demo-simple-select"
+                                value={this.state.selectedFilter}
+                                // defaultValue={this.state.selectedFilter}
+                                style={{ width: 300, fontSize: "1rem" }}
+                                onChange={(e) => {
+                                    // console.log("e.target.value   ", e.target.value);
+                                    this.setState({ selectedFilter: e.target.value })
+                                }}
+                            >
+                                {
+                                    this.state.filterOptionData.map((el, i) => {
+                                        return <MenuItem
+                                            selected={i === 0}
+                                            value={i}
+                                            style={{fontSize: "1rem"}}
+                                        >
+                                            {el.label}
+                                        </MenuItem>
+                                    })
+                                }
+                            </Select>
+                        </FormControl>
+                    </div>
+
                     <MuiThemeProvider theme={this.getMuiTheme()}>
                         <DataTable
-                            title={`${this.props.match.params.name}'s Detail`}
+                            title={this.state.filterOptionData[this.state.selectedFilter].tableTitle}
                             data={this.getJobsSortedByTimestamp()}
                             columns={columns}
                             options={options}
+                            innerRef={this.tableRef}
                         />
                     </MuiThemeProvider>
                     {/* )} */}
@@ -652,11 +802,13 @@ class UserReport extends React.Component {
     }
 }
 
-const mapStateToProps = (state) => ({
-    apistatus: state.apistatus,
-    job_details: state.job_details,
-    fetch_document: state.fetchDocument
-});
+const mapStateToProps = (state) => {
+    return {
+        apistatus: state.apistatus,
+        job_details: state.job_details,
+        fetch_document: state.fetchDocument
+    }
+};
 
 const mapDispatchToProps = (dispatch) =>
     bindActionCreators(
@@ -672,6 +824,6 @@ const mapDispatchToProps = (dispatch) =>
 
 export default withRouter(
     withStyles(NewCorpusStyle)(
-        connect(mapStateToProps, mapDispatchToProps)(UserReport)
+        connect(mapStateToProps, mapDispatchToProps)(ReviewDocumentList)
     )
 );

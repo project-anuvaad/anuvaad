@@ -281,7 +281,7 @@ class PdfUpload extends Component {
 
   componentDidMount() {
     TELEMETRY.pageLoadStarted("document-upload");
-    console.log("this.props.match --- ", this.props.match);
+    // console.log("this.props.match --- ", this.props.match);
     const { APITransport } = this.props;
     const apiModel = new FetchModel();
     APITransport(apiModel);
@@ -385,7 +385,7 @@ class PdfUpload extends Component {
         // console.log("res -------- ", res);
         this.setState({ documentState: res?.data?.jobs[0]})
       }).catch(err => {
-        console.log("err -------- ", err);
+        // console.log("err -------- ", err);
       })
   }
 
@@ -525,7 +525,7 @@ class PdfUpload extends Component {
           <Select
             labelId="demo-simple-select-outlined-label"
             id="target-lang"
-            value={this.state.target}
+            // value={this.state.target}
             onChange={this.processTargetLanguageSelected}
             value={this.state.target_language_code}
             fullWidth
@@ -706,6 +706,7 @@ class PdfUpload extends Component {
             onUploadOtherDoc={()=>this.onUploadOtherDoc()} 
             goToDashboardLink={`${process.env.PUBLIC_URL}/view-document`} 
             uploadOtherDocLink={`${process.env.PUBLIC_URL}/document-upload`}
+            fileName={this.state.files[0].name}
           />
         }
       </div>

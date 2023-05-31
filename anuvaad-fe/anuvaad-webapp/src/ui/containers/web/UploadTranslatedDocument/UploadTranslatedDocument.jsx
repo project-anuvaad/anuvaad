@@ -26,6 +26,7 @@ import FetchDocument from "../../../../flux/actions/apis/view_document/fetch_doc
 import Axios from "axios";
 import UploadDocToS3 from "../../../../flux/actions/apis/document_translate/s3_upload_doc";
 import ConfirmBox from "../../../components/web/common/ConfirmBox";
+import { get_document_details } from "../../../../utils/getFormattedJobData";
 
 const TELEMETRY = require("../../../../utils/TelemetryManager");
 const LANG_MODEL = require("../../../../utils/language.model");
@@ -101,17 +102,14 @@ class UploadTranslatedDocument extends Component {
 
         Axios.post(apiObj?.endpoint, apiObj?.getBody(), { headers: apiObj?.getHeaders().headers })
             .then(res => {
-                // console.log("res -------- ", res);
-                let data = res?.data?.jobs;
-                let result = [];
-                data.filter((el, i) => {
-                    if (
-                        (el.status === "COMPLETED" && el?.granularity && el.granularity?.manualEditingStatus === "IN PROGRESS")
-                        || (el.status === "COMPLETED" && !el?.granularity)
-                    ) {
-                        result.push(el);
-                    }
-                })
+                let data = get_document_details(res?.data);
+                    let result = [];
+                    data.filter((el,i)=>{
+                        if(el.currentGranularStatus === "AUTO TRANSLATION - COMPLETED"){
+                            result.push(el);
+                        }
+                    })
+                // console.log("result --- ", result);
                 this.setState({ jobs: result });
             }).catch(err => {
                 console.log("err -------- ", err);
@@ -143,9 +141,10 @@ class UploadTranslatedDocument extends Component {
 
     validationCheckBeforeFinalSubmit = () => {
         if (this.state.files.length > 0 && this.state.selectedJob) {
+          
             let uploadJobName = this.state.files[0]?.name;
-            let selectedJobName = this.state.selectedJob?.input?.jobName;
-
+            let selectedJobName = this.state.selectedJob?.filename;
+            
             let uploadFileName = uploadJobName?.substr(0, uploadJobName?.lastIndexOf("."));
             let selectedFileName = selectedJobName?.substr(0, selectedJobName?.lastIndexOf("."))
             if (selectedFileName + "_translated" !== uploadFileName) {
@@ -162,7 +161,7 @@ class UploadTranslatedDocument extends Component {
         this.setState({ showCompleteConfirmBox: false })
 
         let uploadJobName = this.state.files[0]?.name;
-        let selectedJobName = this.state.selectedJob?.input?.jobName;
+        let selectedJobName = this.state.selectedJob?.filename;
 
 
         let uploadFileName = uploadJobName?.substr(0, uploadJobName?.lastIndexOf("."));
@@ -171,7 +170,7 @@ class UploadTranslatedDocument extends Component {
         const fData = new FormData();
         fData.append("file", this.state.files[0]);
         fData.append("job_id", this.state.selectedJob?.jobID);
-        fData.append("src_file", this.state.selectedJob?.input?.files[0].path);
+        fData.append("src_file", this.state.selectedJob?.converted_filename);
 
         console.log("fData --- ", Object.fromEntries(fData));
 
@@ -183,7 +182,7 @@ class UploadTranslatedDocument extends Component {
             headers: apiObj.getHeaders().headers
         }).then(async response => {
             const rsp_data = await response.json();
-            console.log("rsp_data ----- ", rsp_data);
+            // console.log("rsp_data ----- ", rsp_data);
             if (!rsp_data.ok) {
                 this.setState({
                     open: true,
@@ -290,7 +289,7 @@ class UploadTranslatedDocument extends Component {
                     <Autocomplete
                         id="combo-box-demo"
                         options={this.state.jobs}
-                        getOptionLabel={(option) => option.input.jobName}
+                        getOptionLabel={(option) => option.filename}
                         style={{ marginTop: 3 }}
                         onChange={(e, value) => {
                             console.log(value);

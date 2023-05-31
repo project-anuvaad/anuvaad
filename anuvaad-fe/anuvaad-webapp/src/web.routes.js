@@ -49,6 +49,8 @@ import UserManagement from "./ui/containers/web/User/UserManagement";
 import Analytics from "./ui/containers/web/Analytics/Analytics";
 import Intro from "./ui/containers/web/Intro/Intro";
 import UploadTranslatedDocument from "./ui/containers/web/UploadTranslatedDocument/UploadTranslatedDocument";
+import ReviewDocumentList from "./ui/containers/web/AdminPanel/ReviewDocumentList";
+import DocumentReview from "./ui/containers/web/AdminPanel/DocumentReview";
 
 const PrivateRoute = ({ headerAttribute: headerAttribute, component: Component, userRoles, title, drawer, showLogo, forDemo, dontShowLoader, dontShowHeader, currentMenu, authenticate, ...rest }) => (
   <Route
@@ -319,7 +321,7 @@ class AppRoutes extends React.Component {
               path={`${process.env.PUBLIC_URL}/user-details`}
               dontShowLoader
               title={"User Details"}
-              userRoles={["ADMIN", "SUPERADMIN"]}
+              userRoles={["ADMIN", "SUPERADMIN", "REVIEWER"]}
               component={UserDetails}
               authenticate={this.authenticateUser}
               currentMenu="user-details"
@@ -394,12 +396,35 @@ class AppRoutes extends React.Component {
               currentMenu="user-report"
               dontShowHeader={false}
             />
+
+            <PrivateRoute
+              path={`${process.env.PUBLIC_URL}/review-documents`}
+              dontShowLoader
+              title={"Review Documents"}
+              userRoles={["ADMIN", "REVIEWER"]}
+              component={ReviewDocumentList}
+              authenticate={this.authenticateUser}
+              currentMenu="review-documents"
+              dontShowHeader={false}
+            />
+
             <PrivateRoute
               path={`${process.env.PUBLIC_URL}/document-stats/:recordId/:fname`}
               dontShowLoader
               title={"Document Stats"}
               userRoles={["ADMIN", "SUPERADMIN"]}
               component={DocumentStats}
+              authenticate={this.authenticateUser}
+              currentMenu="document-stats"
+              dontShowHeader={false}
+            />
+
+            <PrivateRoute
+              path={`${process.env.PUBLIC_URL}/review-doc/:recordId/:fname/:jobId`}
+              dontShowLoader
+              title={"Review Document"}
+              userRoles={["ADMIN", "REVIEWER"]}
+              component={DocumentReview}
               authenticate={this.authenticateUser}
               currentMenu="document-stats"
               dontShowHeader={false}

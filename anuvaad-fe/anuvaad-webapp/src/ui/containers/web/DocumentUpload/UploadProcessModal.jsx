@@ -211,7 +211,7 @@ export default function UploadProcessModal(props) {
     const [activeStep, setActiveStep] = React.useState(1);
     const [steps, setSteps] = useState([]);
 
-    const { progressData, onCopyClick, onUploadOtherDoc, goToDashboardLink, uploadOtherDocLink } = props;
+    const { progressData, fileName, onCopyClick, onUploadOtherDoc, goToDashboardLink, uploadOtherDocLink } = props;
 
     const handleNext = () => {
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -281,17 +281,22 @@ export default function UploadProcessModal(props) {
                     alignItems='center'
                     style={{ display: "flex" }}
                 >
-                    <Typography style={{ margin: 5 }} variant="subtitle1">Job ID : <b>{progressData?.jobID}</b> </Typography>
+                    <div>
+                        <Typography style={{ margin: 5 }} variant="subtitle1">Job ID : <b>{progressData?.jobID}</b> </Typography>
+                        <Typography style={{ margin: 5 }} variant="subtitle1">File Name : <b>{fileName}</b> </Typography>
+                        <Typography style={{ margin: 5 }} variant="subtitle1">Status : <b>{progressData?.status}</b> </Typography>
+                    </div>
+                    
                     <IconButton
                         onClick={() => {
-                            navigator.clipboard.writeText(progressData?.jobID);
+                            navigator.clipboard.writeText(`Job ID: ${progressData?.jobID} \n File Name: ${fileName} \n User: ${JSON.parse(localStorage.getItem("userProfile"))?.userName} `);
                             onCopyClick();
                         }}
                     >
                         <FileCopyIcon color='primary' />
                     </IconButton>
                 </Grid>
-
+                {/* {progressData?.status === "COMPLETED" && <Typography style={{ margin: 5 }} variant="subtitle1">Job Status : <b>COMPLETED</b> </Typography>} */}
 
                 <Divider />
                 <Stepper activeStep={steps.length - 1} orientation="vertical">

@@ -42,6 +42,26 @@ function getUserContent(data) {
   return sentence
 }
 
+function getAllContent(data){
+  let sentence = []
+  data.hasOwnProperty('data') && data.data.forEach(data => {
+    data.hasOwnProperty('text_blocks') && data.text_blocks.forEach(token => {
+      token.hasOwnProperty('tokenized_sentences') && token.tokenized_sentences.forEach(val => {
+          sentence.push({
+            s0_src: val.s0_src,
+            s0_tgt: val.s0_tgt,
+            tgt: val.tgt,
+            bleu_score: val.bleu_score ? Math.round(val.bleu_score * 100) / 100 : '-',
+            time_spent: getTimeSpent(val.time_spent_ms),
+            rating_score: val.rating_score ? val.rating_score : '-',
+            ...val
+          })
+      })
+    })
+  })
+  return sentence
+}
+
 function removeSpaces(actionPayload) {
   actionPayload.hasOwnProperty('data') && actionPayload.data.forEach(data => {
     if (data.text_blocks) {
@@ -96,6 +116,12 @@ export default function (state = initialUserState, action) {
         result: removeSpaces(result)
       };
 
+    case C.FETCH_ALL_DOCUMENT_CONTENT_TO_REVIEW:
+      return {
+        ...state,
+        data: getAllContent(action.payload)
+      }
+
     case C.CLEAR_CONTENT:
       return initialUserState;
 
@@ -103,6 +129,12 @@ export default function (state = initialUserState, action) {
       return {
         ...state,
         data: getUserContent(action.payload),
+      }
+
+    case C.ADD_REVIEW_COMMENT:
+      return {
+        ...state,
+        data: action.payload
       }
 
     default:

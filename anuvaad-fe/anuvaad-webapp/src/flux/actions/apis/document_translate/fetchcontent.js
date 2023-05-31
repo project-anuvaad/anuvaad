@@ -3,12 +3,12 @@ import C from "../../constants";
 import ENDPOINTS from "../../../../configs/apiendpoints";
 
 export default class Pagination extends API {
-    constructor(job_id, start_page, end_page, isAdmin = false, timeout = 200000) {
+    constructor(job_id, start_page, end_page, isAdmin = false , isReviewer= false, timeout = 200000) {
         super("GET", timeout, false);
         this.job_id = encodeURIComponent(job_id);;
         this.start_page = start_page;
         this.end_page = end_page
-        this.type = isAdmin ? C.FETCH_USER_CONTENT : C.FETCH_CONTENT;
+        this.type = isAdmin ? C.FETCH_USER_CONTENT : isReviewer ? C.FETCH_ALL_DOCUMENT_CONTENT_TO_REVIEW : C.FETCH_CONTENT;
         this.endpoint = ENDPOINTS.fecthcontent;
     }
 
