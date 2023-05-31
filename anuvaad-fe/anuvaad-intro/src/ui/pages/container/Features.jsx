@@ -51,7 +51,7 @@ export default function Features() {
                Anuvaad is purely built on technologies supported by Python.
                This offers wide variety of tech stack to be easily integrated.
                The cloud agnostic stack also provides the flexibility to host
-               in any on-prem or cloud platforms..
+               in any on-prem or cloud platforms.
               </Typography>
             </Grid>
           </Grid>
