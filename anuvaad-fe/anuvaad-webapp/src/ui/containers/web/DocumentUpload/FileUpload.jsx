@@ -279,25 +279,35 @@ class PdfUpload extends Component {
   //   return null;
   // }
 
-  componentDidMount() {
-    TELEMETRY.pageLoadStarted("document-upload");
-    // console.log("this.props.match --- ", this.props.match);
+  fetchModelsAPICall = () => {
     const { APITransport } = this.props;
     const apiModel = new FetchModel();
     APITransport(apiModel);
+  }
+
+  componentDidMount() {
+    TELEMETRY.pageLoadStarted("document-upload");
+    // console.log("this.props.match --- ", this.props.match);
+    this.fetchModelsAPICall();
     this.setState({
       showLoader: true,
       uploadType: this.props.match.path === "/document-upload" ? true : false,
     });
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
 
     if (prevProps.match.path !== this.props.match.path) {
-      this.setState({ uploadType: this.props.match.path === "/document-upload" ? true : false, })
+      this.setState({ 
+        uploadType: this.props.match.path === "/document-upload" ? true : false, 
+        source_language_code: "",
+        target_language_code: "",
+      }, ()=> {
+        this.fetchModelsAPICall();
+      })
     }
 
-    if (prevProps.fetch_models.models !== this.props.fetch_models.models) {
+    if (prevProps.fetch_models.models !== this.props.fetch_models.models || prevState.uploadType !== this.state.uploadType ) {
       this.setState({
         source_languages: LANG_MODEL.get_supported_languages(
           this.props.fetch_models.models,
