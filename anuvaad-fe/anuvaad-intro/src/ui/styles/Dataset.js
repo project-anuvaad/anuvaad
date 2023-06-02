@@ -52,10 +52,22 @@ const DatasetStyle = makeStyles({
   },
   footerGrid: {
     backgroundColor: "#636365",
-    padding: "10px",
+    padding: "3px 45px 3px 3px",
     color: "white",
-    display: "flex",
-    justifyContent: "space-around",
+    // display: "flex",
+    // justifyContent: "center",
+    "@media (max-width:1200px)": {
+      padding: "3px 3px 3px 3px",
+    },
+  },
+  footerGridlast: {
+    backgroundColor: "#636365",
+    padding: "3px 0px 3px 60px",
+    color: "white",
+    "@media (max-width:1200px)": {
+      padding: "3px 3px 3px 3px",
+    },
+    
   },
   integrationPaper: {
     padding: "2px 4px",
@@ -141,6 +153,7 @@ const DatasetStyle = makeStyles({
    
   },
   thanks:{
+   
     "&:hover": {
         textDecoration: "underline",
         cursor: "pointer",

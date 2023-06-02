@@ -79,8 +79,8 @@ function Footer() {
           className={classes.footerGrid}
         >
            <a href=" https://github.com/project-anuvaad/anuvaad/blob/master/LICENSE">
-            <Typography variant="caption"> License </Typography>{" "}
-          </a> |
+            <Typography variant="caption" sx={{ml:"2px"}}> License </Typography>{" "}
+          </a> <span  style={{margin:"0px 15px 0px 15px"}}>|</span>
          
             <Typography variant="caption" onClick={handleClickThanks} sx={{mt:1}} className={classes.thanks} > Thanks </Typography>{" "} 
             
@@ -104,17 +104,17 @@ function Footer() {
           md={3}
           lg={3}
           xl={3}
-          className={classes.footerGrid}
+          className={classes.footerGridlast}
         >
          
           <a href="https://ai4bharat.org/">
             {" "}
             <Typography variant="caption"> AI4Bharat  </Typography>{" "}
-          </a>|
+          </a><span  style={{margin:"0px 15px 0px 15px"}}>|</span>
           <a href="https://ekstep.org/">
             {" "}
             <Typography variant="caption"> EkStep </Typography>{" "}
-          </a>|
+          </a><span  style={{margin:"0px 15px 0px 15px"}}>|</span>
           <a href="https://www.bhashini.gov.in">
             {" "}
             <Typography variant="caption"> Bhashini </Typography>{" "}
