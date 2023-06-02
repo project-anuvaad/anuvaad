@@ -55,6 +55,14 @@ class FileUploader(Resource):
                 # f = args['file']
                 return file_upload_s3(f,src_file,job_id)
             else:
+                parse = reqparse.RequestParser()
+                parse.add_argument('file', type=werkzeug.datastructures.FileStorage, location='files',
+                                help='File is required', required=True)
+                args = parse.parse_args()
+                f = args['file']
+                mime_type = f.mimetype
+                log_info("Filename: " + str(f.filename), None)
+                log_info("File MIME Type: " + str(mime_type), None)
                 file_real_name, file_extension = os.path.splitext(f.filename)
             # print(file_extension)
                 fileallowed = False
