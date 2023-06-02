@@ -126,7 +126,7 @@ const DatasetStyle = makeStyles({
     margin: "20px 0px 12px 0px",
   },
   footerimg:{
-    width: "45px",
+    width: "40px",
     margin: "20px 0px 12px 35px",
     borderRadius:"15%",
     maxHeight:"40px",
