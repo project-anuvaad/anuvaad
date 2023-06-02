@@ -235,9 +235,8 @@ export default function DrawerAppBar(props) {
           >
             <MenuIcon />
           </IconButton>
-          <Typography
-            variant="h6"
-            component="div"
+          <Grid
+           
             sx={{
               flexGrow: 1,
               display: { xs: "none", sm: "flex" },
@@ -245,8 +244,10 @@ export default function DrawerAppBar(props) {
               mr: 3,
             }}
           >
+            <Link to={`/`}>
             <img src={Anuvaanlogo} style={{ maxWidth: "83px" }} alt="logo" />
-          </Typography>
+            </Link>
+          </Grid>
         </Toolbar>
       </AppBar>
       <Box component="nav">

@@ -37,7 +37,7 @@ export default function Principles() {
             sx={{ mt: 3 }}
           >
             <Grid item xs={4} sm={4} md={4} lg={4} xl={4}>
-              <img src={Scalable} alt="logo" className={classes.footerimg} />
+              <img src={Scalable} alt="logo" className={classes.Principlesimg} />
               <Typography
                 variant="h4"
                 sx={{ mt: 1, mb: 1 }}
@@ -56,7 +56,7 @@ export default function Principles() {
               </Typography>
             </Grid>
             <Grid item xs={4} sm={4} md={4} lg={4} xl={4}>
-              <img src={Dynamic} alt="logo" className={classes.footerimg} />
+              <img src={Dynamic} alt="logo" className={classes.Principlesimg} />
               <Typography
                 variant="h4"
                 sx={{ mt: 1, mb: 1 }}
@@ -85,7 +85,7 @@ export default function Principles() {
           sx={{ mt: 2 }}
         >
           <Grid item xs={4} sm={4} md={4} lg={4} xl={4} sx={{ mt: 4 }}>
-            <img src={Extensible} alt="logo" className={classes.footerimg} />
+            <img src={Extensible} alt="logo" className={classes.Principlesimg} />
             <Typography
               variant="h4"
               sx={{ mt: 1, mb: 1 }}
@@ -104,7 +104,7 @@ export default function Principles() {
             </Typography>
           </Grid>
           <Grid item xs={4} sm={4} md={4} lg={4} xl={4} sx={{ mt: 4 }}>
-            <img src={Elegant} alt="logo" className={classes.footerimg} />
+            <img src={Elegant} alt="logo" className={classes.Principlesimg} />
             <Typography
               variant="h4"
               sx={{ mt: 1, mb: 1 }}

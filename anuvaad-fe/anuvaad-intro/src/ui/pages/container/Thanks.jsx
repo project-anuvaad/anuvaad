@@ -30,9 +30,9 @@ function Thanks() {
         </Typography>
         <Grid container spacing={1} sx={{ml:"13px"}} >
           {TeamDetails?.map((el, i) => (
-            <Grid item xs={4} sm={4} md={4} lg={4} xl={4} sx={{p:5,}}>
+            <Grid item xs={6} sm={6} md={3} lg={3} xl={3} sx={{p:8,}}>
               <Card>
-                <img
+                {/* <img
                   src={el.img}
                   alt="log"
                   style={{
@@ -41,7 +41,11 @@ function Thanks() {
                     borderRadius: "50%",
                     marginTop: "5px",
                   }}
-                />
+                /> */}
+                <CardMedia
+        sx={{ height: 300 }}
+        image={el.img}
+      />
                 <CardContent>
                   <Typography gutterBottom variant="h5" component="div">
                     {el.Name}

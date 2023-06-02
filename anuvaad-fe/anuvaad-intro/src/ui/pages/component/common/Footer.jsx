@@ -2,9 +2,10 @@ import React from "react";
 import { Grid, Typography, Button, Paper } from "@mui/material";
 import {Routes, Route, useNavigate,Link} from 'react-router-dom';
 import DatasetStyle from "../../../styles/Dataset";
-import YouTube from "../../../../utils/YouTube.svg";
-import Github from "../../../../utils/Github.svg";
-import Twitter from "../../../../utils/Twiitter.svg";
+import YouTube from "../../../../img/youtube.png";
+import Github from "../../../../img/gitHub.png";
+import Twitter from "../../../../img/twitter.png";
+import YouTubeIcon from '@mui/icons-material/YouTube';
 
 function Footer() {
   const classes = DatasetStyle();
@@ -16,8 +17,8 @@ function Footer() {
   }
 
   return (
-    <div>
-      <Grid container direction="row">
+    <div >
+      <Grid container direction="row" >
         <Grid
           item
           xs={12}
@@ -38,7 +39,7 @@ function Footer() {
             href="https://www.youtube.com/@projectanuvaad4271"
           >
             {" "}
-            <img src={YouTube} alt="logo" className={classes.footerimg} />
+            <img src={YouTube} alt="logo" style={{height:"48px"}}className={classes.footerimg} />
           </a>
         </Grid>
         <Grid
@@ -72,29 +73,40 @@ function Footer() {
           item
           xs={12}
           sm={12}
-          md={8}
-          lg={8}
-          xl={8}
+          md={2}
+          lg={2}
+          xl={2}
           className={classes.footerGrid}
         >
+           <a href=" https://github.com/project-anuvaad/anuvaad/blob/master/LICENSE">
+            <Typography variant="caption"> License </Typography>{" "}
+          </a> |
+         
+            <Typography variant="caption" onClick={handleClickThanks} sx={{mt:1}} className={classes.thanks} > Thanks </Typography>{" "} 
+            
           
         </Grid>
+        <Grid
+          item
+          xs={12}
+          sm={12}
+          md={7}
+          lg={7}
+          xl={7}
+          className={classes.footerGrid}
+        >
+          </Grid>
         
         <Grid
           item
           xs={12}
           sm={12}
-          md={4}
-          lg={4}
-          xl={4}
+          md={3}
+          lg={3}
+          xl={3}
           className={classes.footerGrid}
         >
-          <a href=" https://github.com/project-anuvaad/anuvaad/blob/master/LICENSE">
-            <Typography variant="caption"> License </Typography>{" "}
-          </a> |
          
-            <Typography variant="caption" onClick={handleClickThanks} sx={{mt:1}} className={classes.thanks} > Thanks </Typography>{" "} |
-            
           <a href="https://ai4bharat.org/">
             {" "}
             <Typography variant="caption"> AI4Bharat  </Typography>{" "}

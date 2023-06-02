@@ -38,24 +38,24 @@ const DatasetStyle = makeStyles({
   },
   footerGridMain: {
     backgroundColor: "#51504f",
-    padding: "30px",
+    padding: "20px",
     color: "white",
     display: "grid",
     textAlign: "end",
   },
   footerGridMains: {
     backgroundColor: "#51504f",
-    padding: "10px",
+    // padding: "5px",
     color: "white",
     display: "flex",
     textAlign: "start",
   },
   footerGrid: {
     backgroundColor: "#636365",
-    padding: "20px",
+    padding: "10px",
     color: "white",
     display: "flex",
-    justifyContent: "space-between",
+    justifyContent: "space-around",
   },
   integrationPaper: {
     padding: "2px 4px",
@@ -81,6 +81,10 @@ const DatasetStyle = makeStyles({
     lineHeight: "1.17px",
     color: "#51504f",
     letterSpacing: "1px",
+    "@media (max-width:990px)": {
+      lineHeight: "19px",
+      fontSize:"20px"
+    },
   },
   PrinciplesContent:{
     fontSize: "16px", color: "#707070", lineHeight: "25px" 
@@ -98,7 +102,9 @@ const DatasetStyle = makeStyles({
     lineHeight: 1.17,
     color: "#51504f",
     justifyContent: "center",
-    //    fontFamily:" roboto,sans-serif!important"
+    "@media (max-width:550px)": {
+      fontSize: "28px"
+    },
   },
   homeLink: {
     color: "#000",
@@ -115,17 +121,23 @@ const DatasetStyle = makeStyles({
     margin: "0 35px 25px 0",
     textAlign: "justify",
   },
-  footerimg: {
+  Principlesimg: {
     width: "100px",
     margin: "20px 0px 12px 0px",
+  },
+  footerimg:{
+    width: "45px",
+    margin: "20px 0px 12px 35px",
+    borderRadius:"15%",
+    maxHeight:"40px",
   },
   buttons: {
     textTransform: "capitalize",
     padding: "10px",
     backgroundColor: "rgb(44, 39, 153)",
     borderRadius: "5px",
-    textAlign: "left",
-    marginRight:"65%"
+    display:"flex",
+  marginLeft:"42px"
    
   },
   thanks:{

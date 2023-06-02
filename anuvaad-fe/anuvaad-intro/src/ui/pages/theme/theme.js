@@ -35,7 +35,7 @@ const themeDefault = createTheme({
           fontFamily: '"rubik" ,"Roboto","Rowdies" ,sans-serif',
           fontWeight: "500",
           "@media (max-width:550px)": {
-            fontSize: "1.5rem",
+            fontSize: "1.3rem",
           },
         },
         h5: {
