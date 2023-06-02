@@ -16,7 +16,7 @@ import uuid
 # import services.service import private_user
 from datetime import datetime
 from models.user_files import UserFiles
-from services.service import page_restrictions_pdf,file_upload_s3
+from services.service import page_restrictions_pdf,file_upload_s3,file_autoupload_s3
 # from services.service import upload_doc
 # from services.service import reduce_page
 # from services.service import is_file_empty
@@ -32,15 +32,23 @@ class FileUploader(Resource):
     def post(self):
         try:
             log_info("Uploading file...",None)
-            parse = reqparse.RequestParser()
-            parse.add_argument('file', type=werkzeug.datastructures.FileStorage, location='files',
-                               help='File is required', required=True)
-            args = parse.parse_args()
-            f = args['file']
-            mime_type = f.mimetype
-            log_info("Filename: " + str(f.filename), None)
-            log_info("File MIME Type: " + str(mime_type), None)
-            if "job_id" in request.form and "src_file" in request.form:
+            if "record_id" in request.form and "job_id" in request.form and "src_file" in request.form :
+                job_id = request.form['job_id']
+                src_file = request.form.get('src_file')
+                record_id = request.form.get('record_id')
+                userid = request.form.get('user_id')
+                return file_autoupload_s3(job_id,src_file,record_id,userid)
+                
+            elif "job_id" in request.form and "src_file" in request.form:
+                parse = reqparse.RequestParser()
+                parse.add_argument('file', type=werkzeug.datastructures.FileStorage, location='files',
+                                help='File is required', required=True)
+                args = parse.parse_args()
+                f = args['file']
+                mime_type = f.mimetype
+                log_info("Filename: " + str(f.filename), None)
+                log_info("File MIME Type: " + str(mime_type), None)
+                # if "job_id" in request.form and "src_file" in request.form:
                 job_id = request.form.get('job_id')
                 src_file = request.form.get('src_file')
                 # args = parse.parse_args()
