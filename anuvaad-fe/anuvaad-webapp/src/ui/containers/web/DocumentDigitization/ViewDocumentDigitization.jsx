@@ -27,6 +27,7 @@ import DataTable from '../../../components/web/common/DataTable';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import { Button, TableCell, TableFooter, TableRow, TextField, Typography } from '@material-ui/core';
+import { CustomTableFooter } from '../../../components/web/common/CustomTableFooter';
 
 const TELEMETRY = require("../../../../utils/TelemetryManager");
 
@@ -366,7 +367,7 @@ class ViewDocumentDigitization extends React.Component {
                         timeOut: 3000,
                         variant: "error",
                     });
-                    console.log("api failed");
+                    // console.log("api failed");
                 } else {
                     const buffer = new Uint8Array(await response.arrayBuffer());
                     let res = Buffer.from(buffer).toString("base64");
@@ -389,7 +390,7 @@ class ViewDocumentDigitization extends React.Component {
                     timeOut: 3000,
                     variant: "error",
                 });
-                console.log("api failed because of server or network", error);
+                // console.log("api failed because of server or network", error);
             });
     };
 
@@ -685,66 +686,34 @@ class ViewDocumentDigitization extends React.Component {
                 const startIndex = page * rowsPerPage;
                 const endIndex = (page + 1) * rowsPerPage;
                 const totalPageCount = Math.ceil(this.props.digitizeddocument.count / 10);
-                // totalPageCount = totalPageCount > 0 && 
-                // console.log("this.state.currentPageIndex", this.state.currentPageIndex);
-                // console.log("totalPageCount", totalPageCount);
                 return (
-
-                    <TableFooter>
-                        {totalPageCount > 0 &&
-                            <TableRow>
-                                <TableCell colSpan={12}>
-                                    <div style={{ textAlign: "end", justifyContent: "space-evenly" }}>
-                                    <Typography variant="caption" style={{ fontSize: "0.9rem", fontWeight: "600", float: 'left',padding: '10px'}}>Total Documents - <b>{this.props.digitizeddocument.count}</b></Typography>
-                                        <Typography variant="caption" style={{ fontSize: "0.9rem", fontWeight: "600" }}>Page No. - </Typography>
-                                        <TextField
-                                            type="number"
-                                            style={{ width: "4%", marginRight: "1%", marginLeft: "1%" }}
-                                            ref={this.pageInputRef}
-                                            onFocus={() => this.setState({ isInputActive: true })}
-                                            onBlur={() => this.setState({ isInputActive: false })}
-                                            InputProps={{
-
-                                                inputProps: {
-                                                    style: { textAlign: "center" },
-                                                    max: totalPageCount, min: 1
-                                                }
-                                            }}
-                                            onChange={(event) => this.handleInputPageChange(event, totalPageCount)}
-                                            value={this.state.inputPageNumber}
-                                        />
-                                        <Button
-                                            variant="contained"
-                                            color="primary"
-                                            style={{ borderRadius: "15%" }}
-                                            onClick={() => {
-                                                this.onChangePageMAnually()
-                                            }}
-                                        >Go</Button>
-                                        <IconButton
-                                            onClick={() => {
-                                                this.setState({ currentPageIndex: this.state.currentPageIndex - 1 })
-                                                this.tableRef.current.changePage(Number(this.state.currentPageIndex - 1))
-                                            }}
-                                            tabIndex={this.state.currentPageIndex - 1}
-                                            disabled={this.state.currentPageIndex == 0}>
-                                            <ChevronLeftIcon />
-                                        </IconButton>
-                                        <Typography variant="caption" style={{ fontSize: "0.9rem", fontWeight: "600" }}> {parseInt(this.state.currentPageIndex + 1)} of {parseInt(totalPageCount)} </Typography>
-                                        <IconButton
-                                            onClick={() => {
-                                                this.setState({ currentPageIndex: this.state.currentPageIndex + 1 })
-                                                this.tableRef.current.changePage(Number(this.state.currentPageIndex + 1))
-                                            }}
-                                            tabIndex={this.state.currentPageIndex + 1}
-                                            disabled={this.state.currentPageIndex == totalPageCount}>
-                                            <ChevronRightIcon />
-                                        </IconButton>
-                                    </div>
-                                </TableCell>
-                            </TableRow>}
-                    </TableFooter>
-
+                    <CustomTableFooter
+                        renderCondition={totalPageCount > 0}
+                        countLabel={"Total Documents"}
+                        totalCount={this.props.digitizeddocument.count}
+                        pageInputRef={this.pageInputRef}
+                        inputValue={this.state.inputPageNumber}
+                        onInputFocus={() => this.setState({ isInputActive: true })}
+                        onInputBlur={() => this.setState({ isInputActive: false })}
+                        handleInputChange={this.handleInputPageChange}
+                        totalPageCount={totalPageCount}
+                        onGoToPageClick={this.onChangePageMAnually}
+                        onBackArrowClick={() => {
+                            this.setState({ currentPageIndex: this.state.currentPageIndex - 1 })
+                            this.tableRef.current.changePage(Number(this.state.currentPageIndex - 1))
+                        }
+                        }
+                        onRightArrowClick={() => {
+                            this.setState({ currentPageIndex: this.state.currentPageIndex + 1 })
+                            this.tableRef.current.changePage(Number(this.state.currentPageIndex + 1))
+                        }
+                        }
+                        backArrowTabIndex={this.state.currentPageIndex - 1}
+                        backArrowDisable={this.state.currentPageIndex == 0}
+                        rightArrowTabIndex={this.state.currentPageIndex + 1}
+                        rightArrowDisable={this.state.currentPageIndex == totalPageCount}
+                        pageTextInfo={`Page ${parseInt(this.state.currentPageIndex + 1)} of ${parseInt(totalPageCount)}`}
+                    />
                 );
             }
         };

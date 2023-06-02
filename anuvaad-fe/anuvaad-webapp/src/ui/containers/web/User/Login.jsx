@@ -132,17 +132,17 @@ class Login extends React.Component {
           localStorage.setItem("lang", "en");
           localStorage.setItem("userProfile", JSON.stringify(resData));
           if (roles.includes("SUPERADMIN")) {
-            history.push(`${process.env.PUBLIC_URL}/intro`);
-            // history.push(`${process.env.PUBLIC_URL}/user-details`);
+            history.replace(`${process.env.PUBLIC_URL}/user-details`);
           } else if (roles.includes("ADMIN")) {
-            history.push(`${process.env.PUBLIC_URL}/intro`);
-            // history.push(`${process.env.PUBLIC_URL}/user-details`);
+            history.replace(`${process.env.PUBLIC_URL}/user-details`);
+          } else if(roles.includes("REVIEWER")) { 
+            history.replace(`${process.env.PUBLIC_URL}/review-documents`);
           } else if (roles.includes("TRANSLATOR")) {
-            history.push(`${process.env.PUBLIC_URL}/intro`);
-            // history.push(`${process.env.PUBLIC_URL}/view-document`);
+            history.replace(`${process.env.PUBLIC_URL}/intro`);
+            // history.replace(`${process.env.PUBLIC_URL}/view-document`);
           } else {
-            history.push(`${process.env.PUBLIC_URL}/intro`);
-            // history.push(`${process.env.PUBLIC_URL}/view-document`);
+            history.replace(`${process.env.PUBLIC_URL}/intro`);
+            // history.replace(`${process.env.PUBLIC_URL}/view-document`);
           }
         }
       })
@@ -214,7 +214,7 @@ class Login extends React.Component {
             name="email"
             onFocus={()=>this.setState({inputFocused: true})} 
             onBlur={()=>this.setState({inputFocused: false})}
-            onChange={(event) => this.setState({ email: event.target.value })}
+            onChange={(event) => this.setState({ email: event.target.value.trim() })}
             value={this.state.email}
             placeholder="Enter your Email ID*"
             InputProps={{
@@ -230,7 +230,7 @@ class Login extends React.Component {
             onBlur={()=>this.setState({inputFocused: false})}
             type={this.state.showPassword ? "text" : "password"}
             onChange={(event) =>
-              this.setState({ password: event.target.value })
+              this.setState({ password: event.target.value.trim() })
             }
             value={this.state.password}
             placeholder={"Enter your Password*"}

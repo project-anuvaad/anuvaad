@@ -133,7 +133,7 @@ class InteractivePagination extends React.Component {
       }
 
     }).catch(err => {
-      console.log(err);
+      // console.log(err);
     })
 
   }
@@ -156,7 +156,8 @@ class InteractivePagination extends React.Component {
           onClick={this.processMergeButtonClicked}
           variant="contained" color="secondary"
           title="Merge"
-          style={{ backgroundColor: "#2C2799" }}
+          disabled={!this.props.enableActionButtons}
+          style={{ backgroundColor: !this.props.enableActionButtons ? "#F5F5F5" : "#2C2799" }}
         >
           <MergeTypeIcon />
         </IconButton>
@@ -165,8 +166,8 @@ class InteractivePagination extends React.Component {
           variant="contained"
           color="secondary"
           title="Complete"
-          disabled={!this.props.enableCompleteButton}
-          style={{ backgroundColor: !this.props.enableCompleteButton ? "#F5F5F5" : "green", marginLeft: 5 }}
+          disabled={!this.props.enableActionButtons}
+          style={{ backgroundColor: !this.props.enableActionButtons ? "#F5F5F5" : "green", marginLeft: 5 }}
         >
           <DoneIcon />
         </IconButton>
@@ -210,7 +211,7 @@ class InteractivePagination extends React.Component {
   }
 
   setConfPercentage = (event) => {
-    console.log(event.target.value)
+    // console.log(event.target.value)
   }
 
   adjustFontPixel = (event, pixel) => {

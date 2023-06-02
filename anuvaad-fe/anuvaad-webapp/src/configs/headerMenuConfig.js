@@ -1,7 +1,7 @@
 import { translate } from "../assets/localisation";
 import history from "../web.history";
 
-const userRoles = ["TRANSLATOR", "ANNOTATOR", "ADMIN", "SUPERADMIN"];
+const userRoles = ["TRANSLATOR", "ANNOTATOR", "ADMIN", "SUPERADMIN", "REVIEWER"];
 const menuTypes = ["USER", "SETTINGS", "MAIN", "DASHBOARD"];
 
 const headerMenuConfig = [
@@ -12,6 +12,14 @@ const headerMenuConfig = [
         onclick : ()=>history.push(`${process.env.PUBLIC_URL}/profile`),
         rolesAllowed : userRoles,
         menuType : menuTypes[0],
+    },
+    {
+        id : "review-documents",
+        title: "Review Documents",
+        followOrg : false,
+        onclick : ()=>history.push(`${process.env.PUBLIC_URL}/review-documents`),
+        rolesAllowed : [userRoles[2], userRoles[4] ],
+        menuType : menuTypes[2],
     },
     {
         id : "my-glossary",

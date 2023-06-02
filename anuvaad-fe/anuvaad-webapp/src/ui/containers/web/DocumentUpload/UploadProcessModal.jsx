@@ -211,7 +211,7 @@ export default function UploadProcessModal(props) {
     const [activeStep, setActiveStep] = React.useState(1);
     const [steps, setSteps] = useState([]);
 
-    const { progressData, onCopyClick, onUploadOtherDoc, goToDashboardLink, uploadOtherDocLink } = props;
+    const { progressData, fileName, onCopyClick, onUploadOtherDoc, goToDashboardLink, uploadOtherDocLink } = props;
 
     const handleNext = () => {
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -230,7 +230,11 @@ export default function UploadProcessModal(props) {
         let sdate = new Date(startTime);
         let sec = Math.trunc(Math.abs(edate.getTime() - sdate.getTime()) / 1000);
         var date = new Date(0);
-        console.log("sec ---- ", sec);
+        // console.log("sec ---- ", sec);
+        if (isNaN(sec)) {
+            return "Failed to calculate time"
+        }
+
         date.setSeconds(sec == 0 ? 1 : sec); // specify value for SECONDS here
         return date.toISOString().substr(11, 8);
     }
@@ -247,10 +251,10 @@ export default function UploadProcessModal(props) {
                     el["endTimeProcess"] = parseInt(el["taskendTime"]);
                 }
 
-                if ("taskStarttime" in el) {
-                    el["startTimeProcess"] = parseInt(el["taskStarttime"]);
-                } else {
+                if ("taskStartTime" in el) {
                     el["startTimeProcess"] = parseInt(el["taskStartTime"]);
+                } else {
+                    el["startTimeProcess"] = parseInt(el["taskStarttime"]);
                 }
 
                 return el;
@@ -277,17 +281,22 @@ export default function UploadProcessModal(props) {
                     alignItems='center'
                     style={{ display: "flex" }}
                 >
-                    <Typography style={{ margin: 5 }} variant="subtitle1">Job ID : <b>{progressData?.jobID}</b> </Typography>
+                    <div>
+                        <Typography style={{ margin: 5 }} variant="subtitle1">Job ID : <b>{progressData?.jobID}</b> </Typography>
+                        <Typography style={{ margin: 5 }} variant="subtitle1">File Name : <b>{fileName}</b> </Typography>
+                        <Typography style={{ margin: 5 }} variant="subtitle1">Status : <b>{progressData?.status}</b> </Typography>
+                    </div>
+                    
                     <IconButton
                         onClick={() => {
-                            navigator.clipboard.writeText(progressData?.jobID);
+                            navigator.clipboard.writeText(`Job ID: ${progressData?.jobID} \n File Name: ${fileName} \n User: ${JSON.parse(localStorage.getItem("userProfile"))?.userName} `);
                             onCopyClick();
                         }}
                     >
                         <FileCopyIcon color='primary' />
                     </IconButton>
                 </Grid>
-
+                {/* {progressData?.status === "COMPLETED" && <Typography style={{ margin: 5 }} variant="subtitle1">Job Status : <b>COMPLETED</b> </Typography>} */}
 
                 <Divider />
                 <Stepper activeStep={steps.length - 1} orientation="vertical">
@@ -297,14 +306,14 @@ export default function UploadProcessModal(props) {
 
                             <StepContent>
                                 <Typography variant='body2'>{process?.status}</Typography>
-                                {process?.status === "SUCCESS" && <Typography variant='caption'>Time Taken : {msToTime(process?.endTimeProcess,process?.startTimeProcess)}</Typography>}
+                                {process?.status === "SUCCESS" && <Typography variant='caption'>Time Taken : {msToTime(process?.endTimeProcess, process?.startTimeProcess)}</Typography>}
                             </StepContent>
                         </Step>
                     )) :
                         <Typography variant='body2'>Processing...</Typography>
                     }
                     {progressData.status === "INPROGRESS" && <CircularProgress />}
-                    {progressData.status === "FAILED" && <Typography style={{color: "red"}} variant='body2'>Failed To Process The Docuemnt.</Typography>}
+                    {progressData.status === "FAILED" && <Typography style={{ color: "red" }} variant='body2'>Failed To Process The Docuemnt.</Typography>}
                     <div style={{ width: "100%", textAlign: "end", alignItems: "center" }}>
                         <Button
                             color='primary'
@@ -317,8 +326,8 @@ export default function UploadProcessModal(props) {
                             style={{ marginLeft: 5 }}
                             onClick={() => {
                                 progressData.status === "INPROGRESS" ?
-                                window.open(uploadOtherDocLink) :
-                                onUploadOtherDoc()
+                                    window.open(uploadOtherDocLink) :
+                                    onUploadOtherDoc()
                             }}
                         >Upload another document</Button>
                     </div>

@@ -10,6 +10,7 @@ import MUIDataTable from "mui-datatables";
 import NewCorpusStyle from "../../../styles/web/Newcorpus";
 import FileContent from "../../../../flux/actions/apis/document_translate/fetchcontent";
 import UserReportHeader from "./UserReportHeader"
+import DataTable from "../../../components/web/common/DataTable";
 
 class DocumentStats extends React.Component {
   constructor(props) {
@@ -146,7 +147,7 @@ class DocumentStats extends React.Component {
           <UserReportHeader />
           {
             <MuiThemeProvider theme={this.getMuiTheme()}>
-              <MUIDataTable title={this.props.match.params.fname}
+              <DataTable title={this.props.match.params.fname}
                 columns={columns} options={options}
                 data={this.props.apistatus.progress ? [] : this.props.fetchContent.data} />
             </MuiThemeProvider>

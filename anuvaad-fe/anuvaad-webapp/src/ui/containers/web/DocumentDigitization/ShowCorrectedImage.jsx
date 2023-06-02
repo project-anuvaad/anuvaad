@@ -22,7 +22,7 @@ const ShowCorrectedImage = ({ path, edit_status, set_crop_size, crop, copylocati
             .then(async response => {
                 if (!response.ok) {
                     setUrl({ msg: "Failed to load file..." })
-                    console.log("api failed")
+                    // console.log("api failed")
                 } else {
                     const buffer = new Uint8Array(await response.arrayBuffer());
                     let res = Buffer.from(buffer).toString('base64')
@@ -35,7 +35,7 @@ const ShowCorrectedImage = ({ path, edit_status, set_crop_size, crop, copylocati
                 }
             }).catch((error) => {
                 setUrl({ msg: "Failed to load file..." })
-                console.log('api failed because of server or network', error)
+                // console.log('api failed because of server or network', error)
             });
     }
 

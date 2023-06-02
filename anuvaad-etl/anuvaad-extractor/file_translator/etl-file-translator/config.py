@@ -154,7 +154,11 @@ ALLOWED_MIME_TYPES = ['application/vnd.openxmlformats-officedocument.wordprocess
                       'application/zip',
                       'text/html']
 ALLOWED_FILE_EXTENSION = ['docx', 'pptx', 'json','html']
-
+REJECTED_MIME_TYPES = {'application/vnd.oasis.opendocument.text': 'odt',
+                       'application/msword': 'doc',
+                       'application/vnd.ms-powerpoint': 'ppt',
+                       'application/vnd.oasis.opendocument.presentation': 'odp',
+                    }
 # FONT
 ALLOWED_FONTS = {
     "hi": [

@@ -400,7 +400,10 @@ export default function TopHeader(props) {
             src={headerLogoImg}
             className={logo}
             ref={logoRef}
-            onClick={() => history.push(`${process.env.PUBLIC_URL}/`)}
+            onClick={() => {
+                let defaultPagePath = (role === "TRANSLATOR" || role === "ANNOTATOR") ? "" : (role === "REVIEWER") ? "review-documents" : "user-details"
+                history.push(`${process.env.PUBLIC_URL}/${defaultPagePath}`)}
+            }
             onError={(({ currentTarget }) => {
                 currentTarget.onerror = null;
                 if (!currentTarget.src.includes(AnuvaadLogo)) {
@@ -448,7 +451,7 @@ export default function TopHeader(props) {
             <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <Grid container justifyContent="center" alignItems="center" spacing={2}>
-                        {(role !== "SUPERADMIN" && role !== "ADMIN") && <Grid item>
+                        {(role !== "SUPERADMIN" && role !== "ADMIN" && role !== "REVIEWER") && <Grid item>
                             <div style={{ display: "flex", alignItems: "center" }}>
                             <IconButton
                                     style={{marginLeft: "5px", color: currentMenu === "upload-translated-document" ? "#2C2799" : "rgba(0, 0, 0, 0.54)"}}
