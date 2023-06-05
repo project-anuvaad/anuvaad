@@ -26,6 +26,7 @@ export function get_document_details(input) {
       document["bleu_score"] = "...";
       document["spent_time"] = "...";
       document["workflowCode"] = job["workflowCode"];
+      document["user_id"] = job["metadata"]["userID"];
   
       // Granular status start
   
