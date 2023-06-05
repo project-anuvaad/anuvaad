@@ -1,13 +1,15 @@
 from flask_restful import Resource
-from repositories import UserAuthenticationRepositories
+from repositories import UserAuthenticationRepositories,MFARepositories
 from models import CustomResponse, Status
 from utilities import UserUtils
 from utilities import MODULE_CONTEXT
 from anuvaad_auditor.loghandler import log_info, log_exception
 from flask import request
 from anuvaad_auditor.errorhandler import post_error
+from config import MFA_ENABLED
 
 authRepo = UserAuthenticationRepositories()
+mfaRepo = MFARepositories()
 
 class UserLogin(Resource):
 
@@ -21,6 +23,12 @@ class UserLogin(Resource):
         user_name = body["userName"]
         password = body["password"]
         log_info("Request for login from {}".format(user_name),MODULE_CONTEXT)
+        
+        # for single use of HOTP based mfa verification 
+        if MFA_ENABLED:
+            useHOTP = False
+            if "useHOTP" in body and body["useHOTP"]:
+                useHOTP = True
 
         validity=UserUtils.validate_user_login_input(user_name, password)
         if validity is not None:
@@ -28,7 +36,12 @@ class UserLogin(Resource):
             return validity, 400
         log_info("Login credentials check passed for {}".format(user_name),MODULE_CONTEXT)
         try:
-            result = authRepo.user_login(user_name, password)
+            if MFA_ENABLED:
+                result = mfaRepo.generate_new_login(user_name,useHOTP)
+                if "errorID" in result :
+                    return result
+            else:
+                result = authRepo.user_login(user_name, password)
             if "errorID" in result :
                 log_info("Login failed for {}".format(user_name),MODULE_CONTEXT)
                 res = CustomResponse(Status.FAILURE_USR_LOGIN.value, None)

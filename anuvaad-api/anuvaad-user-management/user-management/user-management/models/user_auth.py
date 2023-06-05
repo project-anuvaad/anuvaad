@@ -47,6 +47,7 @@ class UserAuthenticationModel(object):
                 token = token_available["data"]
                 return_data = {
                     "userName": user_name,
+                    "mfa_required": False,
                     "token": token}
                 return return_data
         except Exception as e:

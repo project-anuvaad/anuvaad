@@ -17,6 +17,7 @@ ENABLE_CORS =   False
 #mongodb-configs
 MONGO_DB_SCHEMA                 =   os.environ.get('MONGO_DB_IDENTIFIER', 'usermanagement')
 USR_MONGO_COLLECTION            =   os.environ.get('UMS_USR_COLLECTION', 'sample')
+MFA_MONGO_COLLECTION            =   os.environ.get('UMS_MFA_COLLECTION', 'mfa')
 USR_TOKEN_MONGO_COLLECTION      =   os.environ.get('UMS_USR_TOKEN_COLLECTION', 'usertokens')
 USR_TEMP_TOKEN_MONGO_COLLECTION =   os.environ.get('UMS_USR_TEMP_TOKEN_COLLECTION', 'usertemptoken')
 USR_ORG_MONGO_COLLECTION        =   os.environ.get('UMS_ORG_COLLECTION', 'organization')
@@ -68,3 +69,9 @@ MAIL_SETTINGS = {
 #React-app base url
 BASE_URL                =   os.environ.get('REACT_APP_BASE_URL','https://developers.anuvaad.org/')
 
+# MFA configs
+MFA_ENABLED = True # bool(os.environ.get("MFA_ENABLED",False))
+MFA_SUPPORTED_TYPES = ['TOTP','HOTP']
+MFA_ISSUER = os.environ.get("MFA_ISSUER", "Anuvaad Folks")
+MFA_TOTP_INTERVAL = os.environ.get("MFA_TOTP_INTERVAL", 30) # only 30 is supported for google and microsoft auth apps
+MFA_HOTP_COUNTER = os.environ.get("MFA_HOTP_COUNTER", 15)
