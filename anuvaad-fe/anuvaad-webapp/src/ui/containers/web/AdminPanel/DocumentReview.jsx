@@ -23,6 +23,7 @@ import UpdateGranularStatus from "../../../../flux/actions/apis/document_transla
 import FetchDocument from "../../../../flux/actions/apis/view_document/fetch_document";
 import { get_document_details } from "../../../../utils/getFormattedJobData";
 import UploadDocToS3 from "../../../../flux/actions/apis/document_translate/s3_upload_doc";
+import ClearContent from "../../../../flux/actions/apis/document_translate/clearcontent";
 
 class DocumentReview extends React.Component {
   constructor(props) {
@@ -51,6 +52,10 @@ class DocumentReview extends React.Component {
   componentDidMount() {
     this.getCurrentJobDetail();
     this.fetchDocumentContent();
+  }
+
+  componentWillUnmount() {
+    this.props.ClearContent();
   }
 
   fetchDocumentContent = () => {
@@ -83,11 +88,11 @@ class DocumentReview extends React.Component {
       const rsp_data = await response.json();
       // console.log("rsp_data ---- ", rsp_data);
       let docArr = get_document_details(rsp_data);
-      this.setState({currentJobDetails: docArr[0]})
-      console.log("docArr ------- ", docArr);
-      if(docArr?.length > 0){
-        if(docArr[0].currentGranularStatus === "FINAL EDITING - IN PROGRESS" || docArr[0].currentGranularStatus === "REVIEWER - COMPLETED"){
-          this.setState({disableActions: true});
+      this.setState({ currentJobDetails: docArr[0] })
+      // console.log("docArr ------- ", docArr);
+      if (docArr?.length > 0) {
+        if (docArr[0].currentGranularStatus === "FINAL EDITING - IN PROGRESS" || docArr[0].currentGranularStatus === "REVIEWER - COMPLETED") {
+          this.setState({ disableActions: true });
         }
       }
     })
@@ -187,7 +192,7 @@ class DocumentReview extends React.Component {
     formData.append("user_id", this.state.currentJobDetails.user_id);
     const apiObj = new UploadDocToS3(formData);
 
-    const currentSnackBarInfo = {...this.state.snackbarInfo}
+    const currentSnackBarInfo = { ...this.state.snackbarInfo }
 
     fetch(apiObj.apiEndPoint(), {
       method: 'post',
@@ -199,18 +204,18 @@ class DocumentReview extends React.Component {
         currentSnackBarInfo.open = true;
         currentSnackBarInfo.message = "Request Failed.";
         currentSnackBarInfo.variant = "error";
-        this.setState({snackbarInfo: currentSnackBarInfo});
-    } else {
-      currentSnackBarInfo.open = true;
+        this.setState({ snackbarInfo: currentSnackBarInfo });
+      } else {
+        currentSnackBarInfo.open = true;
         currentSnackBarInfo.message = "Translated File Uploaded";
         currentSnackBarInfo.variant = "info";
-        this.setState({snackbarInfo: currentSnackBarInfo});
-    }
-    }).catch(err=>{
+        this.setState({ snackbarInfo: currentSnackBarInfo });
+      }
+    }).catch(err => {
       currentSnackBarInfo.open = true;
-        currentSnackBarInfo.message = "Something went wrong, Please try again after sometime.";
-        currentSnackBarInfo.variant = "error";
-        this.setState({snackbarInfo: currentSnackBarInfo});
+      currentSnackBarInfo.message = "Something went wrong, Please try again after sometime.";
+      currentSnackBarInfo.variant = "error";
+      this.setState({ snackbarInfo: currentSnackBarInfo });
     })
 
   }
@@ -278,12 +283,19 @@ class DocumentReview extends React.Component {
       .then(response => response.json())
       .then(result => {
         // console.log(result);
-        if(this.state.currentJobDetails.currentGranularStatus === "FINAL EDITING - COMPLETED"){
+        if (this.state.currentJobDetails.currentGranularStatus === "FINAL EDITING - COMPLETED") {
           this.updateGranularity(["reviewerInProgress"], "Review Comment Updated!", false)
-        } else{
+        } else {
+          let currentInfoState = { ...this.state.snackbarInfo };
+          currentInfoState = {
+            open: true,
+            message: "Review Comment Updated!",
+            variant: "info"
+          };
+          this.setState({ snackbarInfo: currentInfoState });
           this.getCurrentJobDetail();
         }
-        
+
       }
       )
       .catch(error => console.log('error', error));
@@ -369,7 +381,7 @@ class DocumentReview extends React.Component {
                     placeholder="Add Review"
                     defaultValue={tableMeta.tableData[tableMeta.rowIndex]?.comments ? tableMeta.tableData[tableMeta.rowIndex]?.comments : ""}
                     onChange={e => this.onReviewChange(e, tableMeta)}
-                    style={{borderColor : tableMeta.tableData[tableMeta.rowIndex]?.comments ? "rgb(97 231 55 / 87%)" : "#2C2799"}}
+                    style={{ borderColor: tableMeta.tableData[tableMeta.rowIndex]?.comments ? "rgb(97 231 55 / 87%)" : "#2C2799" }}
                     fullWidth
                     endAdornment={
                       <InputAdornment position="end">
@@ -496,6 +508,7 @@ const mapDispatchToProps = dispatch => bindActionCreators(
   {
     APITransport,
     FileContent,
+    ClearContent,
   },
   dispatch
 );

@@ -56,7 +56,7 @@ class ReviewDocumentList extends React.Component {
                 },
                 {
                     label: "Completed",
-                    value: ["reviewer_completed"],
+                    value: ["reviewer_completed", "parallel_document_uploaded"],
                     tableTitle: "Review Completed"
                 }
             ],
