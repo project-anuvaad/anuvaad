@@ -88,7 +88,7 @@ def extract_xml_path_from_digital_pdf(filepath, workspace_output_dir):
     os.system(cmd)
 
     xml_files      = read_directory_files(working_dir, pattern='*.xml')
-    remove_extra_images(xml_files[0])
+    # remove_extra_images(xml_files[0])
     return xml_files[0]
 
 def extract_html_bg_image_paths_from_digital_pdf(filepath, workspace_output_dir):
