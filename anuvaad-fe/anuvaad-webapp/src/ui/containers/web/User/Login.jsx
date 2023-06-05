@@ -28,6 +28,8 @@ import Anuvaanlogo from "../../../../assets/Anuvaanlogo.png";
 import UpdatePassword from "./UpdatePassword";
 import SignUp from "./SignUp";
 import CircularProgressWithLabel from "../../../components/web/common/CircularLoader";
+import EnterOTPModal from "./EnterOTPModal";
+import RegisterMFAModal from "./RegisterMFAModal";
 
 class Login extends React.Component {
   constructor(props) {
@@ -44,6 +46,8 @@ class Login extends React.Component {
       currentFocusedComponent: "Login",
       reloadPage: false,
       inputFocused: false,
+      showOTPDialoue: false,
+      showMFAMethodSelectionModal: false
     };
   }
 
@@ -60,7 +64,7 @@ class Login extends React.Component {
     localStorage.removeItem("token");
     window.addEventListener("keypress", (key) => {
       if (key.code === "Enter" && this.state.inputFocused) {
-        this.setState({inputFocused: false});
+        this.setState({ inputFocused: false });
         this.processLoginButtonPressed();
       }
     });
@@ -76,6 +80,14 @@ class Login extends React.Component {
   processInputReceived = (prop) => (event) => {
     this.setState({ [prop]: event.target.value });
   };
+
+  handleCloseOTPModal = ()=>{
+    this.setState({showOTPDialoue: false})
+  }
+
+  handleCloseMFASelectionModal = () => {
+    this.setState({showMFAMethodSelectionModal: false})
+  }
 
   /**
    * user input handlers
@@ -135,7 +147,7 @@ class Login extends React.Component {
             history.replace(`${process.env.PUBLIC_URL}/user-details`);
           } else if (roles.includes("ADMIN")) {
             history.replace(`${process.env.PUBLIC_URL}/user-details`);
-          } else if(roles.includes("REVIEWER")) { 
+          } else if (roles.includes("REVIEWER")) {
             history.replace(`${process.env.PUBLIC_URL}/review-documents`);
           } else if (roles.includes("TRANSLATOR")) {
             history.replace(`${process.env.PUBLIC_URL}/intro`);
@@ -212,8 +224,8 @@ class Login extends React.Component {
           <OutlinedTextField
             fullWidth
             name="email"
-            onFocus={()=>this.setState({inputFocused: true})} 
-            onBlur={()=>this.setState({inputFocused: false})}
+            onFocus={() => this.setState({ inputFocused: true })}
+            onBlur={() => this.setState({ inputFocused: false })}
             onChange={(event) => this.setState({ email: event.target.value.trim() })}
             value={this.state.email}
             placeholder="Enter your Email ID*"
@@ -226,8 +238,8 @@ class Login extends React.Component {
           <OutlinedTextField
             fullWidth
             name="password"
-            onFocus={()=>this.setState({inputFocused: true})} 
-            onBlur={()=>this.setState({inputFocused: false})}
+            onFocus={() => this.setState({ inputFocused: true })}
+            onBlur={() => this.setState({ inputFocused: false })}
             type={this.state.showPassword ? "text" : "password"}
             onChange={(event) =>
               this.setState({ password: event.target.value.trim() })
@@ -310,7 +322,7 @@ class Login extends React.Component {
   };
 
   renderLoginForm = () => {
-    return <form autoComplete="off" style={{marginLeft: "15rem"}}>{this.renderCardContent()}</form>
+    return <form autoComplete="off" style={{ marginLeft: "15rem" }}>{this.renderCardContent()}</form>
   }
 
   renderSignupForm = () => {
@@ -393,6 +405,15 @@ class Login extends React.Component {
             message={this.state.errMessage}
           />
         )}
+        <EnterOTPModal open={this.state.showOTPDialoue}
+          handleClose={this.handleCloseOTPModal}
+          // onResend={ }
+          // onSubmit={ } 
+        />
+        <RegisterMFAModal 
+          open={this.state.showMFAMethodSelectionModal}
+          handleClose={this.handleCloseMFASelectionModal}
+        />
       </MuiThemeProvider>
     );
   }
