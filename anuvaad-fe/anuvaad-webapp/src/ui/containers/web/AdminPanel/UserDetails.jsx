@@ -20,6 +20,7 @@ import Snackbar from "../../../components/web/common/Snackbar";
 import ResetPassword from "./ResetPasswordModal";
 import Modal from '@material-ui/core/Modal';
 import LockOpenIcon from '@material-ui/icons/LockOpen';
+import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import SetPasswordApi from "../../../../flux/actions/apis/user/setpassword";
 import AssessmentOutlinedIcon from '@material-ui/icons/AssessmentOutlined';
 import RateReviewIcon from '@material-ui/icons/RateReview';
@@ -31,7 +32,8 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import { Button } from "@material-ui/core";
+import { Button, TextField } from "@material-ui/core";
+import CreateUsers from "../../../../flux/actions/apis/user/update_user";
 
 
 const TELEMETRY = require('../../../../utils/TelemetryManager')
@@ -56,8 +58,14 @@ class UserDetails extends React.Component {
       username: '',
       showLoader: false,
       openSwitchBoxActionConfirmBox: false,
-      selectedArrForSwitchAction: []
-
+      selectedArrForSwitchAction: [],
+      currentEditableUserDetails: {
+        userName: "",
+        userEmail: "",
+        displayName: "",
+        userId: ""
+      } , 
+      showEditUserModal: false
     };
 
   }
@@ -256,6 +264,15 @@ class UserDetails extends React.Component {
     this.setState({ isModalOpen: true, username: userName })
   }
 
+  openEditUserModal = (userName, userEmail, userId) => {
+    const currentEditableUserDetails = {...this.state.currentEditableUserDetails};
+    currentEditableUserDetails.userName = userName;
+    currentEditableUserDetails.userEmail = userEmail;
+    currentEditableUserDetails.displayName = userName;
+    currentEditableUserDetails.userId = userId;
+    this.setState({currentEditableUserDetails}, ()=> {this.setState({showEditUserModal: true})})
+  }
+
   handleClose = () => {
     this.setState({ isModalOpen: false })
   }
@@ -297,6 +314,106 @@ class UserDetails extends React.Component {
         </IconButton>
       </Tooltip>
     );
+  }
+
+  processEditUserDetails = (userName, userEmail, userId) => {
+    return(
+      <Tooltip title="Edit User Info" placement="left">
+        <IconButton 
+          style={{ color: '#233466', padding: '5px' }} 
+          component="a" 
+          onClick={() => {
+            this.openEditUserModal(userName, userEmail, userId);
+          }} 
+        >
+          <EditOutlinedIcon />
+        </IconButton>
+      </Tooltip>
+    )
+  }
+
+  onUserDetailsChange = (e) => {
+    const currentEditableUserDetails = {...this.state.currentEditableUserDetails};
+    currentEditableUserDetails[e.target.name] = e.target.value;
+    this.setState({currentEditableUserDetails});
+  }
+
+  onUpdateUserDetailsClick = () => {
+    const modifiedUserData = [
+      {
+        "userID": this.state.currentEditableUserDetails.userId,
+        "email": this.state.currentEditableUserDetails.userEmail,
+        "name": this.state.currentEditableUserDetails.userName
+      }
+    ]
+    const apiObj = new CreateUsers(modifiedUserData);
+
+    fetch(apiObj.apiEndPoint(), {
+      method: "POST",
+      headers: apiObj.getHeaders().headers,
+      body: JSON.stringify(apiObj.getBody())
+    })
+    .then(response => response.json())
+    .then(result => {
+      console.log(result)
+      if(result.ok){
+        this.setState({isenabled: true, variantType: 'info', message: `User Details Updated!`, showEditUserModal: false});
+      } else {
+        this.setState({isenabled: true, variantType: 'error', message: `Failed To Updated User Details!`, showEditUserModal: false});
+      }
+    })
+    .catch(err=>{
+      this.setState({isenabled: true, variantType: 'error', message: `Failed To Updated User Details!`, showEditUserModal: false});
+    })
+  }
+
+  renderEditUserDetailsModal = () => {
+    const selectedUserDetails = {...this.state.currentEditableUserDetails};
+    return(
+      <Dialog open={this.state.showEditUserModal} aria-labelledby="form-dialog-title" fullWidth>
+        <DialogTitle id="form-dialog-title">Edit {selectedUserDetails.displayName}'s Details - </DialogTitle>
+        <DialogContent>
+          <TextField
+            margin="dense"
+            name="userName"
+            defaultValue={this.state.currentEditableUserDetails.userName} 
+            onChange={(e)=>this.onUserDetailsChange(e)}
+            type="text"
+            fullWidth
+            label="User Name"
+          />
+          <div style={{margin: 30}}></div>
+          <TextField
+            margin="dense"
+            userEmail
+            defaultValue={this.state.currentEditableUserDetails.userEmail}   
+            onChange={(e)=>this.onUserDetailsChange(e)}         
+            type="text"
+            fullWidth
+            label="Email Id"
+          />
+        </DialogContent>
+        <div style={{margin: 30}}></div>
+        <DialogActions>
+          <Button 
+            color="primary"
+            variant="contained"
+            style={{borderRadius: 15}}
+            onClick={()=>{this.setState({showEditUserModal: false})}}
+          >
+            Cancel
+          </Button>
+          <Button 
+            color="primary"
+            variant="contained"
+            style={{borderRadius: 15}}
+            onClick={this.onUpdateUserDetailsClick}
+          >
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
+    )
   }
 
   render() {
@@ -384,6 +501,7 @@ class UserDetails extends React.Component {
               return (
                 <div>
                   {this.processSwitch(tableMeta.rowData[0], tableMeta.rowData[1], tableMeta.rowData[4], tableMeta.rowData[7])}
+                  {this.processEditUserDetails(tableMeta.rowData[2], tableMeta.rowData[1], tableMeta.rowData[0])}
                   {this.processModal(tableMeta.rowData[1])}
                   {this.processUserView(tableMeta.rowData[0], tableMeta.rowData[2])}
                 </div>
@@ -452,6 +570,9 @@ class UserDetails extends React.Component {
         {
           this.state.isenabled &&
           this.processSnackBar()
+        }
+        {
+          this.renderEditUserDetailsModal()
         }
         {
           this.renderConfirmSwitchButtonActionBox()
