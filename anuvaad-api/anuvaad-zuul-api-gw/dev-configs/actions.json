@@ -754,7 +754,7 @@
         },
         {
             "id":"2b952ce0-f26b-460c-8783-ba07285acb12",
-            "uri":"/anuvaad/user-mgmt/v1/mfa/verify ",
+            "uri":"/anuvaad/user-mgmt/v1/mfa/verify",
             "module":"USER-MANAGEMENT-SYSTEM",
             "active":true,
             "whiteList":true,
