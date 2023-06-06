@@ -162,7 +162,7 @@ class MFAUtils:
             collections = get_db()[USR_TOKEN_MONGO_COLLECTION]
             # fetching the user details from db
             log_info(f"{username=} find start", MODULE_CONTEXT)
-            record = collections.find({"user": username})
+            record = collections.find({"user": username,'active':True})
             log_info(f"{username=} find end", MODULE_CONTEXT)
             for i in record:
                 return i['session_id']
