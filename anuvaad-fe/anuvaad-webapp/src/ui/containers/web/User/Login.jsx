@@ -31,6 +31,7 @@ import CircularProgressWithLabel from "../../../components/web/common/CircularLo
 import EnterOTPModal from "./EnterOTPModal";
 import RegisterMFAModal from "./RegisterMFAModal";
 import RegisterMFA from "../../../../flux/actions/apis/user/MFA_register";
+import VerifyMFA from "../../../../flux/actions/apis/user/MFA_verify";
 
 class Login extends React.Component {
   constructor(props) {
@@ -50,7 +51,9 @@ class Login extends React.Component {
       showOTPDialog: false,
       showMFAMethodSelectionModal: false,
       sessionId: "",
-      registerSuccessMessage: false
+      registerSuccessMessage: false,
+      verifySuccessMessage: false,
+      otpModalTitle: "",
     };
   }
 
@@ -84,14 +87,18 @@ class Login extends React.Component {
     this.setState({ [prop]: event.target.value });
   };
 
-  handleCloseOTPModal = () => {
-    this.setState({ showOTPDialog: false })
+  handleCloseOTPModal = (callback) => {
+    this.setState({ showOTPDialog: false });
+    callback();
+    setTimeout(() => {
+      this.setState({ verifySuccessMessage: "" })
+    }, 4000);
   }
 
   handleCloseMFASelectionModal = () => {
-    this.setState({ showMFAMethodSelectionModal: false })
+    this.setState({ showMFAMethodSelectionModal: false });
     setTimeout(() => {
-      this.setState({registerSuccessMessage: ""})
+      this.setState({ registerSuccessMessage: "" })
     }, 4000);
   }
 
@@ -114,14 +121,13 @@ class Login extends React.Component {
           return Promise.reject(rsp_data.message);
         } else {
           let resData = rsp_data && rsp_data.data;
-          localStorage.setItem("token", resData.token);
-          // if (resData.mfa_required && resData.session_id){
-          //   if (!resData.mfa_registration) {
-          //     this.setState({showMFAMethodSelectionModal: true, sessionId: resData.session_id});
-          //   }
-          // }
-            
-          this.fetchUserProfileDetails(resData.token);
+          if (resData.session_id) {
+            if (resData.mfa_required && !resData.mfa_registration) {
+              this.setState({ showMFAMethodSelectionModal: true, sessionId: resData.session_id });
+            } else if (resData.mfa_required && resData.mfa_registration) {
+              this.setState({ showOTPDialog: true, sessionId: resData.session_id, otpModalTitle: resData.mfa_message });
+            }
+          }
           this.setState({ error: false, loading: false });
         }
       })
@@ -131,27 +137,59 @@ class Login extends React.Component {
   };
 
   onRegisterMFAClick = (selectedMethod) => {
-    const {email, sessionId} = this.state;
+    const { email, sessionId } = this.state;
     this.setState({ error: false, loading: true });
     // call mfa register API here
     const apiObj = new RegisterMFA(email, sessionId, selectedMethod);
 
-    fetch(apiObj.apiEndPoint(),{
+    fetch(apiObj.apiEndPoint(), {
       method: "POST",
       headers: apiObj.getHeaders().headers,
       body: JSON.stringify(apiObj.getBody())
     })
-    .then(async (response)=>{
-      const rsp_data = await response.json();
-      if(!rsp_data.ok){
-        this.setState({ error: true, loading: false, errMessage: rsp_data.message, showMFAMethodSelectionModal: false});
-      } else {
-        this.setState({ error: false, loading: false, registerSuccessMessage: true});
-      }
+      .then(async (response) => {
+        const rsp_data = await response.json();
+        if (!rsp_data.ok) {
+          this.setState({ error: true, loading: false, errMessage: rsp_data.message, showMFAMethodSelectionModal: false });
+        } else {
+          this.setState({ error: false, loading: false, registerSuccessMessage: true });
+        }
+      })
+      .catch(err => {
+        this.setState({ error: true, loading: false, errMessage: "Unable to register for MFA!" });
+      })
+  }
+
+  onSubmitOTP = (otp, callback) => {
+    const { email, sessionId } = this.state;
+    this.setState({ error: false, loading: true });
+    // call mfa register API here
+    const apiObj = new VerifyMFA(email, sessionId, otp, false);
+
+    fetch(apiObj.apiEndPoint(), {
+      method: "POST",
+      headers: apiObj.getHeaders().headers,
+      body: JSON.stringify(apiObj.getBody())
     })
-    .catch(err=>{
-      this.setState({ error: true, loading: false, errMessage: "Unable to register for MFA!"});
-    })
+      .then(async (response) => {
+        const rsp_data = await response.json();
+        console.log("rsp_data --- ", rsp_data);
+        if (!rsp_data.ok) {
+          this.setState({ error: true, loading: false, errMessage: rsp_data.message, showOTPDialog: false });
+        } else {
+          this.setState({ error: false, loading: false, verifySuccessMessage: true });
+          // callback();
+          localStorage.setItem("token", rsp_data.data.token);
+          this.fetchUserProfileDetails(rsp_data.data.token);
+        }
+      })
+      .catch(err => {
+        this.setState({ error: true, loading: false, errMessage: "Unable to Verify OTP!" });
+      })
+  }
+
+  onResendOTPClick = () => {
+    this.processLoginButtonPressed(true);
   }
 
   handleRoles = (value) => {
@@ -336,14 +374,16 @@ class Login extends React.Component {
           />
         )}
         <EnterOTPModal open={this.state.showOTPDialog}
-          handleClose={this.handleCloseOTPModal}
-        // onResend={ }
-        // onSubmit={ } 
+          handleClose={(callback) => this.handleCloseOTPModal(callback())}
+          onResend={()=>this.onResendOTPClick()}
+          OTPModalTitle={this.state.otpModalTitle}
+          onSubmit={(OTP, callback) => this.onSubmitOTP(OTP, callback())}
+          verifySuccessMessage={this.state.verifySuccessMessage}
         />
         <RegisterMFAModal
           open={this.state.showMFAMethodSelectionModal}
           handleClose={this.handleCloseMFASelectionModal}
-          onRegisterMFAClick={(selectedMethod)=> {this.onRegisterMFAClick(selectedMethod)}}
+          onRegisterMFAClick={(selectedMethod) => { this.onRegisterMFAClick(selectedMethod) }}
           registerSuccessMessage={this.state.registerSuccessMessage}
         />
       </MuiThemeProvider>

@@ -16,7 +16,9 @@ import TextField from "@material-ui/core/TextField";
 import Tooltip from "@material-ui/core/Tooltip";
 import Typography from "@material-ui/core/Typography";
 import AccountCircle from "@material-ui/icons/AccountCircle";
+import VpnKeyOutlinedIcon from '@material-ui/icons/VpnKeyOutlined';
 import { withStyles } from "@material-ui/core/styles";
+import ConfirmBox from "../../../components/web/common/ConfirmBox";
 
 // import MenuItem from "@material-ui/core/MenuItem";
 // import Select from "@material-ui/core/Select";
@@ -28,6 +30,7 @@ import { translate } from "../../../../assets/localisation";
 
 import Updatepassword from "../../../../flux/actions/apis/user/updatepassword";
 import APITransport from "../../../../flux/actions/apitransport/apitransport";
+import ResetMFA from "../../../../flux/actions/apis/user/MFA_reset";
 
 const styles = {
   root: {
@@ -58,7 +61,8 @@ class UserProfile extends React.Component {
       messageSnack: "",
       // lang: localStorage.getItem(`lang${JSON.parse(localStorage.getItem("userProfile")).userID}`),
       lang: "English",
-      userDetails: JSON.parse(localStorage.getItem("userProfile"))
+      userDetails: JSON.parse(localStorage.getItem("userProfile")),
+      openResetMFAConfirmBox: false,
     };
   }
 
@@ -69,6 +73,29 @@ class UserProfile extends React.Component {
       nmtTextSP: [],
       message: ""
     });
+  }
+
+  handleResetMFA = () => {
+    this.setState({openResetMFAConfirmBox: true}); 
+  }
+
+  resetMFAClick = () => {
+    const apiObj = new ResetMFA(this.state.userDetails.email);
+    fetch(apiObj.apiEndPoint(), {
+      method: "POST",
+      headers: apiObj.getHeaders().headers,
+      body: JSON.stringify(apiObj.getBody())
+    })
+    .then(response => response.json())
+    .then(result => {
+      console.log(result)
+      if(result.ok){
+        history.replace(`${process.env.PUBLIC_URL}/logout`);
+      }
+    })
+    .catch(err=>{
+      console.log(err)
+    })
   }
 
   handleTextChange(key, event) {
@@ -311,8 +338,22 @@ class UserProfile extends React.Component {
                 <AccountCircle />
               </Fab>
             </Tooltip>
+
+            <Tooltip title={"Reset MFA Method"} style={{marginLeft: 5}}>
+              <Fab aria-haspopup="true" onClick={this.handleResetMFA} color="primary" size="medium">
+                <VpnKeyOutlinedIcon />
+              </Fab>
+            </Tooltip>
           </Grid>
         </Paper>
+
+        <ConfirmBox 
+          open={this.state.openResetMFAConfirmBox}
+          onClose={()=>this.setState({openResetMFAConfirmBox: false})}
+          title={"Reset MFA Method"}
+          contentText={"Are you sure you want to perform this action? You will be logged out automatically and have to login again."}
+          onConfirm={()=>this.resetMFAClick()}
+        />
 
         {this.state.drawer ? (
           <Dialog

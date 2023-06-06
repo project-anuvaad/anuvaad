@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -12,14 +12,18 @@ import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 
 const EnterOTPModal = (props) => {
     const [OTP, setOTP] = useState("");
-    const [showOtp, setShowOTP] = useState(false);
 
     const {
         open,
         handleClose,
         onResend,
         onSubmit,
+        OTPModalTitle
     } = { ...props };
+
+    const onCloseOTPModal = () => {
+        setOTP("");
+    }
 
     return (
         <ThemeProvider theme={themeAnuvaad}>
@@ -31,7 +35,7 @@ const EnterOTPModal = (props) => {
                 fullWidth
                 style={{backgroundColor: "rgba(255,255,255,0.6)"}}
             >
-                <DialogTitle id="alert-dialog-title">{"Enter OTP sent to your E-mail Id"}</DialogTitle>
+                <DialogTitle id="alert-dialog-title">{OTPModalTitle}</DialogTitle>
                 <DialogContent style={{ alignSelf: "center", margin: 50, display: "flex" }}>
                     <OTPInput
                         value={OTP}
@@ -39,21 +43,16 @@ const EnterOTPModal = (props) => {
                         autoFocus
                         OTPLength={6}
                         otpType="number"
-                        disabled={false}
-                        secure={!showOtp}
                     />
-                    <IconButton onClick={() => setShowOTP(!showOtp)} title={!showOtp ? "Show OTP" : "Hide OTP"}>
-                        {showOtp ? <VisibilityOffIcon /> : <VisibilityIcon />}
-                    </IconButton>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleClose} color="primary" variant="outlined" style={{ marginRight: "auto", borderRadius: 15 }}>
+                    <Button onClick={()=>handleClose(onCloseOTPModal)} color="primary" variant="outlined" style={{ marginRight: "auto", borderRadius: 15 }}>
                         Cancel
                     </Button>
                     <Button onClick={onResend} color="primary" variant="contained" style={{ borderRadius: 15 }}>
                         Resend OTP
                     </Button>
-                    <Button onClick={onSubmit} color="primary" variant="contained" style={{ borderRadius: 15 }}>
+                    <Button onClick={()=>onSubmit(OTP, onCloseOTPModal)} color="primary" variant="contained" disabled={!OTP} style={{ borderRadius: 15 }}>
                         Submit
                     </Button>
                 </DialogActions>

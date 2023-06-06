@@ -40,11 +40,11 @@ export default class LoginAPI extends API {
   }
 
   getBody() {
-    return {
-      userName: this.email,
-      password: this.password
-    };
-  }
+      return {
+        userName: this.email,
+        password: this.password
+      }
+    }
 
   getHeaders() {
     this.headers = {
