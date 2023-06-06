@@ -749,7 +749,7 @@
             "uri":"/anuvaad/user-mgmt/v1/mfa/register",
             "module":"USER-MANAGEMENT-SYSTEM",
             "active":true,
-            "whiteList":false,
+            "whiteList":true,
             "description":"API for setting granularity status"
         },
         {
@@ -757,7 +757,7 @@
             "uri":"/anuvaad/user-mgmt/v1/mfa/verify ",
             "module":"USER-MANAGEMENT-SYSTEM",
             "active":true,
-            "whiteList":false,
+            "whiteList":true,
             "description":"API for setting granularity status"
         },
         {
