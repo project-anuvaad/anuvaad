@@ -358,6 +358,9 @@ class UserDetails extends React.Component {
       console.log(result)
       if(result.ok){
         this.setState({isenabled: true, variantType: 'info', message: `User Details Updated!`, showEditUserModal: false});
+        let roleArr = [];
+        roleArr = this.state.role === "ADMIN" ? ["ANNOTATOR","TRANSLATOR", "REVIEWER"] : this.state.role === "REVIEWER" ? ["ANNOTATOR","TRANSLATOR"] : [];
+        this.processFetchBulkUserDetailAPI(this.state.offset, this.state.limit, false, false, [], [], roleArr);
       } else {
         this.setState({isenabled: true, variantType: 'error', message: `Failed To Updated User Details!`, showEditUserModal: false});
       }

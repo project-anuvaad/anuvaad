@@ -30,6 +30,7 @@ import SignUp from "./SignUp";
 import CircularProgressWithLabel from "../../../components/web/common/CircularLoader";
 import EnterOTPModal from "./EnterOTPModal";
 import RegisterMFAModal from "./RegisterMFAModal";
+import RegisterMFA from "../../../../flux/actions/apis/user/MFA_register";
 
 class Login extends React.Component {
   constructor(props) {
@@ -46,8 +47,10 @@ class Login extends React.Component {
       currentFocusedComponent: "Login",
       reloadPage: false,
       inputFocused: false,
-      showOTPDialoue: false,
-      showMFAMethodSelectionModal: false
+      showOTPDialog: false,
+      showMFAMethodSelectionModal: false,
+      sessionId: "",
+      registerSuccessMessage: false
     };
   }
 
@@ -81,12 +84,15 @@ class Login extends React.Component {
     this.setState({ [prop]: event.target.value });
   };
 
-  handleCloseOTPModal = ()=>{
-    this.setState({showOTPDialoue: false})
+  handleCloseOTPModal = () => {
+    this.setState({ showOTPDialog: false })
   }
 
   handleCloseMFASelectionModal = () => {
-    this.setState({showMFAMethodSelectionModal: false})
+    this.setState({ showMFAMethodSelectionModal: false })
+    setTimeout(() => {
+      this.setState({registerSuccessMessage: ""})
+    }, 4000);
   }
 
   /**
@@ -109,6 +115,12 @@ class Login extends React.Component {
         } else {
           let resData = rsp_data && rsp_data.data;
           localStorage.setItem("token", resData.token);
+          // if (resData.mfa_required && resData.session_id){
+          //   if (!resData.mfa_registration) {
+          //     this.setState({showMFAMethodSelectionModal: true, sessionId: resData.session_id});
+          //   }
+          // }
+            
           this.fetchUserProfileDetails(resData.token);
           this.setState({ error: false, loading: false });
         }
@@ -117,6 +129,30 @@ class Login extends React.Component {
         this.setState({ error: true, loading: false, errMessage: error });
       });
   };
+
+  onRegisterMFAClick = (selectedMethod) => {
+    const {email, sessionId} = this.state;
+    this.setState({ error: false, loading: true });
+    // call mfa register API here
+    const apiObj = new RegisterMFA(email, sessionId, selectedMethod);
+
+    fetch(apiObj.apiEndPoint(),{
+      method: "POST",
+      headers: apiObj.getHeaders().headers,
+      body: JSON.stringify(apiObj.getBody())
+    })
+    .then(async (response)=>{
+      const rsp_data = await response.json();
+      if(!rsp_data.ok){
+        this.setState({ error: true, loading: false, errMessage: rsp_data.message, showMFAMethodSelectionModal: false});
+      } else {
+        this.setState({ error: false, loading: false, registerSuccessMessage: true});
+      }
+    })
+    .catch(err=>{
+      this.setState({ error: true, loading: false, errMessage: "Unable to register for MFA!"});
+    })
+  }
 
   handleRoles = (value) => {
     let result = [];
@@ -151,62 +187,14 @@ class Login extends React.Component {
             history.replace(`${process.env.PUBLIC_URL}/review-documents`);
           } else if (roles.includes("TRANSLATOR")) {
             history.replace(`${process.env.PUBLIC_URL}/intro`);
-            // history.replace(`${process.env.PUBLIC_URL}/view-document`);
           } else {
             history.replace(`${process.env.PUBLIC_URL}/intro`);
-            // history.replace(`${process.env.PUBLIC_URL}/view-document`);
           }
         }
       })
       .catch((error) => {
         console.log("api failed because of server or network");
       });
-  };
-
-  renderLeftPanel = () => {
-    const { classes } = this.props;
-
-    return (
-      <Grid container>
-        <Hidden only="xs">
-          <Grid item xs={10} sm={10} md={10} lg={10} xl={10}>
-            <img
-              src={Anuvaanlogo}
-              alt="logo"
-              style={{
-                width: "85px",
-                margin: "10% 0px 0% 35px",
-                borderRadius: "50%",
-              }}
-            />{" "}
-          </Grid>{" "}
-        </Hidden>
-
-        <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
-          <Typography
-            variant={"h2"}
-            className={classes.title}
-            style={{
-              margin: "10% 294px 10% 39px",
-              fontFamily: '"Rowdies", cursive,"Roboto" ,sans-serif',
-            }}
-          >
-            Anuvaad
-          </Typography>
-        </Grid>
-        <Hidden only="xs">
-          <Typography
-            variant={"body1"}
-            className={classes.body}
-            style={{ margin: "20px 0px 50px 39px" }}
-          >
-            Anuvaad is an open source platform to perform Document Translation
-            and Digitization at scale with editing capabilities for various
-            Indic languages.
-          </Typography>
-        </Hidden>
-      </Grid>
-    );
   };
 
   handleClickShowPassword = () => {
@@ -325,50 +313,6 @@ class Login extends React.Component {
     return <form autoComplete="off" style={{ marginLeft: "15rem" }}>{this.renderCardContent()}</form>
   }
 
-  renderSignupForm = () => {
-    return <div style={{ width: '100%' }}>
-      <SignUp
-        navigateToLoginPress={() => {
-          //  this.handleChangeFocusedComponent('Login')
-          history.push(`${process.env.PUBLIC_URL}/user/login`);
-        }
-
-        } />
-    </div>
-  }
-
-  renderForgetPasswordForm = () => {
-    return <div style={{ width: '100%' }}>
-      <UpdatePassword navigateToLoginPress={() => {
-        //  this.handleChangeFocusedComponent('Login')
-        history.push(`${process.env.PUBLIC_URL}/user/login`);
-      }
-
-      } />
-    </div>
-
-  }
-
-  renderPage = () => {
-    switch (this.currentPage) {
-      case "login":
-        return this.renderLoginForm();
-
-      case "signup":
-        return this.renderSignupForm();
-
-      case "forget-password":
-        return this.renderForgetPasswordForm();
-
-      default:
-        return this.renderLoginForm();
-    }
-  }
-
-  handleChangeFocusedComponent = (value) => {
-    this.setState({ currentFocusedComponent: value });
-
-  }
 
   render() {
     const { classes } = this.props;
@@ -376,22 +320,8 @@ class Login extends React.Component {
       <MuiThemeProvider theme={ThemeDefault}>
         <Grid container>
           {this.state.loading && <CircularProgressWithLabel value={100} />}
-          {/* <Grid
-            item
-            xs={12}
-            sm={4}
-            md={3}
-            lg={3}
-            color={"primary"}
-            className={classes.appInfo}
-          >
-            {this.renderLeftPanel()}
-          </Grid> */}
           <Grid item xs={12} sm={9} md={9} lg={9} className={classes.parent}>
-            {/* {this.renderPage()} */}
             {this.renderLoginForm()}
-            {/* {this.state.currentFocusedComponent === "Signup" && this.renderSignupForm()}
-            {this.state.currentFocusedComponent === "ForgetPassword" && this.renderForgetPasswordForm()} */}
           </Grid>
         </Grid>
 
@@ -405,14 +335,16 @@ class Login extends React.Component {
             message={this.state.errMessage}
           />
         )}
-        <EnterOTPModal open={this.state.showOTPDialoue}
+        <EnterOTPModal open={this.state.showOTPDialog}
           handleClose={this.handleCloseOTPModal}
-          // onResend={ }
-          // onSubmit={ } 
+        // onResend={ }
+        // onSubmit={ } 
         />
-        <RegisterMFAModal 
+        <RegisterMFAModal
           open={this.state.showMFAMethodSelectionModal}
           handleClose={this.handleCloseMFASelectionModal}
+          onRegisterMFAClick={(selectedMethod)=> {this.onRegisterMFAClick(selectedMethod)}}
+          registerSuccessMessage={this.state.registerSuccessMessage}
         />
       </MuiThemeProvider>
     );

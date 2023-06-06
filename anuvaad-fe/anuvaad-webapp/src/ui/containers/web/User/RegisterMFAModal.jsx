@@ -9,12 +9,13 @@ import themeAnuvaad from "../../../theme/web/theme-anuvaad";
 
 const RegisterMFAModal = (props) => {
 
-    const [selectedAuthMethod, setsSlectedAuthMethod] = useState("totp");
+    const [selectedAuthMethod, setsSlectedAuthMethod] = useState("TOTP");
 
     const {
         open,
         handleClose,
-        onSubmit,
+        onRegisterMFAClick,
+        registerSuccessMessage
     } = { ...props };
 
     return (
@@ -32,10 +33,10 @@ const RegisterMFAModal = (props) => {
                     <Button
                         style={{
                             padding: 50, 
-                            backgroundColor: selectedAuthMethod === "totp" ? "rgba(44, 39, 153, 0.04)" : "rgba(0, 0, 0, 0.04)", 
-                            color: selectedAuthMethod === "totp" ? "#2C2799" : "#00000047"
+                            backgroundColor: selectedAuthMethod === "TOTP" ? "rgba(44, 39, 153, 0.04)" : "rgba(0, 0, 0, 0.04)", 
+                            color: selectedAuthMethod === "TOTP" ? "#2C2799" : "#00000047"
                         }}
-                        onClick={() => setsSlectedAuthMethod("totp")}>
+                        onClick={() => setsSlectedAuthMethod("TOTP")}>
                         <div style={{ padding: 30}}>
                             <Typography variant="h4">TOTP</Typography>
                         </div>
@@ -43,24 +44,31 @@ const RegisterMFAModal = (props) => {
                     <Button
                         style={{
                             padding: 50, 
-                            backgroundColor: selectedAuthMethod === "hotp" ? "rgba(44, 39, 153, 0.04)" : "rgba(0, 0, 0, 0.04)", 
-                            color: selectedAuthMethod === "hotp" ? "#2C2799" : "#00000047"
+                            backgroundColor: selectedAuthMethod === "HOTP" ? "rgba(44, 39, 153, 0.04)" : "rgba(0, 0, 0, 0.04)", 
+                            color: selectedAuthMethod === "HOTP" ? "#2C2799" : "#00000047"
                         }}
-                        onClick={() => setsSlectedAuthMethod("hotp")}>
+                        onClick={() => setsSlectedAuthMethod("HOTP")}>
                         <div style={{ padding: 30}}>
                             <Typography variant="h4">HOTP</Typography>
                         </div>
                     </Button>
                 </DialogContent>
                 <DialogActions>
-                    <div>
+                    {registerSuccessMessage ? 
+                    <div style={{margin: "auto", }}>
+                        <Typography variant="subtitle1">Successfully registered for MFA, Please login again to continue!</Typography>
+                        <Button onClick={handleClose} color="primary" variant="contained" style={{ borderRadius: 10, marginTop: 35 }}>
+                            Login
+                        </Button>
+                    </div>
+                    : <div>
                         <Button onClick={handleClose} color="primary" variant="outlined" style={{ borderRadius: 10, marginRight: 10 }}>
                             Cancel
                         </Button>
-                        <Button onClick={onSubmit} color="primary" variant="contained" style={{ borderRadius: 10 }}>
+                        <Button onClick={()=>onRegisterMFAClick(selectedAuthMethod)} color="primary" variant="contained" style={{ borderRadius: 10 }}>
                             Proceed
                         </Button>
-                    </div>
+                    </div>}
                     
                 </DialogActions>
             </Dialog>

@@ -64,6 +64,10 @@ const endpoints = {
   hostedInference: "/ulca/apis/v0/model/compute",
   getTransliterationModelId:"/ulca/apis/v0/model/getTransliterationModelId",
 
+  // MFA API's
+  mfa_register: "/anuvaad/user-mgmt/v1/mfa/register",
+  mfa_verify: "/anuvaad/user-mgmt/v1/mfa/verify",
+  mfa_reset: "/anuvaad/user-mgmt/v1/mfa/reset",
 };
 
 export default endpoints;
