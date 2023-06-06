@@ -232,7 +232,7 @@ class MFAModel(object):
         try:
             collections = get_db()[USR_TOKEN_MONGO_COLLECTION]
             collections.update_many(
-                {"user": username,"mfa_status":True, 'active':True},
+                {"user": username,"mfa_status": {"$in": [True, None]}, 'active':True},
                 {"$set": {'active':False}},
             )
         except Exception as e:
