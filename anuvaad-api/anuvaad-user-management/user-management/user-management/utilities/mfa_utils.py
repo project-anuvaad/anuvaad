@@ -110,7 +110,7 @@ class MFAUtils:
                 "Generated email notification for user registration ",
                 MODULE_CONTEXT,
             )
-            message = f'OTP send for {username=} to email={MFAUtils.mask_email(email)}'
+            message = f'OTP sent for {username=} to email={MFAUtils.mask_email(email)}'
             return message 
         except Exception as e:
             log_exception(

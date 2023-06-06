@@ -184,7 +184,7 @@ class MFAModel(object):
                 )
             return {
                 'user': username,
-                'auth-token': auth_token,
+                'token': auth_token,
             }
         except Exception as e:
             log_exception(
