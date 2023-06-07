@@ -1224,6 +1224,26 @@
             "role":"REVIEWER",
             "actionID": "b0c793d1-215c-4de6-8d88-714f8394e75a",
             "active":true
+        },
+        {
+            "role":"REVIEWER",
+            "actionID": "e5963320-87ab-41c9-9a8b-19e346202023",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "e5963320-87ab-41c9-9a8b-19e346202023",
+            "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "e5963320-87ab-41c9-9a8b-19e346202023",
+            "active":true
+        },
+        {
+            "role":"ANNOTATOR",
+            "actionID": "e5963320-87ab-41c9-9a8b-19e346202023",
+            "active":true
         }               
 
     ]
