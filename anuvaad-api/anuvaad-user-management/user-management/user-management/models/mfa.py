@@ -3,7 +3,7 @@ from db import get_db
 from utilities import MFAUtils, MFA_TYPE_MAPPER, UserUtils
 from anuvaad_auditor.loghandler import log_info, log_exception
 from anuvaad_auditor.errorhandler import post_error
-from config import MFA_MONGO_COLLECTION, USR_TOKEN_MONGO_COLLECTION
+from config import MFA_MONGO_COLLECTION, USR_TOKEN_MONGO_COLLECTION, USR_MONGO_COLLECTION
 import time
 from .user_auth import UserAuthenticationModel
 
@@ -235,6 +235,23 @@ class MFAModel(object):
                 {"user": username,"mfa_status": {"$in": [True, None]}, 'active':True},
                 {"$set": {'active':False}},
             )
+        except Exception as e:
+            log_exception(
+                "exception while checking MFA status" +
+                str(e), MODULE_CONTEXT, e
+            )
+            return post_error(
+                "Database exception", "Exception occurred:{}".format(
+                    str(e)), None
+            )
+    
+    def validate_userid_with_username(self, userid, username):
+        try:
+            collections = get_db()[USR_MONGO_COLLECTION]
+            res = collections.find({"userID": userid,"userName": username})
+            if res.count() == 1:
+                return True
+            return False
         except Exception as e:
             log_exception(
                 "exception while checking MFA status" +

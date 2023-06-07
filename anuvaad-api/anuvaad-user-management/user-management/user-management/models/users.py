@@ -222,3 +222,24 @@ class UserManagementModel(object):
         role_description=UserUtils.read_role_codes()[1]
         if role_description:
             return role_description
+    
+    def change_email(self, username, new_email):
+        try:
+            collections = get_db()[USR_MONGO_COLLECTION]
+            result = collections.find({'userName':username})
+            for i in result:
+                if i.get('email_updated',False):
+                    log_info("Email is already updated", MODULE_CONTEXT)
+                    return post_error("Email Already Updated", "Email is updated already", None)
+            collections.update(
+                {'userName':username},
+                {"$set": {"email_updated": True, "email":new_email}}
+            )
+            return {
+                'email': new_email,
+                'message': "email has been changed successfully."
+            }
+        except Exception as e:
+            log_exception("db connection exception " +
+                          str(e),  MODULE_CONTEXT, e)
+            return post_error("Database  exception", "An error occurred while processing on the db :{}".format(str(e)), None)

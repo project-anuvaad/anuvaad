@@ -110,6 +110,14 @@ class ResetMFA(Resource):
         username = body["userName"]
         log_info(f"MFA Reset Request start for {username=}",MODULE_CONTEXT)
         
+        # validate user_id with username 
+        userid = request.headers.get('x-user-id')
+        log_info(f"MFA Reset Request x-user-id is {userid}",MODULE_CONTEXT)
+        result = mfaRepo.validate_userid_with_username(userid,username)
+        if not result:
+            log_info(f"MFA Reset Request UserID invalid",MODULE_CONTEXT)
+            return post_error("Invalid userId", "UserId and UserName did not match", None), 400 
+        
         # reset mfa
         result = mfaRepo.reset_mfa(username)
         if "errorID" in result :

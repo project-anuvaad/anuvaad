@@ -580,7 +580,7 @@ class UserUtils:
                 user["models"] = updated_models
 
     @staticmethod
-    def validate_user_login_input(username, password):
+    def validate_user_login_input(username, password, get_role=False):
         """User credentials validation
 
         checking whether the user is verified and active,
@@ -597,7 +597,7 @@ class UserUtils:
             log_info("{} find verified start".format(username), MODULE_CONTEXT)
             result = collections.find(
                 {"userName": username, "is_verified": True},
-                {"password": 1, "_id": 0, "is_active": 1},
+                {"password": 1, "_id": 0, "is_active": 1, "roles":1},
             )
             log_info("{} find verified end".format(username), MODULE_CONTEXT)
             if result.count() == 0:
@@ -605,6 +605,7 @@ class UserUtils:
                 return post_error("Not verified", "User account is not verified", None)
             log_info("{} find active start".format(username), MODULE_CONTEXT)
             for value in result:
+                role = value['roles'][0]['roleCode']
                 if value["is_active"] == False:
                     log_info(
                         "{} is not an active user".format(username), MODULE_CONTEXT
@@ -634,6 +635,9 @@ class UserUtils:
                             None,
                         )
                     log_info("{} find password checkpw stop".format(username), MODULE_CONTEXT)
+                    # return role if get_role
+                    if get_role:
+                        return role
                 except Exception as e:
                     log_exception(
                         "exception while decoding password", MODULE_CONTEXT, e

@@ -38,3 +38,8 @@ class MFARepositories:
         if result is not None:
             return result
     
+    def validate_userid_with_username(self, userid, username):
+        result = mfaModel.validate_userid_with_username(userid, username)
+        if result is not None:
+            return result
+    
