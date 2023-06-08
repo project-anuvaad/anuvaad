@@ -233,6 +233,7 @@ const constants = {
     MFA_REGISTER: "MFA_REGISTER",
     MFA_RESET: "MFA_RESET",
     MFA_VERIFY: "MFA_VERIFY",
+    UPDATE_EMAIL: "UPDATE_EMAIL",
     
 }
 export default constants;
