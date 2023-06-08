@@ -4,7 +4,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import { Button, IconButton, ThemeProvider, Typography } from "@material-ui/core";
+import { Button, Divider, IconButton, ThemeProvider, Typography } from "@material-ui/core";
 import themeAnuvaad from "../../../theme/web/theme-anuvaad";
 
 const RegisterMFAModal = (props) => {
@@ -37,29 +37,67 @@ const RegisterMFAModal = (props) => {
             >
 
                 {!registerSuccessMessage && <><DialogTitle id="alert-dialog-title">{"You have not enabled MFA "}</DialogTitle>
-                    <Typography>To login securely, Please choose an authentication method</Typography><DialogContent style={{ overflow: "hidden", marginTop: 50, marginBottom: 50, display: "flex", justifyContent: "space-around" }}>
-                        <Button
-                            style={{
-                                padding: 50,
-                                backgroundColor: selectedAuthMethod === "TOTP" ? "rgba(44, 39, 153, 0.04)" : "rgba(0, 0, 0, 0.04)",
-                                color: selectedAuthMethod === "TOTP" ? "#2C2799" : "#00000047"
-                            }}
-                            onClick={() => setsSlectedAuthMethod("TOTP")}>
-                            <div style={{ padding: 30 }}>
-                                <Typography variant="h4">TOTP</Typography>
+                    <Typography>To login securely, Please choose an authentication method</Typography>
+                    <DialogContent style={{ overflow: "hidden", marginTop: 50, marginBottom: 50, columnCount: 2 }}>
+                        <div>
+                            <Button
+                                style={{
+                                    padding: 10,
+                                    backgroundColor: selectedAuthMethod === "TOTP" ? "rgba(44, 39, 153, 0.04)" : "rgba(0, 0, 0, 0.04)",
+                                    color: selectedAuthMethod === "TOTP" ? "#2C2799" : "#00000047",
+                                    height: 100,
+                                }}
+                                title="A QR code with an app link will be emailed to you. Install the app on your mobile device and scan the QR code. The app will generate OTP for each login."
+                                fullWidth
+                                onClick={() => setsSlectedAuthMethod("TOTP")}>
+                                <div>
+                                    <Typography variant="h4">TOTP</Typography>
+                                    
+                                </div>
+                            </Button>
+                            <div 
+                                onClick={() => setsSlectedAuthMethod("TOTP")}
+                                style={{
+                                        fontSize: "14px", 
+                                        backgroundColor: selectedAuthMethod === "TOTP" ? "rgba(44, 39, 153, 0.04)" : "rgba(0, 0, 0, 0.04)", 
+                                        color: selectedAuthMethod === "TOTP" ? "#2C2799" : "#00000047",
+                                        height: "100px",
+                                        cursor: "pointer",
+                                        fontFamily: "Roboto"
+                                    }}>
+                                A QR code with an app link will be emailed to you. Install the app on your mobile device and scan the QR code. The app will generate OTP for each login.
                             </div>
-                        </Button>
-                        <Button
-                            style={{
-                                padding: 50,
-                                backgroundColor: selectedAuthMethod === "HOTP" ? "rgba(44, 39, 153, 0.04)" : "rgba(0, 0, 0, 0.04)",
-                                color: selectedAuthMethod === "HOTP" ? "#2C2799" : "#00000047"
-                            }}
-                            onClick={() => setsSlectedAuthMethod("HOTP")}>
-                            <div style={{ padding: 30 }}>
-                                <Typography variant="h4">HOTP</Typography>
+                        </div>
+                        <div>
+                            <Button
+                                style={{
+                                    padding: 10,
+                                    backgroundColor: selectedAuthMethod === "HOTP" ? "rgba(44, 39, 153, 0.04)" : "rgba(0, 0, 0, 0.04)",
+                                    color: selectedAuthMethod === "HOTP" ? "#2C2799" : "#00000047",
+                                    height: 100,
+                                }}
+                                title="An email will be sent to you with a unique OTP for each login."
+                                fullWidth
+                                onClick={() => setsSlectedAuthMethod("HOTP")}>
+                                <div>
+                                    <Typography variant="h4">HOTP</Typography>
+                                    
+                                </div>
+                            </Button>
+                            <div 
+                                onClick={() => setsSlectedAuthMethod("HOTP")}
+                                style={{
+                                    fontSize: "14px", 
+                                    backgroundColor: selectedAuthMethod === "HOTP" ? "rgba(44, 39, 153, 0.04)" : "rgba(0, 0, 0, 0.04)", 
+                                    color: selectedAuthMethod === "HOTP" ? "#2C2799" : "#00000047",
+                                    height: "100px",
+                                    cursor: "pointer",
+                                    fontFamily: "Roboto"
+                                }}>
+                                An email will be sent to you with a unique OTP for each login.
                             </div>
-                        </Button>
+                        </div>
+
                     </DialogContent></>}
                 <DialogActions>
                     {registerSuccessMessage ?
@@ -77,8 +115,9 @@ const RegisterMFAModal = (props) => {
                                 Proceed
                             </Button>
                         </div>}
-
                 </DialogActions>
+                <Divider style={{margin: 10}} />
+                <Typography variant="caption" style={{textAlign: "start"}}>Note: <b>The selection between TOTP and HOTP can be changed later on under My Profile section by clicking "Reset MFA Method" button.</b></Typography>
             </Dialog>
         </ThemeProvider>
     )

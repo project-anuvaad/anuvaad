@@ -32,6 +32,8 @@ import EnterOTPModal from "./EnterOTPModal";
 import RegisterMFAModal from "./RegisterMFAModal";
 import RegisterMFA from "../../../../flux/actions/apis/user/MFA_register";
 import VerifyMFA from "../../../../flux/actions/apis/user/MFA_verify";
+import OneTimeEmailUpdateModal from "./OneTimeEmailUpdateModal";
+import UpdateEmail from "../../../../flux/actions/apis/user/update_email";
 
 class Login extends React.Component {
   constructor(props) {
@@ -54,6 +56,10 @@ class Login extends React.Component {
       registerSuccessMessage: false,
       verifySuccessMessage: false,
       otpModalTitle: "",
+      hideResendOTPButton: false,
+      showOneTimeUpdateEmailIdModal: false,
+      oneTimeUpdateEmailIdSuccessMessage: false,
+      
     };
   }
 
@@ -87,9 +93,8 @@ class Login extends React.Component {
     this.setState({ [prop]: event.target.value });
   };
 
-  handleCloseOTPModal = (callback) => {
+  handleCloseOTPModal = () => {
     this.setState({ showOTPDialog: false });
-    callback();
     setTimeout(() => {
       this.setState({ verifySuccessMessage: "" })
     }, 4000);
@@ -122,11 +127,19 @@ class Login extends React.Component {
         } else {
           let resData = rsp_data && rsp_data.data;
           if (resData.session_id) {
-            if (resData.mfa_required && !resData.mfa_registration) {
+            if(!resData.email.updated_status){
+              this.setState({showOneTimeUpdateEmailIdModal: true});
+            } else if (resData.mfa_required && !resData.mfa_registration) {
               this.setState({ showMFAMethodSelectionModal: true, sessionId: resData.session_id });
             } else if (resData.mfa_required && resData.mfa_registration) {
+              if(resData.mfa_message.includes("app")){
+                this.setState({hideResendOTPButton: true})
+              }
               this.setState({ showOTPDialog: true, sessionId: resData.session_id, otpModalTitle: resData.mfa_message });
             }
+          } else if (resData.token){
+              localStorage.setItem("token", resData.token);
+              this.fetchUserProfileDetails(resData.token);
           }
           this.setState({ error: false, loading: false });
         }
@@ -175,7 +188,7 @@ class Login extends React.Component {
         const rsp_data = await response.json();
         console.log("rsp_data --- ", rsp_data);
         if (!rsp_data.ok) {
-          this.setState({ error: true, loading: false, errMessage: rsp_data.message, showOTPDialog: false });
+          this.setState({ error: true, loading: false, errMessage: rsp_data.message });
         } else {
           this.setState({ error: false, loading: false, verifySuccessMessage: true });
           // callback();
@@ -186,6 +199,29 @@ class Login extends React.Component {
       .catch(err => {
         this.setState({ error: true, loading: false, errMessage: "Unable to Verify OTP!" });
       })
+  }
+
+  OnUpdateEmailIdClick = (new_email) => {
+    const {email, password} = this.state;
+    const apiObj = new UpdateEmail(email, password, new_email);
+    fetch(apiObj.apiEndPoint(), {
+      method: "POST",
+      headers: apiObj.getHeaders().headers,
+      body: JSON.stringify(apiObj.getBody())
+    })
+    .then( async (response)=>{
+      const rsp_data = await response.json();
+      console.log("rsp_data --- ", rsp_data);
+      if(rsp_data.ok){
+        this.setState({oneTimeUpdateEmailIdSuccessMessage: true});
+        setTimeout(() => {
+          this.setState({showOneTimeUpdateEmailIdModal: false})
+        }, 4000);
+      }
+    })
+    .catch(err => {
+      this.setState({ error: true, loading: false, errMessage: "Unable To Update Email!" });
+    })
   }
 
   onResendOTPClick = () => {
@@ -374,17 +410,24 @@ class Login extends React.Component {
           />
         )}
         <EnterOTPModal open={this.state.showOTPDialog}
-          handleClose={(callback) => this.handleCloseOTPModal(callback())}
-          onResend={()=>this.onResendOTPClick()}
+          handleClose={() => this.handleCloseOTPModal()}
+          onResend={() => this.onResendOTPClick()}
           OTPModalTitle={this.state.otpModalTitle}
-          onSubmit={(OTP, callback) => this.onSubmitOTP(OTP, callback())}
+          onSubmit={(OTP) => this.onSubmitOTP(OTP)}
           verifySuccessMessage={this.state.verifySuccessMessage}
+          hideResendOTPButton={this.state.hideResendOTPButton}
         />
         <RegisterMFAModal
           open={this.state.showMFAMethodSelectionModal}
           handleClose={this.handleCloseMFASelectionModal}
           onRegisterMFAClick={(selectedMethod) => { this.onRegisterMFAClick(selectedMethod) }}
           registerSuccessMessage={this.state.registerSuccessMessage}
+        />
+        <OneTimeEmailUpdateModal
+          open={this.state.showOneTimeUpdateEmailIdModal}
+          currentEmail={this.state.email}
+          onUpdateEmailId={this.OnUpdateEmailIdClick}
+          oneTimeUpdateEmailIdSuccessMessage={this.state.oneTimeUpdateEmailIdSuccessMessage}
         />
       </MuiThemeProvider>
     );
