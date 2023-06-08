@@ -181,7 +181,6 @@ class UserUtils:
             )
             # return session id if MFA_ENABLED else auth-token
             if session:
-                return session_id, token # for testing use case only
                 return session_id
             else:
                 return token

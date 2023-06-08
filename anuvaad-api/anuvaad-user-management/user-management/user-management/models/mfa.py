@@ -135,11 +135,8 @@ class MFAModel(object):
             log_info(f"MFA Deactivate existing-token for {username=} end", MODULE_CONTEXT)
             log_info(f"MFA New Login Generation for {username=} start", MODULE_CONTEXT)
             session_id = UserUtils.generate_token({"user_name":username,"password":""}, USR_TOKEN_MONGO_COLLECTION,session=True)
-            # session_id  = UserUtils.generate_token({"user_name":username,"password":""}, USR_TOKEN_MONGO_COLLECTION,session=True)
-            session_id, token  = UserUtils.generate_token({"user_name":username,"password":""}, USR_TOKEN_MONGO_COLLECTION,session=True) # testing only
             log_info(f"MFA New Login Generation for {username=} end", MODULE_CONTEXT)
             result = {"session_id":session_id, 'mfa_required': True}
-            result['token'] = token.decode('utf-8') # testing only
             result['mfa_registration'] = mfa_reg_status
             result['mfa_message'] = MFAUtils.generate_post_login_output(username,useHOTP)
             return result

@@ -195,6 +195,12 @@ class UpdateEmail(Resource):
                 log_info("credentials check failed for {}".format(username),MODULE_CONTEXT)
                 return result, 400
             
+            # validate if email is correct
+            validity = UserUtils.validate_email(new_email)
+            if not validity:
+                log_info("new_email is not valid email",MODULE_CONTEXT)
+                return post_error("Invalid Email", "provided email is an invalid email"), 400
+            
             # change email
             result = userRepo.change_email(username,new_email)
             if 'errorID' in result.keys():
