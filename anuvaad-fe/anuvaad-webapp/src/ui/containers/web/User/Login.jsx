@@ -104,7 +104,7 @@ class Login extends React.Component {
   handleCloseMFASelectionModal = () => {
     this.setState({ showMFAMethodSelectionModal: false });
     setTimeout(() => {
-      this.setState({ registerSuccessMessage: "" })
+      this.setState({ registerSuccessMessage: false })
     }, 4000);
   }
 
@@ -168,7 +168,7 @@ class Login extends React.Component {
         } else {
           this.setState({ error: false, loading: false, registerSuccessMessage: true });
           setTimeout(() => {
-            this.setState({registerSuccessMessage: false});
+            this.handleCloseMFASelectionModal()
           }, 3000);
         }
       })
