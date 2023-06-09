@@ -339,11 +339,11 @@ class UserProfile extends React.Component {
               </Fab>
             </Tooltip>
 
-            <Tooltip title={"Reset MFA Method"} style={{marginLeft: 5}}>
+            {(useRole1 && useRole1.join() !== "SUPERADMIN") &&<Tooltip title={"Reset MFA Method"} style={{marginLeft: 5}}>
               <Fab aria-haspopup="true" onClick={this.handleResetMFA} color="primary" size="medium">
                 <VpnKeyOutlinedIcon />
               </Fab>
-            </Tooltip>
+            </Tooltip>}
           </Grid>
         </Paper>
 

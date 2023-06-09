@@ -57,6 +57,7 @@ class Login extends React.Component {
       verifySuccessMessage: false,
       otpModalTitle: "",
       hideResendOTPButton: false,
+      currentEmail: "",
       showOneTimeUpdateEmailIdModal: false,
       oneTimeUpdateEmailIdSuccessMessage: false,
       
@@ -128,7 +129,7 @@ class Login extends React.Component {
           let resData = rsp_data && rsp_data.data;
           if (resData.session_id) {
             if(!resData.email.updated_status){
-              this.setState({showOneTimeUpdateEmailIdModal: true});
+              this.setState({showOneTimeUpdateEmailIdModal: true, currentEmail: resData.email.registered_email, oneTimeUpdateEmailIdSuccessMessage: false});
             } else if (resData.mfa_required && !resData.mfa_registration) {
               this.setState({ showMFAMethodSelectionModal: true, sessionId: resData.session_id });
             } else if (resData.mfa_required && resData.mfa_registration) {
@@ -166,6 +167,9 @@ class Login extends React.Component {
           this.setState({ error: true, loading: false, errMessage: rsp_data.message, showMFAMethodSelectionModal: false });
         } else {
           this.setState({ error: false, loading: false, registerSuccessMessage: true });
+          setTimeout(() => {
+            this.setState({registerSuccessMessage: false});
+          }, 3000);
         }
       })
       .catch(err => {
@@ -215,7 +219,7 @@ class Login extends React.Component {
       if(rsp_data.ok){
         this.setState({oneTimeUpdateEmailIdSuccessMessage: true});
         setTimeout(() => {
-          this.setState({showOneTimeUpdateEmailIdModal: false})
+          this.setState({showOneTimeUpdateEmailIdModal: false, oneTimeUpdateEmailIdSuccessMessage: false})
         }, 4000);
       }
     })
@@ -425,7 +429,7 @@ class Login extends React.Component {
         />
         <OneTimeEmailUpdateModal
           open={this.state.showOneTimeUpdateEmailIdModal}
-          currentEmail={this.state.email}
+          currentEmail={this.state.currentEmail}
           onUpdateEmailId={this.OnUpdateEmailIdClick}
           oneTimeUpdateEmailIdSuccessMessage={this.state.oneTimeUpdateEmailIdSuccessMessage}
         />
