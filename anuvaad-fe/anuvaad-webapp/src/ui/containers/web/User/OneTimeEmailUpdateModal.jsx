@@ -82,10 +82,10 @@ const OneTimeEmailUpdateModal = (props) => {
                                     classes={{label: classes.label}}
                                 >
                                     <div>
-                                        <Typography variant="subtitle2">Continue with current Email Id : </Typography>
+                                        <Typography variant="subtitle1">Continue with : </Typography>
                                     </div>
                                     <div>
-                                        <Typography variant="subtitle2">{currentEmail}</Typography>
+                                        <Typography variant="subtitle1"><b>{currentEmail}</b></Typography>
                                     </div>
 
                                 </Button>
