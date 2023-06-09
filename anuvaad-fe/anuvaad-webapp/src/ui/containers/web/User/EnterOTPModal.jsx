@@ -49,7 +49,10 @@ const EnterOTPModal = (props) => {
                         color="primary" variant="outlined" style={{ marginRight: "auto", borderRadius: 15 }}>
                         Cancel
                     </Button>
-                    {!hideResendOTPButton && <Button onClick={onResend} color="primary" variant="contained" style={{ borderRadius: 15 }}>
+                    {!hideResendOTPButton && <Button onClick={()=>{
+                        onResend();
+                        setOTP("");
+                    }} color="primary" variant="contained" style={{ borderRadius: 15 }}>
                         Resend OTP
                     </Button>}
                     <Button onClick={() => onSubmit(OTP)} color="primary" variant="contained" disabled={!OTP} style={{ borderRadius: 15 }}>
