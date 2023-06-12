@@ -139,7 +139,7 @@ class InteractiveDocHeader extends React.Component {
     })
     .then(async res=>{
       let response = await res.json();
-      console.log("response -------- ", response);
+      // console.log("response -------- ", response);
       if(!response.ok){
         // throw error when failed
         this.setState({dialogMessage: "Failed to download parallel documets.", variant: "error"})

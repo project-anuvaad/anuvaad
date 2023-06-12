@@ -260,13 +260,6 @@ class ReviewDocumentList extends React.Component {
             }
             return -1;
         });
-        // if(this.state.selectedFilter == 2){
-        //     jobs = jobs.map((el,i)=> {
-        //         el.currentGranularStatus = "REVIEWER - COMPLETED"
-        //         return el;
-        //     })
-        // }
-        console.log("jobs ----- ", jobs);
         return jobs;
     };
 
