@@ -1528,6 +1528,7 @@ class SentenceCard extends React.Component {
   renderSentenceCard = () => {
     let userRole = localStorage.getItem("roles");
     let orgID = JSON.parse(localStorage.getItem("userProfile")).orgID;
+    let enableEditingSentence = (!this.props.isDocumentCameForCorrection && (this.props.granularStatus.trim() === "FINAL EDITING - IN PROGRESS" || this.props.granularStatus.trim() === "AUTO TRANSLATION - COMPLETED")) || (this.props.isDocumentCameForCorrection && this.props.redoSentence)
     return (
       <div key={12} style={{ padding: "1%" }}>
         <MuiThemeProvider theme={theme}>
@@ -1562,15 +1563,18 @@ class SentenceCard extends React.Component {
 
             <Collapse in={this.cardCompare()} timeout="auto" unmountOnExit>
               <CardContent style={{ padding: "10px" }}>
+              {/* isDocumentCameForCorrection={this.state.isDocumentCameForCorrection}
+              redoSentence={sentence.redo} */}
+              {/* (this.props.granularStatus.trim() === "FINAL EDITING - IN PROGRESS" || this.props.granularStatus.trim() === "AUTO TRANSLATION - COMPLETED") && */}
                 {this.renderMTTargetSentence()}
                 <br />
                 {userRole === "ANNOTATOR" &&
-                  orgID !== "NONMT" && (this.props.granularStatus.trim() === "FINAL EDITING - IN PROGRESS" || this.props.granularStatus.trim() === "AUTO TRANSLATION - COMPLETED") &&
+                  orgID !== "NONMT" && enableEditingSentence &&
                   this.renderRating()}
-                {(this.props.granularStatus.trim() === "FINAL EDITING - IN PROGRESS" || this.props.granularStatus.trim() === "AUTO TRANSLATION - COMPLETED") && this.renderUserInputArea()}
+                {enableEditingSentence && this.renderUserInputArea()}
               </CardContent>
               <CardActions style={{ padding: "10px" }}>
-                {(this.props.granularStatus.trim() === "FINAL EDITING - IN PROGRESS" || this.props.granularStatus.trim() === "AUTO TRANSLATION - COMPLETED") && this.renderNormaModeButtons()}
+                {enableEditingSentence && this.renderNormaModeButtons()}
               </CardActions>
             </Collapse>
           </Card>

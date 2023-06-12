@@ -35,6 +35,7 @@ import FetchModel from "../../../../flux/actions/apis/common/fetchmodel";
 import SwitchView from "../../../../flux/actions/apis/document_translate/getViewOption";
 import clear_html_link from "../../../../flux/actions/apis/document_translate/clear_html_link";
 import clear_docx_view from "../../../../flux/actions/apis/document_translate/clear_docx_view";
+import GetHtmlLink from "../../../../flux/actions/editor/getHtmlLink";
 import { FormControlLabel, Switch } from "@material-ui/core";
 const StyledMenu = withStyles({
   paper: {
@@ -120,6 +121,51 @@ class InteractiveDocHeader extends React.Component {
       </div>
     );
   };
+
+  downloadFinalDocuments = () => {
+    const jobId = this.props.match.params.jobid.split("|")[0];
+    const apiObj = new GetHtmlLink([jobId]);
+
+    this.setState({
+      anchorEl: null,
+      showStatus: true,
+      message: translate("common.page.label.download"),
+    });
+
+    fetch(apiObj.apiEndPoint(), {
+      method: "post",
+      body: JSON.stringify(apiObj.getBody()),
+      headers: apiObj.getHeaders().headers
+    })
+    .then(async res=>{
+      let response = await res.json();
+      // console.log("response -------- ", response);
+      if(!response.ok){
+        // throw error when failed
+        this.setState({dialogMessage: "Failed to download parallel documets.", variant: "error"})
+      } else {
+        console.log("response.data[0].file_link.parallel_doc ----- ", response.data[0].file_link.parallel_doc);
+        fetch(response.data[0].file_link.parallel_doc).then((res) => res.blob())
+        .then((blob) => {
+          let a = document.createElement("a");
+          let url = URL.createObjectURL(blob);
+          a.href = url;
+          a.download = `${jobId}.zip`;
+          this.setState({ showStatus: false, message: null });
+          a.click();
+        })
+        .catch((error) => {
+          this.setState({ dialogMessage: "Unable to download file" });
+          // console.log("Unable to download file");
+        });
+      }
+    })
+    .catch(err=> {
+      console.log("err ---- ", err);
+      // throw error when failed
+      this.setState({dialogMessage: "Failed to download parallel documets.", variant: "error"})
+    })
+  }
 
   fetchFile(fileType) {
     this.setState({
@@ -499,6 +545,15 @@ class InteractiveDocHeader extends React.Component {
               As {type}
             </MenuItem>
           )}
+
+          {
+            this.props.downloadFinalDocs && <MenuItem
+            style={{ borderTop: "1px solid #D6D6D6", fontFamily: "Roboto", fontSize: "0.875rem", fontWeight: "400" }}
+            onClick={this.downloadFinalDocuments}
+          >
+            PARRALLEL DOCUMENTS
+          </MenuItem>
+          }
         </StyledMenu>
       </div>
     );

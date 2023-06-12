@@ -100,7 +100,9 @@ export function get_document_details(input) {
           };
           granularStatusArr.push(granularStatusObj);
         }
-  
+
+        document["isDocumentCameForCorrection"] = job["granularity"]["currentStatus"] === "manual_reediting_in_progress" ? true : false
+
       }
   
       document["granularStatus"] = granularStatusArr;

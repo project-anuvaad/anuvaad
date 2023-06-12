@@ -33,7 +33,7 @@ class DocumentReview extends React.Component {
       data: [],
       showLoading: false,
       currentJobDetails: null,
-      disableActions: false,
+      disableActions: true,
       // (this.props.match.params.currentStatus === "REVIEWER - COMPLETED" || this.props.match.params.currentStatus === "FINAL EDITING - IN PROGRESS") ? true : false,
       confirmDialogue: {
         open: false,
@@ -91,8 +91,14 @@ class DocumentReview extends React.Component {
       this.setState({ currentJobDetails: docArr[0] })
       // console.log("docArr ------- ", docArr);
       if (docArr?.length > 0) {
-        if (docArr[0].currentGranularStatus === "FINAL EDITING - IN PROGRESS" || docArr[0].currentGranularStatus === "REVIEWER - COMPLETED") {
+        if (
+          docArr[0].currentGranularStatus.trim() === "FINAL EDITING - IN PROGRESS"
+          || docArr[0].currentGranularStatus.trim() === "REVIEWER - COMPLETED"
+          || docArr[0].currentGranularStatus.trim() === "FINAL DOCUMENT UPLOADED"
+        ) {
           this.setState({ disableActions: true });
+        } else {
+          this.setState({ disableActions: false });
         }
       }
     })
@@ -414,7 +420,7 @@ class DocumentReview extends React.Component {
           viewColumns: translate("graderReport.page.muiTable.viewColumns")
         },
         pagination: {
-          rowsPerPage: translate("graderReport.page.muiTable.rowsPerPages")
+          rowsPerPage: "Sentences per page:"
         },
         options: { sortDirection: 'desc' }
       },

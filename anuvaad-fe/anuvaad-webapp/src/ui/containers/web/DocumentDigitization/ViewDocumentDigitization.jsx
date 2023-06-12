@@ -711,7 +711,7 @@ class ViewDocumentDigitization extends React.Component {
                         backArrowTabIndex={this.state.currentPageIndex - 1}
                         backArrowDisable={this.state.currentPageIndex == 0}
                         rightArrowTabIndex={this.state.currentPageIndex + 1}
-                        rightArrowDisable={this.state.currentPageIndex == totalPageCount}
+                        rightArrowDisable={this.state.currentPageIndex == (totalPageCount-1)}
                         pageTextInfo={`Page ${parseInt(this.state.currentPageIndex + 1)} of ${parseInt(totalPageCount)}`}
                     />
                 );
