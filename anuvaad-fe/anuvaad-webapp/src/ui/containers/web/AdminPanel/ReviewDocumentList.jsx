@@ -55,9 +55,14 @@ class ReviewDocumentList extends React.Component {
                     tableTitle: "Document Sent For Correction"
                 },
                 {
-                    label: "Completed",
+                    label: "Review Completed / Document Uploaded",
                     value: ["reviewer_completed", "parallel_document_uploaded"],
-                    tableTitle: "Review Completed"
+                    tableTitle: "Review Completed / Document Uploaded"
+                },
+                {
+                    label: "All",
+                    value: ["manual_editing_completed", "reviewer_in_progress", "manual_reediting_completed", "manual_reediting_in_progress", "reviewer_completed", "parallel_document_uploaded"],
+                    tableTitle: "All Documents"
                 }
             ],
             selectedFilter: 0,
@@ -126,6 +131,8 @@ class ReviewDocumentList extends React.Component {
     componentDidUpdate(prevProps, prevState) {
         // console.log("prevState ----- ", prevState.selectedFilter);
         if (prevState.selectedFilter !== this.state.selectedFilter) {
+            this.setState({ currentPageIndex: 0});
+            this.tableRef.current.changePage(Number(0));
             this.makeAPICallJobsBulkSearch(
                 this.state.offset,
                 this.state.limit,
@@ -253,6 +260,13 @@ class ReviewDocumentList extends React.Component {
             }
             return -1;
         });
+        // if(this.state.selectedFilter == 2){
+        //     jobs = jobs.map((el,i)=> {
+        //         el.currentGranularStatus = "REVIEWER - COMPLETED"
+        //         return el;
+        //     })
+        // }
+        console.log("jobs ----- ", jobs);
         return jobs;
     };
 
@@ -734,7 +748,7 @@ class ReviewDocumentList extends React.Component {
                         backArrowTabIndex={this.state.currentPageIndex - 1}
                         backArrowDisable={this.state.currentPageIndex == 0}
                         rightArrowTabIndex={this.state.currentPageIndex + 1}
-                        rightArrowDisable={this.state.currentPageIndex == totalPageCount}
+                        rightArrowDisable={this.state.currentPageIndex == (totalPageCount-1)}
                         pageTextInfo={`Page ${parseInt(this.state.currentPageIndex + 1)} of ${parseInt(totalPageCount)}`}
                     />
                 );
