@@ -108,64 +108,6 @@ const RegisterMFAModal = (props) => {
                                     />
                                 )
                             })}
-                        {/* <div>
-                            <Button
-                                style={{
-                                    padding: 10,
-                                    backgroundColor: selectedAuthMethod === "TOTP" ? "rgba(44, 39, 153, 0.04)" : "rgba(0, 0, 0, 0.04)",
-                                    color: selectedAuthMethod === "TOTP" ? "#2C2799" : "#00000047",
-                                    height: 100,
-                                }}
-                                title="A QR code with an app link will be emailed to you. Install the app on your mobile device and scan the QR code. The app will generate OTP for each login."
-                                fullWidth
-                                onClick={() => setsSlectedAuthMethod("TOTP")}>
-                                <div>
-                                    <Typography variant="h4">TOTP</Typography>
-                                    
-                                </div>
-                            </Button>
-                            <div 
-                                onClick={() => setsSlectedAuthMethod("TOTP")}
-                                style={{
-                                        fontSize: "14px", 
-                                        backgroundColor: selectedAuthMethod === "TOTP" ? "rgba(44, 39, 153, 0.04)" : "rgba(0, 0, 0, 0.04)", 
-                                        color: selectedAuthMethod === "TOTP" ? "#2C2799" : "#00000047",
-                                        height: "100px",
-                                        cursor: "pointer",
-                                        fontFamily: "Roboto"
-                                    }}>
-                                A QR code with an app link will be emailed to you. Install the app on your mobile device and scan the QR code. The app will generate OTP for each login.
-                            </div>
-                        </div>
-                        <div>
-                            <Button
-                                style={{
-                                    padding: 10,
-                                    backgroundColor: selectedAuthMethod === "HOTP" ? "rgba(44, 39, 153, 0.04)" : "rgba(0, 0, 0, 0.04)",
-                                    color: selectedAuthMethod === "HOTP" ? "#2C2799" : "#00000047",
-                                    height: 100,
-                                }}
-                                title="An email will be sent to you with a unique OTP for each login."
-                                fullWidth
-                                onClick={() => setsSlectedAuthMethod("HOTP")}>
-                                <div>
-                                    <Typography variant="h4">HOTP</Typography>
-                                    
-                                </div>
-                            </Button>
-                            <div 
-                                onClick={() => setsSlectedAuthMethod("HOTP")}
-                                style={{
-                                    fontSize: "14px", 
-                                    backgroundColor: selectedAuthMethod === "HOTP" ? "rgba(44, 39, 153, 0.04)" : "rgba(0, 0, 0, 0.04)", 
-                                    color: selectedAuthMethod === "HOTP" ? "#2C2799" : "#00000047",
-                                    height: "100px",
-                                    cursor: "pointer",
-                                    fontFamily: "Roboto"
-                                }}>
-                                An email will be sent to you with a unique OTP for each login.
-                            </div>
-                        </div> */}
 
                     </DialogContent></>}
                 <DialogActions>
