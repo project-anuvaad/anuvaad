@@ -298,6 +298,28 @@ class UploadTranslatedDocument extends Component {
                         renderInput={(params) => <TextField {...params} placeholder="Select Source Document" variant="outlined" />}
                     />
                 </Grid>
+
+                {this.state.files[0]?.name && <><Grid item xs={12} sm={12} lg={12} xl={12} style={{ marginTop: "3%" }}>
+                    <Typography
+                        style={{
+                            fontSize: "0.9rem",
+                            fontWeight: "600",
+                            fontFamily: "Roboto",
+                            marginBottom: 2
+                        }}
+                    >
+                        Upload file name
+                    </Typography>
+                </Grid>
+
+                <Grid item xs={12} sm={12} lg={12} xl={12}>
+                    <TextField
+                        value={this.state.files[0]?.name}
+                        disabled
+                        fullWidth
+                        variant="outlined"
+                    />
+                </Grid></>}
             </Grid>
         );
     };
@@ -378,12 +400,6 @@ class UploadTranslatedDocument extends Component {
                             <Grid item xs={12} sm={6} lg={6} xl={6}>
                                 {this.renderSourceDocumentItems()}
                             </Grid>
-                            <Grid item xs={12} sm={6} lg={6} xl={6}>
-                                {this.state.files[0]?.name &&
-                                    <Typography variant="subtitle2">Upload file name - {this.state.files[0]?.name}</Typography>
-                                }
-                            </Grid>
-                            {/* this.state.files[0]?.name */}
                             <Grid
                                 item
                                 xs={12}

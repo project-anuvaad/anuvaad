@@ -16,7 +16,9 @@ import TextField from "@material-ui/core/TextField";
 import Tooltip from "@material-ui/core/Tooltip";
 import Typography from "@material-ui/core/Typography";
 import AccountCircle from "@material-ui/icons/AccountCircle";
+import VpnKeyOutlinedIcon from '@material-ui/icons/VpnKeyOutlined';
 import { withStyles } from "@material-ui/core/styles";
+import ConfirmBox from "../../../components/web/common/ConfirmBox";
 
 // import MenuItem from "@material-ui/core/MenuItem";
 // import Select from "@material-ui/core/Select";
@@ -28,6 +30,7 @@ import { translate } from "../../../../assets/localisation";
 
 import Updatepassword from "../../../../flux/actions/apis/user/updatepassword";
 import APITransport from "../../../../flux/actions/apitransport/apitransport";
+import ResetMFA from "../../../../flux/actions/apis/user/MFA_reset";
 
 const styles = {
   root: {
@@ -58,7 +61,8 @@ class UserProfile extends React.Component {
       messageSnack: "",
       // lang: localStorage.getItem(`lang${JSON.parse(localStorage.getItem("userProfile")).userID}`),
       lang: "English",
-      userDetails: JSON.parse(localStorage.getItem("userProfile"))
+      userDetails: JSON.parse(localStorage.getItem("userProfile")),
+      openResetMFAConfirmBox: false,
     };
   }
 
@@ -69,6 +73,30 @@ class UserProfile extends React.Component {
       nmtTextSP: [],
       message: ""
     });
+  }
+
+  handleResetMFA = () => {
+    this.setState({ openResetMFAConfirmBox: true });
+  }
+
+  resetMFAClick = () => {
+    const apiObj = new ResetMFA(this.state.userDetails.userName);
+    fetch(apiObj.apiEndPoint(), {
+      method: "POST",
+      headers: apiObj.getHeaders().headers,
+      body: JSON.stringify(apiObj.getBody())
+    })
+      .then(response => response.json())
+      .then(result => {
+        console.log(result)
+        if (result.ok) {
+          // history.replace(`${process.env.PUBLIC_URL}/logout`);
+          this.setState({ open: true, messageSnack: result.data.message, openResetMFAConfirmBox: false });
+        }
+      })
+      .catch(err => {
+        console.log(err)
+      })
   }
 
   handleTextChange(key, event) {
@@ -190,21 +218,21 @@ class UserProfile extends React.Component {
 
     return (
       <div className={classes.root}>
-        <Typography style={{paddingTop: "2%", fontSize: "19px", fontWeight: "500", color: "black"}} className={classes.header}>
+        <Typography style={{ paddingTop: "2%", fontSize: "19px", fontWeight: "500", color: "black" }} className={classes.header}>
           {translate("common.page.label.myProfile")}
         </Typography>
         <Paper className={classes.paper}>
           <Grid container spacing={4}>
             <Grid item xs={12} sm={12} lg={12} xl={12} className={classes.dataRow} style={{ marginTop: '0px' }}>
               <Grid item xs={5} sm={5} lg={5} xl={5} style={{ textAlign: 'left' }}>
-                <Typography style={{fontSize: "1rem", fontWeight: "600", fontFamily: "Roboto"}} >
+                <Typography style={{ fontSize: "1rem", fontWeight: "600", fontFamily: "Roboto" }} >
                   Name{" "}
                 </Typography>
               </Grid>
               <Grid item xs={6} sm={6} lg={6} xl={6} style={{ textAlign: 'left' }}>
                 {/* <br /> */}
                 {/* <br /> */}
-                <Typography style={{fontSize: "1rem", fontWeight: "400", fontFamily: "Roboto", textTransform: "capitalize"}}>
+                <Typography style={{ fontSize: "1rem", fontWeight: "400", fontFamily: "Roboto", textTransform: "capitalize" }}>
                   {" "}
                   {this.state.userDetails.name}{" "}
                 </Typography>
@@ -227,14 +255,14 @@ class UserProfile extends React.Component {
             </Grid>  */}
             <Grid item xs={12} sm={12} lg={12} xl={12} className={classes.dataRow}>
               <Grid item xs={5} sm={5} lg={5} xl={5} style={{ textAlign: 'left' }}>
-                <Typography style={{fontSize: "1rem", fontWeight: "600", fontFamily: "Roboto"}} >
+                <Typography style={{ fontSize: "1rem", fontWeight: "600", fontFamily: "Roboto" }} >
                   {translate("common.page.label.email")}{" "}
                 </Typography>
               </Grid>
               <Grid item xs={6} sm={6} lg={6} xl={6} style={{ textAlign: 'left' }}>
                 {/* <br />
                 <br /> */}
-                <Typography style={{fontSize: "1rem", fontWeight: "400", fontFamily: "Roboto", marginTop: "-1%"}}>
+                <Typography style={{ fontSize: "1rem", fontWeight: "400", fontFamily: "Roboto", marginTop: "-1%" }}>
                   {" "}
                   {this.state.userDetails.email}{" "}
                 </Typography>
@@ -243,7 +271,7 @@ class UserProfile extends React.Component {
 
             <Grid item xs={12} sm={12} lg={12} xl={12} className={classes.dataRow}>
               <Grid item xs={5} sm={5} lg={5} xl={5} style={{ textAlign: 'left' }}>
-                <Typography style={{fontSize: "1rem", fontWeight: "600", fontFamily: "Roboto"}}>
+                <Typography style={{ fontSize: "1rem", fontWeight: "600", fontFamily: "Roboto" }}>
                   {translate("profile.page.label.role")}{" "}
                 </Typography>
               </Grid>
@@ -251,7 +279,7 @@ class UserProfile extends React.Component {
                 {/* <br />
                 <br />
                 <br /> */}
-                <Typography style={{fontSize: "1rem", fontWeight: "400", fontFamily: "Roboto", marginTop: "-1%"}}>
+                <Typography style={{ fontSize: "1rem", fontWeight: "400", fontFamily: "Roboto", marginTop: "-1%" }}>
                   {" "}
                   {useRole1 ? useRole1.join() : ""}
                   {/* [{useRole}]{" "} */}
@@ -261,7 +289,7 @@ class UserProfile extends React.Component {
 
             <Grid item xs={12} sm={12} lg={12} xl={12} className={classes.dataRow}>
               <Grid item xs={5} sm={5} lg={5} xl={5} style={{ textAlign: 'left' }}>
-                <Typography style={{fontSize: "1rem", fontWeight: "600", fontFamily: "Roboto"}}>
+                <Typography style={{ fontSize: "1rem", fontWeight: "600", fontFamily: "Roboto" }}>
                   {translate("profile.page.label.org")}{" "}
                 </Typography>
               </Grid>
@@ -269,7 +297,7 @@ class UserProfile extends React.Component {
                 {/* <br />
                 <br />
                 <br /> */}
-                <Typography style={{fontSize: "1rem", fontWeight: "400", fontFamily: "Roboto", marginTop: "-1%"}}>
+                <Typography style={{ fontSize: "1rem", fontWeight: "400", fontFamily: "Roboto", marginTop: "-1%" }}>
                   {this.state.userDetails.orgID}{" "}
                 </Typography>
               </Grid>
@@ -277,14 +305,14 @@ class UserProfile extends React.Component {
 
             <Grid item xs={12} sm={12} lg={12} xl={12} className={classes.dataRow}>
               <Grid item xs={5} sm={5} lg={5} xl={5} style={{ textAlign: 'left' }}>
-                <Typography style={{fontSize: "1rem", fontWeight: "600", fontFamily: "Roboto"}} >
+                <Typography style={{ fontSize: "1rem", fontWeight: "600", fontFamily: "Roboto" }} >
                   Language{" "}
                 </Typography>
               </Grid>
               <Grid item xs={6} sm={6} lg={6} xl={6} style={{ textAlign: 'initial' }}>
                 {/* <br />
                 <br /> */}
-                <Typography style={{fontSize: "1rem", fontWeight: "400", fontFamily: "Roboto", marginTop: "-1%"}}>
+                <Typography style={{ fontSize: "1rem", fontWeight: "400", fontFamily: "Roboto", marginTop: "-1%" }}>
                   {" "}
                   {this.state.lang}{" "}
                 </Typography>
@@ -311,8 +339,26 @@ class UserProfile extends React.Component {
                 <AccountCircle />
               </Fab>
             </Tooltip>
+
+            {(useRole1 && useRole1.join() !== "SUPERADMIN") && <Tooltip title={"Reset MFA Method"} style={{ marginLeft: 5 }}>
+              <Fab aria-haspopup="true" onClick={this.handleResetMFA} color="primary" size="medium">
+                <VpnKeyOutlinedIcon />
+              </Fab>
+            </Tooltip>}
           </Grid>
         </Paper>
+
+        <ConfirmBox
+          open={this.state.openResetMFAConfirmBox}
+          onClose={() => this.setState({ openResetMFAConfirmBox: false })}
+          title={"Reset MFA Method"}
+          contentText={"Are you sure you want to perform this action? You will be promted to register for MFA during your next login."}
+          onConfirm={() => this.resetMFAClick()}
+        />
+
+        <Snackbar anchorOrigin={{ vertical: "bottom", horizontal: "right" }} open={this.state.open} autoHideDuration={6000}>
+          <MySnackbarContentWrapper onClose={this.handleClose} variant="success" message={this.state.messageSnack} />
+        </Snackbar>
 
         {this.state.drawer ? (
           <Dialog
@@ -382,9 +428,6 @@ class UserProfile extends React.Component {
                 </FormControl>
                 <div>
                   <span style={{ marginLeft: "20%", color: "red" }}>{this.state.message}</span>
-                  <Snackbar anchorOrigin={{ vertical: "bottom", horizontal: "right" }} open={this.state.open} autoHideDuration={6000}>
-                    <MySnackbarContentWrapper onClose={this.handleClose} variant="success" message={this.state.messageSnack} />
-                  </Snackbar>
                   <DialogActions style={{ marginLeft: "0px", marginRight: '0px' }}>
                     <Button
                       variant="contained"

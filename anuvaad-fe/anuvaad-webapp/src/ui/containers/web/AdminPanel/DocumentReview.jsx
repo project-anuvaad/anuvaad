@@ -22,6 +22,8 @@ import ConfirmBox from "../../../components/web/common/ConfirmBox";
 import UpdateGranularStatus from "../../../../flux/actions/apis/document_translate/update_granular_status";
 import FetchDocument from "../../../../flux/actions/apis/view_document/fetch_document";
 import { get_document_details } from "../../../../utils/getFormattedJobData";
+import UploadDocToS3 from "../../../../flux/actions/apis/document_translate/s3_upload_doc";
+import ClearContent from "../../../../flux/actions/apis/document_translate/clearcontent";
 
 class DocumentReview extends React.Component {
   constructor(props) {
@@ -50,6 +52,10 @@ class DocumentReview extends React.Component {
   componentDidMount() {
     this.getCurrentJobDetail();
     this.fetchDocumentContent();
+  }
+
+  componentWillUnmount() {
+    this.props.ClearContent();
   }
 
   fetchDocumentContent = () => {
@@ -82,11 +88,11 @@ class DocumentReview extends React.Component {
       const rsp_data = await response.json();
       // console.log("rsp_data ---- ", rsp_data);
       let docArr = get_document_details(rsp_data);
-      this.setState({currentJobDetails: docArr[0]})
+      this.setState({ currentJobDetails: docArr[0] })
       // console.log("docArr ------- ", docArr);
-      if(docArr?.length > 0){
-        if(docArr[0].currentGranularStatus === "FINAL EDITING - IN PROGRESS" || docArr[0].currentGranularStatus === "REVIEWER - COMPLETED"){
-          this.setState({disableActions: true});
+      if (docArr?.length > 0) {
+        if (docArr[0].currentGranularStatus === "FINAL EDITING - IN PROGRESS" || docArr[0].currentGranularStatus === "REVIEWER - COMPLETED") {
+          this.setState({ disableActions: true });
         }
       }
     })
@@ -137,7 +143,7 @@ class DocumentReview extends React.Component {
     this.setState({ snackbarInfo: currentInfoState });
   }
 
-  updateGranularity = (statusArr, successMessage, shouldGoBack = true) => {
+  updateGranularity = (statusArr, successMessage, shouldGoBack = true, onSuccessCallback) => {
     let jobId = this.props.match.params.jobId;
     const apiObj = new UpdateGranularStatus(jobId, statusArr);
 
@@ -159,6 +165,7 @@ class DocumentReview extends React.Component {
         this.setState({ snackbarInfo: currentInfoState });
         this.fetchDocumentsToReview();
         this.getCurrentJobDetail();
+        onSuccessCallback && onSuccessCallback();
         shouldGoBack && setTimeout(() => {
           history.goBack()
         }, 2000);
@@ -177,6 +184,42 @@ class DocumentReview extends React.Component {
 
   }
 
+  uploadDocumentS3 = () => {
+    const formData = new FormData();
+    formData.append("job_id", this.state.currentJobDetails.jobID);
+    formData.append("src_file", this.state.currentJobDetails.filename);
+    formData.append("record_id", this.state.currentJobDetails.recordId);
+    formData.append("user_id", this.state.currentJobDetails.user_id);
+    const apiObj = new UploadDocToS3(formData);
+
+    const currentSnackBarInfo = { ...this.state.snackbarInfo }
+
+    fetch(apiObj.apiEndPoint(), {
+      method: 'post',
+      body: formData,
+      headers: apiObj.getHeaders().headers
+    }).then(async response => {
+      const rsp_data = await response.json();
+      if (!rsp_data.ok) {
+        currentSnackBarInfo.open = true;
+        currentSnackBarInfo.message = "Request Failed.";
+        currentSnackBarInfo.variant = "error";
+        this.setState({ snackbarInfo: currentSnackBarInfo });
+      } else {
+        currentSnackBarInfo.open = true;
+        currentSnackBarInfo.message = "Translated File Uploaded";
+        currentSnackBarInfo.variant = "info";
+        this.setState({ snackbarInfo: currentSnackBarInfo });
+      }
+    }).catch(err => {
+      currentSnackBarInfo.open = true;
+      currentSnackBarInfo.message = "Something went wrong, Please try again after sometime.";
+      currentSnackBarInfo.variant = "error";
+      this.setState({ snackbarInfo: currentSnackBarInfo });
+    })
+
+  }
+
   onCloseConfirmBox = () => {
     let currentconfirmDialogueState = this.state.confirmDialogue;
     currentconfirmDialogueState.open = false;
@@ -187,9 +230,9 @@ class DocumentReview extends React.Component {
 
   onApproveClick = () => {
     let statusArr = this.state.currentJobDetails !== null && this.state.currentJobDetails.currentGranularStatus === "FINAL EDITING - COMPLETED" ? ["reviewerInProgress", "reviewerCompleted"] : ["reviewerCompleted"]
-    this.updateGranularity(statusArr, "Document Verified!");
+    this.updateGranularity(statusArr, "Document Verified!", true, this.uploadDocumentS3);
     // console.log("this.props.match.params.jobId --- ", this.props.match.params.jobId);
-    this.onCloseConfirmBox()
+    this.onCloseConfirmBox();
   }
 
   sendForCorrectionClick = () => {
@@ -240,12 +283,19 @@ class DocumentReview extends React.Component {
       .then(response => response.json())
       .then(result => {
         // console.log(result);
-        if(this.state.currentJobDetails.currentGranularStatus === "FINAL EDITING - COMPLETED"){
+        if (this.state.currentJobDetails.currentGranularStatus === "FINAL EDITING - COMPLETED") {
           this.updateGranularity(["reviewerInProgress"], "Review Comment Updated!", false)
-        } else{
+        } else {
+          let currentInfoState = { ...this.state.snackbarInfo };
+          currentInfoState = {
+            open: true,
+            message: "Review Comment Updated!",
+            variant: "info"
+          };
+          this.setState({ snackbarInfo: currentInfoState });
           this.getCurrentJobDetail();
         }
-        
+
       }
       )
       .catch(error => console.log('error', error));
@@ -331,7 +381,7 @@ class DocumentReview extends React.Component {
                     placeholder="Add Review"
                     defaultValue={tableMeta.tableData[tableMeta.rowIndex]?.comments ? tableMeta.tableData[tableMeta.rowIndex]?.comments : ""}
                     onChange={e => this.onReviewChange(e, tableMeta)}
-                    style={{borderColor : tableMeta.tableData[tableMeta.rowIndex]?.comments ? "rgb(97 231 55 / 87%)" : "#2C2799"}}
+                    style={{ borderColor: tableMeta.tableData[tableMeta.rowIndex]?.comments ? "rgb(97 231 55 / 87%)" : "#2C2799" }}
                     fullWidth
                     endAdornment={
                       <InputAdornment position="end">
@@ -451,13 +501,14 @@ class DocumentReview extends React.Component {
 
 const mapStateToProps = state => ({
   fetchContent: state.fetchContent,
-  apistatus: state.apistatus
+  apistatus: state.apistatus,
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators(
   {
     APITransport,
     FileContent,
+    ClearContent,
   },
   dispatch
 );
