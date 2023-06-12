@@ -80,7 +80,7 @@ class UserProfile extends React.Component {
   }
 
   resetMFAClick = () => {
-    const apiObj = new ResetMFA(this.state.userDetails.email);
+    const apiObj = new ResetMFA(this.state.userDetails.userName);
     fetch(apiObj.apiEndPoint(), {
       method: "POST",
       headers: apiObj.getHeaders().headers,
