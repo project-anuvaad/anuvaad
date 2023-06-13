@@ -62,7 +62,7 @@ if isinstance(tmx_user_enabled, str):
         tmx_user_enabled = True
     else:
         tmx_user_enabled = False
-user_translation_enabled = os.environ.get('USER_TRANSLATION_ENABLED', True)
+user_translation_enabled = False
 if isinstance(user_translation_enabled, str):
     if user_translation_enabled == "TRUE":
         user_translation_enabled = True
