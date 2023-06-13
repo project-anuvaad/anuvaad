@@ -42,7 +42,9 @@ def extract_pdf_metadata(filename, working_dir, base_dir):
 
     log_info('filepath {}, working_dir {}'.format(pdf_filepath, working_dir), app_context.application_context)
     try:
+        log_info('extracting image paths starting...', app_context.application_context)
         pdf_image_paths         = extract_image_paths_from_pdf(pdf_filepath, working_dir)
+        log_info('extracting xml paths starting...', app_context.application_context)
         pdf_xml_filepath        = extract_xml_path_from_digital_pdf(pdf_filepath, working_dir)
     except Exception as e:
         log_error('error extracting xml information of {}'.format(pdf_filepath), app_context.application_context, e)
@@ -77,7 +79,7 @@ def process_input_pdf(filename, base_dir, lang):
     if ret == False:
         log_error('create_pdf_processing_paths failed', app_context.application_context, None)
         return None, None, None, None, None, None, None
-
+    log_info('extracting pdf metadata starting...', app_context.application_context)
     pdf_xml_filepath, pdf_image_paths, pdf_bg_img_filepaths   = extract_pdf_metadata(filename, working_dir, base_dir)
     if pdf_xml_filepath == None or pdf_bg_img_filepaths == None or pdf_image_paths == None:
         log_error('extract_pdf_metadata failed', app_context.application_context, None)
