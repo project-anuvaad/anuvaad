@@ -84,17 +84,25 @@ def extract_xml_path_from_digital_pdf(filepath, workspace_output_dir):
     log_info('pdf to html start  :', app_context.application_context)
     working_dir    = os.path.join(workspace_output_dir, 'pdftohtml')
     create_directory(working_dir)
+    log_info('pdf to html working dir created  :', app_context.application_context)
 
     working_dir     = os.path.join(working_dir, 'xml')
     create_directory(working_dir)
+
+    log_info('pdf to html xml working dir created  :', app_context.application_context)
+
 
     shutil.copy(filepath, os.path.join(working_dir, os.path.basename(filepath)))
     
     cmd             = ( 'pdftohtml -xml %s' % (os.path.join(working_dir, os.path.basename(filepath))) )
     os.system(cmd)
+    log_info('pdf to html xml file generated created  :', app_context.application_context)
 
     xml_files      = read_directory_files(working_dir, pattern='*.xml')
+    log_info('pdf to html xml file read   :', app_context.application_context)
+
     remove_extra_images(xml_files[0])
+    log_info('pdf to html xml file extra images end  :', app_context.application_context)
     log_info('xml remove extra images end :', app_context.application_context)
     return xml_files[0]
 
