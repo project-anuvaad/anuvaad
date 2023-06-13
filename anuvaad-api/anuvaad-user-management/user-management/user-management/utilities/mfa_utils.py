@@ -98,29 +98,30 @@ class MFAUtils:
 
             # generate & send email
             message = generate_email_notification(email)
-            message["Subject"] = f" ANUVAAD - OTP for {username} "
+            username_nomail = MFAUtils.get_username_from_email(username) 
+            message["Subject"] = f"OTP for Anuvaad Login"
             filename = "./templates/standard_otp_template.html"
             html_ = open(filename).read()
-            html_ = html_.replace("{{username}}", username)
+            html_ = html_.replace("{{username}}", username_nomail)
             html_ = html_.replace("{{otp_code}}", auth_otp)
             html_ = MIMEText(html_, "html")
             message.add_alternative(html_, subtype="html")
             send_email(message)
             log_info(
-                "Generated email notification for user registration ",
+                "Generated email notification for HOTP mail",
                 MODULE_CONTEXT,
             )
             message = f'OTP sent for {username=} to email={MFAUtils.mask_email(email)}'
             return message 
         except Exception as e:
             log_exception(
-                "Exception while generating email notification for user registration: "
+                "Exception while generating email notification for HOTP mail: "
                 + str(e),
                 MODULE_CONTEXT,
                 e,
             )
             return post_error(
-                "Exception while generating email notification for user registration",
+                "Exception while generating email notification for HOTP mail",
                 "Exception occurred:{}".format(str(e)),
                 None,
             )
@@ -212,11 +213,12 @@ class MFAUtils:
 
             # generate & send email
             message = generate_email_notification(email)
-            message["Subject"] = f" ANUVAAD - MFA data for {username} "
+            username_nomail = MFAUtils.get_username_from_email(username) 
+            message["Subject"] = f"QR code for Anuvaad Login"
             filename = "./templates/register_totp_template.html"
             html_ = open(filename).read()
-            html_ = html_.replace("{{username}}", username)
-            html_ = html_.replace("{{qr_setup_key}}", qr_data['mfa_setup_key'])
+            html_ = html_.replace("{{username}}", username_nomail)
+            # html_ = html_.replace("{{qr_setup_key}}", qr_data['mfa_setup_key'])
             html_ = MIMEText(html_, "html")
             message.add_alternative(html_, subtype="html")
             img_data = MIMEImage(base64.decodebytes(qr_data['mfa_qr_base64'].encode()))
@@ -224,20 +226,20 @@ class MFAUtils:
             message.add_attachment(img_data)
             send_email(message)
             log_info(
-                "Generated email notification for user registration ",
+                "Generated email notificatio for TOTP MFA data",
                 MODULE_CONTEXT,
             )
             message = f'OTP data sent for {username=} to email={MFAUtils.mask_email(email)}'
             return message 
         except Exception as e:
             log_exception(
-                "Exception while generating email notification for user registration: "
+                "Exception while generating email notification for TOTP MFA data"
                 + str(e),
                 MODULE_CONTEXT,
                 e,
             )
             return post_error(
-                "Exception while generating email notification for user registration",
+                "Exception while generating email notification for TOTP MFA data",
                 "Exception occurred:{}".format(str(e)),
                 None,
             )
@@ -255,5 +257,10 @@ class MFAUtils:
         masked_email = name[:2] + "*"*(len(name)-4) + name[-2:]
         masked_email += "@" + domain 
         return masked_email
+    
+    @staticmethod
+    def get_username_from_email(email):
+        ''' return username for the email'''
+        return email.split('@')[0]
     
 
