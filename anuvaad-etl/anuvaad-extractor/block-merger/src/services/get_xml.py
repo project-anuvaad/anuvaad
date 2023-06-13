@@ -42,9 +42,7 @@ def extract_pdf_metadata(filename, working_dir, base_dir):
 
     log_info('filepath {}, working_dir {}'.format(pdf_filepath, working_dir), app_context.application_context)
     try:
-        log_info('extracting image paths starting...', app_context.application_context)
         pdf_image_paths         = extract_image_paths_from_pdf(pdf_filepath, working_dir)
-        log_info('extracting xml paths starting...', app_context.application_context)
         pdf_xml_filepath        = extract_xml_path_from_digital_pdf(pdf_filepath, working_dir)
     except Exception as e:
         log_error('error extracting xml information of {}'.format(pdf_filepath), app_context.application_context, e)
