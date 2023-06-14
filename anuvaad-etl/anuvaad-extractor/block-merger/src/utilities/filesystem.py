@@ -93,11 +93,11 @@ def extract_xml_path_from_digital_pdf(filepath, workspace_output_dir):
 
 
     shutil.copy(filepath, os.path.join(working_dir, os.path.basename(filepath)))
-    
+    log_info('pdf to html xml file generate start  :', app_context.application_context)
     cmd             = ( 'pdftohtml -xml %s' % (os.path.join(working_dir, os.path.basename(filepath))) )
     os.system(cmd)
-    log_info('pdf to html xml file generated created  :', app_context.application_context)
-
+    log_info('pdf to html xml file generate end  :', app_context.application_context)
+    
     xml_files      = read_directory_files(working_dir, pattern='*.xml')
     log_info('pdf to html xml file read   :', app_context.application_context)
 
