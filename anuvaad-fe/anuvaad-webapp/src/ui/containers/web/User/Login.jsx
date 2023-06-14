@@ -60,6 +60,7 @@ class Login extends React.Component {
       currentEmail: "",
       showOneTimeUpdateEmailIdModal: false,
       oneTimeUpdateEmailIdSuccessMessage: false,
+      ResendTOTPButton: false,
       
     };
   }
@@ -113,9 +114,10 @@ class Login extends React.Component {
    * captures form submit request
    */
   processLoginButtonPressed = () => {
-    const { email, password } = this.state;
+    
+    const { email, password ,ResendTOTPButton} = this.state;
     this.setState({ error: false, loading: true });
-    const apiObj = new LoginAPI(email, password);
+    const apiObj = new LoginAPI(email, password, ResendTOTPButton);
     const apiReq = fetch(apiObj.apiEndPoint(), {
       method: "post",
       body: JSON.stringify(apiObj.getBody()),
@@ -134,7 +136,8 @@ class Login extends React.Component {
               this.setState({ showMFAMethodSelectionModal: true, sessionId: resData.session_id });
             } else if (resData.mfa_required && resData.mfa_registration) {
               if(resData.mfa_message.includes("app")){
-                this.setState({hideResendOTPButton: true})
+                // this.setState({hideResendOTPButton: true})
+                 this.setState({ResendTOTPButton: true})
               }
               this.setState({ showOTPDialog: true, sessionId: resData.session_id, otpModalTitle: resData.mfa_message });
             }

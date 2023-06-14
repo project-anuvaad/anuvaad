@@ -7,10 +7,11 @@ import CONFIGS from "../../../../configs/configs";
 import ENDPOINTS from "../../../../configs/apiendpoints";
 
 export default class LoginAPI extends API {
-  constructor(email, password, timeout = 2000) {
+  constructor(email, password,Totp, timeout = 2000) {
     super("POST", timeout, false);
     this.email = email;
     this.password = password;
+    this.useTOTP = Totp;
     this.token = null;
     this.expires = null;
     this.userid = null;
@@ -42,7 +43,8 @@ export default class LoginAPI extends API {
   getBody() {
       return {
         userName: this.email,
-        password: this.password
+        password: this.password,
+        ...(this.useTOTP  && {useTOTP: this.useTOTP}),
       }
     }
 
