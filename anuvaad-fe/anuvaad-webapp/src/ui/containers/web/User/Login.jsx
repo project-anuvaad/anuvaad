@@ -60,7 +60,7 @@ class Login extends React.Component {
       currentEmail: "",
       showOneTimeUpdateEmailIdModal: false,
       oneTimeUpdateEmailIdSuccessMessage: false,
-      ResendTOTPButton: false,
+      ResendHOTPButton: false,
       
     };
   }
@@ -115,9 +115,9 @@ class Login extends React.Component {
    */
   processLoginButtonPressed = () => {
     
-    const { email, password ,ResendTOTPButton} = this.state;
+    const { email, password ,ResendHOTPButton} = this.state;
     this.setState({ error: false, loading: true });
-    const apiObj = new LoginAPI(email, password, ResendTOTPButton);
+    const apiObj = new LoginAPI(email, password, ResendHOTPButton);
     const apiReq = fetch(apiObj.apiEndPoint(), {
       method: "post",
       body: JSON.stringify(apiObj.getBody()),
@@ -137,7 +137,7 @@ class Login extends React.Component {
             } else if (resData.mfa_required && resData.mfa_registration) {
               if(resData.mfa_message.includes("app")){
                 // this.setState({hideResendOTPButton: true})
-                 this.setState({ResendTOTPButton: true})
+                 this.setState({ResendHOTPButton: true})
               }
               this.setState({ showOTPDialog: true, sessionId: resData.session_id, otpModalTitle: resData.mfa_message });
             }
@@ -184,7 +184,7 @@ class Login extends React.Component {
     const { email, sessionId } = this.state;
     this.setState({ error: false, loading: true });
     // call mfa register API here
-    const apiObj = new VerifyMFA(email, sessionId, otp, false);
+    const apiObj = new VerifyMFA(email, sessionId, otp, this.state.ResendHOTPButton);
 
     fetch(apiObj.apiEndPoint(), {
       method: "POST",
