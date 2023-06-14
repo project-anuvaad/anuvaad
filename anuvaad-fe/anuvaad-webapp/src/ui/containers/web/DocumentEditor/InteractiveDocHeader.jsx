@@ -551,7 +551,7 @@ class InteractiveDocHeader extends React.Component {
             style={{ borderTop: "1px solid #D6D6D6", fontFamily: "Roboto", fontSize: "0.875rem", fontWeight: "400" }}
             onClick={this.downloadFinalDocuments}
           >
-            PARRALLEL DOCUMENTS
+            PARALLEL DOCUMENTS
           </MenuItem>
           }
         </StyledMenu>
