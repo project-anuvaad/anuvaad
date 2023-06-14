@@ -45,7 +45,7 @@ class ReviewDocumentList extends React.Component {
             variant: "info",
             filterOptionData: [
                 {
-                    label: "Pending/In-Progress",
+                    label: "Reviewer Pending/In-Progress",
                     value: ["manual_editing_completed", "reviewer_in_progress", "manual_reediting_completed"],
                     tableTitle: "Document Review Pending/In-Progress"
                 },

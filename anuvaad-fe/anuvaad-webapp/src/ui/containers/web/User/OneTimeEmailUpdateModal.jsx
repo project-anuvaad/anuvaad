@@ -7,6 +7,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import { Button, Divider, IconButton, TextField, ThemeProvider, Typography } from "@material-ui/core";
 import { makeStyles } from '@material-ui/core/styles';
 import themeAnuvaad from "../../../theme/web/theme-anuvaad";
+import EmailIcon from '@material-ui/icons/Email';
 
 const useStyles = makeStyles({
     label: {
@@ -57,7 +58,7 @@ const OneTimeEmailUpdateModal = (props) => {
                     : <>
                         <DialogTitle id="alert-dialog-title">{"Update your email ID"}</DialogTitle>
                         <Typography>For Accessing this portal, you will need to go through MFA (multi factore authentication) which requires a valid email Id. Please update or confirm your email Id - </Typography>
-                        <DialogContent style={{ overflow: "hidden", marginTop: 50, marginBottom: 50, display: "flex", justifyContent: "space-around", alignItems: "center" }}>
+                        <DialogContent style={{ overflow: "hidden", marginTop: 20, marginBottom: 50, textAlign: "-webkit-center" }}>
                             <form onSubmit={updateEmailIdClick}>
                                 <TextField
                                     value={emailToUpdate}
@@ -68,26 +69,38 @@ const OneTimeEmailUpdateModal = (props) => {
                                     fullWidth
                                 />
 
-                                <Button variant="contained" type="submit" disabled={!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(emailToUpdate)} color="primary" fullWidth style={{ marginTop: 20, borderRadius: 10 }}>Update</Button>
+                                <Button
+                                    variant="contained"
+                                    type="submit"
+                                    disabled={!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(emailToUpdate)}
+                                    color="primary"
+                                    fullWidth
+                                    style={{ marginTop: 20, borderRadius: 10, paddingTop: 15, paddingBottom: 15 }}
+                                >Update</Button>
                             </form>
-                            <Typography style={{ width: 70 }}>OR</Typography>
+                            <fieldset style={{
+                                textAlign: "center",
+                                borderBottom: "none",
+                                borderLeft: "none",
+                                borderRight: "none",
+                                marginTop: 20
+                            }}
+                            >
+                                <legend
+                                    style={{ fontFamily: "Roboto" }}
+                                >OR</legend>
+                            </fieldset>
+                            {/* <Divider style={{marginTop: 30}} />
+                            <Typography style={{ width: 70, marginBottom: 30 }}>OR</Typography> */}
                             <div>
-                                {/* <Typography variant="subtitle2">{currentEmail}</Typography> */}
                                 <Button
                                     variant="contained"
                                     color="primary"
+                                    startIcon={<EmailIcon />}
                                     fullWidth
-                                    style={{ height: 120, borderRadius: 10, display: "block" }}
-                                    onClick={() => onUpdateEmailId(currentEmail)}
-                                    classes={{label: classes.label}}
+                                    style={{borderRadius: 10, fontWeight: "100", paddingTop: 15, paddingBottom: 15}}
                                 >
-                                    <div>
-                                        <Typography variant="subtitle1">Continue with : </Typography>
-                                    </div>
-                                    <div>
-                                        <Typography variant="subtitle1"><b>{currentEmail}</b></Typography>
-                                    </div>
-
+                                    Continue with <b>&nbsp;{currentEmail}</b>
                                 </Button>
                             </div>
                         </DialogContent>

@@ -112,7 +112,7 @@ class Login extends React.Component {
    * user input handlers
    * captures form submit request
    */
-  processLoginButtonPressed = () => {
+  processLoginButtonPressed = (useHOTP) => {
     const { email, password } = this.state;
     this.setState({ error: false, loading: true });
     const apiObj = new LoginAPI(email, password);
@@ -127,6 +127,7 @@ class Login extends React.Component {
           return Promise.reject(rsp_data.message);
         } else {
           let resData = rsp_data && rsp_data.data;
+          // this.setState({showOneTimeUpdateEmailIdModal: true});
           if (resData.session_id) {
             if(!resData.email.updated_status){
               this.setState({showOneTimeUpdateEmailIdModal: true, currentEmail: resData.email.registered_email, oneTimeUpdateEmailIdSuccessMessage: false});
