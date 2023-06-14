@@ -3,7 +3,7 @@ from db import get_db
 from utilities import UserUtils, OrgUtils
 from anuvaad_auditor.loghandler import log_info, log_exception
 from anuvaad_auditor.errorhandler import post_error
-from config import USR_MONGO_COLLECTION
+from config import USR_MONGO_COLLECTION,ONE_ROLE_PER_ORG_LIST
 import time
 
 class UserManagementModel(object):
@@ -46,14 +46,13 @@ class UserManagementModel(object):
             #connecting to mongo instance/collection
             collections = get_db()[USR_MONGO_COLLECTION]
             #inserting user records on db
-            if "ADMIN" == role_info["roleCode"]:
-                admin_check = collections.find_one({"orgID":users_data['orgID'],"roles.roleCode":"ADMIN"})
-                print("ADMIN_CHECK",admin_check)
-                if admin_check == None:
+            if role_info["roleCode"] in ONE_ROLE_PER_ORG_LIST:
+                check = collections.find_one({"orgID":users_data['orgID'],"roles.roleCode":role_info["roleCode"]})
+                if check == None:
                     results = collections.insert(records)
                     log_info("Count of users created : {}".format(len(results)), MODULE_CONTEXT)
                 else:
-                    return post_error("Database exception", "already an ADMIN present for the given org", None)
+                    return post_error("Database exception", f"already an {role_info['roleCode']} present for the given org", None)
             else :
                 results = collections.insert(records)
                 log_info("Count of users created : {}".format(len(results)), MODULE_CONTEXT)
@@ -197,14 +196,13 @@ class UserManagementModel(object):
             #connecting to mongo instance/collection
             collections = get_db()[USR_MONGO_COLLECTION]
             #inserting records on database
-            if "ADMIN" == role_info["roleCode"]:
-                admin_check = collections.find_one({"orgID":users_data['orgID'],"roles.roleCode":"ADMIN"})
-                print("ADMIN_CHECK",admin_check)
-                if admin_check == None:
+            if role_info["roleCode"] in ONE_ROLE_PER_ORG_LIST:
+                check = collections.find_one({"orgID":users_data['orgID'],"roles.roleCode":role_info["roleCode"]})
+                if check == None:
                     results = collections.insert(records)
                     log_info("Count of users created : {}".format(len(results)), MODULE_CONTEXT)
                 else:
-                    return post_error("Database exception", "already an ADMIN present for the given org", None)
+                    return post_error("Database exception", f"already an {role_info['roleCode']} present for the given org", None)
             else :
                 results = collections.insert(records)
                 log_info("Count of users created : {}".format(len(results)), MODULE_CONTEXT)

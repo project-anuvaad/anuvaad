@@ -53,6 +53,7 @@ EXTENSION_ORG           =   os.environ.get('EXTENSION_USR_ORG','ANUVAAD')
 ROLE_CODES_URL          =   os.environ.get('UMS_ROLE_CODES_URL','https://raw.githubusercontent.com/project-anuvaad/anuvaad/master/anuvaad-api/anuvaad-zuul-api-gw/dev-configs/roles.json')
 ROLE_CODES_DIR_PATH     =   os.environ.get('UMS_ROLE_DIR_PATH','/app/configs/') #'/home/jainy/Documents/Anuvaad_local_files/usrmgmt/'
 ROLE_CODES_FILE_NAME    =   os.environ.get('UMS_FILE_NAME','roles.json')
+ONE_ROLE_PER_ORG_LIST = str(os.environ.get('','ADMIN REVIEWER')).split()
 
 #gmail server configs
 MAIL_SETTINGS = {
