@@ -494,7 +494,10 @@ class TranslatorService:
                 file = translate_wf_input["input"]["files"][0]
                 locale = file["model"]["source_language_code"] + "|" + file["model"]["target_language_code"]
                 api_input = {"keys": [{"userID": user_id, "src": nmt_res_sentence["src"], "locale": locale}]}
+                startTime = time.time();
                 response = utils.call_api(fetch_user_translation_url, "POST", api_input, None, user_id)
+                endTime = time.time();
+                log_info("TIME TAKEN IN UTM CALL : ",endTime-startTime);
                 #log_info(f"Test68 Response of NMT {response}",None)
                 if response:
                     if 'data' in response.keys():
