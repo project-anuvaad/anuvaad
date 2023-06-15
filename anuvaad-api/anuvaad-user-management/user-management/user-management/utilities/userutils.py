@@ -456,7 +456,7 @@ class UserUtils:
             )
             # searching username with verification status = True
             user_record = collections.find(
-                {"userName": user["userName"], "is_verified": True}
+                {"userName": user["userName"]}
             )
             if user_record.count() != 0:
                 log_info("User Name is already taken", MODULE_CONTEXT)
