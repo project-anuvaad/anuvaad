@@ -61,6 +61,8 @@ class Login extends React.Component {
       showOneTimeUpdateEmailIdModal: false,
       oneTimeUpdateEmailIdSuccessMessage: false,
       ResendHOTPButton: false,
+      time:60,
+      showTimer:false
       
     };
   }
@@ -113,6 +115,21 @@ class Login extends React.Component {
    * user input handlers
    * captures form submit request
    */
+  handleResendOtp = (arg) => {
+    console.log(this.state.showTimer,"showTimershowTimer")
+
+    if(this.state.showTimer == true){
+    let timer = setInterval(() => {
+        this.setState((prevState) => {
+          if (prevState.time === 0 ) {
+            clearInterval(timer);
+            return { time : 0}
+          } else {
+            return {time : prevState.time - 1}}
+        });
+      }, 1000);
+    }
+}
   processLoginButtonPressed = () => {
     
     const { email, password ,ResendHOTPButton} = this.state;
@@ -125,14 +142,20 @@ class Login extends React.Component {
     })
       .then(async (response) => {
         const rsp_data = await response.json();
+      
         if (!response.ok) {
           return Promise.reject(rsp_data.message);
         } else {
           let resData = rsp_data && rsp_data.data;
+          this.setState({showTimer : true})
+
+          this.handleResendOtp()
+         
           if (resData.session_id) {
             if(!resData.email.updated_status){
               this.setState({showOneTimeUpdateEmailIdModal: true, currentEmail: resData.email.registered_email, oneTimeUpdateEmailIdSuccessMessage: false});
-            } else if (resData.mfa_required && !resData.mfa_registration) {
+            } 
+            else if (resData.mfa_required && !resData.mfa_registration) {
               this.setState({ showMFAMethodSelectionModal: true, sessionId: resData.session_id });
             } else if (resData.mfa_required && resData.mfa_registration) {
               if(resData.mfa_message.includes("app")){
@@ -143,7 +166,7 @@ class Login extends React.Component {
             }
           } else if (resData.token){
               localStorage.setItem("token", resData.token);
-              this.fetchUserProfileDetails(resData.token);
+              this.fetchUserProfileDetails(resData.token);    
           }
           this.setState({ error: false, loading: false });
         }
@@ -286,6 +309,8 @@ class Login extends React.Component {
     event.preventDefault();
   };
 
+  
+
   TextFields = () => {
     return (
       <Grid container spacing={2} style={{ marginTop: "2px" }}>
@@ -423,6 +448,10 @@ class Login extends React.Component {
           onSubmit={(OTP) => this.onSubmitOTP(OTP)}
           verifySuccessMessage={this.state.verifySuccessMessage}
           hideResendOTPButton={this.state.hideResendOTPButton}
+          time={this.state.time}
+          handleResendOtp={ this.handleResendOtp}
+          setTime={(arg)=> this.setState({time : arg})}
+          showTimer={this.state.showTimer}
         />
         <RegisterMFAModal
           open={this.state.showMFAMethodSelectionModal}
