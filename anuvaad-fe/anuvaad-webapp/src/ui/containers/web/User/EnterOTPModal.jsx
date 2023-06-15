@@ -36,7 +36,6 @@ const EnterOTPModal = (props) => {
     }, 600000);
   }, [open]);
 
-
   return (
     <ThemeProvider theme={themeAnuvaad}>
       <Dialog
@@ -51,18 +50,22 @@ const EnterOTPModal = (props) => {
           {OTPModalTitle}
         </DialogTitle>
 
-        {!time == 0 && showTimer == true && (
-          <DialogTitle style={{ alignSelf: "center", fontSize: "18px" }}>
-            {" "}
-            Time left: {`${Math.floor(time / 60)}`.padStart(2, 0)}:
-            {`${time % 60}`.padStart(2, 0)}
-          </DialogTitle>
-        )}
+        <DialogTitle
+          style={{ alignSelf: "center", fontSize: "18px", height: "10px" }}
+        >
+          {" "}
+          {!time == 0 && showTimer == true && (
+            <span>
+              Time left: {`${Math.floor(time / 60)}`.padStart(2, 0)}:
+              {`${time % 60}`.padStart(2, 0)}
+            </span>
+          )}
+        </DialogTitle>
 
         <DialogContent
           style={{
             alignSelf: "center",
-            margin: !time == 0 ? "15px 70px 70px 70px" : 70,
+            margin: !time == 0 ? "15px 50px 50px 50px" : "15px 50px 50px 50px",
             display: "flex",
           }}
         >
