@@ -8,6 +8,9 @@ redis_server_prefix = os.environ.get('REDIS_PREFIX', 'redis')
 redis_server_host = os.environ.get('REDIS_URL', 'localhost')
 redis_server_port = os.environ.get('REDIS_PORT', 6379)
 tmx_redis_db = os.environ.get('ANUVAAD_TMX_REDIS_DB', 3)
+utm_redis_db = os.environ.get('ANUVAAD_UTM_REDIS_DB', 4)
+if isinstance(utm_redis_db, str):
+    utm_redis_db = eval(utm_redis_db)
 if isinstance(tmx_redis_db, str):
     tmx_redis_db = eval(tmx_redis_db)
 file_download_url = str(os.environ.get('USER_FILE_UPLOADER_HOST', 'http://gateway_anuvaad-user-fileuploader:5001')) \
