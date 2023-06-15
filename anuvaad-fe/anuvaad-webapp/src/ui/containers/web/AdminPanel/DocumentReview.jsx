@@ -273,8 +273,8 @@ class DocumentReview extends React.Component {
   onSubmitIndividualReview = (senetenceData) => {
     this.handleCloseInfo();
     let senetenceObj = {
-      "comments": senetenceData.review,
-      "redo": true,
+      "comments": senetenceData.review ? senetenceData.review : "",
+      "redo": senetenceData.review && senetenceData.review.length > 0 ? true : false,
       "s_id": senetenceData.s_id,
       "n_id": senetenceData.n_id
     }
@@ -336,7 +336,7 @@ class DocumentReview extends React.Component {
           setCellProps: () => ({ style: { maxWidth: "250px" } }),
           customBodyRender: (value, tableMeta, updateValue) => {
             if (tableMeta.rowData[4] == "-") {
-              return ""
+              return "-"
             } else {
               return value
             }
@@ -370,7 +370,25 @@ class DocumentReview extends React.Component {
           sort: false,
           display: "exclude"
         }
-      }, {
+      }, 
+      {
+        name: "comments",
+        label: "Comment",
+        options: {
+          filter: false,
+          sort: false,
+          display: this.state.disableActions ? true : "excluded",
+          setCellProps: () => ({ style: { maxWidth: "250px" } }),
+          customBodyRender: (value, tableMeta, updateValue) => {
+            if (value) {
+              return value
+            } else {
+              return "-"
+            }
+          }
+        }
+      }, 
+      {
         name: "Action",
         label: "Action",
         options: {
