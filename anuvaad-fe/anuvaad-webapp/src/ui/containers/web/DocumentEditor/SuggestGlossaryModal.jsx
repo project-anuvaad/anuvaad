@@ -4,6 +4,7 @@ import TextField from '../../../components/web/common/TextField';
 import Button from "@material-ui/core/Button";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';
+import { IndicTransliterate } from 'react-transliterate';
 
 
 class SuggestGlossaryModal extends React.Component {
@@ -38,13 +39,50 @@ class SuggestGlossaryModal extends React.Component {
                     <span style={{ margin: 'auto', fontSize: '20px', padding: "0px 5px", display: "inline-block", textOverflow: "ellipsis", whiteSpace: "nowrap", overflow: "hidden", width: "295px" }}>
                         Suggest Glossary: <br></br> <span style={{ fontSize: '20px', fontWeight: "bold" }}>{this.props.selectedWords}</span>
                     </span>
-                    <TextField id="email" type="text" value={this.state.word} placeholder="Suggest glossary"
-                        margin="dense" varient="outlined" style={{ width: '80%', marginBottom: '4%', backgroundColor: 'white' }}
-                        disabled="true"
-                        onChange={this.handleInputFieldChange}
-                    />
+                    {this.props.enableTransliteration ?
+                        <IndicTransliterate
+                            customApiURL={this.props.customApiURL}
+                            transliterationModelId={this.props.transliterationModelId}
+                            renderComponent={(props) => {
+                                const inputRef = props.ref;
+                                delete props["ref"];
+                                return (
+                                    <TextField
+                                        {...props}
+                                        // label="Add to glossary"
+                                        placeholder="Add to glossary"
+                                        type="text"
+                                        fullWidth
+                                        varient="outlined"
+                                        inputRef={inputRef}
+                                        style={{ width: '80%', marginBottom: '4%', backgroundColor: 'white' }}
+                                    />
+                                );
+                            }}
+                            value={this.state.word}
+                            onChangeText={(text) => {
+                                this.setState({ word: text })
+                            }}
+                            lang={this.props.lang}
+                            maxOptions={5}
+                        /> : <TextField id="email" type="text" value={this.state.word} placeholder="Add to glossary"
+                            margin="dense" varient="outlined" style={{ width: '80%', marginBottom: '4%', backgroundColor: 'white' }}
+                            // disabled="true"
+                            onChange={this.handleInputFieldChange}
+                        />}
 
                     <div style={{ position: 'relative', }}>
+                        <Button
+                            variant="contained" aria-label="edit" style={{
+                                width: '40%', marginBottom: '2%', marginTop: '2%', borderRadius: '20px', height: '45px', textTransform: 'initial', fontWeight: '20px',
+                                backgroundColor: this.props.loading ? 'grey' : '#2C2799', color: 'white', color: 'white',
+                            }}
+                            onClick={this.props.handleClose}
+                            disabled={this.props.loading}
+                        >
+                            Cancel
+                        </Button>
+                        
                         <Button
                             variant="contained" aria-label="edit" style={{
                                 width: '40%', marginRight: '2%', marginBottom: '2%', marginTop: '2%', borderRadius: '20px', height: '45px', textTransform: 'initial', fontWeight: '20px',
@@ -63,16 +101,7 @@ class SuggestGlossaryModal extends React.Component {
                             Save
                         </Button>
 
-                        <Button
-                            variant="contained" aria-label="edit" style={{
-                                width: '40%', marginBottom: '2%', marginTop: '2%', borderRadius: '20px', height: '45px', textTransform: 'initial', fontWeight: '20px',
-                                backgroundColor: this.props.loading ? 'grey' : '#2C2799', color: 'white', color: 'white',
-                            }}
-                            onClick={this.props.handleClose}
-                            disabled={this.props.loading}
-                        >
-                            Cancel
-                        </Button>
+                        
                     </div>
                 </FormControl>
             </div>
