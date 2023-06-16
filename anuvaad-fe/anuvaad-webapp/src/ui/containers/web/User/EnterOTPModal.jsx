@@ -15,8 +15,6 @@ import themeAnuvaad from "../../../theme/web/theme-anuvaad";
 
 const EnterOTPModal = (props) => {
   const [OTP, setOTP] = useState("");
-  //   const [time, setTime] = useState(60);
-  //   const[isActive,setIsActive] = useState(false)
   const {
     open,
     handleClose,
@@ -24,17 +22,39 @@ const EnterOTPModal = (props) => {
     onSubmit,
     OTPModalTitle,
     hideResendOTPButton,
-    time,
-    handleResendOtp,
-    setTime,
     showTimer,
+    // loading,
   } = { ...props };
 
+  const [time, setTime] = useState(60);
+  const [running, setRunning] = useState(true);
+  useEffect(() => {
+    let interval;
+    if (showTimer && running ) {
+      interval = setInterval(() => {
+        setTime(prevTime => {
+          if (prevTime > 0) {
+            return prevTime - 1;
+          } else if (prevTime === 0) {
+            clearInterval(interval);
+            setTimeout(() => setTime(60), 60000);
+            setRunning(false);
+            return prevTime;
+          }
+        });
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [showTimer,running]);
+
+
+  console.log(time,"timetimetime",showTimer)
   useEffect(() => {
     setTimeout(function () {
       handleClose();
     }, 600000);
   }, [open]);
+  
 
   return (
     <ThemeProvider theme={themeAnuvaad}>
@@ -54,7 +74,7 @@ const EnterOTPModal = (props) => {
           style={{ alignSelf: "center", fontSize: "18px", height: "10px" }}
         >
           {" "}
-          {!time == 0 && showTimer == true && (
+          {!time == 0 && showTimer  && (
             <span>
               Time left: {`${Math.floor(time / 60)}`.padStart(2, 0)}:
               {`${time % 60}`.padStart(2, 0)}
@@ -95,16 +115,18 @@ const EnterOTPModal = (props) => {
                 onResend();
                 setOTP("");
                 setTime(60);
-                handleResendOtp();
+                setRunning(true)
               }}
               color="primary"
               variant="contained"
               style={{ borderRadius: 15 }}
-              disabled={!time == 0}
+              disabled={!time == 0 && showTimer}
             >
               Resend OTP
+
             </Button>
           )}
+
           <Button
             onClick={() => onSubmit(OTP)}
             color="primary"

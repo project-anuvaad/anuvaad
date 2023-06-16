@@ -61,9 +61,8 @@ class Login extends React.Component {
       showOneTimeUpdateEmailIdModal: false,
       oneTimeUpdateEmailIdSuccessMessage: false,
       ResendHOTPButton: false,
-      time:60,
-      showTimer:false
-      
+      showTimer:false,
+      timer: false,
     };
   }
 
@@ -115,21 +114,7 @@ class Login extends React.Component {
    * user input handlers
    * captures form submit request
    */
-  handleResendOtp = (arg) => {
-    console.log(this.state.showTimer,"showTimershowTimer")
 
-    if(this.state.showTimer == true){
-    let timer = setInterval(() => {
-        this.setState((prevState) => {
-          if (prevState.time === 0 ) {
-            clearInterval(timer);
-            return { time : 0}
-          } else {
-            return {time : prevState.time - 1}}
-        });
-      }, 1000);
-    }
-}
   processLoginButtonPressed = () => {
     
     const { email, password ,ResendHOTPButton} = this.state;
@@ -148,8 +133,9 @@ class Login extends React.Component {
         } else {
           let resData = rsp_data && rsp_data.data;
           this.setState({showTimer : true})
-
-          this.handleResendOtp()
+          setTimeout(() => {
+            this.setState({showTimer : false})
+          }, 60*1000);
          
           if (resData.session_id) {
             if(!resData.email.updated_status){
@@ -256,6 +242,8 @@ class Login extends React.Component {
 
   onResendOTPClick = () => {
     this.processLoginButtonPressed(true);
+    this.setState({ timer : true });
+
   }
 
   handleRoles = (value) => {
@@ -448,10 +436,8 @@ class Login extends React.Component {
           onSubmit={(OTP) => this.onSubmitOTP(OTP)}
           verifySuccessMessage={this.state.verifySuccessMessage}
           hideResendOTPButton={this.state.hideResendOTPButton}
-          time={this.state.time}
-          handleResendOtp={ this.handleResendOtp}
-          setTime={(arg)=> this.setState({time : arg})}
           showTimer={this.state.showTimer}
+          timer={this.state.timer}
         />
         <RegisterMFAModal
           open={this.state.showMFAMethodSelectionModal}
