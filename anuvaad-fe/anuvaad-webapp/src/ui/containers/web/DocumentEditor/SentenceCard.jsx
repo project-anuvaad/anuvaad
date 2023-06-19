@@ -449,7 +449,7 @@ class SentenceCard extends React.Component {
     }
   };
 
-  renderSourceSentence = () => {
+  renderSourceSentence = (enableEditingSentence) => {
     if (
       this.cardCompare() &&
       this.props.sentence.tmx_replacement &&
@@ -480,7 +480,9 @@ class SentenceCard extends React.Component {
           variant="subtitle1"
           gutterBottom
           onMouseUp={(event) => {
-            this.getSelectionText(event);
+            if (enableEditingSentence) {
+              this.getSelectionText(event);
+            }
           }}
         >
           {this.props.sentence.src}
@@ -1489,7 +1491,7 @@ class SentenceCard extends React.Component {
             <CardContent
               style={{ display: "flex", flexDirection: "row", padding: "10px" }}
             >
-              <div style={{ width: "90%" }}>{this.renderSourceSentence()}</div>
+              <div style={{ width: "90%" }}>{this.renderSourceSentence(enableEditingSentence)}</div>
               {this.renderCardIcon()}
               {this.renderCardSelectedForMerge()}
             </CardContent>
