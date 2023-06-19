@@ -94,8 +94,8 @@ class VerifyMFA(Resource):
         # verify the otp using mfa_type 
         result = mfaRepo.verify_mfa(username,auth_otp, useHOTP)
         if 'errorID' in result.keys():
-            log_info(f"MFA is already verified for {username=}", MODULE_CONTEXT)
-            return post_error("Invalid OTP", "provided OTP did not match", None), 400 
+            log_info(f"MFA verification error for {username=} | msg: {result['message']}", MODULE_CONTEXT)
+            return result, 400 
         
         res = CustomResponse(Status.SUCCESS_MFA_VERIFY.value, result)
         log_info(f"MFA Verification Successfull for {username=}", MODULE_CONTEXT)  

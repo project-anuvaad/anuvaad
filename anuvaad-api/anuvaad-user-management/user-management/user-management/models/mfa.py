@@ -3,7 +3,7 @@ from db import get_db
 from utilities import MFAUtils, MFA_TYPE_MAPPER, UserUtils
 from anuvaad_auditor.loghandler import log_info, log_exception
 from anuvaad_auditor.errorhandler import post_error
-from config import MFA_MONGO_COLLECTION, USR_TOKEN_MONGO_COLLECTION, USR_MONGO_COLLECTION
+from config import MFA_MONGO_COLLECTION, USR_TOKEN_MONGO_COLLECTION, USR_MONGO_COLLECTION, MFA_EXPIRATION_TIME
 import time
 from .user_auth import UserAuthenticationModel
 
@@ -49,29 +49,26 @@ class MFAModel(object):
 
     def verify_mfa(self, username, auth_otp, useHOTP=False):
         try:
-            collections = get_db()[MFA_MONGO_COLLECTION]
-            log_info(f"MFA verification for {username=} start", MODULE_CONTEXT)
-            
-            # fetching the user details from db
-            record = collections.find({"userName": username})
-            if record.count() == 0:
-                log_info(f"MFA not found for {username=}", MODULE_CONTEXT)
-                return post_error(
-                    "MFA does not exists.", f"MFA is not registered for {username=}", None
-                )
-            
             # fetch mfa data
             log_info(f"fetching MFA data for {username=}", MODULE_CONTEXT)
             mfa_data = MFAUtils.fetch_mfa_data(username)
-            session_id = MFAUtils.fetch_session_id(username)
+            session_data = MFAUtils.fetch_session_data(username)
             auth_data = {
                 "auth_hash": mfa_data['mfa_hash'],
-                "session_id": session_id,
+                "session_id": session_data['session_id'],
                 "auth_otp": auth_otp
             }
             # if use basic MFA (HOTP)
             if useHOTP:
                 mfa_data['mfa_type'] = 'HOTP'
+
+            # invalid verification post expiry
+            expiry_time = session_data['start_time'] + (MFA_EXPIRATION_TIME *1000)
+            if expiry_time < int(str(time.time()).replace(".", "")[0:13]):
+                msg = "Session" if mfa_data['mfa_type'] == 'TOTP' else "OTP"
+                return post_error(
+                    f"{msg} Expired", f"{msg} has expired. Please re-login", None
+                )
             
             # post verification functionality
             verifier_func = MFA_TYPE_MAPPER[mfa_data['mfa_type']]['verifier']

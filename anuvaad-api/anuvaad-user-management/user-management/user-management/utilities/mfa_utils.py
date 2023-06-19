@@ -157,7 +157,7 @@ class MFAUtils:
             )
     
     @staticmethod
-    def fetch_session_id(username):
+    def fetch_session_data(username):
         ''' fetch session_id from db'''
         try:
             collections = get_db()[USR_TOKEN_MONGO_COLLECTION]
@@ -166,7 +166,10 @@ class MFAUtils:
             record = collections.find({"user": username,'active':True})
             log_info(f"{username=} find end", MODULE_CONTEXT)
             for i in record:
-                return i['session_id']
+                return {
+                'session_id':i['session_id'],
+                'start_time':i['start_time'],
+                }    
         except Exception as e:
             log_exception(
                 "exception while validating username and password" + str(e),
@@ -188,7 +191,7 @@ class MFAUtils:
             if 'mfa_register' in mfa_data:
                 log_info(f"MFA Registration Pending for {username=}", MODULE_CONTEXT)
                 return 'Please perform MFA registration'
-            mfa_data['session_id'] = MFAUtils.fetch_session_id(username)
+            mfa_data['session_id'] = MFAUtils.fetch_session_data(username)['session_id']
             if useHOTP:
                 mfa_data['mfa_type'] = "HOTP"
                 log_info(f"Manually Selecting HOTP for {username=}", MODULE_CONTEXT)
