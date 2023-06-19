@@ -289,18 +289,29 @@ class DocumentReview extends React.Component {
       .then(response => response.json())
       .then(result => {
         // console.log(result);
-        if (this.state.currentJobDetails.currentGranularStatus === "FINAL EDITING - COMPLETED") {
-          this.updateGranularity(["reviewerInProgress"], "Review Comment Updated!", false)
+        if (result.ok) {
+          if (this.state.currentJobDetails.currentGranularStatus === "FINAL EDITING - COMPLETED") {
+            this.updateGranularity(["reviewerInProgress"], "Review Comment Updated!", false)
+          } else {
+            let currentInfoState = { ...this.state.snackbarInfo };
+            currentInfoState = {
+              open: true,
+              message: "Review Comment Updated!",
+              variant: "info"
+            };
+            this.setState({ snackbarInfo: currentInfoState });
+            this.getCurrentJobDetail();
+          }
         } else {
           let currentInfoState = { ...this.state.snackbarInfo };
-          currentInfoState = {
-            open: true,
-            message: "Review Comment Updated!",
-            variant: "info"
-          };
-          this.setState({ snackbarInfo: currentInfoState });
-          this.getCurrentJobDetail();
+            currentInfoState = {
+              open: true,
+              message: "Failed To Update Review Comment",
+              variant: "error"
+            };
+            this.setState({ snackbarInfo: currentInfoState });
         }
+
 
       }
       )
@@ -370,7 +381,7 @@ class DocumentReview extends React.Component {
           sort: false,
           display: "exclude"
         }
-      }, 
+      },
       {
         name: "comments",
         label: "Comment",
@@ -387,7 +398,7 @@ class DocumentReview extends React.Component {
             }
           }
         }
-      }, 
+      },
       {
         name: "Action",
         label: "Action",
