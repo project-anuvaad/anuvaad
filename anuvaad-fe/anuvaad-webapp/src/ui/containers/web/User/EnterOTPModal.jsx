@@ -10,11 +10,14 @@ import {
   IconButton,
   ThemeProvider,
   Typography,
+  withStyles,
 } from "@material-ui/core";
 import themeAnuvaad from "../../../theme/web/theme-anuvaad";
 import CloseIcon from "@material-ui/icons/Close";
+import LoginStyles from "../../../styles/web/LoginStyles";
 
 const EnterOTPModal = (props) => {
+  const { classes } = props;
   const [OTP, setOTP] = useState("");
   const {
     open,
@@ -90,25 +93,10 @@ const EnterOTPModal = (props) => {
         >
           {OTPModalTitle}
         </DialogTitle>
-        {/* <DialogContent
-          style={{
-            alignSelf: "center",
-            fontSize: "16px",
-            fontFamily: "Roboto, san-serif",
-          }}
-        >
-          {" "}
-          {!time == 0 && showTimer && (
-            <span>
-              Time left: {`${Math.floor(time / 60)}`.padStart(2, 0)}:
-              {`${time % 60}`.padStart(2, 0)}
-            </span>
-          )}
-        </DialogContent> */}
         <DialogContent
           style={{
             alignSelf: "center",
-            margin: !time == 0 ? "25px 50px 25px 50px" : "25px 50px 25px 50px",
+            margin: !time == 0 ? "28px 50px 28px 50px" : "28px 50px 28px 50px",
             display: "flex",
           }}
         >
@@ -120,13 +108,7 @@ const EnterOTPModal = (props) => {
             otpType="number"
           />
         </DialogContent>
-        <DialogContent
-          style={{
-            alignSelf: "center",
-            padding: "10px 0px 0px 0px",
-            fontFamily: "Roboto, san-serif",
-          }}
-        >
+        <DialogContent className={classes.ResendOtpButton}>
           Resend Verification Code ?
           {!time == 0 && showTimer ? (
             <span style={{ paddingLeft: "8px" }}>
@@ -160,46 +142,12 @@ const EnterOTPModal = (props) => {
             justifyContent: "center",
           }}
         >
-          {/* <Button
-            onClick={() => {
-              handleClose();
-              setOTP("");
-            }}
-            color="primary"
-            variant="outlined"
-            style={{ borderRadius: 15 }}
-          >
-            Cancel
-          </Button> */}
-          {!hideResendOTPButton && (
-            <>
-              {/*            
-            <Button
-              onClick={() => {
-                onResend();
-                setOTP("");
-                setTime(120);
-                setRunning(true)
-              }}
-            //   color = {!time == 0 && showTimer ? "rgb(44, 39, 153)" : "primary"}
-            color= "primary"
-              variant="contained"
-              style={{ borderRadius: 15}}
-              disabled={!time == 0 && showTimer}
-            >
-              Resend OTP
-            
-
-            </Button> */}
-            </>
-          )}
-
           <Button
             onClick={() => onSubmit(OTP)}
             color="primary"
             variant="contained"
             disabled={!OTP}
-            style={{ alignSelf: "center", width: "50%" }}
+            className={classes.VerifyOtpButton}
           >
             VERIFY OTP{" "}
           </Button>
@@ -209,4 +157,4 @@ const EnterOTPModal = (props) => {
   );
 };
 
-export default EnterOTPModal;
+export default withStyles(LoginStyles)(EnterOTPModal);
