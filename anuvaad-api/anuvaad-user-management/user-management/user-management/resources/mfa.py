@@ -87,9 +87,12 @@ class VerifyMFA(Resource):
         
         # check if session is active
         active_sts = mfaRepo.check_mfa_active(username,session_id)
-        if active_sts in [None,True]:
-            log_info(f"MFA is already verified for {username=}", MODULE_CONTEXT)
-            return post_error("MFA already verified", "MFA is verified.please relogin again", None), 400 
+        if active_sts == None:
+            log_info(f"Invalid Session for {username=}", MODULE_CONTEXT)
+            return post_error("Invalid SessionID", "Invalid session_id (or) New login Occured. Please relogin", None), 400
+        if active_sts == True:
+            log_info(f"MFA/Session is already verified for {username=}", MODULE_CONTEXT)
+            return post_error("Session Verified", "Session/MFA for User Verified already. Please relogin.", None), 400 
         
         # verify the otp using mfa_type 
         result = mfaRepo.verify_mfa(username,auth_otp, useHOTP)

@@ -15,7 +15,7 @@ from db import get_db
 from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
 from email.mime.application import MIMEApplication
-from config import MFA_MONGO_COLLECTION, USR_TOKEN_MONGO_COLLECTION, MFA_SUPPORTED_TYPES
+from config import MFA_MONGO_COLLECTION, USR_TOKEN_MONGO_COLLECTION, MFA_SUPPORTED_TYPES, MFA_EXPIRATION_TIME
 
 # Mapper for MFA Types
 MFA_TYPE_MAPPER={
@@ -103,6 +103,7 @@ class MFAUtils:
             filename = "./templates/standard_otp_template.html"
             html_ = open(filename).read()
             html_ = html_.replace("{{username}}", username_nomail)
+            html_ = html_.replace("{{otp_expiry}}", str(int(MFA_EXPIRATION_TIME/60)))
             html_ = html_.replace("{{otp_code}}", auth_otp)
             html_ = MIMEText(html_, "html")
             message.add_alternative(html_, subtype="html")
@@ -190,19 +191,23 @@ class MFAUtils:
             email = UserUtils.fetch_email(username)
             if 'mfa_register' in mfa_data:
                 log_info(f"MFA Registration Pending for {username=}", MODULE_CONTEXT)
-                return 'Please perform MFA registration'
+                return None, 'Please perform MFA registration'
             mfa_data['session_id'] = MFAUtils.fetch_session_data(username)['session_id']
+            org_mfa_type = None
             if useHOTP:
+                org_mfa_type = mfa_data['mfa_type']
                 mfa_data['mfa_type'] = "HOTP"
                 log_info(f"Manually Selecting HOTP for {username=}", MODULE_CONTEXT)
             post_login_func = MFA_TYPE_MAPPER[mfa_data['mfa_type']]['post_login']
             post_login_func = getattr(MFAUtils,post_login_func)
             message = post_login_func(username=username,email=email,**mfa_data)
             log_info(f"MFA Post Login Functionality for {username=} end", MODULE_CONTEXT)
-            return message
+            if useHOTP:
+                mfa_data['mfa_type'] = org_mfa_type 
+            return mfa_data['mfa_type'], message
         except Exception as e:
             log_exception("Database connection exception ", MODULE_CONTEXT, e)
-            return post_error(
+            return None, post_error(
                 "Database connection exception",
                 "An error occurred while connecting to the database",
                 None,

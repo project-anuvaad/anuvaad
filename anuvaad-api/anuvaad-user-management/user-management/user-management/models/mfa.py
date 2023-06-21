@@ -135,7 +135,8 @@ class MFAModel(object):
             log_info(f"MFA New Login Generation for {username=} end", MODULE_CONTEXT)
             result = {"session_id":session_id, 'mfa_required': True}
             result['mfa_registration'] = mfa_reg_status
-            result['mfa_message'] = MFAUtils.generate_post_login_output(username,useHOTP)
+            result['mfa_type'],result['mfa_message'] = MFAUtils.generate_post_login_output(username,useHOTP)
+            result['userName'] = username
             return result
         except Exception as e:
             log_exception("Database connection exception ", MODULE_CONTEXT, e)
