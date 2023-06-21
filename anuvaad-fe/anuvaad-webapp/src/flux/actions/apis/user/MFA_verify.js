@@ -6,7 +6,7 @@ import C from "../../constants";
 import ENDPOINTS from "../../../../configs/apiendpoints";
 
 export default class VerifyMFA extends API {
-    constructor(userName = "", sessionId = "", authOTP = "", useHOTP="false", timeout = 2000) {
+    constructor(userName = "", sessionId = "", authOTP = "", useHOTP=false, timeout = 2000) {
         super("POST", timeout, false);
         this.type = C.MFA_VERIFY;
         this.userName = userName;

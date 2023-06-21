@@ -12,6 +12,7 @@ import {
   Typography,
 } from "@material-ui/core";
 import themeAnuvaad from "../../../theme/web/theme-anuvaad";
+import CloseIcon from "@material-ui/icons/Close";
 
 const EnterOTPModal = (props) => {
   const [OTP, setOTP] = useState("");
@@ -26,18 +27,18 @@ const EnterOTPModal = (props) => {
     // loading,
   } = { ...props };
 
-  const [time, setTime] = useState(60);
+  const [time, setTime] = useState(120);
   const [running, setRunning] = useState(true);
   useEffect(() => {
     let interval;
-    if (showTimer && running ) {
+    if (showTimer && running) {
       interval = setInterval(() => {
-        setTime(prevTime => {
+        setTime((prevTime) => {
           if (prevTime > 0) {
             return prevTime - 1;
           } else if (prevTime === 0) {
             clearInterval(interval);
-            setTimeout(() => setTime(60), 60000);
+            setTimeout(() => setTime(120), 60000);
             setRunning(false);
             return prevTime;
           }
@@ -45,16 +46,14 @@ const EnterOTPModal = (props) => {
       }, 1000);
     }
     return () => clearInterval(interval);
-  }, [showTimer,running]);
+  }, [showTimer, running]);
 
-
-  console.log(time,"timetimetime",showTimer)
   useEffect(() => {
-    setTimeout(function () {
+    const timerId = setTimeout(() => {
       handleClose();
-    }, 600000);
-  }, [open]);
-  
+    }, 10 * 60 * 1000);
+    return () => clearTimeout(timerId);
+  }, []);
 
   return (
     <ThemeProvider theme={themeAnuvaad}>
@@ -66,26 +65,50 @@ const EnterOTPModal = (props) => {
         fullWidth
         style={{ backgroundColor: "rgba(255,255,255,0.6)" }}
       >
-        <DialogTitle id="alert-dialog-title" align="center">
-          {OTPModalTitle}
-        </DialogTitle>
-
-        <DialogTitle
-          style={{ alignSelf: "center", fontSize: "18px", height: "10px" }}
+        <DialogContent
+          style={{
+            display: "flex",
+            justifyContent: "end",
+            padding: "5px 0px 0px 0px",
+          }}
         >
           {" "}
-          {!time == 0 && showTimer  && (
+          <Button
+            onClick={() => {
+              handleClose();
+              setOTP("");
+            }}
+          >
+            <CloseIcon />
+          </Button>
+        </DialogContent>
+
+        <DialogTitle
+          id="alert-dialog-title"
+          align="center"
+          style={{ paddingTop: "0px" }}
+        >
+          {OTPModalTitle}
+        </DialogTitle>
+        {/* <DialogContent
+          style={{
+            alignSelf: "center",
+            fontSize: "16px",
+            fontFamily: "Roboto, san-serif",
+          }}
+        >
+          {" "}
+          {!time == 0 && showTimer && (
             <span>
               Time left: {`${Math.floor(time / 60)}`.padStart(2, 0)}:
               {`${time % 60}`.padStart(2, 0)}
             </span>
           )}
-        </DialogTitle>
-
+        </DialogContent> */}
         <DialogContent
           style={{
             alignSelf: "center",
-            margin: !time == 0 ? "15px 50px 50px 50px" : "15px 50px 50px 50px",
+            margin: !time == 0 ? "25px 50px 25px 50px" : "25px 50px 25px 50px",
             display: "flex",
           }}
         >
@@ -97,8 +120,47 @@ const EnterOTPModal = (props) => {
             otpType="number"
           />
         </DialogContent>
-        <DialogActions>
-          <Button
+        <DialogContent
+          style={{
+            alignSelf: "center",
+            padding: "10px 0px 0px 0px",
+            fontFamily: "Roboto, san-serif",
+          }}
+        >
+          Resend Verification Code ?
+          {!time == 0 && showTimer ? (
+            <span style={{ paddingLeft: "8px" }}>
+              {`${Math.floor(time / 60)}`.padStart(2, 0)}:
+              {`${time % 60}`.padStart(2, 0)}
+            </span>
+          ) : (
+            <Button
+              style={{
+                alignSelf: "center",
+                fontFamily: "Roboto, san-serif",
+              }}
+              disabled={!time == 0 && showTimer}
+              color="primary"
+              onClick={() => {
+                onResend();
+                setOTP("");
+                setTime(120);
+                setRunning(true);
+              }}
+            >
+              Resend OTP
+            </Button>
+          )}
+        </DialogContent>
+
+        <DialogActions
+          style={{
+            margin: "25px 0px 5px 0px",
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          {/* <Button
             onClick={() => {
               handleClose();
               setOTP("");
@@ -108,23 +170,28 @@ const EnterOTPModal = (props) => {
             style={{ borderRadius: 15 }}
           >
             Cancel
-          </Button>
+          </Button> */}
           {!hideResendOTPButton && (
+            <>
+              {/*            
             <Button
               onClick={() => {
                 onResend();
                 setOTP("");
-                setTime(60);
+                setTime(120);
                 setRunning(true)
               }}
-              color="primary"
+            //   color = {!time == 0 && showTimer ? "rgb(44, 39, 153)" : "primary"}
+            color= "primary"
               variant="contained"
-              style={{ borderRadius: 15 }}
+              style={{ borderRadius: 15}}
               disabled={!time == 0 && showTimer}
             >
               Resend OTP
+            
 
-            </Button>
+            </Button> */}
+            </>
           )}
 
           <Button
@@ -132,9 +199,9 @@ const EnterOTPModal = (props) => {
             color="primary"
             variant="contained"
             disabled={!OTP}
-            style={{ borderRadius: 15 }}
+            style={{ alignSelf: "center", width: "50%" }}
           >
-            Submit
+            VERIFY OTP{" "}
           </Button>
         </DialogActions>
       </Dialog>

@@ -62,7 +62,6 @@ class Login extends React.Component {
       oneTimeUpdateEmailIdSuccessMessage: false,
       ResendHOTPButton: false,
       showTimer:false,
-      timer: false,
     };
   }
 
@@ -115,7 +114,7 @@ class Login extends React.Component {
    * captures form submit request
    */
 
-  processLoginButtonPressed = () => {
+  processLoginButtonPressed = (reSendOTPClicked=false) => {
     
     const { email, password ,ResendHOTPButton} = this.state;
     this.setState({ error: false, loading: true });
@@ -135,7 +134,7 @@ class Login extends React.Component {
           this.setState({showTimer : true})
           setTimeout(() => {
             this.setState({showTimer : false})
-          }, 60*1000);
+          }, 120*1000);
          
           if (resData.session_id) {
             if(!resData.email.updated_status){
@@ -144,10 +143,17 @@ class Login extends React.Component {
             else if (resData.mfa_required && !resData.mfa_registration) {
               this.setState({ showMFAMethodSelectionModal: true, sessionId: resData.session_id });
             } else if (resData.mfa_required && resData.mfa_registration) {
-              if(resData.mfa_message.includes("app")){
-                // this.setState({hideResendOTPButton: true})
-                 this.setState({ResendHOTPButton: true})
+              if(reSendOTPClicked ){
+                if(resData.mfa_message.includes("app")){
+                  // this.setState({hideResendOTPButton: true})
+                   this.setState({ResendHOTPButton: true})
+  
+                }
+                else {
+                  this.setState({ResendHOTPButton: false})
+                }
               }
+             
               this.setState({ showOTPDialog: true, sessionId: resData.session_id, otpModalTitle: resData.mfa_message });
             }
           } else if (resData.token){
@@ -242,7 +248,6 @@ class Login extends React.Component {
 
   onResendOTPClick = () => {
     this.processLoginButtonPressed(true);
-    this.setState({ timer : true });
 
   }
 
@@ -437,7 +442,6 @@ class Login extends React.Component {
           verifySuccessMessage={this.state.verifySuccessMessage}
           hideResendOTPButton={this.state.hideResendOTPButton}
           showTimer={this.state.showTimer}
-          timer={this.state.timer}
         />
         <RegisterMFAModal
           open={this.state.showMFAMethodSelectionModal}
