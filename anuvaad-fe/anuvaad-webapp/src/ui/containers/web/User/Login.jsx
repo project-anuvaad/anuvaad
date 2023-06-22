@@ -114,11 +114,11 @@ class Login extends React.Component {
    * captures form submit request
    */
 
-  processLoginButtonPressed = (reSendOTPClicked=false) => {
+  processLoginButtonPressed = (resendOTPClicked=false) => {
     
     const { email, password ,ResendWithUseHOTP} = this.state;
     this.setState({ error: false, loading: true });
-    const apiObj = new LoginAPI(email, password, ResendWithUseHOTP);
+    const apiObj = new LoginAPI(email, password, resendOTPClicked && ResendWithUseHOTP);
     const apiReq = fetch(apiObj.apiEndPoint(), {
       method: "post",
       body: JSON.stringify(apiObj.getBody()),
@@ -146,8 +146,8 @@ class Login extends React.Component {
               this.setState({ 
                 showOTPDialog: true, 
                 sessionId: resData.session_id, 
-                otpModalTitle: resData.mfa_message, 
-                ResendWithUseHOTP: reSendOTPClicked && resData.mfa_type === "TOTP" ? true : false
+                otpModalTitle: resData.mfa_message,
+                ResendWithUseHOTP: resData.mfa_type === "TOTP" ? true : false
               });
             }
           } else if (resData.token){
@@ -392,7 +392,7 @@ class Login extends React.Component {
           <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
             <Button
               fullWidth
-              onClick={this.processLoginButtonPressed.bind(this)}
+              onClick={()=>this.processLoginButtonPressed(false)}
               label={"Login"}
               className={classes.loginBtn}
             />
