@@ -388,7 +388,7 @@ class UserDetails extends React.Component {
           <div style={{margin: 30}}></div>
           <TextField
             margin="dense"
-            userEmail
+            name="userEmail"
             defaultValue={this.state.currentEditableUserDetails.userEmail}   
             onChange={(e)=>this.onUserDetailsChange(e)}         
             type="text"

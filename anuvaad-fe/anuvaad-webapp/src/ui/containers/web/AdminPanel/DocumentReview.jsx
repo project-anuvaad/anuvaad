@@ -33,7 +33,7 @@ class DocumentReview extends React.Component {
       data: [],
       showLoading: false,
       currentJobDetails: null,
-      disableActions: false,
+      disableActions: true,
       // (this.props.match.params.currentStatus === "REVIEWER - COMPLETED" || this.props.match.params.currentStatus === "FINAL EDITING - IN PROGRESS") ? true : false,
       confirmDialogue: {
         open: false,
@@ -91,8 +91,14 @@ class DocumentReview extends React.Component {
       this.setState({ currentJobDetails: docArr[0] })
       // console.log("docArr ------- ", docArr);
       if (docArr?.length > 0) {
-        if (docArr[0].currentGranularStatus === "FINAL EDITING - IN PROGRESS" || docArr[0].currentGranularStatus === "REVIEWER - COMPLETED") {
+        if (
+          docArr[0].currentGranularStatus.trim() === "FINAL EDITING - IN PROGRESS"
+          || docArr[0].currentGranularStatus.trim() === "REVIEWER - COMPLETED"
+          || docArr[0].currentGranularStatus.trim() === "FINAL DOCUMENT UPLOADED"
+        ) {
           this.setState({ disableActions: true });
+        } else {
+          this.setState({ disableActions: false });
         }
       }
     })
@@ -267,8 +273,8 @@ class DocumentReview extends React.Component {
   onSubmitIndividualReview = (senetenceData) => {
     this.handleCloseInfo();
     let senetenceObj = {
-      "comments": senetenceData.review,
-      "redo": true,
+      "comments": senetenceData.review ? senetenceData.review : "",
+      "redo": senetenceData.review && senetenceData.review.length > 0 ? true : false,
       "s_id": senetenceData.s_id,
       "n_id": senetenceData.n_id
     }
@@ -283,18 +289,29 @@ class DocumentReview extends React.Component {
       .then(response => response.json())
       .then(result => {
         // console.log(result);
-        if (this.state.currentJobDetails.currentGranularStatus === "FINAL EDITING - COMPLETED") {
-          this.updateGranularity(["reviewerInProgress"], "Review Comment Updated!", false)
+        if (result.ok) {
+          if (this.state.currentJobDetails.currentGranularStatus === "FINAL EDITING - COMPLETED") {
+            this.updateGranularity(["reviewerInProgress"], "Review Comment Updated!", false)
+          } else {
+            let currentInfoState = { ...this.state.snackbarInfo };
+            currentInfoState = {
+              open: true,
+              message: "Review Comment Updated!",
+              variant: "info"
+            };
+            this.setState({ snackbarInfo: currentInfoState });
+            this.getCurrentJobDetail();
+          }
         } else {
           let currentInfoState = { ...this.state.snackbarInfo };
-          currentInfoState = {
-            open: true,
-            message: "Review Comment Updated!",
-            variant: "info"
-          };
-          this.setState({ snackbarInfo: currentInfoState });
-          this.getCurrentJobDetail();
+            currentInfoState = {
+              open: true,
+              message: "Failed To Update Review Comment",
+              variant: "error"
+            };
+            this.setState({ snackbarInfo: currentInfoState });
         }
+
 
       }
       )
@@ -330,7 +347,7 @@ class DocumentReview extends React.Component {
           setCellProps: () => ({ style: { maxWidth: "250px" } }),
           customBodyRender: (value, tableMeta, updateValue) => {
             if (tableMeta.rowData[4] == "-") {
-              return ""
+              return "-"
             } else {
               return value
             }
@@ -364,7 +381,25 @@ class DocumentReview extends React.Component {
           sort: false,
           display: "exclude"
         }
-      }, {
+      },
+      {
+        name: "comments",
+        label: "Comment",
+        options: {
+          filter: false,
+          sort: false,
+          display: this.state.disableActions ? true : "excluded",
+          setCellProps: () => ({ style: { maxWidth: "250px" } }),
+          customBodyRender: (value, tableMeta, updateValue) => {
+            if (value) {
+              return value
+            } else {
+              return "-"
+            }
+          }
+        }
+      },
+      {
         name: "Action",
         label: "Action",
         options: {
@@ -414,7 +449,7 @@ class DocumentReview extends React.Component {
           viewColumns: translate("graderReport.page.muiTable.viewColumns")
         },
         pagination: {
-          rowsPerPage: translate("graderReport.page.muiTable.rowsPerPages")
+          rowsPerPage: "Sentences per page:"
         },
         options: { sortDirection: 'desc' }
       },

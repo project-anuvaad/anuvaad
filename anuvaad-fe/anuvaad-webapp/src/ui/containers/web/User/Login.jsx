@@ -136,6 +136,7 @@ class Login extends React.Component {
             this.setState({showTimer : false})
           }, 120*1000);
          
+          // this.setState({showOneTimeUpdateEmailIdModal: true});
           if (resData.session_id) {
             if(!resData.email.updated_status){
               this.setState({showOneTimeUpdateEmailIdModal: true, currentEmail: resData.email.registered_email, oneTimeUpdateEmailIdSuccessMessage: false});
