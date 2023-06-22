@@ -44,7 +44,7 @@ const RegisterMFAModal = (props) => {
             otpIcon: selectedAuthMethod === "TOTP" ? QRIconLight : QRIconDark,
         },
         {
-            title: "HOTP",
+            title: "Email OTP",
             description: "An email will be sent to you with a unique OTP for each login.",
             onclick: () => setsSlectedAuthMethod("HOTP"),
             selected: selectedAuthMethod === "HOTP" ? true : false,

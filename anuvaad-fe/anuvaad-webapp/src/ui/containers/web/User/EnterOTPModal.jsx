@@ -109,19 +109,13 @@ const EnterOTPModal = (props) => {
           />
         </DialogContent>
         <DialogContent className={classes.ResendOtpButton}>
-          Resend Verification Code ?
-          {!time == 0 && showTimer ? (
-            <span style={{ paddingLeft: "8px" }}>
-              {`${Math.floor(time / 60)}`.padStart(2, 0)}:
-              {`${time % 60}`.padStart(2, 0)}
-            </span>
-          ) : (
+          {/* Resend Verification Code ?
             <Button
               style={{
                 alignSelf: "center",
                 fontFamily: "Roboto, san-serif",
               }}
-              disabled={!time == 0 && showTimer}
+              // disabled={!time == 0 && showTimer}
               color="primary"
               onClick={() => {
                 onResend();
@@ -131,8 +125,18 @@ const EnterOTPModal = (props) => {
               }}
             >
               Resend OTP
-            </Button>
+            </Button> */}
+            <div>
+            {!time == 0 && showTimer ? (
+            <span style={{ paddingLeft: "8px" }}>
+              Session expires in -&nbsp;
+              {`${Math.floor(time / 60)}`.padStart(2, 0)}:
+              {`${time % 60}`.padStart(2, 0)}
+            </span>
+          ) : (
+            <Typography>Your session is expired, Please login again.</Typography>
           )}
+            </div>
         </DialogContent>
 
         <DialogActions
@@ -143,10 +147,28 @@ const EnterOTPModal = (props) => {
           }}
         >
           <Button
+            onClick={() => {
+              onResend();
+              setOTP("");
+              setTime(120);
+              setRunning(true);
+            }}
+            color="primary"
+            variant="contained"
+            fullWidth
+            size="large"
+            // disabled={!OTP}
+            className={classes.VerifyOtpButton}
+          >
+            Resend OTP{" "}
+          </Button>
+          <Button
             onClick={() => onSubmit(OTP)}
             color="primary"
             variant="contained"
-            disabled={!OTP}
+            fullWidth
+            size="large"
+            disabled={!OTP || OTP.length < 6}
             className={classes.VerifyOtpButton}
           >
             VERIFY OTP{" "}
