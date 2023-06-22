@@ -28,7 +28,7 @@ class BlockTranslationService:
         block_translate_input["taskID"] = utils.generate_task_id()
         block_translate_input["taskStartTime"] = eval(str(time.time()).replace('.', '')[0:13])
         block_translate_input["state"] = "TRANSLATED"
-        log_info("Block Translation started.... with input :: "+block_translate_input, block_translate_input)
+        log_info("Block Translation started....", block_translate_input)
         output = block_translate_input
         is_successful, fail_msg, record_id, op_blocks = False, None, block_translate_input["input"]["recordID"], None
         try:
@@ -188,7 +188,10 @@ class BlockTranslationService:
     # Parses the nmt response and builds input for ch
     # No UTM here, cuz user is specifically asking the machine to translate
     def get_translations_ip_ch(self, nmt_response, block_translate_input, no_translation):
-        log_info("ENTRY WITHIN TMX FUNCTION :: "+nmt_response['data'],block_translate_input)
+        log_info("ENTRY WITHIN TMX FUNCTION :: "+str(nmt_response['data']),block_translate_input)
+        log_info("NMT RESPONSE :: "+str(nmt_response),block_translate_input)
+        log_info("BLOCK TRANSLATE INPUT :: "+str(block_translate_input),block_translate_input)
+        log_info("NO TRANSLATION :: "+str(no_translation),block_translate_input)
         if not no_translation:
             if 'data' in nmt_response.keys():
                 if nmt_response['data']:
