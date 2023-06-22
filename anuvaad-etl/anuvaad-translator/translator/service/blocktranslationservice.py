@@ -194,7 +194,8 @@ class BlockTranslationService:
                     for translation in nmt_response["data"]:
                         if type(translation) == "str":
                             translation = json.loads(translation)
-                        if translation["tmx_phrases"]:
+                        #if translation["tmx_phrases"]:
+                        if "tmx_phrases" in translation.keys():
                             log_info("SRC: {} | TGT: {} | TMX Count: {}".format(translation["src"], translation["tgt"],
                                                                                 str(len(translation["tmx_phrases"]))), block_translate_input)
                             translation["tgt"], translation["tmx_replacement"] = tmxservice.replace_nmt_tgt_with_user_tgt(translation["tmx_phrases"], translation["src"],
