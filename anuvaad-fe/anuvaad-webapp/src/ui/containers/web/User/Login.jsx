@@ -340,7 +340,7 @@ class Login extends React.Component {
     const { classes } = this.props;
 
     return (
-      <CustomCard title={"Sign in to Anuvaad"} cardContent={this.TextFields()} className={classes.headingStyle}>
+      <CustomCard title={"Sign in to SUVAS"} cardContent={this.TextFields()} className={classes.headingStyle}>
         <Grid container spacing={2} style={{ width: "100%" }}>
           <Grid
             item
@@ -360,7 +360,7 @@ class Login extends React.Component {
               href="#"
               className={classes.forgotPassLink}
             >
-              Sign Up
+              {/* Sign Up */}
             </Link>
 
             <Link
