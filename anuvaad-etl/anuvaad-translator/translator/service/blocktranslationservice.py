@@ -188,6 +188,7 @@ class BlockTranslationService:
     # Parses the nmt response and builds input for ch
     # No UTM here, cuz user is specifically asking the machine to translate
     def get_translations_ip_ch(self, nmt_response, block_translate_input, no_translation):
+        log_info("ENTRY WITHIN TMX FUNCTION :: "+nmt_response['data'],block_translate_input)
         if not no_translation:
             if 'data' in nmt_response.keys():
                 if nmt_response['data']:
