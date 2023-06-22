@@ -28,7 +28,7 @@ class BlockTranslationService:
         block_translate_input["taskID"] = utils.generate_task_id()
         block_translate_input["taskStartTime"] = eval(str(time.time()).replace('.', '')[0:13])
         block_translate_input["state"] = "TRANSLATED"
-        log_info("Block Translation started....", block_translate_input)
+        log_info("Block Translation started.... with input :: "+block_translate_input, block_translate_input)
         output = block_translate_input
         is_successful, fail_msg, record_id, op_blocks = False, None, block_translate_input["input"]["recordID"], None
         try:
