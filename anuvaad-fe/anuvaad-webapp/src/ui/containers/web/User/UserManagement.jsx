@@ -10,6 +10,7 @@ import Login from "./Login";
 import UpdatePassword from "./UpdatePassword";
 import SetPassword from './SetPassword';
 import Activate from './Activate';
+import EnterOTPModal from "./EnterOTPModal"
 
 const UserManagement = (props) => {
     const { classes } = props;
@@ -27,6 +28,8 @@ const UserManagement = (props) => {
                 return <SetPassword />;
             case "activate":
                 return <Activate />;
+            case "resend-otp":
+                return <EnterOTPModal />;
             default:
                 return <Login location={props.location} />;
 

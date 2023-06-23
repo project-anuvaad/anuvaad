@@ -131,6 +131,7 @@ class Login extends React.Component {
           return Promise.reject(rsp_data.message);
         } else {
           let resData = rsp_data && rsp_data.data;
+          history.push(`${process.env.PUBLIC_URL}/user/resend-otp`)
           this.setState({showTimer : true})
           setTimeout(() => {
             this.setState({showTimer : false})
@@ -296,6 +297,15 @@ class Login extends React.Component {
     event.preventDefault();
   };
 
+  // handleClickLogin = ()=>{
+  //   this.processLoginButtonPressed()
+  //   console.log(this.state.showOTPDialog,"this.state.showTimer")
+  //   if(this.state.showOTPDialog){
+  //     history.push(`${process.env.PUBLIC_URL}/user/resend-otp`)
+
+  //   }
+  // }
+
   
 
   TextFields = () => {
@@ -428,7 +438,7 @@ class Login extends React.Component {
             message={this.state.errMessage}
           />
         )}
-        <EnterOTPModal open={this.state.showOTPDialog}
+        {/* <EnterOTPModal open={this.state.showOTPDialog}
           handleClose={() => this.handleCloseOTPModal()}
           onResend={() => this.onResendOTPClick()}
           OTPModalTitle={this.state.otpModalTitle}
@@ -436,7 +446,7 @@ class Login extends React.Component {
           verifySuccessMessage={this.state.verifySuccessMessage}
           hideResendOTPButton={this.state.hideResendOTPButton}
           showTimer={this.state.showTimer}
-        />
+        /> */}
         <RegisterMFAModal
           open={this.state.showMFAMethodSelectionModal}
           handleClose={this.handleCloseMFASelectionModal}
