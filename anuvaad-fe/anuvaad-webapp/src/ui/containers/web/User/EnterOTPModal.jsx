@@ -177,12 +177,12 @@ function EnterOTPModal() {
   const [errMessage, setErrMessage] = useState("");
   const [resendWithUseHOTP, setResendWithUseHOTP] = useState(false);
   const [ResData, setResData] = useState(JSON.parse(localStorage.getItem("resData")));
-console.log(ResData,"ResData")
 //   const ResData = JSON.parse(localStorage.getItem("resData"));
   const Email = localStorage.getItem("email");
   const Password = localStorage.getItem("password");
   const [time, setTime] = useState(120);
   const [running, setRunning] = useState(true);
+  const [resendOtpButtonClicked, setResendOtpButtonClicked] = useState(false);
   useEffect(() => {
     let interval;
     if (ResData && running) {
@@ -217,7 +217,7 @@ console.log(ResData,"ResData")
       ResData?.data?.email?.registered_email,
       ResData?.data.session_id,
       OTP,
-      true
+      resendWithUseHOTP && resendOtpButtonClicked
     );
 
     fetch(apiObj.apiEndPoint(), {
@@ -248,12 +248,13 @@ console.log(ResData,"ResData")
       });
   };
 
-  const processLoginButtonPressed = (reSendOTPClicked) => {
-    console.log(reSendOTPClicked,"reSendOTPClicked",resendWithUseHOTP)
+  const processLoginButtonPressed = (reSendOTPClicked ) => {
+
     // const { email, password ,ResendWithUseHOTP} = this.state;
     setError(false);
     setLoading(true);
-    const apiObj = new LoginAPI(Email, Password, true);
+    setResendOtpButtonClicked(reSendOTPClicked)
+    const apiObj = new LoginAPI(Email, Password, reSendOTPClicked );
     const apiReq = fetch(apiObj.apiEndPoint(), {
       method: "post",
       body: JSON.stringify(apiObj.getBody()),
@@ -280,7 +281,7 @@ console.log(ResData,"ResData")
                 
             //     ResendWithUseHOTP: reSendOTPClicked && resData.mfa_type === "TOTP" ? true : false
             //   });
-              setResendWithUseHOTP(reSendOTPClicked && resData.mfa_type === "TOTP" ? true : false)
+              setResendWithUseHOTP(resData.mfa_type === "TOTP" ? true : false)
             }
           } else if (resData.token){
               localStorage.setItem("token", resData.token);
@@ -414,7 +415,7 @@ console.log(ResData,"ResData")
             }}
           >
             {" "}
-            Didn't Receive OTP ?
+            Session expires in - 
             <span style={{ paddingLeft: "8px" }}>
               {`${Math.floor(time / 60)}`.padStart(2, 0)}:
               {`${time % 60}`.padStart(2, 0)}
