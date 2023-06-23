@@ -135,7 +135,6 @@ class Login extends React.Component {
           console.log(resData,"resDataresData")
           localStorage.setItem("email",email); 
           localStorage.setItem("password",password); 
-          history.push(`${process.env.PUBLIC_URL}/user/resend-otp`)
           this.setState({showTimer : true})
           setTimeout(() => {
             this.setState({showTimer : false})
@@ -160,6 +159,7 @@ class Login extends React.Component {
               this.fetchUserProfileDetails(resData.token);  
               
           }
+          history.push(`${process.env.PUBLIC_URL}/user/resend-otp`)
           this.setState({ error: false, loading: false });
         }
       })

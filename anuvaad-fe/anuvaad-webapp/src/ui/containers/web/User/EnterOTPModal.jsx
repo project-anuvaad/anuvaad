@@ -176,14 +176,16 @@ function EnterOTPModal() {
   const [loading, setLoading] = useState(false);
   const [errMessage, setErrMessage] = useState("");
   const [resendWithUseHOTP, setResendWithUseHOTP] = useState(false);
-  const [ResData, setResData] = useState(JSON.parse(localStorage.getItem("resData")));
-//   const ResData = JSON.parse(localStorage.getItem("resData"));
-  const Email = localStorage.getItem("email");
-  const Password = localStorage.getItem("password");
   const [time, setTime] = useState(120);
   const [running, setRunning] = useState(true);
   const [resendOtpButtonClicked, setResendOtpButtonClicked] = useState(false);
+  const [ResData, setResData] = useState(JSON.parse(localStorage.getItem("resData")));
+
+  const Email = localStorage.getItem("email");
+  const Password = localStorage.getItem("password");
+
   useEffect(() => {
+    setResendWithUseHOTP(ResData.data.mfa_type === "TOTP" ? true : false)
     let interval;
     if (ResData && running) {
       interval = setInterval(() => {
@@ -200,6 +202,7 @@ function EnterOTPModal() {
       }, 1000);
     }
     return () => clearInterval(interval);
+
   }, [ResData, running]);
 
   useEffect(() => {
@@ -248,13 +251,13 @@ function EnterOTPModal() {
       });
   };
 
-  const processLoginButtonPressed = (reSendOTPClicked ) => {
+  const processLoginButtonPressed = (reSendOTPClicked = false ) => {
 
     // const { email, password ,ResendWithUseHOTP} = this.state;
     setError(false);
     setLoading(true);
     setResendOtpButtonClicked(reSendOTPClicked)
-    const apiObj = new LoginAPI(Email, Password, reSendOTPClicked );
+    const apiObj = new LoginAPI(Email, Password, reSendOTPClicked && resendWithUseHOTP );
     const apiReq = fetch(apiObj.apiEndPoint(), {
       method: "post",
       body: JSON.stringify(apiObj.getBody()),
@@ -281,7 +284,7 @@ function EnterOTPModal() {
                 
             //     ResendWithUseHOTP: reSendOTPClicked && resData.mfa_type === "TOTP" ? true : false
             //   });
-              setResendWithUseHOTP(resData.mfa_type === "TOTP" ? true : false)
+              
             }
           } else if (resData.token){
               localStorage.setItem("token", resData.token);
