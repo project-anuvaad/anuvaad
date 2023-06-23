@@ -131,6 +131,10 @@ class Login extends React.Component {
           return Promise.reject(rsp_data.message);
         } else {
           let resData = rsp_data && rsp_data.data;
+          localStorage.setItem("resData",JSON.stringify(rsp_data)); 
+          console.log(resData,"resDataresData")
+          localStorage.setItem("email",email); 
+          localStorage.setItem("password",password); 
           history.push(`${process.env.PUBLIC_URL}/user/resend-otp`)
           this.setState({showTimer : true})
           setTimeout(() => {
@@ -153,7 +157,8 @@ class Login extends React.Component {
             }
           } else if (resData.token){
               localStorage.setItem("token", resData.token);
-              this.fetchUserProfileDetails(resData.token);    
+              this.fetchUserProfileDetails(resData.token);  
+              
           }
           this.setState({ error: false, loading: false });
         }
@@ -297,16 +302,6 @@ class Login extends React.Component {
     event.preventDefault();
   };
 
-  // handleClickLogin = ()=>{
-  //   this.processLoginButtonPressed()
-  //   console.log(this.state.showOTPDialog,"this.state.showTimer")
-  //   if(this.state.showOTPDialog){
-  //     history.push(`${process.env.PUBLIC_URL}/user/resend-otp`)
-
-  //   }
-  // }
-
-  
 
   TextFields = () => {
     return (
