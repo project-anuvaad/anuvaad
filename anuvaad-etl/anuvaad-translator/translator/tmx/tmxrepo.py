@@ -4,12 +4,13 @@ import json
 import redis
 import pymongo
 from anuvaad_auditor.loghandler import log_exception, log_info
-from configs.translatorconfig import redis_server_host, redis_server_port
+from configs.translatorconfig import redis_server_host, redis_server_port, utm_redis_db
 from configs.translatorconfig import mongo_server_host, mongo_translator_db, mongo_tmx_collection
 from configs.translatorconfig import mongo_suggestion_box_collection, tmx_org_enabled, tmx_user_enabled, tmx_redis_db
 from configs.translatorconfig import suggestion_box_order
 
 redis_client = None
+utm_redis_client = None
 mongo_client_tmx = None
 mongo_client_suggestion = None
 
@@ -23,6 +24,18 @@ class TMXRepository:
         global redis_client
         redis_client = redis.Redis(host=redis_server_host, port=redis_server_port, db=tmx_redis_db)
         return redis_client
+
+    def utm_redis_instantiate(self):
+        global utm_redis_client
+        utm_redis_client = redis.Redis(host=redis_server_host, port=redis_server_port, db=utm_redis_db)
+        return utm_redis_client
+
+    def get_utm_redis_instance(self):
+        global utm_redis_client
+        if not utm_redis_client:
+            return self.utm_redis_instantiate()
+        else:
+            return utm_redis_client
 
     def get_redis_instance(self):
         global redis_client

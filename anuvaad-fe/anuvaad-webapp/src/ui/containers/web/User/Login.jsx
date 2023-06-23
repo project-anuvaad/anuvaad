@@ -120,6 +120,7 @@ class Login extends React.Component {
     const { email, password ,ResendWithUseHOTP} = this.state;
     this.setState({ error: false, loading: true, ResendOtpButtonClicked: resendOTPClicked });
     const apiObj = new LoginAPI(email, password, resendOTPClicked && ResendWithUseHOTP);
+
     const apiReq = fetch(apiObj.apiEndPoint(), {
       method: "post",
       body: JSON.stringify(apiObj.getBody()),

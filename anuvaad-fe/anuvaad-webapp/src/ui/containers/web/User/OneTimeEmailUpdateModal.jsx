@@ -100,6 +100,7 @@ const OneTimeEmailUpdateModal = (props) => {
                                     fullWidth
                                     style={{borderRadius: 10, fontWeight: "100", paddingTop: 15, paddingBottom: 15}}
                                     onClick={()=>onUpdateEmailId(currentEmail)}
+
                                 >
                                     Continue with <b>&nbsp;{currentEmail}</b>
                                 </Button>
