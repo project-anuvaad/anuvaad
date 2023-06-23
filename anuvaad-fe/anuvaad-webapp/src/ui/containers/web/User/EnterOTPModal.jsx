@@ -1,20 +1,13 @@
 import React, { useEffect, useState } from "react";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import DialogTitle from "@material-ui/core/DialogTitle";
 import OTPInput from "otp-input-react";
 import {
   Button,
-  IconButton,
   ThemeProvider,
   Typography,
   withStyles,
   Grid,
 } from "@material-ui/core";
 import themeAnuvaad from "../../../theme/web/theme-anuvaad";
-import CloseIcon from "@material-ui/icons/Close";
 import LoginStyles from "../../../styles/web/LoginStyles";
 import ResendOtpimg from "../../../../assets/Resend.png";
 import VerifyMFA from "../../../../flux/actions/apis/user/MFA_verify";
@@ -25,151 +18,6 @@ import history from "../../../../web.history";
 import profileDetails from "../../../../flux/actions/apis/user/profile_details";
 
 
-
-
-// const EnterOTPModal = (props) => {
-//   const { classes } = props;
-//   const [OTP, setOTP] = useState("");
-//   const {
-//     open,
-//     handleClose,
-//     onResend,
-//     onSubmit,
-//     OTPModalTitle,
-//     hideResendOTPButton,
-//     showTimer,
-//     // loading,
-//   } = { ...props };
-
-//   const [time, setTime] = useState(120);
-//   const [running, setRunning] = useState(true);
-//   useEffect(() => {
-//     let interval;
-//     if (showTimer && running) {
-//       interval = setInterval(() => {
-//         setTime((prevTime) => {
-//           if (prevTime > 0) {
-//             return prevTime - 1;
-//           } else if (prevTime === 0) {
-//             clearInterval(interval);
-//             setTimeout(() => setTime(120), 60000);
-//             setRunning(false);
-//             return prevTime;
-//           }
-//         });
-//       }, 1000);
-//     }
-//     return () => clearInterval(interval);
-//   }, [showTimer, running]);
-
-//   useEffect(() => {
-//     const timerId = setTimeout(() => {
-//       handleClose();
-//     }, 10 * 60 * 1000);
-//     return () => clearTimeout(timerId);
-//   }, []);
-
-//   return (
-//     <ThemeProvider theme={themeAnuvaad}>
-//       <Dialog
-//         open={open}
-//         // onClose={handleClose}
-//         aria-labelledby="alert-dialog-title"
-//         aria-describedby="alert-dialog-description"
-//         fullWidth
-//         style={{ backgroundColor: "rgba(255,255,255,0.6)" }}
-//       >
-//         <DialogContent
-//           style={{
-//             display: "flex",
-//             justifyContent: "end",
-//             padding: "5px 0px 0px 0px",
-//           }}
-//         >
-//           {" "}
-//           <Button
-//             onClick={() => {
-//               handleClose();
-//               setOTP("");
-//             }}
-//           >
-//             <CloseIcon />
-//           </Button>
-//         </DialogContent>
-
-//         <DialogTitle
-//           id="alert-dialog-title"
-//           align="center"
-//           style={{ paddingTop: "0px" }}
-//         >
-//           {OTPModalTitle}
-//         </DialogTitle>
-//         <DialogContent
-//           style={{
-//             alignSelf: "center",
-//             margin: !time == 0 ? "28px 50px 28px 50px" : "28px 50px 28px 50px",
-//             display: "flex",
-//           }}
-//         >
-//           <OTPInput
-//             value={OTP}
-//             onChange={setOTP}
-//             autoFocus
-//             OTPLength={6}
-//             otpType="number"
-//           />
-//         </DialogContent>
-//         <DialogContent className={classes.ResendOtpButton}>
-//           Resend Verification Code ?
-//           {!time == 0 && showTimer ? (
-//             <span style={{ paddingLeft: "8px" }}>
-//               {`${Math.floor(time / 60)}`.padStart(2, 0)}:
-//               {`${time % 60}`.padStart(2, 0)}
-//             </span>
-//           ) : (
-//             <Button
-//               style={{
-//                 alignSelf: "center",
-//                 fontFamily: "Roboto, san-serif",
-//               }}
-//               disabled={!time == 0 && showTimer}
-//               color="primary"
-//               onClick={() => {
-//                 onResend();
-//                 setOTP("");
-//                 setTime(120);
-//                 setRunning(true);
-//               }}
-//             >
-//               Resend OTP
-//             </Button>
-//           )}
-//         </DialogContent>
-
-//         <DialogActions
-//           style={{
-//             margin: "25px 0px 5px 0px",
-//             display: "flex",
-//             justifyContent: "center",
-//           }}
-//         >
-//           <Button
-//             onClick={() => onSubmit(OTP)}
-//             color="primary"
-//             variant="contained"
-//             disabled={!OTP}
-//             className={classes.VerifyOtpButton}
-//           >
-//             VERIFY OTP{" "}
-//           </Button>
-//         </DialogActions>
-//       </Dialog>
-//     </ThemeProvider>
-//   );
-// };
-
-// export default withStyles(LoginStyles)(EnterOTPModal);
-
 function EnterOTPModal() {
   const [OTP, setOTP] = useState("");
   const [error, setError] = useState(false);
@@ -179,15 +27,26 @@ function EnterOTPModal() {
   const [time, setTime] = useState(120);
   const [running, setRunning] = useState(true);
   const [resendOtpButtonClicked, setResendOtpButtonClicked] = useState(false);
-  const [ResData, setResData] = useState(JSON.parse(localStorage.getItem("resData")));
-
+  const [resData, setResData] = useState(
+    JSON.parse(localStorage.getItem("resData"))
+  );
+  const [showtimer, setShowtimer] = useState(false);
   const Email = localStorage.getItem("email");
   const Password = localStorage.getItem("password");
 
   useEffect(() => {
-    setResendWithUseHOTP(ResData.data.mfa_type === "TOTP" ? true : false)
+    if (resData) {
+      setShowtimer(true);
+    }
+    setTimeout(() => {
+      setShowtimer(false);
+    }, 120 * 1000);
+  }, [resData]);
+
+  useEffect(() => {
+    setResendWithUseHOTP(resData.data.mfa_type === "TOTP" ? true : false);
     let interval;
-    if (ResData && running) {
+    if (showtimer && running) {
       interval = setInterval(() => {
         setTime((prevTime) => {
           if (prevTime > 0) {
@@ -202,8 +61,7 @@ function EnterOTPModal() {
       }, 1000);
     }
     return () => clearInterval(interval);
-
-  }, [ResData, running]);
+  }, [showtimer, running, resData]);
 
   useEffect(() => {
     const timerId = setTimeout(() => {
@@ -217,8 +75,8 @@ function EnterOTPModal() {
     setLoading(true);
     // call mfa register API here
     const apiObj = new VerifyMFA(
-      ResData?.data?.email?.registered_email,
-      ResData?.data.session_id,
+      resData?.data?.email?.registered_email,
+      resData?.data.session_id,
       OTP,
       resendWithUseHOTP && resendOtpButtonClicked
     );
@@ -251,13 +109,16 @@ function EnterOTPModal() {
       });
   };
 
-  const processLoginButtonPressed = (reSendOTPClicked = false ) => {
-
+  const processLoginButtonPressed = (reSendOTPClicked = false) => {
     // const { email, password ,ResendWithUseHOTP} = this.state;
     setError(false);
     setLoading(true);
-    setResendOtpButtonClicked(reSendOTPClicked)
-    const apiObj = new LoginAPI(Email, Password, reSendOTPClicked && resendWithUseHOTP );
+    setResendOtpButtonClicked(reSendOTPClicked);
+    const apiObj = new LoginAPI(
+      Email,
+      Password,
+      reSendOTPClicked && resendWithUseHOTP
+    );
     const apiReq = fetch(apiObj.apiEndPoint(), {
       method: "post",
       body: JSON.stringify(apiObj.getBody()),
@@ -265,31 +126,28 @@ function EnterOTPModal() {
     })
       .then(async (response) => {
         const rsp_data = await response.json();
-      
+
         if (!response.ok) {
           return Promise.reject(rsp_data.message);
         } else {
           let resData = rsp_data && rsp_data.data;
-          setResData(rsp_data)
-        //   localStorage.setItem("resData",JSON.stringify(rsp_data));  
-        //   history.push(`${process.env.PUBLIC_URL}/user/resend-otp`)
-        //   this.setState({showTimer : true})
-        //   setTimeout(() => {
-        //     this.setState({showTimer : false})
-        //   }, 120*1000);
-         
+          setResData(rsp_data);
+          //   localStorage.setItem("resData",JSON.stringify(rsp_data));
+          //   history.push(`${process.env.PUBLIC_URL}/user/resend-otp`)
+          //   this.setState({showTimer : true})
+          //   setTimeout(() => {
+          //     this.setState({showTimer : false})
+          //   }, 120*1000);
+
           if (resData.session_id) {
             if (resData.mfa_required && resData.mfa_registration) {
-            //   this.setState({ 
-                
-            //     ResendWithUseHOTP: reSendOTPClicked && resData.mfa_type === "TOTP" ? true : false
-            //   });
-              
+              //   this.setState({
+              //     ResendWithUseHOTP: reSendOTPClicked && resData.mfa_type === "TOTP" ? true : false
+              //   });
             }
-          } else if (resData.token){
-              localStorage.setItem("token", resData.token);
-              fetchUserProfileDetails(resData.token);  
-              
+          } else if (resData.token) {
+            localStorage.setItem("token", resData.token);
+            fetchUserProfileDetails(resData.token);
           }
           setError(false);
           setLoading(false);
@@ -302,7 +160,6 @@ function EnterOTPModal() {
         setErrMessage(error);
       });
   };
-
 
   const handleRoles = (value) => {
     let result = [];
@@ -347,8 +204,6 @@ function EnterOTPModal() {
       });
   };
 
-
-
   const handleClose = () => {
     // this.setState({ showMFAMethodSelectionModal: false });
     setTimeout(() => {
@@ -369,60 +224,24 @@ function EnterOTPModal() {
         style={{
           display: "flex",
           justifyContent: "center",
-          marginBottom: "20px",
+          marginBottom: "30px",
         }}
       >
         <img
           src={ResendOtpimg}
           alt="log"
           style={{
-            width: "10%",
+            width: "12%",
           }}
         />
       </Grid>
 
       <Grid container justifyContent="center" alignItems="center">
-        <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
+        <Grid>
+          {" "}
           <Typography align="center" variant="h3">
             {" "}
             OTP Verification
-          </Typography>
-          <Typography
-            align="center"
-            variant="subtitle1"
-            style={{
-              fontFamily: "Roboto, san-serif",
-              fontSize: "16px",
-              margin: "10px 0px 40px 0px",
-            }}
-          >
-            {ResData?.data?.mfa_message}
-          </Typography>
-        </Grid>
-
-        <OTPInput
-          value={OTP}
-          onChange={setOTP}
-          autoFocus
-          OTPLength={6}
-          otpType="number"
-        />
-        <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
-          <Typography
-            align="center"
-            variant="subtitle1"
-            style={{
-              fontFamily: "Roboto, san-serif",
-              fontSize: "16px",
-              margin: "30px 0px 30px 0px",
-            }}
-          >
-            {" "}
-            Session expires in - 
-            <span style={{ paddingLeft: "8px" }}>
-              {`${Math.floor(time / 60)}`.padStart(2, 0)}:
-              {`${time % 60}`.padStart(2, 0)}
-            </span>
           </Typography>
         </Grid>
         <Grid
@@ -435,27 +254,30 @@ function EnterOTPModal() {
           style={{
             display: "flex",
             justifyContent: "center",
-            marginBottom: "20px",
           }}
         >
-          <Button
+          <Typography
+            align="center"
+            variant="subtitle1"
             style={{
-              width: "300px",
-              borderRadius: "15px",
-              padding: "6px",
-            }}
-            color="primary"
-            variant="contained"
-            onClick={() => {
-              processLoginButtonPressed(true);
-              setOTP("");
-              setTime(120);
-              setRunning(true);
+              fontFamily: "Roboto, san-serif",
+              fontSize: "16px",
+              margin: "15px 0px 40px 0px",
+              width: "50%",
             }}
           >
-            Resend OTP
-          </Button>
+            {resData?.data?.mfa_message}
+          </Typography>
         </Grid>
+
+        <OTPInput
+          value={OTP}
+          onChange={setOTP}
+          autoFocus
+          OTPLength={6}
+          otpType="number"
+        />
+
         <Grid
           item
           xs={12}
@@ -463,7 +285,11 @@ function EnterOTPModal() {
           md={12}
           lg={12}
           xl={12}
-          style={{ display: "flex", justifyContent: "center" }}
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            marginTop: "40px",
+          }}
         >
           <Button
             onClick={() => onSubmitOTP()}
@@ -478,6 +304,79 @@ function EnterOTPModal() {
             }}
           >
             VERIFY OTP{" "}
+          </Button>
+        </Grid>
+        <Grid
+          item
+          xs={12}
+          sm={12}
+          md={12}
+          lg={12}
+          xl={12}
+          style={{ marginTop: "40px" }}
+        >
+          {!showtimer == 0 && running ? (
+            <Typography
+              align="center"
+              variant="subtitle1"
+              style={{
+                fontFamily: "Roboto, san-serif",
+                fontSize: "16px",
+                margin: "40x 0px 40px 0px",
+              }}
+            >
+              {" "}
+              Session expires in -
+              <span style={{ paddingLeft: "8px" }}>
+                {`${Math.floor(time / 60)}`.padStart(2, 0)}:
+                {`${time % 60}`.padStart(2, 0)}
+              </span>
+            </Typography>
+          ) : (
+            <Typography
+              variant="subtitle1"
+              align="center"
+              style={{
+                fontFamily: "Roboto, san-serif",
+                fontSize: "16px",
+                margin: "40x 0px 40px 0px",
+              }}
+            >
+              Session has expired. Please re-login
+            </Typography>
+          )}
+        </Grid>
+        <Grid
+          item
+          xs={12}
+          sm={12}
+          md={12}
+          lg={12}
+          xl={12}
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            marginTop: "10px",
+          }}
+        >
+          <Typography
+            variant="subtitle1"
+            style={{ fontSize: "16px", marginTop: "5px" }}
+          >
+            Didn't Receive OTP ?
+          </Typography>
+
+          <Button
+            color="primary"
+            variant="text"
+            onClick={() => {
+              processLoginButtonPressed(true);
+              setOTP("");
+              setTime(120);
+              setRunning(true);
+            }}
+          >
+            Resend OTP
           </Button>
         </Grid>
       </Grid>

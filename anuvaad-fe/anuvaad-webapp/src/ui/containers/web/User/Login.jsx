@@ -139,7 +139,7 @@ class Login extends React.Component {
           setTimeout(() => {
             this.setState({showTimer : false})
           }, 120*1000);
-         
+          
           if (resData.session_id) {
             if(!resData.email.updated_status){
               this.setState({showOneTimeUpdateEmailIdModal: true, currentEmail: resData.email.registered_email, oneTimeUpdateEmailIdSuccessMessage: false});
@@ -147,6 +147,7 @@ class Login extends React.Component {
             else if (resData.mfa_required && !resData.mfa_registration) {
               this.setState({ showMFAMethodSelectionModal: true, sessionId: resData.session_id });
             } else if (resData.mfa_required && resData.mfa_registration) {
+              history.push(`${process.env.PUBLIC_URL}/user/resend-otp`)
               this.setState({ 
                 showOTPDialog: true, 
                 sessionId: resData.session_id, 
@@ -159,7 +160,7 @@ class Login extends React.Component {
               this.fetchUserProfileDetails(resData.token);  
               
           }
-          history.push(`${process.env.PUBLIC_URL}/user/resend-otp`)
+        
           this.setState({ error: false, loading: false });
         }
       })
