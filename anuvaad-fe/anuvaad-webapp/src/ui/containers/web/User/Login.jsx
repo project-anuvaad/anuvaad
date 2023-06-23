@@ -61,6 +61,7 @@ class Login extends React.Component {
       showOneTimeUpdateEmailIdModal: false,
       oneTimeUpdateEmailIdSuccessMessage: false,
       ResendWithUseHOTP: false,
+      ResendOtpButtonClicked: false,
       showTimer:false,
     };
   }
@@ -117,7 +118,7 @@ class Login extends React.Component {
   processLoginButtonPressed = (resendOTPClicked=false) => {
     
     const { email, password ,ResendWithUseHOTP} = this.state;
-    this.setState({ error: false, loading: true });
+    this.setState({ error: false, loading: true, ResendOtpButtonClicked: resendOTPClicked });
     const apiObj = new LoginAPI(email, password, resendOTPClicked && ResendWithUseHOTP);
     const apiReq = fetch(apiObj.apiEndPoint(), {
       method: "post",
@@ -194,7 +195,7 @@ class Login extends React.Component {
     const { email, sessionId } = this.state;
     this.setState({ error: false, loading: true });
     // call mfa register API here
-    const apiObj = new VerifyMFA(email, sessionId, otp, this.state.ResendWithUseHOTP);
+    const apiObj = new VerifyMFA(email, sessionId, otp, this.state.ResendWithUseHOTP && this.state.ResendOtpButtonClicked);
 
     fetch(apiObj.apiEndPoint(), {
       method: "POST",
