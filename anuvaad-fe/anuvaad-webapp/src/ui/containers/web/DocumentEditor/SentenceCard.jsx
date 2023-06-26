@@ -466,7 +466,9 @@ class SentenceCard extends React.Component {
             variant="subtitle1"
             gutterBottom
             onMouseUp={(event) => {
-              this.getSelectionText(event);
+              if (enableEditingSentence) {
+                this.getSelectionText(event);
+              }
             }}
           >
             {modified_src}
