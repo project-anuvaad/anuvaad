@@ -77,4 +77,4 @@ MFA_ISSUER = os.environ.get("MFA_ISSUER", "Anuvaad Folks")
 MFA_TOTP_INTERVAL = os.environ.get("MFA_TOTP_INTERVAL", 30) # only 30 is supported for google and microsoft auth apps
 MFA_HOTP_COUNTER = os.environ.get("MFA_HOTP_COUNTER", 15)
 MFA_SKIP_ROLES = [SUPER_ADMIN_ROLE_KEY]
-MFA_EXPIRATION_TIME = int(os.environ.get("MFA_HOTP_COUNTER", 120)) # in seconds
+MFA_EXPIRATION_TIME = int(os.environ.get("MFA_HOTP_COUNTER", 10 * 60)) # in seconds
