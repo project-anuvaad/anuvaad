@@ -493,23 +493,26 @@ class TranslatorService:
                 user_id = translate_wf_input["metadata"]["userID"]
                 file = translate_wf_input["input"]["files"][0]
                 locale = file["model"]["source_language_code"] + "|" + file["model"]["target_language_code"]
-                api_input = {"keys": [{"userID": user_id, "src": nmt_res_sentence["src"], "locale": locale}]}
-                response = utils.call_api(fetch_user_translation_url, "POST", api_input, None, user_id)
+                utm_input = [{"userID": user_id, "src": nmt_res_sentence["src"], "locale": locale}]
+                startTime = time.time()
+                #response = utils.call_api(fetch_user_translation_url, "POST", api_input, None, user_id)
+                response = utils.get_sentences_from_store(utm_input,translate_wf_input)
+                endTime = time.time()
+                totalTime = endTime - startTime
+                log_info("Time taken for UTM Calculation Externally : {}".format(totalTime), translate_wf_input)
                 #log_info(f"Test68 Response of NMT {response}",None)
                 if response:
-                    if 'data' in response.keys():
-                        if response["data"]:
-                            if response["data"][0]["value"]:
-                                tgt = json.loads(response["data"][0]["value"][0])
-                                for translation in response["data"][0]["value"]:
-                                    translation_obj = json.loads(translation)
-                                    #log_info(f"Test68 translation_obj {translation_obj}, tgt {tgt}", None)
-                                    if translation_obj["timestamp"] > tgt["timestamp"]:
-                                        tgt = translation_obj
-                                log_info("User Translation | TGT: " + str(nmt_res_sentence["tgt"]) +
-                                         " | NEW TGT: " + tgt["tgt"], translate_wf_input)
-                                nmt_res_sentence["tgt"] = tgt["tgt"]
-                                nmt_res_sentence["tmx_phrases"] = []
+                    if response[0]["value"]:
+                        tgt = json.loads(response[0]["value"][0])
+                        for translation in response[0]["value"]:
+                            translation_obj = json.loads(translation)
+                            #log_info(f"Test68 translation_obj {translation_obj}, tgt {tgt}", None)
+                            if translation_obj["timestamp"] > tgt["timestamp"]:
+                                tgt = translation_obj
+                        log_info("User Translation | TGT: " + str(nmt_res_sentence["tgt"]) +
+                                    " | NEW TGT: " + tgt["tgt"], translate_wf_input)
+                        nmt_res_sentence["tgt"] = tgt["tgt"]
+                        nmt_res_sentence["tmx_phrases"] = []
             if nmt_res_sentence["tmx_phrases"]:
                 log_info("PAGE NO: {} | BATCH ID: {} "
                          "| SRC: {} | TGT: {} | TMX Count: {}".format(page_no, nmt_res_sentence["batch_id"],
