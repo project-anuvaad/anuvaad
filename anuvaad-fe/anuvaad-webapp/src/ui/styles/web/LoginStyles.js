@@ -247,6 +247,17 @@ const LoginStyles = theme => ({
     padding: "10px 0px 0px 0px",
     fontFamily: "Roboto, san-serif",
   },
+  OTPTitle:{
+    fontFamily: "Roboto, san-serif",
+    fontSize: "16px",
+    margin: "5px 0px 20px 0px",
+    width: "50%",
+  },
+  imageStyle:{
+    display: "flex",
+    justifyContent: "center",
+    marginBottom: "30px",
+  }
  
 });
 

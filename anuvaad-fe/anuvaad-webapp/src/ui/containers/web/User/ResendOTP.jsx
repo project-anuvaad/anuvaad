@@ -18,7 +18,8 @@ import history from "../../../../web.history";
 import profileDetails from "../../../../flux/actions/apis/user/profile_details";
 
 
-function ReSendOTP() {
+function ReSendOTP(props) {
+  const { classes } = props;
   const [OTP, setOTP] = useState("");
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -233,11 +234,7 @@ function ReSendOTP() {
         md={12}
         lg={12}
         xl={12}
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          marginBottom: "30px",
-        }}
+        className={classes.imageStyle}
       >
         <img
           src={ResendOtpimg}
@@ -266,19 +263,14 @@ function ReSendOTP() {
           style={{
             display: "flex",
             justifyContent: "center",
-            padding: 20,
+            padding: 15,
             columnGap: 30
           }}
         >
           <Typography
             align="center"
             variant="subtitle1"
-            style={{
-              fontFamily: "Roboto, san-serif",
-              fontSize: "16px",
-              margin: "15px 0px 20px 0px",
-              width: "50%",
-            }}
+            className={classes.OTPTitle}
           >
             {resData?.data?.mfa_message}
           </Typography>
@@ -310,12 +302,7 @@ function ReSendOTP() {
             color="primary"
             variant="contained"
             disabled={!OTP}
-            // className={classes.VerifyOtpButton}
-            style={{
-              width: "300px",
-              borderRadius: "15px",
-              padding: "6px",
-            }}
+            className={classes.VerifyOtpButton}
           >
             VERIFY OTP{" "}
           </Button>
@@ -370,7 +357,7 @@ function ReSendOTP() {
           style={{
             display: "flex",
             justifyContent: "center",
-            marginTop: "15px",
+            marginTop: "20px",
           }}
         >
           <Typography
@@ -379,6 +366,22 @@ function ReSendOTP() {
           >
             Didn't Receive OTP ?
           </Typography>
+          {!showtimer == 0 && running ? (
+            <div
+              style={{
+                fontFamily: "Roboto, san-serif",
+                fontSize: "16px",
+               marginTop:"4px"
+              }}
+            >
+              {" "}
+             
+              <span style={{ paddingLeft: "10px" ,}}>
+                {`${Math.floor(time / 60)}`.padStart(2, 0)}:
+                {`${time % 60}`.padStart(2, 0)}
+              </span>
+            </div>
+          ):
 
           <Button
             color="primary"
@@ -391,7 +394,7 @@ function ReSendOTP() {
             }}
           >
             Resend OTP
-          </Button>
+          </Button>}
         </Grid>
       </Grid>
 
@@ -408,4 +411,4 @@ function ReSendOTP() {
     </ThemeProvider>
   );
 }
-export default ReSendOTP;
+export default withStyles(LoginStyles)(ReSendOTP);

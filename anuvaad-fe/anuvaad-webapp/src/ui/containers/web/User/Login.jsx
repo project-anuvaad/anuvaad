@@ -201,33 +201,33 @@ class Login extends React.Component {
       })
   }
 
-  onSubmitOTP = (otp, callback) => {
-    const { email, sessionId } = this.state;
-    this.setState({ error: false, loading: true });
-    // call mfa register API here
-    const apiObj = new VerifyMFA(email, sessionId, otp, this.state.ResendWithUseHOTP && this.state.ResendOtpButtonClicked);
+  // onSubmitOTP = (otp, callback) => {
+  //   const { email, sessionId } = this.state;
+  //   this.setState({ error: false, loading: true });
+  //   // call mfa register API here
+  //   const apiObj = new VerifyMFA(email, sessionId, otp, this.state.ResendWithUseHOTP && this.state.ResendOtpButtonClicked);
 
-    fetch(apiObj.apiEndPoint(), {
-      method: "POST",
-      headers: apiObj.getHeaders().headers,
-      body: JSON.stringify(apiObj.getBody())
-    })
-      .then(async (response) => {
-        const rsp_data = await response.json();
-        console.log("rsp_data --- ", rsp_data);
-        if (!rsp_data.ok) {
-          this.setState({ error: true, loading: false, errMessage: rsp_data.message });
-        } else {
-          this.setState({ error: false, loading: false, verifySuccessMessage: true });
-          // callback();
-          localStorage.setItem("token", rsp_data.data.token);
-          this.fetchUserProfileDetails(rsp_data.data.token);
-        }
-      })
-      .catch(err => {
-        this.setState({ error: true, loading: false, errMessage: "Unable to Verify OTP!" });
-      })
-  }
+  //   fetch(apiObj.apiEndPoint(), {
+  //     method: "POST",
+  //     headers: apiObj.getHeaders().headers,
+  //     body: JSON.stringify(apiObj.getBody())
+  //   })
+  //     .then(async (response) => {
+  //       const rsp_data = await response.json();
+  //       console.log("rsp_data --- ", rsp_data);
+  //       if (!rsp_data.ok) {
+  //         this.setState({ error: true, loading: false, errMessage: rsp_data.message });
+  //       } else {
+  //         this.setState({ error: false, loading: false, verifySuccessMessage: true });
+  //         // callback();
+  //         localStorage.setItem("token", rsp_data.data.token);
+  //         this.fetchUserProfileDetails(rsp_data.data.token);
+  //       }
+  //     })
+  //     .catch(err => {
+  //       this.setState({ error: true, loading: false, errMessage: "Unable to Verify OTP!" });
+  //     })
+  // }
 
   OnUpdateEmailIdClick = (new_email) => {
     const {email, password} = this.state;
