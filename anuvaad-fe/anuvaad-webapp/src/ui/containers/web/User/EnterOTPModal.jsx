@@ -12,18 +12,10 @@ import {
   ThemeProvider,
   Typography,
   withStyles,
-  Grid,
 } from "@material-ui/core";
 import themeAnuvaad from "../../../theme/web/theme-anuvaad";
+import CloseIcon from "@material-ui/icons/Close";
 import LoginStyles from "../../../styles/web/LoginStyles";
-import ResendOtpimg from "../../../../assets/Resend.png";
-import VerifyMFA from "../../../../flux/actions/apis/user/MFA_verify";
-import Snackbar from "../../../components/web/common/Snackbar";
-import CircularProgressWithLabel from "../../../components/web/common/CircularLoader";
-import LoginAPI from "../../../../flux/actions/apis/user/login";
-import history from "../../../../web.history";
-import profileDetails from "../../../../flux/actions/apis/user/profile_details";
-import CloseIcon from '@material-ui/icons/Close';
 
 const EnterOTPModal = (props) => {
   const { classes } = props;
@@ -230,41 +222,6 @@ return (
             columnGap: 30
           }}
         >
-          <Typography
-            align="center"
-            variant="subtitle1"
-            style={{
-              fontFamily: "Roboto, san-serif",
-              fontSize: "16px",
-              margin: "15px 0px 40px 0px",
-              width: "50%",
-            }}
-          >
-            {/* {resData?.data?.mfa_message} */}
-          </Typography>
-        </div>
-
-        <OTPInput
-          value={OTP}
-          onChange={setOTP}
-          autoFocus
-          OTPLength={6}
-          otpType="number"
-        />
-
-        <Grid
-          item
-          xs={12}
-          sm={12}
-          md={12}
-          lg={12}
-          xl={12}
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            marginTop: "40px",
-          }}
-        >
           <Button
             onClick={(e) => {
               onResend(e);
@@ -296,7 +253,7 @@ return (
           >
             VERIFY OTP{" "}
           </Button>
-        </Grid>
+        </div>
       </form>
 
     </Dialog>
