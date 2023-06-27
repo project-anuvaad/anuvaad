@@ -81,6 +81,8 @@ class DocumentEditor extends React.Component {
       srcLangCode: "",
       transliterationChecked: false,
       enableActionButtons: false,
+      isDocumentCameForCorrection: false,
+      downloadFinalDocs: false,
       updateManualStartTime: false,
       fetchNext: true.valueOf,
       currentJobDetails: [],
@@ -148,7 +150,11 @@ class DocumentEditor extends React.Component {
       // console.log("docArr ------- ", docArr);
       if(docArr?.length > 0){
         if(docArr[0].currentGranularStatus === "FINAL EDITING - IN PROGRESS" || docArr[0].currentGranularStatus === "AUTO TRANSLATION - COMPLETED"){
-          this.setState({enableActionButtons: true});
+          this.setState({enableActionButtons: true, isDocumentCameForCorrection: docArr[0].isDocumentCameForCorrection});
+        }
+
+        if(docArr[0].currentGranularStatus.trim() === "FINAL DOCUMENT UPLOADED"){
+          this.setState({downloadFinalDocs: true})
         }
 
         if(docArr[0].currentGranularStatus === "AUTO TRANSLATION - COMPLETED"){
@@ -823,7 +829,7 @@ class DocumentEditor extends React.Component {
         {
           workflow !== 'WF_A_FTTKTR'
             ?
-            pages.map((page, index) => <PageCard zoomPercent={this.state.zoomPercent} key={index} page={page} onAction={this.processSentenceAction} />)
+            pages.map((page, index) => <PageCard zoomPercent={this.state.zoomPercent} key={index} page={page} enableSourceDocumentEditing={(this.state.currentJobDetails.currentGranularStatus === "AUTO TRANSLATION - COMPLETED" || this.state.currentJobDetails.currentGranularStatus === "FINAL EDITING - IN PROGRESSD") ? true : false } onAction={this.processSentenceAction} />)
             :
             <PageCardHtml zoomPercent={this.state.zoomPercent} onAction={this.processSentenceAction} />
         }
@@ -885,6 +891,8 @@ class DocumentEditor extends React.Component {
             return < div key={sentence.s_id} ref={sentence.s_id} > <SentenceCard key={sentence.s_id}
               enableTransliteration={this.state.transliterationChecked}
               enableActionButtons={this.state.enableActionButtons}
+              isDocumentCameForCorrection={this.state.isDocumentCameForCorrection}
+              redoSentence={sentence.redo}
               pageNumber={page.page_no}
               recordId={this.props.match.params.jobid}
               model={LANG_MODEL.fetchModel(parseInt(this.props.match.params.modelId), this.props.fetch_models, this.props.match.params.source_language_code, this.props.match.params.target_language_code)}
@@ -938,7 +946,7 @@ class DocumentEditor extends React.Component {
   render() {
     return (
       <div style={{ marginTop: 5 }}>
-        <div style={{ height: "50px", marginBottom: "13px" }}> <InteractiveDocToolBar enableTransliteration={this.enableTransliteration} docView={this.state.docView} onAction={this.handleDocumentView} onShowPreview={this.showPreview} preview={this.state.preview} /></div>
+        <div style={{ height: "50px", marginBottom: "13px" }}> <InteractiveDocToolBar downloadFinalDocs={this.state.downloadFinalDocs} enableTransliteration={this.enableTransliteration} docView={this.state.docView} onAction={this.handleDocumentView} onShowPreview={this.showPreview} preview={this.state.preview} /></div>
 
         {!this.state.preview ?
           <>

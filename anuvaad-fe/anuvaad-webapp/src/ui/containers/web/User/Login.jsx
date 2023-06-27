@@ -61,6 +61,7 @@ class Login extends React.Component {
       showOneTimeUpdateEmailIdModal: false,
       oneTimeUpdateEmailIdSuccessMessage: false,
       ResendWithUseHOTP: false,
+      ResendOtpButtonClicked: false,
       showTimer:false,
     };
   }
@@ -76,12 +77,12 @@ class Login extends React.Component {
 
   componentDidMount() {
     localStorage.removeItem("token");
-    window.addEventListener("keypress", (key) => {
-      if (key.code === "Enter" && this.state.inputFocused) {
-        this.setState({ inputFocused: false });
-        this.processLoginButtonPressed();
-      }
-    });
+    // window.addEventListener("keypress", (key) => {
+    //   if (key.code === "Enter" && this.state.inputFocused) {
+    //     this.setState({ inputFocused: false });
+    //     this.processLoginButtonPressed();
+    //   }
+    // });
 
     // TELEMETRY.pageLoadCompleted('login')
   }
@@ -114,11 +115,14 @@ class Login extends React.Component {
    * captures form submit request
    */
 
-  processLoginButtonPressed = (reSendOTPClicked=false) => {
+  processLoginButtonPressed = (resendOTPClicked=false, e) => {
+
+    e.preventDefault();
     
     const { email, password ,ResendWithUseHOTP} = this.state;
-    this.setState({ error: false, loading: true });
-    const apiObj = new LoginAPI(email, password, ResendWithUseHOTP);
+    this.setState({ error: false, loading: true, ResendOtpButtonClicked: resendOTPClicked });
+    const apiObj = new LoginAPI(email, password, resendOTPClicked && ResendWithUseHOTP);
+
     const apiReq = fetch(apiObj.apiEndPoint(), {
       method: "post",
       body: JSON.stringify(apiObj.getBody()),
@@ -138,8 +142,9 @@ class Login extends React.Component {
           this.setState({showTimer : true})
           setTimeout(() => {
             this.setState({showTimer : false})
-          }, 120*1000);
-          
+          }, 600*1000);
+         
+          // this.setState({showOneTimeUpdateEmailIdModal: true});
           if (resData.session_id) {
             if(!resData.email.updated_status){
               this.setState({showOneTimeUpdateEmailIdModal: true, currentEmail: resData.email.registered_email, oneTimeUpdateEmailIdSuccessMessage: false});
@@ -151,8 +156,8 @@ class Login extends React.Component {
               this.setState({ 
                 showOTPDialog: true, 
                 sessionId: resData.session_id, 
-                otpModalTitle: resData.mfa_message, 
-                ResendWithUseHOTP: reSendOTPClicked && resData.mfa_type === "TOTP" ? true : false
+                otpModalTitle: resData.mfa_message,
+                ResendWithUseHOTP: resData.mfa_type === "TOTP" ? true : false
               });
             }
           } else if (resData.token){
@@ -200,7 +205,7 @@ class Login extends React.Component {
     const { email, sessionId } = this.state;
     this.setState({ error: false, loading: true });
     // call mfa register API here
-    const apiObj = new VerifyMFA(email, sessionId, otp, this.state.ResendWithUseHOTP);
+    const apiObj = new VerifyMFA(email, sessionId, otp, this.state.ResendWithUseHOTP && this.state.ResendOtpButtonClicked);
 
     fetch(apiObj.apiEndPoint(), {
       method: "POST",
@@ -247,8 +252,8 @@ class Login extends React.Component {
     })
   }
 
-  onResendOTPClick = () => {
-    this.processLoginButtonPressed(true);
+  onResendOTPClick = (e) => {
+    this.processLoginButtonPressed(true, e);
 
   }
 
@@ -398,7 +403,8 @@ class Login extends React.Component {
           <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
             <Button
               fullWidth
-              onClick={this.processLoginButtonPressed.bind(this)}
+              type="submit"
+              onClick={(e)=>this.processLoginButtonPressed(false, e)}
               label={"Login"}
               className={classes.loginBtn}
             />
@@ -409,7 +415,7 @@ class Login extends React.Component {
   };
 
   renderLoginForm = () => {
-    return <form autoComplete="off" style={{ marginLeft: "15rem" }}>{this.renderCardContent()}</form>
+    return <form autoComplete="off" style={{ marginLeft: "15rem" }} onSubmit={(e)=>this.processLoginButtonPressed(false, e)}>{this.renderCardContent()}</form>
   }
 
 
@@ -436,7 +442,7 @@ class Login extends React.Component {
         )}
         {/* <EnterOTPModal open={this.state.showOTPDialog}
           handleClose={() => this.handleCloseOTPModal()}
-          onResend={() => this.onResendOTPClick()}
+          onResend={(e) => this.onResendOTPClick(e)}
           OTPModalTitle={this.state.otpModalTitle}
           onSubmit={(OTP) => this.onSubmitOTP(OTP)}
           verifySuccessMessage={this.state.verifySuccessMessage}

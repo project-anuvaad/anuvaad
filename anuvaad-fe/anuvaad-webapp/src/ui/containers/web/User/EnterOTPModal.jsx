@@ -1,7 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
 import OTPInput from "otp-input-react";
 import {
   Button,
+  IconButton,
+  TextField,
   ThemeProvider,
   Typography,
   withStyles,
@@ -16,244 +23,211 @@ import CircularProgressWithLabel from "../../../components/web/common/CircularLo
 import LoginAPI from "../../../../flux/actions/apis/user/login";
 import history from "../../../../web.history";
 import profileDetails from "../../../../flux/actions/apis/user/profile_details";
+import CloseIcon from '@material-ui/icons/Close';
 
+const EnterOTPModal = (props) => {
+  const { classes } = props;
+  // const [OTP, setOTP] = useState("");
+  const {
+    open,
+    handleClose,
+    onResend,
+    onSubmit,
+    OTPModalTitle,
+    hideResendOTPButton,
+    showTimer,
+    // loading,
+  } = { ...props };
 
-function EnterOTPModal() {
+  const [OTP1, setOTP1] = useState("");
+  const [OTP2, setOTP2] = useState("");
+  const [OTP3, setOTP3] = useState("");
+  const [OTP4, setOTP4] = useState("");
+  const [OTP5, setOTP5] = useState("");
+  const [OTP6, setOTP6] = useState("");
+
+  const digit1 = useRef(null);
+  const digit2 = useRef(null);
+  const digit3 = useRef(null);
+  const digit4 = useRef(null);
+  const digit5 = useRef(null);
+  const digit6 = useRef(null);
+
   const [OTP, setOTP] = useState("");
-  const [error, setError] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [errMessage, setErrMessage] = useState("");
-  const [resendWithUseHOTP, setResendWithUseHOTP] = useState(false);
+
   const [time, setTime] = useState(120);
   const [running, setRunning] = useState(true);
-  const [resendOtpButtonClicked, setResendOtpButtonClicked] = useState(false);
-  const [resData, setResData] = useState(
-    JSON.parse(localStorage.getItem("resData"))
-  );
-  const [showtimer, setShowtimer] = useState(false);
-  const Email = localStorage.getItem("email");
-  const Password = localStorage.getItem("password");
 
-  useEffect(() => {
-    if (resData) {
-      setShowtimer(true);
+  const OTPTextFieldData = [
+    {
+      name: "OTP1",
+      inputRef: digit1,
+      type: "tel",
+      style: { textAlignLast: "center" },
+      inputProps: { maxLength: 1 },
+      value: OTP1,
+      onChange: (e) => handleOTPChange(e, setOTP1, 1, digit2, null)
+    },
+    {
+      name: "OTP2",
+      inputRef: digit2,
+      type: "tel",
+      style: { textAlignLast: "center" },
+      inputProps: { maxLength: 1 },
+      value: OTP2,
+      onChange: (e) => handleOTPChange(e, setOTP2, 2, digit3, digit1)
+    },
+    {
+      name: "OTP3",
+      inputRef: digit3,
+      type: "tel",
+      style: { textAlignLast: "center" },
+      inputProps: { maxLength: 1 },
+      value: OTP3,
+      onChange: (e) => handleOTPChange(e, setOTP3, 3, digit4, digit2)
+    },
+    {
+      name: "OTP4",
+      inputRef: digit4,
+      type: "tel",
+      style: { textAlignLast: "center" },
+      inputProps: { maxLength: 1 },
+      value: OTP4,
+      onChange: (e) => handleOTPChange(e, setOTP4, 4, digit5, digit3)
+    },
+    {
+      name: "OTP5",
+      inputRef: digit5,
+      type: "tel",
+      style: { textAlignLast: "center" },
+      inputProps: { maxLength: 1 },
+      value: OTP5,
+      onChange: (e) => handleOTPChange(e, setOTP5, 5, digit6, digit4)
+    },
+    {
+      name: "OTP6",
+      inputRef: digit6,
+      type: "tel",
+      style: { textAlignLast: "center" },
+      inputProps: { maxLength: 1 },
+      value: OTP6,
+      onChange: (e) => handleOTPChange(e, setOTP6, 6, null, digit5)
     }
-    setTimeout(() => {
-      setShowtimer(false);
-    }, 120 * 1000);
-  }, [resData]);
+  ]
 
-  useEffect(() => {
-    setResendWithUseHOTP(resData.data.mfa_type === "TOTP" ? true : false);
-    let interval;
-    if (showtimer && running) {
-      interval = setInterval(() => {
-        setTime((prevTime) => {
-          if (prevTime > 0) {
-            return prevTime - 1;
-          } else if (prevTime === 0) {
-            clearInterval(interval);
-            setTimeout(() => setTime(120), 60000);
-            setRunning(false);
-            return prevTime;
-          }
-        });
-      }, 1000);
-    }
-    return () => clearInterval(interval);
-  }, [showtimer, running, resData]);
-
-  useEffect(() => {
-    const timerId = setTimeout(() => {
-      handleClose();
-    }, 10 * 60 * 1000);
-    return () => clearTimeout(timerId);
-  }, []);
-
-  const onSubmitOTP = (otp, callback) => {
-    setError(false);
-    setLoading(true);
-    // call mfa register API here
-    const apiObj = new VerifyMFA(
-      resData?.data?.email?.registered_email,
-      resData?.data.session_id,
-      OTP,
-      resendWithUseHOTP && resendOtpButtonClicked
-    );
-
-    fetch(apiObj.apiEndPoint(), {
-      method: "POST",
-      headers: apiObj.getHeaders().headers,
-      body: JSON.stringify(apiObj.getBody()),
-    })
-      .then(async (response) => {
-        const rsp_data = await response.json();
-        console.log(rsp_data, "rsp_datarsp_data1");
-        if (!rsp_data.ok) {
-          setError(true);
-          setLoading(false);
-          setErrMessage(rsp_data.message);
-          console.log(rsp_data, "rsp_datarsp_data2");
-        } else {
-          //   this.setState({ error: false, loading: false, verifySuccessMessage: true });
-          setError(false);
-          setLoading(false);
-          localStorage.setItem("token", rsp_data.data.token);
-          fetchUserProfileDetails(rsp_data.data.token);
+useEffect(() => {
+  let interval;
+  if (showTimer && running) {
+    interval = setInterval(() => {
+      setTime((prevTime) => {
+        if (prevTime > 0) {
+          return prevTime - 1;
+        } else if (prevTime === 0) {
+          clearInterval(interval);
+          setTimeout(() => setTime(120), 60000);
+          setRunning(false);
+          return prevTime;
         }
-      })
-      .catch((err) => {
-        setError(true);
-        setLoading(false);
-        setErrMessage("Unable to Verify OTP!");
       });
+    }, 1000);
+  }
+  return () => clearInterval(interval);
+}, [showTimer, running]);
+
+useEffect(() => {
+  setOTP(`${OTP1}${OTP2}${OTP3}${OTP4}${OTP5}${OTP6}`);
+}, [OTP1, OTP2, OTP3, OTP4, OTP5, OTP6])
+
+useEffect(() => {
+
+  const timerId = setTimeout(() => {
+    handleClose();
+  }, 10 * 60 * 1000);
+
+  return () => {
+    clearTimeout(timerId);
   };
 
-  const processLoginButtonPressed = (reSendOTPClicked = false) => {
-    // const { email, password ,ResendWithUseHOTP} = this.state;
-    setError(false);
-    setLoading(true);
-    setResendOtpButtonClicked(reSendOTPClicked);
-    const apiObj = new LoginAPI(
-      Email,
-      Password,
-      reSendOTPClicked && resendWithUseHOTP
-    );
-    const apiReq = fetch(apiObj.apiEndPoint(), {
-      method: "post",
-      body: JSON.stringify(apiObj.getBody()),
-      headers: apiObj.getHeaders().headers,
-    })
-      .then(async (response) => {
-        const rsp_data = await response.json();
 
-        if (!response.ok) {
-          return Promise.reject(rsp_data.message);
-        } else {
-          let resData = rsp_data && rsp_data.data;
-          setResData(rsp_data);
-          //   localStorage.setItem("resData",JSON.stringify(rsp_data));
-          //   history.push(`${process.env.PUBLIC_URL}/user/resend-otp`)
-          //   this.setState({showTimer : true})
-          //   setTimeout(() => {
-          //     this.setState({showTimer : false})
-          //   }, 120*1000);
 
-          if (resData.session_id) {
-            if (resData.mfa_required && resData.mfa_registration) {
-              //   this.setState({
-              //     ResendWithUseHOTP: reSendOTPClicked && resData.mfa_type === "TOTP" ? true : false
-              //   });
-            }
-          } else if (resData.token) {
-            localStorage.setItem("token", resData.token);
-            fetchUserProfileDetails(resData.token);
-          }
-          setError(false);
-          setLoading(false);
-        }
-      })
-      .catch((error) => {
-        // this.setState({ error: true, loading: false, errMessage: error });
-        setError(true);
-        setLoading(false);
-        setErrMessage(error);
-      });
-  };
+}, []);
 
-  const handleRoles = (value) => {
-    let result = [];
-    value.roles.map((element) => {
-      result.push(element.roleCode);
-    });
-    return result;
-  };
+const onOTPSubmit = (e) => {
+  e.preventDefault();
+  onSubmit(OTP);
+}
 
-  const fetchUserProfileDetails = (token) => {
-    const apiObj = new profileDetails(token);
-    const apiReq = fetch(apiObj.apiEndPoint(), {
-      method: "post",
-      body: JSON.stringify(apiObj.getBody()),
-      headers: apiObj.getHeaders().headers,
-    })
-      .then(async (response) => {
-        const rsp_data = await response.json();
-        if (!response.ok) {
-          return Promise.reject("");
-        } else {
-          let resData = rsp_data && rsp_data.data;
-          var roles = handleRoles(resData);
-          localStorage.setItem("roles", roles);
-          localStorage.setItem("lang", "en");
-          localStorage.setItem("userProfile", JSON.stringify(resData));
-          if (roles.includes("SUPERADMIN")) {
-            history.replace(`${process.env.PUBLIC_URL}/user-details`);
-          } else if (roles.includes("ADMIN")) {
-            history.replace(`${process.env.PUBLIC_URL}/user-details`);
-          } else if (roles.includes("REVIEWER")) {
-            history.replace(`${process.env.PUBLIC_URL}/review-documents`);
-          } else if (roles.includes("TRANSLATOR")) {
-            history.replace(`${process.env.PUBLIC_URL}/intro`);
-          } else {
-            history.replace(`${process.env.PUBLIC_URL}/intro`);
-          }
-        }
-      })
-      .catch((error) => {
-        console.log("api failed because of server or network");
-      });
-  };
+const handleOTPChange = (e, setter, index, nextRef, prevRef) => {
+  setter(e.target.value);
+  if (e.target.value.toString().length > 0 && index < 6 && nextRef?.current) {
+    nextRef.current.focus();
+  } else if (e.target.value.toString().length <= 0 && index > 1 && prevRef?.current) {
+    prevRef.current.focus();
+  }
+}
 
-  const handleClose = () => {
-    // this.setState({ showMFAMethodSelectionModal: false });
-    setTimeout(() => {
-      setError(false);
-    }, 4000);
-  };
-
-  return (
-    <ThemeProvider theme={themeAnuvaad}>
-      {loading && <CircularProgressWithLabel value={100} />}
-      <Grid
-        item
-        xs={12}
-        sm={12}
-        md={12}
-        lg={12}
-        xl={12}
+return (
+  <ThemeProvider theme={themeAnuvaad}>
+    <Dialog
+      open={open}
+      aria-labelledby="alert-dialog-title"
+      aria-describedby="alert-dialog-description"
+      fullWidth
+      style={{ backgroundColor: "rgba(255,255,255,0.6)" }}
+    >
+      <DialogContent
         style={{
           display: "flex",
-          justifyContent: "center",
-          marginBottom: "30px",
+          justifyContent: "end",
+          padding: "5px 0px 0px 0px",
         }}
       >
-        <img
-          src={ResendOtpimg}
-          alt="log"
-          style={{
-            width: "12%",
+        {" "}
+        <Button
+          onClick={() => {
+            handleClose();
+            setOTP("");
           }}
-        />
-      </Grid>
+        >
+          <CloseIcon />
+        </Button>
+      </DialogContent>
 
-      <Grid container justifyContent="center" alignItems="center">
-        <Grid>
-          {" "}
-          <Typography align="center" variant="h3">
-            {" "}
-            OTP Verification
-          </Typography>
-        </Grid>
-        <Grid
-          item
-          xs={12}
-          sm={12}
-          md={12}
-          lg={12}
-          xl={12}
+      <DialogTitle
+        id="alert-dialog-title"
+        align="center"
+        style={{ paddingTop: "0px" }}
+      >
+        {OTPModalTitle}
+      </DialogTitle>
+      <form autoComplete="off" onSubmit={onOTPSubmit}>
+        <div
           style={{
+            alignSelf: "center",
+            margin: !time == 0 ? "28px 50px 28px 50px" : "28px 50px 28px 50px",
+            display: "flex",
+            gridGap: 30
+          }}
+        >
+          {OTPTextFieldData.map((el,i)=>{
+            return <TextField name={el.name}
+            autoFocus={i === 0}
+            inputRef={el.inputRef}
+            type={el.type}
+            style={el.style}
+            inputProps={el.inputProps}
+            variant="outlined"
+            value={el.value}
+            onChange={el.onChange} />
+          })}
+        </div>
+        <div
+          style={{
+            margin: "25px 0px 5px 0px",
             display: "flex",
             justifyContent: "center",
+            padding: 20,
+            columnGap: 30
           }}
         >
           <Typography
@@ -266,9 +240,9 @@ function EnterOTPModal() {
               width: "50%",
             }}
           >
-            {resData?.data?.mfa_message}
+            {/* {resData?.data?.mfa_message} */}
           </Typography>
-        </Grid>
+        </div>
 
         <OTPInput
           value={OTP}
@@ -292,106 +266,42 @@ function EnterOTPModal() {
           }}
         >
           <Button
-            onClick={() => onSubmitOTP()}
-            color="primary"
-            variant="contained"
-            disabled={!OTP}
-            // className={classes.VerifyOtpButton}
-            style={{
-              width: "300px",
-              borderRadius: "15px",
-              padding: "6px",
-            }}
-          >
-            VERIFY OTP{" "}
-          </Button>
-        </Grid>
-        <Grid
-          item
-          xs={12}
-          sm={12}
-          md={12}
-          lg={12}
-          xl={12}
-          style={{ marginTop: "40px" }}
-        >
-          {!showtimer == 0 && running ? (
-            <Typography
-              align="center"
-              variant="subtitle1"
-              style={{
-                fontFamily: "Roboto, san-serif",
-                fontSize: "16px",
-                margin: "40x 0px 40px 0px",
-              }}
-            >
-              {" "}
-              Session expires in -
-              <span style={{ paddingLeft: "8px" }}>
-                {`${Math.floor(time / 60)}`.padStart(2, 0)}:
-                {`${time % 60}`.padStart(2, 0)}
-              </span>
-            </Typography>
-          ) : (
-            <Typography
-              variant="subtitle1"
-              align="center"
-              style={{
-                fontFamily: "Roboto, san-serif",
-                fontSize: "16px",
-                margin: "40x 0px 40px 0px",
-              }}
-            >
-              Session has expired. Please re-login
-            </Typography>
-          )}
-        </Grid>
-        <Grid
-          item
-          xs={12}
-          sm={12}
-          md={12}
-          lg={12}
-          xl={12}
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            marginTop: "10px",
-          }}
-        >
-          <Typography
-            variant="subtitle1"
-            style={{ fontSize: "16px", marginTop: "5px" }}
-          >
-            Didn't Receive OTP ?
-          </Typography>
-
-          <Button
-            color="primary"
-            variant="text"
-            onClick={() => {
-              processLoginButtonPressed(true);
+            onClick={(e) => {
+              onResend(e);
               setOTP("");
               setTime(120);
               setRunning(true);
             }}
+            color="primary"
+            variant="contained"
+            fullWidth
+            size="large"
+            disabled={!time == 0 && showTimer}
+            className={classes.VerifyOtpButton}
           >
-            Resend OTP
+            Resend OTP{" "}{!time == 0 && showTimer && <span style={{ paddingLeft: "8px" }}>
+              {`${Math.floor(time / 60)}`.padStart(2, 0)}:
+              {`${time % 60}`.padStart(2, 0)}
+            </span>}
+          </Button>
+          <Button
+            // onClick={() => onSubmit(OTP)}
+            type="submit"
+            color="primary"
+            variant="contained"
+            fullWidth
+            size="large"
+            disabled={!OTP || OTP.length < 6}
+            className={classes.VerifyOtpButton}
+          >
+            VERIFY OTP{" "}
           </Button>
         </Grid>
-      </Grid>
+      </form>
 
-      {error && (
-        <Snackbar
-          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-          open={error}
-          autoHideDuration={4000}
-          onClose={handleClose}
-          variant="error"
-          message={errMessage}
-        />
-      )}
-    </ThemeProvider>
-  );
-}
-export default EnterOTPModal;
+    </Dialog>
+  </ThemeProvider>
+);
+};
+
+export default withStyles(LoginStyles)(EnterOTPModal);

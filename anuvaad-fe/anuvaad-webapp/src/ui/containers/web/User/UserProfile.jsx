@@ -352,7 +352,7 @@ class UserProfile extends React.Component {
           open={this.state.openResetMFAConfirmBox}
           onClose={() => this.setState({ openResetMFAConfirmBox: false })}
           title={"Reset MFA Method"}
-          contentText={"Are you sure you want to perform this action? You will be promted to register for MFA during your next login."}
+          contentText={"Are you sure you want to perform this action? You will be prompted to register for MFA during your next login."}
           onConfirm={() => this.resetMFAClick()}
         />
 
