@@ -22,6 +22,7 @@ import Spinner from "@material-ui/core/CircularProgress"
 import FormControl from '@material-ui/core/FormControl';
 import CreateGlossary from '../../../../flux/actions/apis/document_translate/create_glossary';
 import ViewGlossary from '../../../../flux/actions/apis/user_glossary/fetch_user_glossary';
+import fetchTransliterationModelID from '../../../../flux/actions/apis/document_translate/fetchTransliterationModel';
 
 
 const theme = createMuiTheme({
@@ -82,7 +83,9 @@ class UserGlossaryUpload extends React.Component {
             source_languages: [],
             target_languages: [],
             target: "",
-            source: ""
+            source: "",
+            sourceTransliterationModelId: "",
+            targetTransliterationModelId: ""
         }
     }
 
@@ -95,7 +98,7 @@ class UserGlossaryUpload extends React.Component {
 
     }
 
-    componentDidUpdate(prevProps) {
+    componentDidUpdate(prevProps, prevState) {
         if (prevProps.fetch_models.models !== this.props.fetch_models.models) {
             this.setState({
                 source_languages: LANG_MODEL.get_supported_languages(this.props.fetch_models.models, true),
@@ -103,6 +106,16 @@ class UserGlossaryUpload extends React.Component {
                 showLoader: false
             })
         }
+
+        if(prevState.source_language_code !== this.state.source_language_code){
+            this.getTransliterationModelIDByLang("en", this.state.source_language_code, (modelId)=>this.setState({sourceTransliterationModelId: modelId}));
+        }
+        if(prevState.target_language_code !== this.state.target_language_code){
+            this.getTransliterationModelIDByLang("en", this.state.target_language_code, (modelId)=>this.setState({targetTransliterationModelId: modelId}));
+        }
+
+        console.log("sourceTransliterationModelId ---- ", this.state.sourceTransliterationModelId);
+        console.log("targetTransliterationModelId ---- ", this.state.targetTransliterationModelId);
     }
 
     processSourceLanguageSelected = (event) => {
@@ -115,6 +128,21 @@ class UserGlossaryUpload extends React.Component {
 
     processTargetLanguageSelected = (event) => {
         this.setState({ target_language_code: event.target.value })
+    }
+
+    getTransliterationModelIDByLang = (srcLangCode, targLangCode, callback) => {
+        const apiObj = new fetchTransliterationModelID(srcLangCode, targLangCode);
+        fetch(apiObj.apiEndPoint(), {
+            method: "GET",
+            headers: apiObj.getHeaders().headers
+        })
+        .then(async res=>{
+            let response =  await res.json();
+            response?.modelId && callback(response?.modelId);
+        })
+        .catch(err=>{
+            console.log("err - ", err);
+        })
     }
 
 
