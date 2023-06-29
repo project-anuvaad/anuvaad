@@ -254,10 +254,10 @@ class SentenceModel(object):
                 sent_obj={}
                 hash_values = client.hget("UTM",key)
                 decompressed_data = zlib.decompress(hash_values).decode()
-                json_obj = json.loads(decompressed_data)
+                # val = json.loads(decompressed_data)
                 # val=client.lrange(key, 0, -1)
                 sent_obj["key"]=key
-                sent_obj["value"]=json_obj
+                sent_obj["value"]=decompressed_data
                 result.append(sent_obj)
             return result
         except Exception as e:
