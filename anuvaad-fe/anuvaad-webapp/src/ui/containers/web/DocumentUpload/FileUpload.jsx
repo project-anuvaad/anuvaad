@@ -26,7 +26,7 @@ import WorkFlow from "../../../../flux/actions/apis/common/fileupload";
 import DocumentUpload from "../../../../flux/actions/apis/document_upload/document_upload";
 import { createJobEntry } from "../../../../flux/actions/users/async_job_management";
 import Dialog from "@material-ui/core/Dialog";
-import { Container } from "@material-ui/core";
+import { Container, Tooltip } from "@material-ui/core";
 
 const TELEMETRY = require("../../../../utils/TelemetryManager");
 const LANG_MODEL = require("../../../../utils/language.model");
@@ -62,6 +62,7 @@ const theme = createMuiTheme({
 class PdfUpload extends Component {
   constructor() {
     super();
+    this.alphaLangList = ["ks", "ks_Deva", "mni_Beng", "mni", "ne", "ur"];
     this.state = {
       source: "",
       target: "",
@@ -82,6 +83,7 @@ class PdfUpload extends Component {
       jobDescription: "",
       formatWarning: false,
       variant: "success",
+      isTargetAlpha: false,
     };
   }
 
@@ -302,7 +304,7 @@ class PdfUpload extends Component {
         this.state.model,
         "",
         "",
-        this.state.workspaceName
+        this.state.workspaceName,
       );
       APITransport(apiObj);
     }
@@ -348,7 +350,9 @@ class PdfUpload extends Component {
   };
 
   processTargetLanguageSelected = (event) => {
-    this.setState({ target_language_code: event.target.value });
+    console.log("event.target ---- " , event.target)
+
+    this.setState({ target_language_code: event.target.value, isTargetAlpha: this.alphaLangList.includes(event.target.value)});
   };
 
   readFileDataAsBinary(file) {
@@ -451,7 +455,6 @@ class PdfUpload extends Component {
 
   renderTargetLanguagesItems = () => {
     const { classes } = this.props;
-
     return (
       <Grid item xs={12} sm={12} lg={12} xl={12}>
         <Grid item xs={12} sm={12} lg={12} xl={12}>
@@ -478,7 +481,7 @@ class PdfUpload extends Component {
             style={{
               width: "100%",
               float: "right",
-              marginBottom: "27px",
+              marginBottom: this.state.isTargetAlpha && this.state.target_language_code === "mni" ? "inherit" : "27px",
             }}
             input={<OutlinedInput name="target" id="target" />}
             className={classes.Select}
@@ -490,7 +493,8 @@ class PdfUpload extends Component {
                 style={{fontSize: "16px", fontFamily: "Roboto"}}
                 value={lang.language_code + ""}
               >
-                {lang.language_name}
+                <div>{lang.language_name} {this.alphaLangList.includes(lang.language_code) && `(Alpha)`}</div>
+                
               </MenuItem>
             ))}
           </Select>
@@ -561,6 +565,26 @@ class PdfUpload extends Component {
 
                 {this.renderTargetLanguagesItems()}
 
+                
+                  <Grid item xs={12} sm={12} lg={12} xl={12} style={{marginBottom: "22px"}}>
+                      {this.state.isTargetAlpha && this.state.target_language_code === "mni" && <Typography 
+                      style={{
+                        fontSize: "0.71rem",
+                        fontWeight: "600",
+                        fontFamily: "Roboto",
+                        marginBottom: 2
+                      }}
+                    >
+                      To view Manipuri - Meetei text in browser, download the font from&nbsp;<Tooltip title="Click here to download supported font.">
+                        <a href="https://fonts.google.com/noto/specimen/Noto+Sans+Meetei+Mayek" target="blank">here</a>
+                      </Tooltip>
+                      <br />
+                      Extract the file and open NotoSansMeeteiMayek-VariableFont_wght.ttf.
+                      <br />
+                      Click Install and restart the browser.
+                    </Typography>}
+                  </Grid>
+                
                 <Grid item xs={12} sm={12} lg={12} xl={12}>
                   <Grid item xs={12} sm={12} lg={12} xl={12}>
                     <Typography 
@@ -643,6 +667,16 @@ class PdfUpload extends Component {
               />
             )}
           </Paper>
+        </div>
+        <div
+          style={{
+            position: "absolute",
+            bottom: 20,
+            right: 5,
+            color: "red"
+          }}
+        >
+        * Languages marked with (Alpha) are currently in development. Translation maybe inaccurate.
         </div>
       </div>
     );
