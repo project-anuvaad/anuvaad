@@ -3,6 +3,7 @@ import logging
 import os
 import re
 import time
+import zlib
 
 import requests
 import hashlib
@@ -128,16 +129,24 @@ class TranslatorUtils:
                 return None
         
     def get_sentence_by_keys(self,keys):
-            try:
-                client = tmxRepo.get_utm_redis_instance()
-                result = []
-                for key in keys:
-                    sent_obj={}
-                    val=client.lrange(key, 0, -1)
+        try:
+            client = tmxRepo.get_utm_redis_instance()
+            result = []
+            for key in keys:
+                sent_obj={}
+                hash_values = client.hget("UTM",key)
+                if hash_values != None:
+                    val = zlib.decompress(hash_values).decode()
+                    # val=client.lrange(key, 0, -1)
                     sent_obj["key"]=key
-                    sent_obj["value"]=val
+                    sent_obj["value"]=[val]
                     result.append(sent_obj)
-                return result
-            except Exception as e:
-                log_exception("Exception in fetching sentences from redis store  | Cause: " + str(e), None, e)
-                return None
+                    return result
+                # else:
+                #     sent_obj["key"]=key
+                #     sent_obj["value"]=[]
+                #     result.append(sent_obj)
+                #     return result
+        except Exception as e:
+            log_exception("Exception in fetching sentences from redis store  | Cause: " + str(e), None, e)
+            return None

@@ -501,7 +501,7 @@ class TranslatorService:
                 totalTime = endTime - startTime
                 log_info("Time taken for UTM Calculation Externally : {}".format(totalTime), translate_wf_input)
                 #log_info(f"Test68 Response of NMT {response}",None)
-                if response:
+                if response and len(response) > 0:
                     if response[0]["value"]:
                         tgt = json.loads(response[0]["value"][0])
                         for translation in response[0]["value"]:
