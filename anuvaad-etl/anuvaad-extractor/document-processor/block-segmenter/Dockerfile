@@ -46,6 +46,7 @@ WORKDIR /app
 
 #RUN pip cache purge
 
+RUN pip3 install anuvaad-auditor==1.0.0
 
 COPY start.sh /usr/bin/start.sh
 RUN chmod +x /usr/bin/start.sh
