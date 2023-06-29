@@ -4,6 +4,7 @@ from anuvaad_auditor.loghandler import log_info, log_exception
 import sacrebleu
 from nltk.translate.bleu_score import corpus_bleu
 import json
+import zlib
 
 DB_SCHEMA_NAME  = 'file_content'
 redis_client = None
@@ -237,7 +238,9 @@ class SentenceModel(object):
     def save_sentences_on_hashkey(self,key,sent):
         try:
             client = get_redis()
-            client.lpush(key, json.dumps(sent))
+            compressed_data = zlib.compress(sent.encode())
+            client.hset("UTM", key, compressed_data)
+            # client.lpush(key, json.dumps(sent))
             return 1
         except Exception as e:
             log_exception("Exception in storing sentence data on redis store | Cause: " + str(e), AppContext.getContext(), e)
@@ -249,9 +252,12 @@ class SentenceModel(object):
             result = []
             for key in keys:
                 sent_obj={}
-                val=client.lrange(key, 0, -1)
+                hash_values = client.hget("UTM",key)
+                decompressed_data = zlib.decompress(hash_values).decode()
+                json_obj = json.loads(decompressed_data)
+                # val=client.lrange(key, 0, -1)
                 sent_obj["key"]=key
-                sent_obj["value"]=val
+                sent_obj["value"]=json_obj
                 result.append(sent_obj)
             return result
         except Exception as e:
