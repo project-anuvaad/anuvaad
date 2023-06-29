@@ -238,10 +238,18 @@ class SentenceModel(object):
     def save_sentences_on_hashkey(self,key,sent):
         try:
             client = get_redis()
+            hash_values = client.hget("UTM",key)
             compressed_data = zlib.compress(sent.encode())
-            client.hset("UTM", key, compressed_data)
-            # client.lpush(key, json.dumps(sent))
-            return 1
+            print(key)
+            if hash_values == None:
+                client.hset("UTM", key, compressed_data)
+                # client.lpush(key, json.dumps(sent))
+                return 1
+            else:
+                client.hdel("UTM",key,compressed_data)
+                client.hset("UTM", key, compressed_data)
+                return 1
+
         except Exception as e:
             log_exception("Exception in storing sentence data on redis store | Cause: " + str(e), AppContext.getContext(), e)
             return None
