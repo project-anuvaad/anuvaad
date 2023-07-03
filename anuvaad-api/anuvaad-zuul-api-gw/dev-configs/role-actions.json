@@ -994,6 +994,26 @@
             "role":"SUPERADMIN",
             "actionID": "0cf59821-0258-4c5a-9c4e-6178c074764a",
             "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "7aec74a1-7feb-45c7-900b-a6a4458a4fef",
+            "active":true
+        },
+        {
+            "role":"ANNOTATOR",
+            "actionID": "7aec74a1-7feb-45c7-900b-a6a4458a4fef",
+            "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "7aec74a1-7feb-45c7-900b-a6a4458a4fef",
+            "active":true
+        },
+        {
+            "role":"SUPERADMIN",
+            "actionID": "7aec74a1-7feb-45c7-900b-a6a4458a4fef",
+            "active":true
         }
     ]
 }

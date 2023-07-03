@@ -105,7 +105,7 @@ class CreateUser extends React.Component {
 
     if(role && Array.isArray(role) && role.includes("ADMIN")){
       let orgID = JSON.parse(localStorage.getItem("userProfile")).orgID;
-      console.log("orgID", orgID);
+      // console.log("orgID", orgID);
       this.setState({orgName : orgID, orgDropDownDisabled : true})
     }
   }

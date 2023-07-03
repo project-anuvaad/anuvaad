@@ -20,7 +20,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import SettingsOutlinedIcon from '@material-ui/icons/SettingsOutlined';
 import React, { useState, useEffect, useRef } from "react";
 import { Link as RouterLink } from "react-router-dom";
-import AnuvaadLogo from "../../../../assets/HeaderTransparentLogo.png";
+import AnuvaadLogo from "../../../../assets/suvas-logo.png";
 import configs from "../../../../configs/configs";
 import headerMenuConfig from "../../../../configs/headerMenuConfig";
 import history from "../../../../web.history";
@@ -305,7 +305,7 @@ export default function TopHeader(props) {
                                         closeDrawerOnMenuClick()
                                     },
                                     style: { textDecoration: "none", color: "#000000", marginTop : 5 },
-                                    component: RouterLink,
+                                    // component: RouterLink,
                                     className: currentMenu === el.id ? highlightedMenuButton : menuButton,
                                 }}
                             >
@@ -327,7 +327,7 @@ export default function TopHeader(props) {
                                         closeDrawerOnMenuClick()
                                     },
                                     style: { textDecoration: "none", color: "#000000", marginTop : 5 },
-                                    component: RouterLink,
+                                    // component: RouterLink,
                                     className: currentMenu === el.id ? highlightedMenuButton : menuButton,
                                 }}
                             >
@@ -368,7 +368,7 @@ export default function TopHeader(props) {
                                 id: el.id,
                                 onClick: () => { el.onclick(assignedOrgId) },
                                 style: { textDecoration: "none", color: "#000000", letterSpacing: "0.5px" },
-                                component: RouterLink,
+                                // component: RouterLink,
                                 className: currentMenu === el.id ? highlightedMenuButton : menuButton,
                             }}
                         >

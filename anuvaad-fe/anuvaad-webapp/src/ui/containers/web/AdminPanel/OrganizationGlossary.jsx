@@ -16,6 +16,7 @@ import ViewGlossary from '../../../../flux/actions/apis/organization/fetch_organ
 import Spinner from "../../../components/web/common/Spinner";
 import Snackbar from "../../../components/web/common/Snackbar";
 import DeleteOrgGlossary from "../../../../flux/actions/apis/organization/delete_org_glossary";
+import clearOrgGlossary from "../../../../flux/actions/apis/organization/clearOrgGlossary";
 import { Button } from "@material-ui/core";
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -68,13 +69,15 @@ class OrganizationGlossary extends React.Component {
     APITransport(apiObj)
   }
   componentDidMount() {
-    // if (this.props.glossaryData.count === 0) {
+    if (this.props.glossaryData.count === 0) {
     this.setState({ loading: true })
     this.getOrganizationGlossary();
-    // }
+    }
     // console.log("this.props.match.params.orgId", this.props.match.params.orgId)
   }
   componentDidUpdate(prevProps) {
+    // console.log("prevProps.glossaryData ---------------- ", prevProps.glossaryData);
+    // console.log("this.props.glossaryData ---------------- ", this.props.glossaryData);
     if (this.props.glossaryData.hasOwnProperty("deleted") && !this.props.glossaryData.delete && this.state.loading) {
       this.setState({ loading: false })
     }
@@ -83,6 +86,10 @@ class OrganizationGlossary extends React.Component {
         setTimeout(() => this.setState({ open: false, message: "", variant: "info" }), 3000)
       })
     }
+  }
+
+  componentWillUnmount(){
+    this.props.clearOrgGlossary();
   }
 
   makeDeleteGlossaryAPICall = (orgId, src, tgt, locale, reverseLocale, context, bulkDelete = false, deletionArray = []) => {
@@ -456,7 +463,8 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
-      APITransport
+      APITransport,
+      clearOrgGlossary
     },
     dispatch
   );

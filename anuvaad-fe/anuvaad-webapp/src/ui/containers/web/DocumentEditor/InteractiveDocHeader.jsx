@@ -34,6 +34,7 @@ import FetchModel from "../../../../flux/actions/apis/common/fetchmodel";
 import SwitchView from "../../../../flux/actions/apis/document_translate/getViewOption";
 import clear_html_link from "../../../../flux/actions/apis/document_translate/clear_html_link";
 import clear_docx_view from "../../../../flux/actions/apis/document_translate/clear_docx_view";
+import { FormControlLabel, Switch } from "@material-ui/core";
 const StyledMenu = withStyles({
   paper: {
     border: "1px solid #d3d4d5",
@@ -305,7 +306,7 @@ class InteractiveDocHeader extends React.Component {
   fetchDocxFile = () => {
     let fname = this.props.match.params.jobid.replace(".json", ".docx");
     let jobId = encodeURI(this.props.match.params.jobid);
-    let jobName = this.props.match.params.filename;
+    let jobName = this.props.match.params.filename?.includes("%23") ? this.props.match.params.filename?.split("%23").join("#") : this.props.match.params.filename;
     jobName = jobName.substr(0, jobName.lastIndexOf("."));
     const apiObj = new DownloadDOCX(jobId, fname, jobName);
     this.setState({
@@ -376,6 +377,14 @@ class InteractiveDocHeader extends React.Component {
               {this.props.show_pdf ? "Show Sentences" : " Show PDF"}
             </Button>
           )}
+          <FormControlLabel
+          value="Transliteration"
+          control={<Switch color="primary" />}
+          label="Transliteration"
+          labelPlacement="start"
+          style={{color: "primary"}}
+          onChange={(event, checked)=>this.props.enableTransliteration(checked)}
+        />
         {workflow === "WF_A_FTTKTR" && (
           <>
             <Button
@@ -586,7 +595,7 @@ class InteractiveDocHeader extends React.Component {
           >
             <BackIcon />
           </IconButton>
-          {this.props.match.params.filename}
+          {this.props.match.params.filename?.includes("%23") ? this.props.match.params.filename?.split("%23").join("#") : this.props.match.params.filename}
         </Typography>
         <div style={{ position: "absolute", right: "30px" }}>
           {this.renderOptions()}

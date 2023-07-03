@@ -1,5 +1,4 @@
 aniso8601==8.0.0
-# anuvaad_auditor==0.1.6
 anuvaad-auditor==1.0.0
 anuvaad-em==0.0.2
 certifi==2022.12.7

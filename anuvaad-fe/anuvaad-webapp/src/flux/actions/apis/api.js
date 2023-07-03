@@ -14,6 +14,7 @@ export default class API {
     this.auth = auth;
     this.baseUrl = CONFIGS.BASE_URL;
     this.baseUrlAuto = CONFIGS.BASE_URL_AUTO;
+    this.baseUrlULCA = CONFIGS.BASE_URL_ULCA;
     // this.nodebaseUrlAuto = CONFIGS.NODE_HOSTNAME;
   }
 
@@ -32,6 +33,10 @@ export default class API {
   apiEndPointAuto() {
     return this.baseUrlAuto;
   }
+
+  apiEndPointULCA() {
+    return this.baseUrlULCA;
+   }
 
   // apiNodeEndPointAuto() {
   //   return this.nodebaseUrlAuto;

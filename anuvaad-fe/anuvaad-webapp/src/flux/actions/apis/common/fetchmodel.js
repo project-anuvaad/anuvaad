@@ -19,7 +19,7 @@ export default class FetchModel extends API {
 
   processResponse(res) {
     super.processResponse(res);
-    console.log("user model data--- ", res.data)
+    // console.log("user model data--- ", res.data)
     this.fetch_model = res.data;
   }
 
