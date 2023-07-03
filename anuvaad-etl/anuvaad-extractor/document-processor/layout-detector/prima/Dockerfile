@@ -71,6 +71,7 @@ RUN apt install -y curl
 # #   pip install scikit-build &&\
 # #   pip install cmake &&\
 # RUN apt install -y libopencv-dev python3-opencv
+RUN pip install anuvaad-auditor==1.0.0
 
 #FROM anuvaadio/python-opencv-slim:2
 COPY / /app
@@ -78,6 +79,7 @@ WORKDIR /app
 
 #RUN apt-get install -y make git
 #RUN pip install -r requirements.txt
+# RUN pip install anuvaad-auditor==1.0.0
 #RUN pip install 'git+https://github.com/facebookresearch/detectron2.git#egg=detectron2'
 
 #RUN pip cache purge

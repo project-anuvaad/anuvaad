@@ -1,7 +1,7 @@
 aniso8601==8.0.0
 anuvaad-auditor==1.0.0
 anuvaad-em==0.0.2
-certifi==2020.6.20
+certifi==2022.12.7
 click==7.1.2
 DateTime==4.3
 elasticsearch==7.9.1
@@ -13,14 +13,14 @@ itsdangerous==1.1.0
 Jinja2==2.11.2
 kafka-python==2.0.2
 MarkupSafe==1.1.1
-nltk==3.4.5
+nltk==3.8.1
 PyJWT==1.7.1
 pymongo==3.11.0
 pytz==2020.1
-redis==3.5.3
+redis==4.5.4
 sacrebleu==1.5.0
 six==1.15.0
-urllib3==1.25.10
+urllib3==1.26.15
 uuid==1.30
 Werkzeug==1.0.1
 zope.interface==5.1.2

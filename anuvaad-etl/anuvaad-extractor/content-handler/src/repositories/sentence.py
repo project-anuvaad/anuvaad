@@ -20,7 +20,7 @@ class SentenceRepositories:
 
         return result_sentences
         
-    def update_sentences(self, user_id, sentences, workflowCode):
+    def update_sentences(self, user_id, sentences, workflowCode,review):
         update_s0       = False
         '''
             - workflowCode: 
@@ -31,30 +31,44 @@ class SentenceRepositories:
             update_s0 = True
 
         for sentence in sentences:
-            if update_s0:
-                sentence['s0_tgt']    = sentence['tgt']
-                sentence['s0_src']    = sentence['src']
-            if 'save' not in sentence:
-                sentence['save'] = False
-
-            if 'bleu_score' not in sentence:
-                sentence['bleu_score'] = 0
-
-            if 'time_spent_ms' not in sentence:
-                sentence['time_spent_ms'] = 0
-            
-            if 'rating_score' not in sentence:
-                sentence['rating_score'] =None
-
             n_id_splits = sentence['n_id'].split('|')
             record_id   = n_id_splits[0]+'|'+ n_id_splits[1]
-            # sentence['record_id'] = record_id
+            if review != True:
+                if update_s0:
+                    sentence['s0_tgt']    = sentence['tgt']
+                    sentence['s0_src']    = sentence['src']
+                    
+                if 'save' not in sentence:
+                    sentence['save'] = False
 
-            AppContext.addRecordID(record_id)
-            log_info("SaveSentenceRepo -saving sentence blocks", AppContext.getContext())
+                if 'redo' not in sentence:
+                    sentence['redo'] =False
 
-            if self.sentenceModel.update_sentence_by_s_id(record_id,user_id, sentence) == False:
-                return False
+                if 'bleu_score' not in sentence:
+                    sentence['bleu_score'] = 0
+
+                if 'time_spent_ms' not in sentence:
+                    sentence['time_spent_ms'] = 0
+            
+                if 'rating_score' not in sentence:
+                    sentence['rating_score'] =None
+
+                n_id_splits = sentence['n_id'].split('|')
+                record_id   = n_id_splits[0]+'|'+ n_id_splits[1]
+                # sentence['record_id'] = record_id
+
+                AppContext.addRecordID(record_id)
+                log_info("SaveSentenceRepo -saving sentence blocks", AppContext.getContext())
+            
+                if self.sentenceModel.update_sentence_by_s_id(record_id,user_id, sentence) == False:
+                    return False
+            else:
+                if 'comments' not in sentence:
+                    sentence['comments'] = None
+                if 'redo' not in sentence:
+                    sentence['redo'] =False
+                if self.sentenceModel.update_sentence_by_s_id_reviewer(record_id,user_id, sentence) == False:
+                    return False
         return True
 
     def get_sentence_block(self, user_id, s_id):
@@ -89,10 +103,22 @@ class SentenceRepositories:
                     log_info("bleu_score is 1 skippig utm save", AppContext.getContext())
                 else:
                     sent["timestamp"]= eval(str(time.time()).replace('.', '')[0:13])
+                    data_json = json.dumps({
+                    "batch_id":sent['batch_id'],
+                    "n_id":sent['n_id'],
+                    "s_id":sent['s_id'],
+                    "save":sent['save'],
+                    "bleu_score":sent['bleu_score'],
+                    "src":sent['src'],
+                    "tgt":sent['tgt'],
+                    "src_lang":sent['src_lang'],
+                    "tgt_lang":sent['tgt_lang'],
+                    "timestamp":sent["timestamp"]
+                    })
                     locale=sent["src_lang"]+"|"+sent["tgt_lang"]
                     sentence_hash= user_id + "___" + sent["src"]+"___"+locale
                     sent_key=hashlib.sha256(sentence_hash.encode('utf_16')).hexdigest()
-                    save_result= self.sentenceModel.save_sentences_on_hashkey(sent_key,sent)
+                    save_result= self.sentenceModel.save_sentences_on_hashkey(sent_key,data_json)
                     log_info("Sentences pushed to redis store", AppContext.getContext())
         except Exception as e:
             log_exception("Exception while storing sentence data on redis: " + str(e), AppContext.getContext(), e)
