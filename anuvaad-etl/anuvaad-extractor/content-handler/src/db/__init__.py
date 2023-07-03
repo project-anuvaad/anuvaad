@@ -1,1 +1,1 @@
-from .connection_manager import get_db, get_redis
+from .connection_manager import get_db, get_redis,get_redis_1
