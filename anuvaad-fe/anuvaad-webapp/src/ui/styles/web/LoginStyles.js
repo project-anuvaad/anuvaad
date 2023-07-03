@@ -239,7 +239,6 @@ const LoginStyles = theme => ({
   },
   VerifyOtpButton:{
     alignSelf: "center",
-    width: "50%",
     borderRadius:"15px"
   },
   ResendOtpButton:{

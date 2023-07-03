@@ -298,6 +298,7 @@ function ReSendOTP(props) {
           }}
         >
           <Button
+          style={{width:"30%"}}
             onClick={() => onSubmitOTP()}
             color="primary"
             variant="contained"
@@ -371,12 +372,12 @@ function ReSendOTP(props) {
               style={{
                 fontFamily: "Roboto, san-serif",
                 fontSize: "16px",
-               marginTop:"4px"
+               marginTop:"5px"
               }}
             >
               {" "}
              
-              <span style={{ paddingLeft: "10px" ,}}>
+              <span style={{ paddingLeft: "10px" ,fontSize: "16px",}}>
                 {`${Math.floor(time / 60)}`.padStart(2, 0)}:
                 {`${time % 60}`.padStart(2, 0)}
               </span>
