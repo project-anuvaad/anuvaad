@@ -237,10 +237,10 @@ class SentenceModel(object):
     # Initialises and fetches redis client
     def save_sentences_on_hashkey(self,key,sent):
         try:
-            client = get_redis(db=4)
+            client = get_redis(db=6)
             compressed_data = zlib.compress(sent.encode())
             client.lpush(key, compressed_data)
-            client1= get_redis_1(db=9)
+            client1= get_redis_1(db=8)
             hash_values = client1.hget("UTM",key)
             if hash_values == None:
                 client1.hset("UTM", key, compressed_data)
