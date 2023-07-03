@@ -4,6 +4,7 @@ from anuvaad_auditor.loghandler import log_info, log_exception
 import sacrebleu
 from nltk.translate.bleu_score import corpus_bleu
 import json
+import zlib
 
 DB_SCHEMA_NAME  = 'file_content'
 redis_client = None
@@ -65,7 +66,8 @@ class SentenceModel(object):
                                                         "data.tokenized_sentences.$.save" : sentence['save'],
                                                         "data.tokenized_sentences.$.bleu_score" : sentence['bleu_score'],
                                                         "data.tokenized_sentences.$.time_spent_ms" : sentence['time_spent_ms'],
-                                                        "data.tokenized_sentences.$.rating_score" : sentence['rating_score']
+                                                        "data.tokenized_sentences.$.rating_score" : sentence['rating_score'],
+                                                        "data.tokenized_sentences.$.redo" : sentence['redo']
                                                     }
                                                 }, upsert=False)
 
@@ -75,6 +77,28 @@ class SentenceModel(object):
         except Exception as e:
             log_exception("db connection exception ",  AppContext.getContext(), e)
             return False
+        
+    def update_sentence_by_s_id_reviewer(self, record_id, user_id, sentence):
+        SENTENCE_KEYS   = ['n_id', 'pred_score', 's_id', 'src', 'tgt']
+        try:
+            collections     = get_db()[DB_SCHEMA_NAME]
+
+            results         = collections.update({'$and': [{'record_id': record_id}, { 'data.tokenized_sentences': {'$elemMatch': {'s_id': {'$eq': sentence['s_id']}}}}]},
+                                                {
+                                                    '$set':
+                                                    {
+                                                        "data.tokenized_sentences.$.comments" : sentence['comments'],
+                                                        "data.tokenized_sentences.$.redo" : sentence['redo']
+                                                    }
+                                                }, upsert=False)
+
+            if 'writeError' in list(results.keys()):
+                return False
+            return True        
+        except Exception as e:
+            log_exception("db connection exception ",  AppContext.getContext(), e)
+            return False
+
 
     def get_total_tokenized_sentences_count(self, record_id):
         try:
@@ -214,8 +238,18 @@ class SentenceModel(object):
     def save_sentences_on_hashkey(self,key,sent):
         try:
             client = get_redis()
-            client.lpush(key, json.dumps(sent))
-            return 1
+            hash_values = client.hget("UTM",key)
+            compressed_data = zlib.compress(sent.encode())
+            print(key)
+            if hash_values == None:
+                client.hset("UTM", key, compressed_data)
+                # client.lpush(key, json.dumps(sent))
+                return 1
+            else:
+                client.hdel("UTM",key,compressed_data)
+                client.hset("UTM", key, compressed_data)
+                return 1
+
         except Exception as e:
             log_exception("Exception in storing sentence data on redis store | Cause: " + str(e), AppContext.getContext(), e)
             return None
@@ -226,11 +260,19 @@ class SentenceModel(object):
             result = []
             for key in keys:
                 sent_obj={}
-                val=client.lrange(key, 0, -1)
-                sent_obj["key"]=key
-                sent_obj["value"]=val
-                result.append(sent_obj)
-            return result
+                hash_values = client.hget("UTM",key)
+                if hash_values != None:
+                    val = zlib.decompress(hash_values).decode()
+                    # val=client.lrange(key, 0, -1)
+                    sent_obj["key"]=key
+                    sent_obj["value"]=[val]
+                    result.append(sent_obj)
+                    return result
+                # else:
+                #     sent_obj["key"]=key
+                #     sent_obj["value"]=[]
+                #     result.append(sent_obj)
+                #     return result
         except Exception as e:
             log_exception("Exception in fetching sentences from redis store  | Cause: " + str(e), None, e)
             return None

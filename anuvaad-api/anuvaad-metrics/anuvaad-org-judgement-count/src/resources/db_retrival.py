@@ -18,10 +18,8 @@ from utilities import (
     send_email,
 )
 from services import (
-    get_trans_user_data_from_db_daily_day_crn,
-    get_trans_user_data_from_db_weekly_crn_file1,
-    get_trans_user_data_from_db_weekly_crn_file2,
     copy_cron_csv,
+    get_trans_user_data_from_db_weekly_crn,
 )
 import uuid
 import requests
@@ -56,32 +54,10 @@ def FetchJudgementCount():
         file_name2 = str(filename)[:-10] + "_JUD_STATS2" + ".csv"
         file_save = str(filename)[:-10] + "_JUD_Org_level_Statistics.csv"
         keys = body.keys()
-        if "config" in keys and body.get("config") == "cron":
-            if not os.path.exists(
-                config.DOWNLOAD_FOLDER + "/" + config.DAILY_CRON_FILE_NAME1
-            ) and not os.path.exists(
-                config.DOWNLOAD_FOLDER + "/" + config.DAILY_CRON_FILE_NAME2
-            ):
-                shutil.copyfile(
-                    config.DOWNLOAD_FOLDER + "/" + config.backup_file_1,
-                    config.DOWNLOAD_FOLDER + "/" + config.DAILY_CRON_FILE_NAME1,
-                )
-                shutil.copyfile(
-                    config.DOWNLOAD_FOLDER + "/" + config.backup_file_2,
-                    config.DOWNLOAD_FOLDER + "/" + config.DAILY_CRON_FILE_NAME2,
-                )
-                log_info(
-                    f"files copied from weekly cron to daily cron {config.backup_file_1,config.backup_file_2}",
-                    MODULE_CONTEXT,
-                )
-                get_trans_user_data_from_db_daily_day_crn()
-        elif "config" in keys and body.get("config") == "file1":
-            get_trans_user_data_from_db_weekly_crn_file1()
-        elif "config" in keys and body.get("config") == "file2":
-            get_trans_user_data_from_db_weekly_crn_file2()
+        if "config" in keys and body.get("config") == "stats":
+            get_trans_user_data_from_db_weekly_crn()
         elif "config" in keys and body.get("config") == "copy":
             copy_cron_csv()
-
         elif body.get("org"):
             org = body["org"]
             role = body["role"]
@@ -108,6 +84,10 @@ def FetchJudgementCount():
                 config.DOWNLOAD_FOLDER + "/" + config.DAILY_CRON_FILE_NAME2
             ):
                 os.remove(config.DOWNLOAD_FOLDER + "/" + config.DAILY_CRON_FILE_NAME2)
+            if os.path.exists(
+                config.DOWNLOAD_FOLDER + "/" + config.STATS_FILE_COPY
+            ):
+                os.remove(config.DOWNLOAD_FOLDER + "/" + config.STATS_FILE_COPY)
             else:
                 return {"msg": "already deleted"}
         try:
@@ -211,111 +191,6 @@ def FetchJudgementCount():
     return out.getres()
 
 
-@app.route(config.API_URL_PREFIX + "/anuvaad-data/user", methods=["POST"])
-def FetchJudgementCount_user_wise():
-    body = request.get_json()
-
-    def FetchJudgementCountRole_user_org_Wise():
-        log_info("FetchJudgementCount api called", MODULE_CONTEXT)
-        filename = uuid.uuid4().hex
-        file_name1 = str(filename)[:-10] + "_USER_WISE_JUD_STATS1" + ".csv"
-        file_name2 = str(filename)[:-10] + "_USER_WISE_JUD_STATS2" + ".csv"
-        file_save = str(filename)[:-10] + "_USER_WISE_JUD_Org_level_Statistics.csv"
-
-        if body.get("email"):
-            email = body["email"]
-            user_docs = stats.get_all_users_active_inactive(usr_collection)
-            log_info(
-                f"Data returned from {config.USER_COLLECTION} collection",
-                MODULE_CONTEXT,
-            )
-        try:
-            from_date, end_date = stats.get_time_frame(body)
-            for doc in user_docs:
-                log_info(f"fetching details for {doc} userID", MODULE_CONTEXT)
-                ch_docs = stats.fetch_data_for_userwise_trans_tokenized(
-                    ch_collection, doc, from_date, end_date
-                )
-                saved_docs = stats.fetch_data_for_userwise_trans_user_tokenized(
-                    ch_collection, doc, from_date, end_date
-                )
-                log_info(f"Details collected for for userID : {doc} ", MODULE_CONTEXT)
-                # try:
-                #     ch_docs.next()
-                #     saved_docs.next()
-                # except Exception as e:
-                #     print(str(e))
-                ch_docs = [x for x in ch_docs]
-                write_to_csv_user(ch_docs, (config.DOWNLOAD_FOLDER + "/" + file_name1))
-                write_to_csv_user(
-                    [x for x in saved_docs], (config.DOWNLOAD_FOLDER + "/" + file_name2)
-                )
-
-            if type(email) == list:
-                users = email
-            else:
-                users = [email]
-
-            if os.path.exists(
-                config.DOWNLOAD_FOLDER + "/" + (file_name1 and file_name2)
-            ):
-                # org_level_csv_user(config.DOWNLOAD_FOLDER+"/"+file_save,(config.DOWNLOAD_FOLDER+'/'+file_name1),(config.DOWNLOAD_FOLDER+'/'+file_name2))
-                out = CustomResponse(
-                    Status.SUCCESS.value, {"files": [file_name1, file_name2]}
-                )
-                # with app.app_context():
-                file_name1 = config.DOWNLOAD_FOLDER + "/" + file_name1
-                file_name2 = config.DOWNLOAD_FOLDER + "/" + file_name2
-                # file_save = config.DOWNLOAD_FOLDER+'/'+file_save
-                files = [file_name1, file_name2]
-                log_info(
-                    "Generating email notification for found data !!!!", MODULE_CONTEXT
-                )
-                # tdy_date = datetime.now(IST).strftime("%Y:%m:%d %H:%M:%S")
-                msg = generate_email_notification(users, "Data Generated Successfully")
-                for i, j in enumerate(files):
-                    with open(j, "rb") as content_file:
-                        content = content_file.read()
-                        msg.add_attachment(
-                            content,
-                            maintype="application",
-                            subtype="csv",
-                            filename=j.split("/")[-1],
-                        )
-                send_email(msg)
-                log_info(f"Generated alert email ", MODULE_CONTEXT)
-                log_info(
-                    "filenames :{},{} ".format(file_name1, file_name2), MODULE_CONTEXT
-                )
-            else:
-                log_info(
-                    "files : {} and {} not found".format(file_name1, file_name2),
-                    MODULE_CONTEXT,
-                )
-                msg = generate_email_notification(
-                    users,
-                    "could not get the data either role or org given is not present in the system please check your input and try again",
-                )
-                send_email(msg)
-                log_info(f"Generated alert email ", MODULE_CONTEXT)
-
-        except Exception as e:
-            log_exception(
-                "Error in FetchJudgementCount: {}".format(e), MODULE_CONTEXT, e
-            )
-            status = Status.SYSTEM_ERR.value
-            status["message"] = str(e)
-            out = CustomResponse(status, None)
-            return out.getres()
-
-    threading.Thread(target=FetchJudgementCountRole_user_org_Wise).start()
-    out = CustomResponse(
-        Status.ACCEPTED.value,
-        {"msg": "please check your email after some time for requested Stats"},
-    )
-    return out.getres()
-
-
 # no of documents count wrt to src and tgt language with org.
 @app.route(config.API_URL_PREFIX + "/anuvaad-data/lang_count", methods=["GET", "POST"])
 def anuvaad_chart_org_doc():
@@ -409,7 +284,6 @@ def anuvaad_chart_lang_org():
     config.API_URL_PREFIX + "/anuvaad-data/verified_count", methods=["POST", "GET"]
 )
 def anuvaad_chart_verfied_sentence():
-    # body = request.get_json()
     try:
         result, status = stats.file_validation()
         if request.method == "POST":
@@ -451,11 +325,6 @@ def anuvaad_chart_verfied_sentence():
                 )
                 return out.getres()
             
-        # url = generate_url(config.jud, "verified_count")
-        # data = requests.get(url)
-        # data = data.json()
-        # return data
-    # result, status = stats.file_validation()
         elif request.method == "GET":
             if status == False:
                 return result
@@ -476,7 +345,6 @@ def anuvaad_chart_verfied_sentence():
                     },
                 )
                 return out.getres()
-            # return jsonify({'msgg':keyss})
     except Exception as e:
         log_exception("Error in FetchJudgementCount: {}".format(e), MODULE_CONTEXT, e)
         status = Status.SYSTEM_ERR.value

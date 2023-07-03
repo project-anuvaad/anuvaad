@@ -3,6 +3,7 @@ import time
 import cv2
 import pandas as pd
 from src.services import get_xml
+from src.utilities.remove_water_mark import clean_image
 from anuvaad_auditor.loghandler import log_info
 from src.services.get_response import process_image_df, process_table_df, df_to_json, process_line_df, adopt_child
 from src.utilities.xml_utils import check_text
@@ -41,6 +42,8 @@ def doc_pre_processing(filename, base_dir, lang):
         img_filepath = pdf_image_paths[idx]
 
         image        = cv2.imread(img_filepath,0)
+        # image = clean_image(image)
+        # cv2.imwrite(img_filepath, image)
         pdf_image_height, pdf_image_width = image.shape[:2]
         # pdf_image_height  = image.shape[0]
         pdf_img_height.append(pdf_image_height)
