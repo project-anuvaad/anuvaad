@@ -1,0 +1,20 @@
+{
+    "anuvaadFeedbackQns":[
+      {
+      "code":"anuvaad",
+      "label":"Anuvaad",
+      "active":true,
+      "initialQuestion" : {
+          "question": "Are you satisfied with this translation?",
+          "answerType": "5-star-rating",
+          "editbox": "false"
+        },
+       "values" : {
+           "master":"/anuvaadDetailedQns.json",
+           "jsonPath":"$.anuvaadDetailedQns" 
+       }
+      }
+    ],
+    "relatedMaster": true
+    }
+    

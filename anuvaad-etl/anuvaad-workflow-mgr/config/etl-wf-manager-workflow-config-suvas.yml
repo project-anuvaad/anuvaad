@@ -1,0 +1,624 @@
+WorkflowConfigs:
+  
+  - numPartitions: KAFKA_PARTITIONS_PER_TOPIC
+
+  - workflowCodes:
+      - workflowCode: WF_A_AL
+        type: ASYNC
+        description: Aligns the input files. 
+        useCase: A_A
+        sequence:
+        - order: 0
+          tool:
+          - name: ALIGNER
+          endState: true
+
+
+
+      # - workflowCode: WF_A_JAL
+      #   type: ASYNC
+      #   description: Aligns the input json files. 
+      #   useCase: A_JA
+      #   sequence:
+      #   - order: 0
+      #     tool:
+      #     - name: ALIGNER
+      #     endState: true
+
+
+
+      - workflowCode: WF_A_FC
+        type: ASYNC
+        description: converts a file into pdf and other formats
+        useCase: A_F
+        sequence:
+        - order: 0
+          tool:
+          - name: FILE-CONVERTER
+          endState: true
+
+
+
+      - workflowCode: WF_A_BM
+        type: ASYNC
+        description: extracts different blocks from a pdf file.
+        useCase: A_B
+        sequence:
+        - order: 0
+          tool:
+          - name: BLOCK-MERGER
+          endState: true
+
+
+      - workflowCode: WF_A_TOK
+        type: ASYNC
+        description: tokenises a given txt file
+        useCase: A_TK
+        sequence:
+        - order: 0
+          tool:
+          - name: TOKENISER
+          endState: true
+
+
+
+      - workflowCode: WF_A_WD
+        type: ASYNC
+        description: word detection wf.
+        useCase: A_W
+        sequence:
+        - order: 0
+          tool:
+          - name: WORD-DETECTOR
+          endState: true
+
+
+
+      - workflowCode: WF_A_LD
+        type: ASYNC
+        description: layout detection wf.
+        useCase: A_L
+        sequence:
+        - order: 0
+          tool:
+          - name: LAYOUT-DETECTOR
+          endState: true
+
+
+
+      - workflowCode: WF_A_OD10GV
+        type: ASYNC
+        description: gv-ocr wf for doc digitisation. ocr wf 1.0
+        useCase: A_OD10GV
+        sequence:
+        - order: 0
+          tool:
+          - name: OCR-DD10-GOOGLE-VISION
+          endState: true
+
+
+
+
+      - workflowCode: WF_A_OD15GV
+        type: ASYNC
+        description: gv-ocr wf for doc digitisation. ocr wf 1.5
+        useCase: A_OD15GV
+        sequence:
+        - order: 0
+          tool:
+          - name: OCR-DD15-GOOGLE-VISION
+          endState: true
+          
+
+
+
+
+      # - workflowCode: WF_A_OD20TES
+      #   type: ASYNC
+      #   description: gv-ocr wf for doc digitisation. ocr wf 1.5
+      #   useCase: A_OD20TES
+      #   sequence:
+      #   - order: 0
+      #     tool:
+      #     - name: OCR-DD20-TESSERACT
+      #     endState: true
+          
+
+
+
+
+
+      - workflowCode: WF_A_OTES
+        type: ASYNC
+        description: tess-ocr wf.
+        useCase: A_OTES
+        sequence:
+        - order: 0
+          tool:
+          - name: OCR-TESSERACT
+          endState: true
+
+
+
+
+      - workflowCode: WF_A_BS
+        type: ASYNC
+        description: block segmentation process
+        useCase: A_BS
+        sequence:
+        - order: 0
+          tool:
+          - name: BLOCK-SEGMENTER
+          endState: true
+
+
+
+
+      - workflowCode: WF_A_OTK
+        type: ASYNC
+        description: OCR Tokeniser process
+        useCase: A_OT
+        sequence:
+        - order: 0
+          tool:
+          - name: OCR-TOKENISER
+          endState: true
+
+
+
+
+      - workflowCode: WF_A_AN
+        type: ASYNC
+        description: WF for annotation
+        useCase: A_AN
+        sequence:
+        - order: 0
+          tool:
+          - name: ANNOTATOR
+          endState: true
+
+
+
+      # - workflowCode: WF_A_IO
+      #   type: ASYNC
+      #   description: WF for OCR on images
+      #   useCase: A_IO
+      #   sequence:
+      #   - order: 0
+      #     tool:
+      #     - name: IMAGE-OCR
+      #     endState: true
+
+
+
+      # - workflowCode: WF_A_FT_S
+      #   type: ASYNC
+      #   description: Search WF for docx download
+      #   useCase: A_FT_S
+      #   sequence:
+      #   - order: 0
+      #     tool:
+      #     - name: FILE-TRANSLATOR-DOWNLOAD
+      #     endState: true
+
+
+
+      - workflowCode: WF_A_FCOD10GV
+        type: ASYNC
+        description: gv-ocr wf for doc digitisation. ocr wf 1.0 with filr conversion
+        useCase: A_FOD10GV
+        sequence:
+        - order: 0
+          tool:ence:
+        - order: 0
+          tool:
+          - name: O
+        sequence:
+        - order: 0
+          tool:
+          - name: WORD-DETECTOR
+          endState: false
+        - order: 1
+          tool:
+          - name: OCR-DD15-GOOGLE-VISION
+          endState: true
+
+
+
+      - workflowCode: WF_A_FCWDLD
+        type: ASYNC
+        description: converts file into pdf and then detects words and layouts using CV.
+        useCase: A_FWL
+        sequence:
+        - order: 0
+          tool:
+          - name: FILE-CONVERTER
+          endState: false
+        - order: 1
+          tool:
+          - name: WORD-DETECTOR
+          endState: false
+        - order: 2
+          tool:
+          - name: LAYOUT-DETECTOR
+          endState: true
+
+
+
+      - workflowCode: WF_A_OD10GVOTK
+        type: ASYNC
+        description: gv-ocr wf for doc digitisation and tokenisation. ocr wf 1.0
+        useCase: A_OD10GVOT
+        sequence:
+        - order: 0
+          tool:
+          - name: OCR-DD10-GOOGLE-VISION
+          endState: false
+        - order: 1
+          tool:
+          - name: OCR-TOKENISER
+          endState: true
+
+
+
+      - workflowCode: WF_A_FCOD10GVOTK
+        type: ASYNC
+        description: gv-ocr wf for doc digitisation and tokenisation. ocr wf 1.0
+        useCase: A_FOD10GVOT
+        sequence:
+        - order: 0
+          tool:
+          - name: FILE-CONVERTER
+          endState: false
+        - order: 1
+          tool:
+          - name: OCR-DD10-GOOGLE-VISION
+          endState: false
+        - order: 2
+          tool:
+          - name: OCR-TOKENISER
+          endState: true
+
+
+
+      - workflowCode: WF_A_FCBMTKTR
+        type: ASYNC
+        description: converts file into pdf and then extracts multiple blocks. Text content of each block is tokenised and translated
+        useCase: A_FBTTR
+        sequence:
+        - order: 0
+          tool:
+          - name: FILE-CONVERTER
+          endState: false
+        - order: 1
+          tool:
+          - name: BLOCK-MERGER
+          endState: false
+        - order: 2
+          tool:
+          - name: TOKENISER
+          endState: false
+        - order: 3
+          tool:
+          - name: TRANSLATOR
+          endState: true
+
+      - workflowCode: WF_A_WDOD15GV
+        type: ASYNC
+        description: Document digitization wf enhanced over 1.0 flow
+        useCase: A_WOD15G
+        sequence:
+        - order: 0
+          tool:
+          - name: WORD-DETECTOR
+          endState: false
+        - order: 1
+          tool:
+          - name: OCR-DD15-GOOGLE-VISION
+          endState: true
+
+      # - workflowCode: WF_A_WDOD15GVOTK
+      #   type: ASYNC
+      #   description: Document digitization wf enhanced over 1.0 flow
+      #   useCase: A_WOD15GVOTK
+      #   sequence:
+      #   - order: 0
+      #     tool:
+      #     - name: WORD-DETECTOR
+      #     endState: false
+      #   - order: 1
+      #     tool:
+      #     - name: OCR-DD15-GOOGLE-VISION
+      #     endState: false
+      #   - order: 2
+      #     tool:
+      #     - name: OCR-TOKENISER
+      #     endState: true
+
+
+      - workflowCode: WF_A_FTTKTR
+        type: ASYNC
+        description: WF for translating docx/pptx
+        useCase: A_FTTTR
+        sequence:
+        - order: 0
+          tool:
+          - name: FILE-TRANSLATOR
+          endState: false
+        - order: 1
+          tool:
+          - name: TOKENISER
+          endState: false
+        - order: 2
+          tool:
+          - name: TRANSLATOR
+          endState: true
+
+
+
+
+      # - workflowCode: WF_A_FTIOTKTR
+      #   type: ASYNC
+      #   description: WF for translating docx/pptx
+      #   useCase: A_FTIOTTR
+      #   sequence:
+      #   - order: 0
+      #     tool:
+      #     - name: FILE-TRANSLATOR
+      #     endState: false
+      #   - order: 1
+      #     tool:
+      #     - name: IMAGE-OCR
+      #     endState: false
+      #   - order: 2
+      #     tool:
+      #     - name: TOKENISER
+      #     endState: false
+      #   - order: 3
+      #     tool:
+      #     - name: TRANSLATOR
+      #     endState: true
+
+
+
+      - workflowCode: WF_A_FCWDLDBSOTES
+        type: ASYNC
+        description: Document digitizarion wf.
+        useCase: A_FWLBOT
+        sequence:
+        - order: 0
+          tool:
+          - name: FILE-CONVERTER
+          endState: false
+        - order: 1
+          tool:
+          - name: WORD-DETECTOR
+          endState: false
+        - order: 2
+          tool:
+          - name: LAYOUT-DETECTOR
+          endState: false
+        - order: 3
+          tool:
+          - name: BLOCK-SEGMENTER
+          endState: false
+        - order: 4
+          tool:
+          - name: OCR-TESSERACT
+          endState: true
+
+
+
+      - workflowCode: WF_A_FCWDLDBSOD15GV
+        type: ASYNC
+        description: Document digitization wf version 1.5
+        useCase: A_FWLBOD15G
+        sequence:
+        - order: 0
+          tool:
+          - name: FILE-CONVERTER
+          endState: false
+        - order: 1
+          tool:
+          - name: WORD-DETECTOR
+          endState: false
+        - order: 2
+          tool:
+          - name: LAYOUT-DETECTOR
+          endState: false
+        - order: 3
+          tool:
+          - name: BLOCK-SEGMENTER
+          endState: false
+        - order: 4
+          tool:
+          - name: OCR-DD15-GOOGLE-VISION
+          endState: true
+
+
+
+
+      - workflowCode: WF_A_FCWDLDBSOD15GVOTK
+        type: ASYNC
+        description: Document digitization and tokenisation wf version 1.5
+        useCase: A_FWLBOD15GOT
+        sequence:
+        - order: 0
+          tool:
+          - name: FILE-CONVERTER
+          endState: false
+        - order: 1
+          tool:
+          - name: WORD-DETECTOR
+          endState: false
+        - order: 2
+          tool:
+          - name: LAYOUT-DETECTOR
+          endState: false
+        - order: 3
+          tool:
+          - name: BLOCK-SEGMENTER
+          endState: false
+        - order: 4
+          tool:
+          - name: OCR-DD15-GOOGLE-VISION
+          endState: false
+        - order: 5
+          tool:
+          - name: OCR-TOKENISER
+          endState: true
+
+
+      # - workflowCode: WF_A_FCWDLDBSOD15GVOTK_S
+      #   type: ASYNC
+      #   description: Document digitization and tokenisation wf version 1.5
+      #   useCase: A_FWLBOD15GOT
+      #   sequence:
+      #   - order: 0
+      #     tool:
+      #     - name: FILE-CONVERTER
+      #     endState: false
+      #   - order: 1
+      #     tool:
+      #     - name: WORD-DETECTOR
+      #     endState: false
+      #   - order: 2
+      #     tool:
+      #     - name: LAYOUT-DETECTOR
+      #     endState: false
+      #   - order: 3
+      #     tool:
+      #     - name: BLOCK-SEGMENTER
+      #     endState: false
+      #   - order: 4
+      #     tool:
+      #     - name: OCR-DD15-GOOGLE-VISION
+      #     endState: false
+      #   - order: 5
+
+      #     tool:
+      #     - name: OCR-TOKENISER
+      #     endState: true
+
+      # - workflowCode: WF_A_FCWDLDBSOD20TESOTK
+      #   type: ASYNC
+      #   description: Document digitization and tokenisation wf version 2.0
+      #   useCase: A_FWLBOD20TESOT
+      #   sequence:
+      #   - order: 0
+      #     tool:
+      #     - name: FILE-CONVERTER
+      #     endState: false
+      #   - order: 1
+      #     tool:
+      #     - name: WORD-DETECTOR
+      #     endState: false
+      #   - order: 2
+      #     tool:
+      #     - name: LAYOUT-DETECTOR
+      #     endState: false
+      #   - order: 3
+      #     tool:
+      #     - name: BLOCK-SEGMENTER
+      #     endState: false
+      #   - order: 4
+      #     tool:
+      #     - name: OCR-DD20-TESSERACT
+      #     endState: false
+      #   - order: 5
+      #     tool:
+      #     - name: OCR-TOKENISER
+      #     endState: true
+
+
+
+
+      - workflowCode: WF_S_TR
+        type: SYNC
+        translation: BLOCK
+        description: Translates the blocks.
+        useCase: S_TR
+        sequence:
+        - order: 0
+          tool:
+          - name: SYNC-BLOCK-TRANSLATOR
+          endState: true
+
+
+
+      - workflowCode: WF_S_FT
+        type: SYNC
+        translation: DOWNLOAD
+        description: Search WF for docx download
+        useCase: S_FT
+        sequence:
+        - order: 0
+          tool:
+          - name: SYNC-FILE-TRANSLATOR
+          endState: true
+
+
+
+      - workflowCode: WF_S_STR
+        type: SYNC
+        translation: SENTENCE
+        description: Translates the sentences.
+        useCase: S_STR
+        sequence:
+        - order: 0
+          tool:
+          - name: SYNC-SENTENCE-TRANSLATOR
+          endState: true
+
+
+
+      - workflowCode: WF_S_TKTR
+        type: SYNC
+        translation: BLOCK
+        description: Tokenises the text blocks to sentences and Translates them.
+        useCase: S_TTR
+        sequence:
+        - order: 0
+          tool:
+          - name: SYNC-BLOCK-TOKENISER
+          endState: false
+        - order: 1
+          tool:
+          - name: SYNC-BLOCK-TRANSLATOR
+          endState: true
+
+      # - workflowCode: WF_S_STKTR
+      #   type: SYNC
+      #   translation: SENTENCE
+      #   description: Tokenises the list of paragraph to sentences and Translates them.
+      #   useCase: WF_S_STKTR
+      #   sequence:
+      #   - order: 0
+      #     tool:
+      #     - name: SYNC-PARAGRAPH-TOKENIZER
+      #     endState: false
+      #   - order: 1
+      #     tool:
+      #     - name: SYNC-SENTENCE-TRANSLATOR
+      #     endState: true
+
+      # - workflowCode: WF_S_DPP
+      #   type: SYNC
+      #   translation: PREPROCESS
+      #   description: Tokenises the list of paragraph to sentences and Translates them.
+      #   useCase: WF_S_DPP
+      #   sequence:
+      #   - order: 0
+      #     tool:
+      #     - name: SYNC-DOCUMENT-PREPROCESS
+      #     endState: true
+
+# Conventions:
+# WF - prefix for Workflow
+# A - type of workflow: ASYNC
+# S - type of workflow: SYNC
+# AL,A - tool: Aligner
+# FC,F - tool: File Converter
+# BM,B - tool: Block Merger
+# TK,T - tool: Tokeniser
+# TR - tool: Translator

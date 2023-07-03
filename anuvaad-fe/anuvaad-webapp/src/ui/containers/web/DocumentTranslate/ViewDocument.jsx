@@ -59,7 +59,7 @@ class ViewDocument extends React.Component {
    * life cycle methods
    */
   componentDidMount() {
-    this.timerId = setInterval(this.checkInprogressJobStatus.bind(this), 10000);
+    this.timerId = setInterval(this.checkInprogressJobStatus.bind(this), 30000);
     TELEMETRY.pageLoadStarted("view-document");
 
     if (this.props.job_details.documents.length < 1) {
@@ -95,7 +95,7 @@ class ViewDocument extends React.Component {
     if (e.code === "Enter" && this.state.isInputActive) {
       e.preventDefault();
       // handleTransliterationModelClose();
-      console.log("enter key press.");
+      // console.log("enter key press.");
       this.onChangePageMAnually();
     }
   };
@@ -105,7 +105,9 @@ class ViewDocument extends React.Component {
     // console.log("limit (Number(this.state.inputPageNumber)-1)*10 ---> ", this.props.job_details.count);
     // this.makeAPICallJobsBulkSearch(0, (Number(this.state.inputPageNumber)-1)*10, false, false, true)
     this.tableRef.current.changePage(Number(this.state.inputPageNumber) - 1);
-    this.setState({ currentPageIndex: this.state.inputPageNumber - 1 });
+    this.setState({ currentPageIndex: this.state.inputPageNumber - 1 }, ()=> {
+      this.makeAPICallDocumentsTranslationProgress();
+    });
   }
 
   componentWillUnmount() {
@@ -173,7 +175,7 @@ class ViewDocument extends React.Component {
    */
   checkInprogressJobStatus = () => {
     let inprogressJobIds = this.props.job_details.documents
-      .filter((job) => job.status === "INPROGRESS")
+      .filter((job) => job.status === "INPROGRESS" || job.status === "STARTED")
       .map((job) => job.jobID);
     if (inprogressJobIds.length > 0) {
       this.makeAPICallJobsBulkSearch(
@@ -234,18 +236,21 @@ class ViewDocument extends React.Component {
    * helper methods
    */
   getJobsSortedByTimestamp = () => {
-    console.log("this.props.job_details.documents ======== ", this.props.job_details.documents);
+    // console.log("this.props.job_details.documents ======== ", this.props.job_details.documents);
     let jobs = this.props.job_details.documents.sort((a, b) => {
       if (a.created_on < b.created_on) {
         return 1;
       }
       return -1;
     });
+    // console.log("jobs ======== ", jobs);
     return jobs;
   };
 
   getJobsAsPerPageAndLimit = (page, limit) => {
-    return this.getJobsSortedByTimestamp().slice(
+    // console.log("this.getJobsSortedByTimestamp() ------- ", this.getJobsSortedByTimestamp());
+    return this.getJobsSortedByTimestamp()
+    .slice(
       page * limit,
       page * limit + limit
     );
@@ -315,6 +320,7 @@ class ViewDocument extends React.Component {
   processViewDocumentClick = (jobId, recordId, status, workflowCode) => {
     let role = localStorage.getItem("roles")
     let job = this.getJobIdDetail(jobId);
+    job.filename = job.filename?.includes("#") ? job.filename?.split("#").join("%23") : job.filename;
     if (status === "COMPLETED") {
       history.push(
         `${process.env.PUBLIC_URL}/interactive-document/${job.recordId}/${job.converted_filename}/${job.model_id}/${job.filename}/${workflowCode}/${job.source_language_code}/${job.target_language_code}`,
@@ -322,7 +328,7 @@ class ViewDocument extends React.Component {
       );
 
 
-    } else if (status === "INPROGRESS") {
+    } else if (status === "INPROGRESS" || status === "STARTED") {
       this.setState({
         dialogMessage: "Please wait process is Inprogress!",
         timeOut: 3000,
@@ -366,8 +372,9 @@ class ViewDocument extends React.Component {
       variant: "info",
     });
     let job = this.getJobIdDetail(jobId);
+    // console.log("job ----- ", job);
     let user_profile = JSON.parse(localStorage.getItem("userProfile"));
-    console.log(job.converted_filename, user_profile.userID)
+    // console.log(job.converted_filename, user_profile.userID)
     let obj = new DownloadFile(job.converted_filename, user_profile.userID);
 
     const apiReq1 = fetch(obj.apiEndPoint(), {
@@ -392,7 +399,7 @@ class ViewDocument extends React.Component {
               let a = document.createElement("a");
               let url = URL.createObjectURL(blob);
               a.href = url;
-              a.download = job.converted_filename;
+              a.download = job.filename;
               this.setState({ dialogMessage: null });
               a.click();
             });
@@ -783,7 +790,7 @@ class ViewDocument extends React.Component {
                     >Go</Button>
                     <IconButton
                       onClick={() => {
-                        this.setState({ currentPageIndex: this.state.currentPageIndex - 1 })
+                        this.setState({ currentPageIndex: this.state.currentPageIndex - 1 }, ()=>this.makeAPICallDocumentsTranslationProgress())
                         this.tableRef.current.changePage(Number(this.state.currentPageIndex - 1))
                       }}
                       tabIndex={this.state.currentPageIndex - 1}
@@ -793,7 +800,7 @@ class ViewDocument extends React.Component {
                     <Typography variant="caption" style={{ fontSize: "0.9rem", fontWeight: "600" }}>Page {parseInt(this.state.currentPageIndex + 1)} of {parseInt(totalPageCount)} </Typography>
                     <IconButton
                       onClick={() => {
-                        this.setState({ currentPageIndex: this.state.currentPageIndex + 1 })
+                        this.setState({ currentPageIndex: this.state.currentPageIndex + 1 }, ()=>this.makeAPICallDocumentsTranslationProgress())
                         this.tableRef.current.changePage(Number(this.state.currentPageIndex + 1))
                       }}
                       tabIndex={this.state.currentPageIndex + 1}

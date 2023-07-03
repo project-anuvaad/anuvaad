@@ -5,12 +5,12 @@ const adminConfig = {
             "roleCode": "TRANSLATOR",
             "roleDesc": "Has access to translation related resources"
         },
-        {
+        // {
 
-            "roleCode": "ANNOTATOR",
-            "roleDesc": "Access to evaluate our model"
+        //     "roleCode": "ANNOTATOR",
+        //     "roleDesc": "Access to evaluate our model"
 
-        },
+        // },
     ],
     orgID: ["ANUVAAD"]
 }
@@ -22,12 +22,12 @@ const superAdminConfig = {
             "roleCode": "TRANSLATOR",
             "roleDesc": "Has access to translation related resources"
         },
-        {
+        // {
 
-            "roleCode": "ANNOTATOR",
-            "roleDesc": "Access to evaluate our model"
+        //     "roleCode": "ANNOTATOR",
+        //     "roleDesc": "Access to evaluate our model"
 
-        },
+        // },
         {
 
             "roleCode": "ADMIN",

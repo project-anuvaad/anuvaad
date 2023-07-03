@@ -40,6 +40,7 @@ class BlockTranslationService:
                 url, body = self.get_nmt_url_body(block_translate_input, nmt_in_txt)
                 nmt_disabled_orgs = list(str(orgs_nmt_disable).split(","))
                 if block_translate_input["metadata"]["orgID"] not in nmt_disabled_orgs:
+                    #log_info("Message in body: "+str(body),  block_translate_input)
                     log_info("API call to NMT...", block_translate_input)
                     nmt_response = utils.call_api(url, "POST", body, None, block_translate_input["metadata"]["userID"])
                 else:

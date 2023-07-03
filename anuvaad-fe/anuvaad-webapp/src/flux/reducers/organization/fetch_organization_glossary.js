@@ -29,6 +29,8 @@ export default (state = initialState, action) => {
                 count: action.payload.length,
                 deleted: action.payload.length < state.count ? true : false
             }
+        case C.CLEAR_GLOSSARY_DATA:
+            return initialState
         default:
             return state
 

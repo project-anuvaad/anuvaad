@@ -5,6 +5,8 @@ from utilities import AppContext
 from anuvaad_auditor.loghandler import log_info, log_exception
 from flask import request
 from config import USER_TRANSLATION_ENABLED
+import time 
+
 sentenceRepo = SentenceRepositories()
 
 class FetchSentenceResource(Resource):
@@ -135,8 +137,8 @@ class SentenceBlockGetResource(Resource):
 
 class GetSentencesResource(Resource):
     def post(self):
+        startTime = time.time();
         body        = request.get_json()
-
         if "keys" not in body or not body["keys"]:
             res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
             return res.getresjson(), 400
@@ -147,6 +149,9 @@ class GetSentencesResource(Resource):
 
         try:
             result = sentenceRepo.get_sentences_from_store(keys)
+            endTime = time.time();
+            totalTime = endTime - startTime;
+            log_info("Time taken for UTM Calculation Internally : {}".format(totalTime),AppContext.getContext())
             if result == None:
                 res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
                 return res.getresjson(), 400

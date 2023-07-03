@@ -4,6 +4,7 @@ from anuvaad_auditor.loghandler import log_info, log_exception
 import sacrebleu
 from nltk.translate.bleu_score import corpus_bleu
 import json
+import zlib
 
 DB_SCHEMA_NAME  = 'file_content'
 redis_client = None
@@ -237,8 +238,18 @@ class SentenceModel(object):
     def save_sentences_on_hashkey(self,key,sent):
         try:
             client = get_redis()
-            client.lpush(key, json.dumps(sent))
-            return 1
+            hash_values = client.hget("UTM",key)
+            compressed_data = zlib.compress(sent.encode())
+            print(key)
+            if hash_values == None:
+                client.hset("UTM", key, compressed_data)
+                # client.lpush(key, json.dumps(sent))
+                return 1
+            else:
+                client.hdel("UTM",key,compressed_data)
+                client.hset("UTM", key, compressed_data)
+                return 1
+
         except Exception as e:
             log_exception("Exception in storing sentence data on redis store | Cause: " + str(e), AppContext.getContext(), e)
             return None
@@ -249,11 +260,19 @@ class SentenceModel(object):
             result = []
             for key in keys:
                 sent_obj={}
-                val=client.lrange(key, 0, -1)
-                sent_obj["key"]=key
-                sent_obj["value"]=val
-                result.append(sent_obj)
-            return result
+                hash_values = client.hget("UTM",key)
+                if hash_values != None:
+                    val = zlib.decompress(hash_values).decode()
+                    # val=client.lrange(key, 0, -1)
+                    sent_obj["key"]=key
+                    sent_obj["value"]=[val]
+                    result.append(sent_obj)
+                    return result
+                # else:
+                #     sent_obj["key"]=key
+                #     sent_obj["value"]=[]
+                #     result.append(sent_obj)
+                #     return result
         except Exception as e:
             log_exception("Exception in fetching sentences from redis store  | Cause: " + str(e), None, e)
             return None

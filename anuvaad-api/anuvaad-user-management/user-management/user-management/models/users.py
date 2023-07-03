@@ -91,6 +91,8 @@ class UserManagementModel(object):
                     users_data["models"]    =   user["models"]
                 if user.get("roles_new")    !=  None:
                     users_data["roles"] =   user["roles_new"]
+                if user.get("userName")    !=  None:
+                    users_data["userName"] =   user["userName"]
                 
                 #connecting to mongo instance/collection
                 collections = get_db()[USR_MONGO_COLLECTION]
@@ -116,7 +118,7 @@ class UserManagementModel(object):
             #fetching all verified users from db when skip_pgination = True
             if skip_pagination==True:
                 log_info("Fetching all verified users from database", MODULE_CONTEXT)
-                out = collections.find({"is_verified":True},exclude)
+                out = collections.find({"is_verified":{"$in":[True,False]}},exclude)
                 record_count=out.count()
             elif not user_ids and not user_names and  role_codes and  org_codes :
                 log_info("Fetching verified users from specific org and rolecodes", MODULE_CONTEXT)

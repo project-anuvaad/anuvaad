@@ -83,6 +83,7 @@ WORKDIR /app
 #RUN pip install 'git+https://github.com/facebookresearch/detectron2.git#egg=detectron2'
 
 #RUN pip cache purge
+RUN pip install anuvaad-auditor==1.0.0
 
 #Run curl https://anuvaad-pubnet-weights.s3.amazonaws.com/model_final.pth?AWSAccessKeyId=AKIAUAXLRTC3KS46AZTB&Signature=6js6H28bUyOEmYek2FTbWf3AlS8%3D&Expires=1611584082
 COPY start.sh /usr/bin/start.sh
