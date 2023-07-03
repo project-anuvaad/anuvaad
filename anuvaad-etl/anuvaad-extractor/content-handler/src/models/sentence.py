@@ -1,5 +1,5 @@
 from utilities import AppContext
-from db import get_db,get_redis
+from db import get_db,get_redis,get_redis_1
 from anuvaad_auditor.loghandler import log_info, log_exception
 import sacrebleu
 from nltk.translate.bleu_score import corpus_bleu
@@ -237,17 +237,17 @@ class SentenceModel(object):
     # Initialises and fetches redis client
     def save_sentences_on_hashkey(self,key,sent):
         try:
-            client = get_redis()
-            hash_values = client.hget("UTM",key)
+            client = get_redis(db=4)
             compressed_data = zlib.compress(sent.encode())
-            print(key)
+            client.lpush(key, compressed_data)
+            client1= get_redis_1(db=9)
+            hash_values = client1.hget("UTM",key)
             if hash_values == None:
-                client.hset("UTM", key, compressed_data)
-                # client.lpush(key, json.dumps(sent))
+                client1.hset("UTM", key, compressed_data)
                 return 1
             else:
-                client.hdel("UTM",key,compressed_data)
-                client.hset("UTM", key, compressed_data)
+                client1.hdel("UTM",key,compressed_data)
+                client1.hset("UTM", key, compressed_data)
                 return 1
 
         except Exception as e:
@@ -256,18 +256,19 @@ class SentenceModel(object):
 
     def get_sentence_by_keys(self,keys):
         try:
-            client = get_redis()
+            client = get_redis(db=4)
             result = []
             for key in keys:
                 sent_obj={}
-                hash_values = client.hget("UTM",key)
-                if hash_values != None:
-                    val = zlib.decompress(hash_values).decode()
-                    # val=client.lrange(key, 0, -1)
-                    sent_obj["key"]=key
-                    sent_obj["value"]=[val]
-                    result.append(sent_obj)
-                    return result
+                # hash_values = client.hget("UTM",key)
+                # if hash_values != None:
+                val=client.lrange(key, 0, -1)
+                val1 = zlib.decompress(val[0]).decode()
+                # val=client.lrange(key, 0, -1)
+                sent_obj["key"]=key
+                sent_obj["value"]=[val1]
+                result.append(sent_obj)
+                return result
                 # else:
                 #     sent_obj["key"]=key
                 #     sent_obj["value"]=[]
