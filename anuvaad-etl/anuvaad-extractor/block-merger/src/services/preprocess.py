@@ -12,7 +12,10 @@ from anuvaad_auditor.errorhandler import post_error_wf
 
 def cut_page(page_df ,height ,cut_at ,direction):
 
-    cut_mark = height * cut_at
+    # uncomment for prima header footer detection
+    # cut_mark = height * cut_at
+    cut_mark = [ht * cut_at for ht in height]
+    cut_mark = cut_mark[0]
     if direction == 'above':
         sub_df = page_df[page_df['text_top'] <= cut_mark ]
 
@@ -153,6 +156,13 @@ def add_attrib(df, region_to_change, width_ratio,height_ratio,attrib, margin=3):
                     df['attrib'].loc[intersection] = row['class']
                 else:
                     df['attrib'].loc[intersection]  = attrib
+            else:
+                region_to_change['attrib'] = attrib
+                # Merge the DataFrames based on the 'region' and 'country' columns
+                merged_df = df.merge(region_to_change, on=['text_top','text_left'], how='left')
+
+                # # Update the 'attrib' column in 'df' where the records of 'region_to_change' exist
+                df['attrib'] = merged_df['attrib_y'].fillna(merged_df['attrib_x'])
             #
             # page_df['attrib'].loc[(page_df['text_top'] >= area[0]) & (page_df['text_left'] >= area[1]) & (
             #             page_df['text_top'] + page_df['text_height'] <= area[2]) & (
