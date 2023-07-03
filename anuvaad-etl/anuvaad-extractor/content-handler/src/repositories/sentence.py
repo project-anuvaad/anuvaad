@@ -108,7 +108,7 @@ class SentenceRepositories:
                     "n_id":sent['n_id'],
                     "s_id":sent['s_id'],
                     "save":sent['save'],
-                    "bleu_score":['bleu_score'],
+                    "bleu_score":sent['bleu_score'],
                     "src":sent['src'],
                     "tgt":sent['tgt'],
                     "src_lang":sent['src_lang'],
