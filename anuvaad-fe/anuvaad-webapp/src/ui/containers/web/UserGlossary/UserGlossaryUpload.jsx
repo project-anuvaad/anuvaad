@@ -23,6 +23,9 @@ import FormControl from '@material-ui/core/FormControl';
 import CreateGlossary from '../../../../flux/actions/apis/document_translate/create_glossary';
 import ViewGlossary from '../../../../flux/actions/apis/user_glossary/fetch_user_glossary';
 import fetchTransliterationModelID from '../../../../flux/actions/apis/document_translate/fetchTransliterationModel';
+import { IndicTransliterate } from 'react-transliterate';
+import configs from '../../../../configs/configs';
+import endpoints from '../../../../configs/apiendpoints';
 
 
 const theme = createMuiTheme({
@@ -113,9 +116,6 @@ class UserGlossaryUpload extends React.Component {
         if(prevState.target_language_code !== this.state.target_language_code){
             this.getTransliterationModelIDByLang("en", this.state.target_language_code, (modelId)=>this.setState({targetTransliterationModelId: modelId}));
         }
-
-        console.log("sourceTransliterationModelId ---- ", this.state.sourceTransliterationModelId);
-        console.log("targetTransliterationModelId ---- ", this.state.targetTransliterationModelId);
     }
 
     processSourceLanguageSelected = (event) => {
@@ -141,6 +141,7 @@ class UserGlossaryUpload extends React.Component {
             response?.modelId && callback(response?.modelId);
         })
         .catch(err=>{
+            callback("");
             console.log("err - ", err);
         })
     }
@@ -221,7 +222,34 @@ class UserGlossaryUpload extends React.Component {
             </Grid>
             <Grid item xs={6} sm={6} lg={4} xl={4}>
                 <FormControl variant="outlined" className={this.props.classes.select}>
-                    <TextField
+                    {this.state.sourceTransliterationModelId ? 
+                    <IndicTransliterate
+                    customApiURL={`${configs.BASE_URL_ULCA + endpoints.hostedInference}`}
+                    transliterationModelId={this.state.sourceTransliterationModelId}
+                    renderComponent={(props) => {
+                        const inputRef = props.ref;
+                        delete props["ref"];
+                        return (
+                            <TextField
+                                {...props}
+                                // label="Add to glossary"
+                                // placeholder="Add to glossary"
+                                fullWidth
+                                variant="outlined"
+                                inputRef={inputRef}
+                                style={{ width: "100%", margin: '0%', marginBottom: "25px" }}
+                            />
+                        );
+                    }}
+                    value={this.state.source}
+                    onChangeText={(value) => {
+                        // this.setState({ word: text })
+                        this.setState({source: value});
+                    }}
+                    lang={this.state.source_language_code}
+                    maxOptions={5}
+                /> 
+                    : <TextField
                         value={this.state.source}
                         id="outlined-name"
                         margin="normal"
@@ -230,7 +258,7 @@ class UserGlossaryUpload extends React.Component {
                         }}
                         variant="outlined"
                         style={{ width: "100%", margin: '0%', marginBottom: "25px" }}
-                    />
+                    />}
                 </FormControl>
             </Grid>
         </Grid>
@@ -245,7 +273,34 @@ class UserGlossaryUpload extends React.Component {
             </Grid>
             <Grid item xs={6} sm={6} lg={4} xl={4}>
                 <FormControl variant="outlined" className={this.props.classes.select}>
-                    <TextField
+                {this.state.targetTransliterationModelId ? 
+                    <IndicTransliterate
+                    customApiURL={`${configs.BASE_URL_ULCA + endpoints.hostedInference}`}
+                    transliterationModelId={this.state.targetTransliterationModelId}
+                    renderComponent={(props) => {
+                        const inputRef = props.ref;
+                        delete props["ref"];
+                        return (
+                            <TextField
+                                {...props}
+                                // label="Add to glossary"
+                                // placeholder="Add to glossary"
+                                fullWidth
+                                variant="outlined"
+                                inputRef={inputRef}
+                                style={{ width: "100%", margin: '0%', marginBottom: "25px" }}
+                            />
+                        );
+                    }}
+                    value={this.state.target}
+                    onChangeText={(value) => {
+                        // this.setState({ word: text })
+                        this.setState({target: value});
+                    }}
+                    lang={this.state.target_language_code}
+                    maxOptions={5}
+                /> 
+                    :<TextField
                         value={this.state.target}
                         id="outlined-name"
                         margin="normal"
@@ -254,7 +309,7 @@ class UserGlossaryUpload extends React.Component {
                         }}
                         variant="outlined"
                         style={{ width: "100%", margin: '0%', marginBottom: "25px" }}
-                    />
+                    />}
                 </FormControl>
             </Grid>
         </Grid>
