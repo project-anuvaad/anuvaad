@@ -256,7 +256,7 @@ class SentenceModel(object):
 
     def get_sentence_by_keys(self,keys):
         try:
-            client = get_redis(db=4)
+            client = get_redis(db=6)
             result = []
             for key in keys:
                 sent_obj={}
