@@ -83,6 +83,7 @@ def extract_xml_path_from_digital_pdf(filepath, workspace_output_dir):
     """
     log_info('pdf to html start  :', app_context.application_context)
     working_dir    = os.path.join(workspace_output_dir, 'pdftohtml')
+    log_info('pdf to html working dir creating  :', app_context.application_context)
     create_directory(working_dir)
     log_info('pdf to html working dir created  :', app_context.application_context)
 
