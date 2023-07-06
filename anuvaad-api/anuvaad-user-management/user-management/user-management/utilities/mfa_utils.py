@@ -13,8 +13,7 @@ from anuvaad_auditor.errorhandler import post_error
 from utilities import MODULE_CONTEXT
 from db import get_db
 from email.mime.text import MIMEText
-from email.mime.image import MIMEImage
-from email.mime.application import MIMEApplication
+from email.utils import make_msgid
 from config import MFA_MONGO_COLLECTION, USR_TOKEN_MONGO_COLLECTION, MFA_SUPPORTED_TYPES, MFA_EXPIRATION_TIME
 
 # Mapper for MFA Types
@@ -105,7 +104,6 @@ class MFAUtils:
             html_ = html_.replace("{{username}}", username_nomail)
             html_ = html_.replace("{{otp_expiry}}", str(int(MFA_EXPIRATION_TIME/60)))
             html_ = html_.replace("{{otp_code}}", auth_otp)
-            html_ = MIMEText(html_, "html")
             message.add_alternative(html_, subtype="html")
             send_email(message)
             log_info(
@@ -220,18 +218,19 @@ class MFAUtils:
             qr_data = MFAUtils.generate_mfa_qrcode(username, mfa_hash)
 
             # generate & send email
+            image_id = make_msgid()
             message = generate_email_notification(email)
             username_nomail = MFAUtils.get_username_from_email(username) 
             message["Subject"] = f"QR code for Anuvaad Login"
             filename = "./templates/register_totp_template.html"
             html_ = open(filename).read()
             html_ = html_.replace("{{username}}", username_nomail)
+            html_ = html_.replace("{{mfa_qr}}", image_id[1:-1])
             # html_ = html_.replace("{{qr_setup_key}}", qr_data['mfa_setup_key'])
             html_ = MIMEText(html_, "html")
             message.add_alternative(html_, subtype="html")
-            img_data = MIMEImage(base64.decodebytes(qr_data['mfa_qr_base64'].encode()))
-            img_data.add_header("Content-ID", "<mfa_qr>")
-            message.add_attachment(img_data)
+            message.get_payload()[0].add_related(
+                base64.decodebytes(qr_data['mfa_qr_base64'].encode()), 'image', 'png',cid=image_id)
             send_email(message)
             log_info(
                 "Generated email notificatio for TOTP MFA data",
