@@ -155,16 +155,16 @@ def set_granularity():
         if error is not None:
             return error, 400        
         data = add_headers(req_criteria, request)
-        if "userIDs" in req_criteria.keys():
-            if not req_criteria["userIDs"]:
-                req_criteria["userIDs"] = [request.headers["x-user-id"]]
-        else:
-            req_criteria["userIDs"] = [request.headers["x-user-id"]]
-        if "orgIds" in req_criteria.keys():
-            if not req_criteria["orgIds"]:
-                req_criteria["orgIds"] = [request.headers["x-org-id"]]
-        else:
-            req_criteria["orgIds"] = [request.headers["x-org-id"]]
+        # if "userIDs" in req_criteria.keys():
+        #     if not req_criteria["userIDs"]:
+        #         req_criteria["userIDs"] = [request.headers["x-user-id"]]
+        # else:
+        #     req_criteria["userIDs"] = [request.headers["x-user-id"]]
+        # if "orgIds" in req_criteria.keys():
+        #     if not req_criteria["orgIds"]:
+        #         req_criteria["orgIds"] = [request.headers["x-org-id"]]
+        # else:
+        #     req_criteria["orgIds"] = [request.headers["x-org-id"]]
         response = service.set_granularity(req_criteria)
         if response:
             return jsonify(response), 200
