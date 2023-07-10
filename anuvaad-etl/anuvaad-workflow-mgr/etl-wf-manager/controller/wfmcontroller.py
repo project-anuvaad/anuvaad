@@ -1,12 +1,13 @@
 #!/bin/python
 import logging
 import time
+import requests 
 
 from flask import Flask, jsonify, request
 from logging.config import dictConfig
 from service.wfmservice import WFMService
 from validator.wfmvalidator import WFMValidator
-from configs.wfmconfig import context_path
+from configs.wfmconfig import context_path, app_context
 from configs.wfmconfig import module_wfm_name
 from anuvaad_auditor.loghandler import log_exception, log_info
 
@@ -94,6 +95,13 @@ def search_all_jobs():
             response = service.get_job_details_bulk(req_criteria, False, req_criteria['isReviewer'])
         else:
             response = service.get_job_details_bulk(req_criteria, False)
+        try:
+            ums_url = "http://gateway_anuvaad-user-management:5001/anuvaad/user-mgmt/v1/users/search"
+            ums_input = {"userIDs":["8cc4d47e0b76487a80a2517ca40fe4c71688368287753"]}
+            ums_response = requests.post(ums_url,json=ums_input)
+            log_info(f"UMS_Response :: {ums_response.status_code} :: {ums_response.json()}",app_context)
+        except Exception as e:
+            log_info(f"UMS Call Exception :: {e.with_traceback()}",app_context)
         if response:
             return jsonify(response), 200
         else:
