@@ -96,6 +96,7 @@ def search_all_jobs():
         else:
             response = service.get_job_details_bulk(req_criteria, False)
         try:
+            log_info(f"BULK Response {response}",app_context)
             ums_url = "http://gateway_anuvaad-user-management:5001/anuvaad/user-mgmt/v1/users/search"
             ums_input = {"userIDs":["8cc4d47e0b76487a80a2517ca40fe4c71688368287753"]}
             ums_response = requests.post(ums_url,json=ums_input)
