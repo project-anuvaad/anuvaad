@@ -112,7 +112,7 @@ def search_all_jobs():
                     ums_resp = ums_response.json()
                     if "data" in ums_resp.keys():
                         for each_ums_response in ums_resp["data"]:
-                            userDictionary[each_ums_response['userID']] = each_response['name']
+                            userDictionary[each_ums_response['userID']] = each_ums_response['name']
                 for i in range(0,len(response["jobs"])):
                     response["jobs"]["metadata"]["userName"] = userDictionary[response["jobs"]["metadata"]["userID"]]
             except Exception as e:
