@@ -622,8 +622,8 @@ class ReviewDocumentList extends React.Component {
                                 <div>
                                     {tableMeta.rowData[5] === "COMPLETED" &&
                                         this.getDateTimeDifference(
-                                            tableMeta.rowData[10],
-                                            tableMeta.rowData[12]
+                                            tableMeta.rowData[11],
+                                            tableMeta.rowData[13]
                                         )}
                                 </div>
                             );
@@ -642,7 +642,7 @@ class ReviewDocumentList extends React.Component {
                         if (tableMeta.rowData) {
                             return (
                                 <div>
-                                    {this.getDateTimeFromTimestamp(tableMeta.rowData[12])}
+                                    {this.getDateTimeFromTimestamp(tableMeta.rowData[13])}
                                 </div>
                             );
                         }
@@ -661,7 +661,7 @@ class ReviewDocumentList extends React.Component {
                         if (tableMeta.rowData) {
                             return (
                                 <div>
-                                    {this.processDocumentView(tableMeta.rowData[1], tableMeta.rowData[0], tableMeta.rowData[5], tableMeta.rowData[6])}
+                                    {this.processDocumentView(tableMeta.rowData[2], tableMeta.rowData[0], tableMeta.rowData[6], tableMeta.rowData[7])}
                                     {/* {this.processDocumentDownload(tableMeta.rowData[1])} */}
                                     {/* {this.processEventView(tableMeta.rowData[1], tableMeta.rowData[5], tableMeta.rowData[6])} */}
                                 </div>
