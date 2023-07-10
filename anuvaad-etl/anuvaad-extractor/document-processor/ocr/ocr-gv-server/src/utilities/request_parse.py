@@ -18,7 +18,12 @@ class File:
 
     def __init__(self, file):
         self.file = file
+        self.file_schema = file.get('schema','LEGACY')
         self.set_page_meta()
+
+    @log_error
+    def get_schema(self):
+        return self.file_schema
 
     @log_error
     def get_format(self):
@@ -54,7 +59,7 @@ class File:
 
     @log_error
     def get_regions(self, page_index):
-        return self.file['pages'][page_index]['regions']
+        return self.file['pages'][page_index].get('regions',[])
 
     @log_error
     def get_fontinfo(self, page_index):
@@ -73,8 +78,15 @@ class File:
 
     @log_error  
     def get_pageinfo(self, page_index):
-        width = self.file['pages'][page_index]['boundingBox']['vertices'][1]['x']
-        height = self.file['pages'][page_index]['boundingBox']['vertices'][3]['y']
+        if self.file_schema == "COMMON":
+            width = self.file['pages'][page_index]['info']['width']
+            height = self.file['pages'][page_index]['info']['height']
+        elif self.file_schema == "TRANSLATION":
+            width = self.file['pages'][page_index]['page_width']
+            height = self.file['pages'][page_index]['page_height']
+        else:
+            width = self.file['pages'][page_index]['boundingBox']['vertices'][1]['x']
+            height = self.file['pages'][page_index]['boundingBox']['vertices'][3]['y']
         return width, height
    
     @log_error
@@ -93,7 +105,11 @@ class File:
 
     @log_error
     def set_regions(self, page_index, regions):
-        self.file['pages'][page_index]["regions"] = regions
+        if self.file_schema == "TRANSLATION":
+            regions = change_regions_to_childrens(regions)
+            self.file['pages'][page_index]["text_blocks"] = regions
+        else:
+            self.file['pages'][page_index]["regions"] = regions
     
     @log_error
     
@@ -117,26 +133,51 @@ class MapKeys:
         self.bottom  =  None
 
     def get_left(self,box):
-        left = int(box['boundingBox']['vertices'][0]['x'])
-        return left
+        if 'info' in box.keys():
+            return int(box['info']['left'])
+        elif 'text_top' in box.keys():
+            return int(box['text_left'])
+        else:
+            return int(box['boundingBox']['vertices'][0]['x'])
 
     def get_right(self,box):
-        right = int(box['boundingBox']['vertices'][1]['x'])
-        return right
+        if 'info' in box.keys():
+            return int(box['info']['left'] + box['info']['width'])
+        elif 'text_top' in box.keys():
+            return int(box['text_left'] + box['text_width'])
+        else:
+            return int(box['boundingBox']['vertices'][1]['x'])
 
     def get_top(self,box):
-        top = int(box['boundingBox']['vertices'][0]['y'])
-        return top
+        if 'info' in box.keys():
+            return int(box['info']['top'])
+        elif 'text_top' in box.keys():
+            return int(box['text_top'])
+        else:
+            return int(box['boundingBox']['vertices'][0]['y'])
 
     def get_bottom(self,box):
-        bottom = int(box['boundingBox']['vertices'][3]['y'])
-        return bottom
+        if 'info' in box.keys():
+            return int(box['info']['top'] + box['info']['height'])
+        elif 'text_top' in box.keys():
+            return int(box['text_top'] + box['text_height'])
+        else:
+            return int(box['boundingBox']['vertices'][3]['y'])
     def get_height(self,box):
-        height = int(abs(self.get_top(box) - self.get_bottom(box)))
-        return height
+        if 'info' in box.keys():
+            return int(box['info']['height'])
+        elif 'text_top' in box.keys():
+            return int(box['text_height'])
+        else:
+            return int(abs(self.get_top(box) - self.get_bottom(box)))
     def get_width(self,box):
-        width =  int(abs(self.get_left(box) - self.get_right(box)))
-        return width
+        if 'info' in box.keys():
+            return int(box['info']['width'])
+        elif 'text_top' in box.keys():
+            return int(box['text_width'])
+        else:
+            return int(abs(self.get_left(box) - self.get_right(box)))
+
 class UpdateKeys:
     def __init__(self):
         self.left    =  None
@@ -162,3 +203,11 @@ def get_json(base_dir,path):
     json_data = data['outputs']
     return json_data
 
+def change_regions_to_childrens(regions):
+    for region in regions:
+        if 'regions' in region.keys():
+            for wregion in region['regions']:
+                if 'regions' in wregion.keys():
+                    wregion['children'] = wregion.pop('regions')
+            region['children'] = region.pop('regions')
+    return regions

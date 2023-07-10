@@ -8,12 +8,19 @@ import copy
 import config
 from src.services.extract_images import extract_images
 from src.utilities.craft_pytorch.detect import detect_text
-from src.utilities.model_response import FileOutput, Page
+from src.utilities.model_response import FileOutput, Page, PageWithCommonSchema, PageWithTranslationSchema
 from src.utilities.request_parse import get_files, get_languages, File
 from src.utilities.primalinenet.infer import PRIMA
 predict_primanet = PRIMA()
 
 removeoverlap = RemoveOverlap()
+
+# page class mapper for diff schema
+schema_page = {
+    "LEGACY" : Page,
+    "TRANSLATION" : PageWithTranslationSchema,
+    "COMMON" : PageWithCommonSchema,
+} 
 
 
 def get_text(app_context, base_dir):
@@ -62,6 +69,9 @@ def get_response(app_context, words, lines, images):
 
     for file_index, file in enumerate(files):
         file_prperties = FileOutput(file)
+        # set output schema for the file
+        file_schema = file['config'].get('schema','')
+        file_schema = file_prperties.set_schema(file_schema)
         try:
             for page_index, page in enumerate(images[file_index]):
                 if len(words) != 0:
@@ -72,7 +82,7 @@ def get_response(app_context, words, lines, images):
                     page_lines = lines[file_index][page_index]
                 else:
                     page_lines = []
-                page_properties = Page(page_words, page_lines, page)
+                page_properties = schema_page[file_schema](page_index,page_words, page_lines, page)
                 file_prperties.set_page(page_properties.get_page())
                 file_prperties.set_page_info(page)
             file_prperties.set_staus(True)

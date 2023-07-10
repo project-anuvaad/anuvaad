@@ -53,8 +53,8 @@ class Word_Detector(Resource):
         try:
             error_validator = ValidationResponse(DOWNLOAD_FOLDER)
             if error_validator.format_error(json_data) is True:
-                response_gen = Response(json_data, DOWNLOAD_FOLDER)
-                response = response_gen.nonwf_response()
+                response = Response(json_data, DOWNLOAD_FOLDER)
+                response = response.nonwf_response()
                 log_info("Resource Word_Detector api response completed", app_context.application_context)
                 return jsonify(response)
         except FormatError as e:

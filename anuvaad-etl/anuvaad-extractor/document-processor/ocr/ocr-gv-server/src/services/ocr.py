@@ -57,13 +57,13 @@ def text_extraction(file_properties,image_paths,file):
             font_info = file_properties.get_fontinfo(idx)
         else :
             font_info = None
-        page_dict = {"identifier": str(uuid.uuid4()),"resolution": config.EXRACTION_RESOLUTION }
+        page_dict = get_page_dict(file_properties.get_schema())
         page_regions =  file_properties.get_regions(idx)
         page_c_words = file_properties.get_words(idx)
         page_c_lines = file_properties.get_lines(idx)
         page_output,page_words,save_path = get_text(page_c_lines,file,image_path,page_dict,page_regions,page_c_words,font_info,file_properties,idx)
         
-        #save_path = mask_image_vision(image_path, page_words, idx, file_properties, width, height)
+        save_path = mask_image_vision(image_path, page_words, idx, file_properties, width, height)
         page_output = set_bg_image(page_output, save_path, idx,file)
         # file_properties.set_regions(idx,page_output)
         # file_properties.delete_regions(idx)
@@ -105,7 +105,7 @@ def save_sentences_on_hashkey(key,sent):
             # log_exception("Exception in storing sentence data on redis store | Cause: " + str(e),None, e)
             return None
 
-def extract_line(paragraph):
+def extract_line(paragraph,file_schema):
     line_coord = []
     line_text  = []
     line = ""
@@ -122,18 +122,14 @@ def extract_line(paragraph):
                 line += ' '  
             if symbol.property.detected_break.type == breaks.EOL_SURE_SPACE or symbol.property.detected_break.type == breaks.HYPHEN:
                 line += ' '
-                lines_coord = []
                 line_text.append(line)
-                lines_coord.append({'x':top_left_x,'y':top_left_y});lines_coord.append({'x':top_right_x,'y':top_right_y})
-                lines_coord.append({'x':bottom_right_x,'y':bottom_right_y});lines_coord.append({'x':bottom_left_x,'y':bottom_left_y})
+                lines_coord = get_line_coords(top_left_x,top_left_y,top_right_x,top_right_y,bottom_right_x,bottom_right_y,bottom_left_x,bottom_left_y,file_schema)
                 line_coord.append(lines_coord)
                 line = ''
                 top_left_x    = sys.maxsize ;top_left_y   = sys.maxsize; top_right_x = -1;top_right_y    = sys.maxsize
                 bottom_left_x = sys.maxsize;bottom_left_y = -1  ; bottom_right_x     = -1;bottom_right_y =-1
             if symbol.property.detected_break.type == breaks.LINE_BREAK:
-                lines_coord = []
-                lines_coord.append({'x':top_left_x,'y':top_left_y});lines_coord.append({'x':top_right_x,'y':top_right_y})
-                lines_coord.append({'x':bottom_right_x,'y':bottom_right_y});lines_coord.append({'x':bottom_left_x,'y':bottom_left_y})
+                lines_coord = get_line_coords(top_left_x,top_left_y,top_right_x,top_right_y,bottom_right_x,bottom_right_y,bottom_left_x,bottom_left_y,file_schema)
                 line_coord.append(lines_coord)
                 line_text.append(line)
                 line = ''
@@ -141,10 +137,18 @@ def extract_line(paragraph):
                 bottom_left_x = sys.maxsize;bottom_left_y = -1  ; bottom_right_x     = -1;bottom_right_y = -1
     return line_coord, line_text
 
-def add_line(page_dict, line_coord, line_text):
+def add_line(page_dict, line_coord, line_text, file_schema):
     for coord, text in zip(line_coord, line_text):
-        line_region = {"identifier": str(uuid.uuid4()), "boundingBox":{"vertices":[]}}
-        line_region["boundingBox"]["vertices"] = coord
+        id1 = str(uuid.uuid4())
+        if file_schema == "COMMON":
+            line_region = {"id": id1}
+            line_region["info"] = coord
+        elif file_schema == "TRANSLATION":
+            line_region = {"id": id1}
+            line_region = {**line_region,**coord}
+        else:
+            line_region = {"identifier": id1, "boundingBox":{"vertices":[]}}
+            line_region["boundingBox"]["vertices"] = coord
         line_region["text"] = text
         page_dict["lines"].append(line_region)
     return page_dict
@@ -158,28 +162,15 @@ def get_document_bounds(page_c_lines,file,response,page_dict,page_regions,page_c
     for i,page in enumerate(response.pages):
         page_dict["vertices"]=  [{"x":0,"y":0},{"x":page.width,"y":0},{"x":page.width,"y":page.height},{"x":0,"y":page.height}]
         for block in page.blocks:
-            block_region = {"identifier": str(uuid.uuid4()), "boundingBox":{"vertices":[]}, "class":'PARA',}
-            block_vertices = []
-            block_vertices.append({"x": block.bounding_box.vertices[0].x, "y": block.bounding_box.vertices[0].y})
-            block_vertices.append({"x": block.bounding_box.vertices[1].x, "y": block.bounding_box.vertices[1].y})
-            block_vertices.append({"x": block.bounding_box.vertices[2].x, "y": block.bounding_box.vertices[2].y})
-            block_vertices.append({"x": block.bounding_box.vertices[3].x, "y": block.bounding_box.vertices[3].y})
-            block_region["boundingBox"]["vertices"] = block_vertices
-            page_dict["regions"].append(block_region)
+            block_region = get_block_region(block,file_properties.get_schema())
 
 
             for paragraph in block.paragraphs:
-                line_coord, line_text = extract_line(paragraph)
-                page_dict = add_line(page_dict, line_coord, line_text)
+                line_coord, line_text = extract_line(paragraph,file_properties.get_schema())
+                page_dict = add_line(page_dict, line_coord, line_text,file_properties.get_schema())
                 #print(paragraph)
                 for word in paragraph.words:
-                    word_region = {"identifier": str(uuid.uuid4()), "boundingBox":{"vertices":[]}}
-                    word_vertices = []
-                    word_vertices.append({"x": word.bounding_box.vertices[0].x, "y": word.bounding_box.vertices[0].y})
-                    word_vertices.append({"x": word.bounding_box.vertices[1].x, "y": word.bounding_box.vertices[1].y})
-                    word_vertices.append({"x": word.bounding_box.vertices[2].x, "y": word.bounding_box.vertices[2].y})
-                    word_vertices.append({"x": word.bounding_box.vertices[3].x, "y": word.bounding_box.vertices[3].y})
-                    word_region["boundingBox"]["vertices"] = word_vertices
+                    word_region =get_word_region(word,file_properties.get_schema())
                     
                     word_text = ''.join([
                         symbol.text for symbol in word.symbols
@@ -303,9 +294,9 @@ def coord_alignment(regions,top_flag):
 def segment_regions(file,words, lines,regions,page_c_words,path,file_properties,idx):
     #regions = segment_regions(page_words,page_lines,page_regions)
     width, height = file_properties.get_pageinfo(0)
-    v_list, n_text_regions = region_unifier.region_unifier(idx,file,words,lines,regions,page_c_words,path)
+    v_list, n_text_regions = region_unifier.region_unifier(idx,file,words,lines,regions,page_c_words,path,file_properties.get_schema())
     if "mask_image" in file['config']["OCR"].keys() and file['config']["OCR"]["mask_image"]=="False":
-        save_path = "None"
+        save_path = None
     else:
         save_path = mask_image_craft(path, v_list, idx, file_properties, width, height)
     if "top_correction" in file['config']["OCR"].keys() and file['config']["OCR"]["top_correction"]=="True":
@@ -327,9 +318,16 @@ def segment_regions(file,words, lines,regions,page_c_words,path,file_properties,
     
 def end_point_correction(region, y_margin,x_margin, ymax,xmax):
     # check if after adding margin the endopints are still inside the image
-    x = region["boundingBox"]['vertices'][0]['x']; y = region["boundingBox"]['vertices'][0]['y']
-    w = abs(region["boundingBox"]['vertices'][0]['x']-region["boundingBox"]['vertices'][1]['x'])
-    h = abs(region["boundingBox"]['vertices'][0]['y']-region["boundingBox"]['vertices'][2]['y'])
+    if 'info' in region.keys():
+        x = region["info"]['left']; y = region["info"]['top']
+        w = abs(region["info"]['width']); h = abs(region["info"]['height'])
+    elif 'text_top' in region.keys():
+        x = region['text_left']; y = region['text_top']
+        w = abs(region['text_width']); h = abs(region['text_height'])
+    else:
+        x = region["boundingBox"]['vertices'][0]['x']; y = region["boundingBox"]['vertices'][0]['y']
+        w = abs(region["boundingBox"]['vertices'][0]['x']-region["boundingBox"]['vertices'][1]['x'])
+        h = abs(region["boundingBox"]['vertices'][0]['y']-region["boundingBox"]['vertices'][2]['y'])
     if abs(h-ymax)<50:
         return False,False,False,False,False
     # if (y + margin) < 0:
@@ -447,7 +445,7 @@ def mask_image_vision(path, page_regions,page_index,file_properties,image_width,
         image   = cv2.imread(path)
         
         for region in page_regions:
-            row_top, row_bottom,row_left,row_right = end_point_correction(region, 2,image_height,image_width)
+            _, row_top, row_bottom,row_left,row_right = end_point_correction(region, 3, 3,image_height,image_width)
             
             if len(image.shape) == 2 :
                 image[row_top - margin : row_bottom + margin , row_left - margin: row_right + margin] = fill
@@ -466,3 +464,88 @@ def mask_image_vision(path, page_regions,page_index,file_properties,image_width,
     except Exception as e :
         print('Service Tesseract Error in masking out image {}'.format(e))
         return None
+
+
+def get_page_dict(file_schema):
+    if file_schema != 'LEGACY':
+        key = "id" 
+    else:
+        key = "identifier" 
+    return {key:str(uuid.uuid4()),"resolution":config.EXRACTION_RESOLUTION}
+
+def get_bounding_box(block):
+    return {
+        "vertices": [
+            {"x": block.bounding_box.vertices[0].x, "y": block.bounding_box.vertices[0].y},
+            {"x": block.bounding_box.vertices[1].x, "y": block.bounding_box.vertices[1].y},
+            {"x": block.bounding_box.vertices[2].x, "y": block.bounding_box.vertices[2].y},
+            {"x": block.bounding_box.vertices[3].x, "y": block.bounding_box.vertices[3].y},
+            ]
+        }
+
+def get_block_region(block,file_schema):
+    id1 = str(uuid.uuid4())
+    block_region = {"class":'PARA',}
+    if file_schema != "LEGACY":
+        block_region['id'] = id1
+        if file_schema == "TRANSLATION":
+            info,height,width,top,left = "region_info",'region_height','region_width','region_top','region_left'
+            extras = {"resolution": config.EXRACTION_RESOLUTION,}
+        else:
+            info,height,width,top,left = "info",'height','width','top','left'
+            extras = {}
+        block_region[info] = {
+            **extras,
+            height: block.bounding_box.vertices[3].y - block.bounding_box.vertices[0].y,
+            width: block.bounding_box.vertices[2].x - block.bounding_box.vertices[3].x,
+            top: block.bounding_box.vertices[3].x,
+            left: block.bounding_box.vertices[3].y,
+        }
+    else:
+        block_region['identifier'] = id1
+        block_region["boundingBox"] = get_bounding_box(block)
+    return block_region
+
+def get_word_region(word,file_schema):
+    id1 = str(uuid.uuid4())
+    if file_schema == 'COMMON':
+        word_region = {"id": id1,}
+        word_region['info'] = {
+            "height": word.bounding_box.vertices[3].y - word.bounding_box.vertices[0].y,
+            "width": word.bounding_box.vertices[2].x - word.bounding_box.vertices[3].x,
+            "top": word.bounding_box.vertices[3].x,
+            "left": word.bounding_box.vertices[3].y,
+        }
+    elif file_schema == 'TRANSLATION':
+        word_region = {
+            "id": id1,
+            "text_height": word.bounding_box.vertices[3].y - word.bounding_box.vertices[0].y,
+            "text_width": word.bounding_box.vertices[2].x - word.bounding_box.vertices[3].x,
+            "text_top": word.bounding_box.vertices[3].x,
+            "text_left": word.bounding_box.vertices[3].y,
+        }
+    else:
+        word_region = {"identifier": id1}
+        word_region["boundingBox"]= get_bounding_box(word)
+    return word_region
+
+def get_line_coords(top_left_x,top_left_y,top_right_x,top_right_y,bottom_right_x,bottom_right_y,bottom_left_x,bottom_left_y,file_schema):
+    if file_schema != 'LEGACY':
+        if file_schema == "TRANSLATION":
+            hgt,wgt,top,lft = "text_height","text_width","text_top","text_left"
+        else:
+            hgt,wgt,top,lft = "height","width","top","left"
+        lines_coord = {
+            hgt :  bottom_left_y - top_left_y ,
+            wgt :  top_right_x - top_left_x ,
+            top :  top_left_y ,
+            lft :  top_left_x ,
+        }
+    else:
+        lines_coord = [
+            {'x':top_left_x,'y':top_left_y},
+            {'x':top_right_x,'y':top_right_y},
+            {'x':bottom_right_x,'y':bottom_right_y},
+            {'x':bottom_left_x,'y':bottom_left_y},
+        ]
+    return lines_coord

@@ -97,7 +97,9 @@ class RemoveOverlap:
         
         return False
     def is_connected(self,region1, region2):
-            
+        if 'info' in region1.keys() or 'text_top' in region1.keys():
+            region1 = get_bounding_box(region1)
+            region2 = get_bounding_box(region2)
         region_poly = self.get_polygon(region2['boundingBox'])
         base_poly = self.get_polygon(region1['boundingBox'])
         area=0
@@ -234,3 +236,26 @@ def merger_lines_words(lines,words):
         else:
             updated_lines.append(line)
     return updated_lines
+
+def get_bounding_box(region):
+    region = copy.deepcopy(region)
+    if 'text_top' in region.keys():
+        lft = region['text_left']
+        top = region['text_top']
+        hgt = region['text_height']
+        wdt = region['text_width']
+    else:
+        lft = region['info']['left']
+        top = region['info']['top']
+        hgt = region['info']['height']
+        wdt = region['info']['width']
+    region['boundingBox'] = {
+        'vertices' : [
+            {'x':lft,'y':top},
+            {'x':lft+wdt,'y':top},
+            {'x':lft+wdt,'y':top-hgt},
+            {'x':lft,'y':top-hgt},
+        ]
+    }
+    region.pop("info", None)
+    return region

@@ -80,7 +80,9 @@ def index_tree(poly_index, poly, idx):
 
 def get_polygon(region):
     points = []
-    vertices = region['vertices']
+    if 'boundingBox' not in region.keys():
+        region = get_bounding_box(region)
+    vertices = region['boundingBox']['vertices']
     for point in vertices:
         points.append((point['x'], point['y']))
     if not (max(points)==(0,0) and min(points)==(0,0)):
@@ -92,22 +94,42 @@ def get_polygon(region):
         return False
 
 def sort_regions(region_lines, sorted_lines=[]):
-    check_y =region_lines[0]['boundingBox']['vertices'][0]['y']
-    spacing_threshold = abs(check_y - region_lines[0]['boundingBox']['vertices'][3]['y'])* 0.6 #0.8  # *2 #*0.5
-    same_line =  list(filter(lambda x: (abs(x['boundingBox']['vertices'][0]['y']  - check_y) <= spacing_threshold), region_lines))
-    next_line =   list(filter(lambda x: (abs(x['boundingBox']['vertices'][0]['y']  - check_y) > spacing_threshold), region_lines))
-    if len(same_line) >1 :
-       same_line.sort(key=lambda x: x['boundingBox']['vertices'][0]['x'],reverse=False)
+    if 'info' in region_lines[0].keys():
+        check_y =region_lines[0]['info']['top']
+        spacing_threshold = abs(check_y - region_lines[0]['info']['height'])* 0.6 #0.8  # *2 #*0.5
+        same_line =  list(filter(lambda x: (abs(x['info']['top']  - check_y) <= spacing_threshold), region_lines))
+        next_line =   list(filter(lambda x: (abs(x['info']['top']  - check_y) > spacing_threshold), region_lines))
+        if len(same_line) >1 :
+            same_line.sort(key=lambda x: x['info']['left'],reverse=False)
+    elif 'text_top' in region_lines[0].keys():
+        check_y =region_lines[0]['text_top']
+        spacing_threshold = abs(check_y - region_lines[0]['text_height'])* 0.6 #0.8  # *2 #*0.5
+        same_line =  list(filter(lambda x: (abs(x['text_top']  - check_y) <= spacing_threshold), region_lines))
+        next_line =   list(filter(lambda x: (abs(x['text_top']  - check_y) > spacing_threshold), region_lines))
+        if len(same_line) >1 :
+            same_line.sort(key=lambda x: x['text_left'],reverse=False)
+    else:
+        check_y =region_lines[0]['boundingBox']['vertices'][0]['y']
+        spacing_threshold = abs(check_y - region_lines[0]['boundingBox']['vertices'][3]['y'])* 0.6 #0.8  # *2 #*0.5
+        same_line =  list(filter(lambda x: (abs(x['boundingBox']['vertices'][0]['y']  - check_y) <= spacing_threshold), region_lines))
+        next_line =   list(filter(lambda x: (abs(x['boundingBox']['vertices'][0]['y']  - check_y) > spacing_threshold), region_lines))
+        if len(same_line) >1 :
+            same_line.sort(key=lambda x: x['boundingBox']['vertices'][0]['x'],reverse=False)
     sorted_lines += same_line
     if len(next_line) > 0:
         sort_regions(next_line, sorted_lines)
     return sorted_lines
 
-def add_font(regions):
+def add_font(regions,file_schema):
+    if file_schema == "COMMON":
+        height_calc = lambda region :  abs(region['info']['height'])
+    elif file_schema == "TRANSLATION":
+        height_calc = lambda region :  abs(region['text_height'])
+    else:
+        height_calc = lambda region :  abs(region['boundingBox']['vertices'][0]['y'] - region['boundingBox']['vertices'][2]['y'])
     for idx,region in enumerate(regions):
         if not 'font' in region.keys():
-            height = abs(region['boundingBox']['vertices'][0]['y'] - region['boundingBox']['vertices'][2]['y'])
-            regions[idx]['font']={'family':'Arial Unicode MS', 'size':height, 'style':'REGULAR'}
+            regions[idx]['font']={'family':'Arial Unicode MS', 'size':height_calc(region), 'style':'REGULAR'}
     return regions
 
 def collate_regions(regions, lines, child_class=None, grand_children=False,region_flag = True,skip_enpty_children=False,add_font=False ):
@@ -122,17 +144,25 @@ def collate_regions(regions, lines, child_class=None, grand_children=False,regio
                 if 'text' in line.keys():
                     del lines[line_idx]['text']
             if add_font and 'font' not in line.keys():
-                height = abs(line['boundingBox']['vertices'][0]['y'] - line['boundingBox']['vertices'][2]['y'])
+                if 'info' in line.keys():
+                    height = abs(line['info']['height'])
+                    key_sorter = lambda x:x['info']['top']
+                elif 'text_top' in line.keys():
+                    height = abs(line['text_height'])
+                    key_sorter = lambda x:x['text_top']
+                else:
+                    height = abs(line['boundingBox']['vertices'][0]['y'] - line['boundingBox']['vertices'][2]['y'])
+                    key_sorter = lambda x:x['boundingBox']['vertices'][0]['y']
                 lines[line_idx]['font']={'family':'Arial Unicode MS', 'size':height, 'style':'REGULAR'}
 
             if child_class is not None:
                 lines[line_idx]['class'] = child_class
-            poly = get_polygon(line['boundingBox'])
+            poly = get_polygon(line)
             if poly:
                 idx.insert(line_idx, poly.bounds)
         for region_index, region in enumerate(regions):
             
-            region_poly = get_polygon(region['boundingBox'])
+            region_poly = get_polygon(region)
             children_lines =[]
             if region_poly:
                 children_lines = list(idx.intersection(region_poly.bounds))
@@ -146,7 +176,7 @@ def collate_regions(regions, lines, child_class=None, grand_children=False,regio
                                 grand_child['class'] = 'WORD'
                                 lines[intr_index][child_key] = [grand_child]
                         
-                        line_poly = get_polygon(lines[intr_index]['boundingBox'])
+                        line_poly = get_polygon(lines[intr_index])
                         if line_poly:
                             area = region_poly.intersection(line_poly).area
                             reg_area = region_poly.area
@@ -154,7 +184,7 @@ def collate_regions(regions, lines, child_class=None, grand_children=False,regio
                             if reg_area>0 and line_area>0 and area/min(line_area,reg_area) >0.5 :
                                 region_lines.append(lines[intr_index])
                                 lines_intersected.append(intr_index)
-                region_lines.sort(key=lambda x:x['boundingBox']['vertices'][0]['y'])
+                region_lines.sort(key=key_sorter)
                 
                 if len(region_lines) > 0:
                     regions[region_index][child_key] = sort_regions(region_lines,[])
@@ -529,3 +559,25 @@ def merge_corrds(siblings,children_none=False):
 
     return box['boundingBox']
 
+def get_bounding_box(region):
+    region = copy.deepcopy(region)
+    if 'text_top' in region.keys():
+        lft = region['text_left']
+        top = region['text_top']
+        hgt = region['text_height']
+        wdt = region['text_width']
+    else:
+        lft = region['info']['left']
+        top = region['info']['top']
+        hgt = region['info']['height']
+        wdt = region['info']['width']
+    region['boundingBox'] = {
+        'vertices' : [
+            {'x':lft,'y':top},
+            {'x':lft+wdt,'y':top},
+            {'x':lft+wdt,'y':top-hgt},
+            {'x':lft,'y':top-hgt},
+        ]
+    }
+    region.pop("info", None)
+    return region

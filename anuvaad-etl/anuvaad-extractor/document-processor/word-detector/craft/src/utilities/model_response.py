@@ -2,7 +2,8 @@ from flask import jsonify
 import enum
 import uuid
 import config
-import imagesize
+import imagesize,lzma
+from base64 import b64encode
 import src.utilities.app_context as app_context
 from anuvaad_auditor.loghandler import log_exception
 
@@ -67,6 +68,16 @@ class FileOutput(File):
         self.file['pages'] = []
         self.file['page_info'] = []
         self.file['status'] = {}
+        self.file['schema'] = None
+    
+    @log_error
+    def set_schema(self,schema):
+        schema = schema.strip().upper()
+        if schema in ['LEGACY','TRANSLATION','COMMON']:
+            self.file['schema'] = schema
+        else:
+            self.file['schema'] = 'LEGACY'
+        return self.file['schema']
 
     @log_error
     def set_page(self, page):
@@ -88,7 +99,7 @@ class FileOutput(File):
 
 class Page:
 
-    def __init__(self, words, lines, path):
+    def __init__(self, number, words, lines, path):
         self.words = words
         self.lines = lines
         self.path = path
@@ -175,3 +186,135 @@ class Box:
 
     def get_box(self):
         return self.box
+
+class PageWithCommonSchema:
+
+    def __init__(self, number, words, lines, path):
+        self.words = words
+        self.lines = lines
+        self.path = path
+
+        self.page = {}
+        self.page['id'] = str(uuid.uuid4())
+        self.page['class'] = "PAGE"
+        self.page['info'] = {
+            'resolution':None,
+            'height': None,
+            'width': None,
+            'no': number,
+        }
+        self.page['image'] = {
+            'data' : None,
+            'type' : None,
+            'path' : None,
+        }
+        
+        self.page['regions'] = []
+        self.page['words'] = []
+        self.page['lines'] = []
+
+        self.set_resolution()
+        self.set_dimentions()
+        self.set_words()
+        self.set_lines()
+        self.set_img_properties()
+
+    @log_error
+    def set_dimentions(self):
+        width, height = imagesize.get(self.path)
+        self.page['info']['height'] = height
+        self.page['info']['width'] = width
+
+    @log_error
+    def set_resolution(self):
+        self.page['info']['resolution'] = config.EXRACTION_RESOLUTION
+
+    @log_error
+    def set_words(self):
+        if len(self.words) > 0:
+            for index,  word_corrd in self.words.iterrows():
+                word = Box(word_corrd)
+                word.set_size(word_corrd['y4'] - word_corrd['y1'])
+                self.page['words'].append(word.get_box())
+
+    @log_error
+    def set_lines(self):
+        if len(self.lines) > 0:
+            if type(self.lines) is not list:
+                for index, line_corrd in self.lines.iterrows():
+                    line = Box(line_corrd)
+                    line.set_size(line_corrd['y4'] - line_corrd['y1'])
+                    self.page['lines'].append(line.get_box())
+            else:
+                self.page['lines'] = self.lines
+
+    @log_error
+    def set_img_properties(self):
+        with open(self.path,'rb') as datax:
+            data = b64encode(lzma.compress(datax.read()))
+        self.page['image']['data'] = data.decode()
+        self.page['image']['type'] = 'jpg'
+        self.page['image']['path'] = self.path
+
+    def get_page(self):
+        return self.page
+    
+class PageWithTranslationSchema:
+
+    def __init__(self, number, words, lines, path):
+        self.words = words
+        self.lines = lines
+        self.path = path
+
+        self.page = {}
+        self.page['page_height'] = None
+        self.page['page_no'] = number
+        self.page['page_width'] = None
+        self.page['image'] = {
+            'data' : None,
+            'type' : None,
+            'path' : None,
+        }
+        
+        self.page['text_blocks'] = []
+        self.page['words'] = []
+        self.page['lines'] = []
+
+        self.set_dimentions()
+        self.set_words()
+        self.set_lines()
+        self.set_img_properties()
+
+    @log_error
+    def set_dimentions(self):
+        self.page['page_width'], self.page['page_height'] = imagesize.get(self.path)
+
+    @log_error
+    def set_words(self):
+        if len(self.words) > 0:
+            for index,  word_corrd in self.words.iterrows():
+                word = Box(word_corrd)
+                word.set_size(word_corrd['y4'] - word_corrd['y1'])
+                self.page['words'].append(word.get_box())
+
+    @log_error
+    def set_lines(self):
+        if len(self.lines) > 0:
+            if type(self.lines) is not list:
+                for index, line_corrd in self.lines.iterrows():
+                    line = Box(line_corrd)
+                    line.set_size(line_corrd['y4'] - line_corrd['y1'])
+                    self.page['lines'].append(line.get_box())
+            else:
+                self.page['lines'] = self.lines
+
+    @log_error
+    def set_img_properties(self):
+        with open(self.path,'rb') as datax:
+            data = b64encode(lzma.compress(datax.read()))
+        self.page['image']['data'] = data.decode()
+        self.page['image']['type'] = 'jpg'
+        self.page['image']['path'] = self.path
+
+    def get_page(self):
+        return self.page

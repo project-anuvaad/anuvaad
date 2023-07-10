@@ -18,26 +18,50 @@ class MapKeys:
         self.bottom  =  None
 
     def get_left(self,box):
-        left = int(box['boundingBox']['vertices'][0]['x'])
-        return left
+        if 'info' in box.keys():
+            return int(box['info']['left'])
+        elif 'text_top' in box.keys():
+            return int(box['text_left'])
+        else:
+            return int(box['boundingBox']['vertices'][0]['x'])
 
     def get_right(self,box):
-        right = int(box['boundingBox']['vertices'][1]['x'])
-        return right
+        if 'info' in box.keys():
+            return int(box['info']['left'] + box['info']['width'])
+        elif 'text_top' in box.keys():
+            return int(box['text_left'] + box['text_width'])
+        else:
+            return int(box['boundingBox']['vertices'][1]['x'])
 
     def get_top(self,box):
-        top = int(box['boundingBox']['vertices'][0]['y'])
-        return top
+        if 'info' in box.keys():
+            return int(box['info']['top'])
+        elif 'text_top' in box.keys():
+            return int(box['text_top'])
+        else:
+            return int(box['boundingBox']['vertices'][0]['y'])
 
     def get_bottom(self,box):
-        bottom = int(box['boundingBox']['vertices'][3]['y'])
-        return bottom
+        if 'info' in box.keys():
+            return int(box['info']['top'] + box['info']['height'])
+        elif 'text_top' in box.keys():
+            return int(box['text_top'] + box['text_height'])
+        else:
+            return int(box['boundingBox']['vertices'][3]['y'])
     def get_height(self,box):
-        height = int(abs(self.get_top(box) - self.get_bottom(box)))
-        return height
+        if 'info' in box.keys():
+            return int(box['info']['height'])
+        elif 'text_top' in box.keys():
+            return int(box['text_height'])
+        else:
+            return int(abs(self.get_top(box) - self.get_bottom(box)))
     def get_width(self,box):
-        width =  int(abs(self.get_left(box) - self.get_right(box)))
-        return width
+        if 'info' in box.keys():
+            return int(box['info']['width'])
+        elif 'text_top' in box.keys():
+            return int(box['text_width'])
+        else:
+            return int(abs(self.get_left(box) - self.get_right(box)))
 
 keys = MapKeys()
 
@@ -362,14 +386,19 @@ class Region_Unifier:
         return tables
                 
 
-    def region_unifier(self,idx2,file,page_g_words, page_lines,page_regions,page_c_words,path):
+    def region_unifier(self,idx2,file,page_g_words, page_lines,page_regions,page_c_words,path,file_schema):
         try:
             
             #sort regions 
-            page_lines = add_font(page_lines)
+            page_lines = add_font(page_lines,file_schema)
             page_regions  = filterd_regions(page_regions)
             if len(page_regions) > 0 :
-                page_regions.sort(key=lambda x:x['boundingBox']['vertices'][0]['y'])
+                if file_schema == "COMMON":
+                    page_regions.sort(key=lambda x:x['info']['top'])
+                elif file_schema == "TRANSLATION":
+                    page_regions.sort(key=lambda x:x['text_top'])
+                else:
+                    page_regions.sort(key=lambda x:x['boundingBox']['vertices'][0]['y'])
                 sorted_page_regions = sort_regions(page_regions,[])
 
             else:
@@ -468,7 +497,12 @@ class Region_Unifier:
 
             v_list.extend(t_list)
             if len(v_list) > 0 :
-                v_list.sort(key=lambda x:x['boundingBox']['vertices'][0]['y'])
+                if file_schema == "COMMON":
+                    v_list.sort(key=lambda x:x['info']['top'])
+                elif file_schema == "TRANSLATION":
+                    v_list.sort(key=lambda x:x['text_top'])
+                else:
+                    v_list.sort(key=lambda x:x['boundingBox']['vertices'][0]['y'])
                 v_list = sort_regions(v_list,[])
             if self.check_double_column(v_list,avg_height):
                 print("this document is double columnssssssss")
