@@ -109,8 +109,9 @@ def search_all_jobs():
                 ums_response = requests.post(ums_url,json=ums_input)
                 log_info(f"UMS_Response :: {ums_response.status_code} :: {ums_response.json()}",app_context)
                 if ums_response.status_code >=200 and ums_response.status_code<=204:
-                    if "data" in ums_response.json().keys():
-                        for each_ums_response in ums_response["data"]:
+                    ums_resp = ums_response.json()
+                    if "data" in ums_resp.keys():
+                        for each_ums_response in ums_resp["data"]:
                             userDictionary[each_ums_response['userID']] = each_response['name']
                 for i in range(0,len(response["jobs"])):
                     response["jobs"]["metadata"]["userName"] = userDictionary[response["jobs"]["metadata"]["userID"]]
