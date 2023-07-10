@@ -114,7 +114,7 @@ def search_all_jobs():
                         for each_ums_response in ums_resp["data"]:
                             userDictionary[each_ums_response['userID']] = each_ums_response['name']
                 for i in range(0,len(response["jobs"])):
-                    response["jobs"]["metadata"]["userName"] = userDictionary[response["jobs"][i]["metadata"]["userID"]]
+                    response["jobs"][i]["metadata"]["userName"] = userDictionary[response["jobs"][i]["metadata"]["userID"]]
             except Exception as e:
                 log_info(f"UMS Call Exception :: {e.with_traceback()}",app_context)
         if response:
