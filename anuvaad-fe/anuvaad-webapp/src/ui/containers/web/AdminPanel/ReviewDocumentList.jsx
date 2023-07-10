@@ -622,7 +622,7 @@ class ReviewDocumentList extends React.Component {
                                 <div>
                                     {tableMeta.rowData[5] === "COMPLETED" &&
                                         this.getDateTimeDifference(
-                                            tableMeta.rowData[10],
+                                            tableMeta.rowData[11],
                                             tableMeta.rowData[13]
                                         )}
                                 </div>
