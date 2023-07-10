@@ -27,6 +27,10 @@ export function get_document_details(input) {
       document["spent_time"] = "...";
       document["workflowCode"] = job["workflowCode"];
       document["user_id"] = job["metadata"]["userID"];
+
+      if(job["metadata"]["userName"]){
+        document["userName"] = job["metadata"]["userName"];
+      }
   
       // Granular status start
   

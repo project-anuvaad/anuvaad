@@ -297,6 +297,7 @@ class UploadTranslatedDocument extends Component {
                         }}
                         renderInput={(params) => <TextField {...params} placeholder="Select Source Document" variant="outlined" />}
                     />
+                    <Typography variant="caption" style={{fontWeight: "bold", color: "rgb(0 0 0 / 52%)"}}>Note: Documents translated within the last 30 days are shown here.</Typography>
                 </Grid>
 
                 {this.state.files[0]?.name && <><Grid item xs={12} sm={12} lg={12} xl={12} style={{ marginTop: "3%" }}>

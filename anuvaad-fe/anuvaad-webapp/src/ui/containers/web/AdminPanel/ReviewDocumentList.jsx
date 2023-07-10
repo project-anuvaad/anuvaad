@@ -511,7 +511,16 @@ class ReviewDocumentList extends React.Component {
         const columns = [
             {
                 name: "filename",
-                label: "Filename",
+                label: "File Name",
+                options: {
+                    filter: false,
+                    sort: false,
+                    // display: "excluded",
+                },
+            },
+            {
+                name: "userName",
+                label: "User Name",
                 options: {
                     filter: false,
                     sort: false,
