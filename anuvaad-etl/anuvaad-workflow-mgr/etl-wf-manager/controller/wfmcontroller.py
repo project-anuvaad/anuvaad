@@ -99,7 +99,7 @@ def search_all_jobs():
             try:
                 userSet = set()
                 userDictionary = {}
-                log_info(f"BULK Response {response}",app_context)
+                #log_info(f"BULK Response {response}",app_context)
                 if 'jobs' in response.keys():
                     for each_response in response["jobs"]:
                         userSet.add(each_response["metadata"]["userID"])
@@ -107,7 +107,7 @@ def search_all_jobs():
                 ums_url = "http://gateway_anuvaad-user-management:5001/anuvaad/user-mgmt/v1/users/search"
                 ums_input = {"userIDs":userIds}
                 ums_response = requests.post(ums_url,json=ums_input)
-                log_info(f"UMS_Response :: {ums_response.status_code} :: {ums_response.json()}",app_context)
+                #log_info(f"UMS_Response :: {ums_response.status_code} :: {ums_response.json()}",app_context)
                 if ums_response.status_code >=200 and ums_response.status_code<=204:
                     ums_resp = ums_response.json()
                     if "data" in ums_resp.keys():
@@ -116,7 +116,7 @@ def search_all_jobs():
                 for i in range(0,len(response["jobs"])):
                     response["jobs"][i]["metadata"]["userName"] = userDictionary[response["jobs"][i]["metadata"]["userID"]]
             except Exception as e:
-                log_info(f"UMS Call Exception :: {e.with_traceback()}",app_context)
+                log_exception("UMS Call Exception: " + str(e), None, e)
         if response:
             return jsonify(response), 200
         else:
