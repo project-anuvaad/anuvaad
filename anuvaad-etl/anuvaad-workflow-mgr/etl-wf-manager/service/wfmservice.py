@@ -441,7 +441,8 @@ class WFMService:
     def set_granularity(self,data):
         try: 
             job_details = wfmutils.get_job_details(data["jobID"])
-            log_info("Job Details"+str(job_details),app_context)
+            log_info(f"Granularity Search :: UserID {data['userIDs']} and OrgID {data['orgIds']}",app_context)
+            log_info(f"Granularity Job Details :: {job_details}",app_context)
             job_details = job_details[0]
             for each_granularity in data['granularity']:
                 if 'granularity' not in job_details.keys():
