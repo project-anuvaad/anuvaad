@@ -96,9 +96,15 @@ def search_all_jobs():
         else:
             response = service.get_job_details_bulk(req_criteria, False)
         try:
+            userSet = set()
+            userDictionary = {}
             log_info(f"BULK Response {response}",app_context)
+            if 'jobs' in response.keys():
+                for each_response in response["jobs"]:
+                    userSet.add(each_response["metadata"]["userID"])
+            userIds = list(userSet)    
             ums_url = "http://gateway_anuvaad-user-management:5001/anuvaad/user-mgmt/v1/users/search"
-            ums_input = {"userIDs":["8cc4d47e0b76487a80a2517ca40fe4c71688368287753"]}
+            ums_input = {"userIDs":userIds}
             ums_response = requests.post(ums_url,json=ums_input)
             log_info(f"UMS_Response :: {ums_response.status_code} :: {ums_response.json()}",app_context)
         except Exception as e:
