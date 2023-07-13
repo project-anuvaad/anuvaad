@@ -64,10 +64,10 @@ class ValidationResponse(object):
     
     # checking support of tokeniser for languages
     def check_language(self, language):
-        allowed_languages = ['en', 'hi', 'mr', 'ta', 'te', 'kn', 'ml', 'bn' , 'ne' , 'gom' , 'brx']
+        allowed_languages = ['en', 'hi', 'mr', 'ta', 'te', 'kn', 'ml', 'bn' , 'ne' , 'gom' , 'brx' , 'as']
         if language not in allowed_languages:
             raise FileErrors("LOCALE_ERROR", "Currently, This language is not supported by tokeniser. \
-                We support these language codes 'en', 'hi', 'mr', 'ta', 'te', 'kn', 'ml', 'bn' , 'ne' , 'gom' , 'brx' ")
+                We support these language codes 'en', 'hi', 'mr', 'ta', 'te', 'kn', 'ml', 'bn' , 'ne' , 'gom' , 'brx' , 'as ")
         
     # checking whether file is utf-16 encoded or not
     def file_encoding_error(self, input_file_data):

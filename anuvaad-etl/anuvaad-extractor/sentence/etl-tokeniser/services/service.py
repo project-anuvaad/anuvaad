@@ -48,7 +48,7 @@ class Tokenisation(object):
                     elif text_locale == 'te':
                         tokenised_sentence_data = AnuvaadTeluguTokenizer().tokenize(paragraph)
                         tokenised_text.extend(tokenised_sentence_data)
-                    elif text_locale == 'bn':
+                    elif text_locale == 'bn' or text_locale == 'as':
                         tokenised_sentence_data = AnuvaadBengaliTokenizer().tokenize(paragraph)
                         tokenised_text.extend(tokenised_sentence_data)
                 except:
