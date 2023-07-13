@@ -14,6 +14,7 @@ curl -L -o /usr/share/tesseract-ocr/4.00/tessdata/san.traineddata https://github
 curl -L -o /usr/share/tesseract-ocr/4.00/tessdata/pan.traineddata https://github.com/tesseract-ocr/tessdata/raw/main/pan.traineddata
 curl -L -o /usr/share/tesseract-ocr/4.00/tessdata/guj.traineddata https://github.com/tesseract-ocr/tessdata/raw/main/guj.traineddata
 curl -L -o /usr/share/tesseract-ocr/4.00/tessdata/nep.traineddata https://github.com/tesseract-ocr/tessdata/raw/main/nep.traineddata
+curl -L -o /usr/share/tesseract-ocr/4.00/tessdata/sin.traineddata https://github.com/tesseract-ocr/tessdata/raw/main/sin.traineddata
 
 modelpath='./src/utilities/primalaynet/model_final.pth'
 #aws s3 presign s3://anuvaad-pubnet-weights/model_final.pth --expires-in 60480000
