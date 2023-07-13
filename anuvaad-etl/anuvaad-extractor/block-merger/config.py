@@ -82,7 +82,19 @@ LANG_MAPPING       =  {
     "mr": ["Devanagari","hin","eng"],
     "ta": ['Tamil',"tam"],
     "te" : ["Telugu","tel"],
-    "ml" :["Malayalam"]
+    "ml" :["Malayalam"],
+    "ur" :["Arabic", "Urdu"],
+    "pa" :["pan","Punjabi"],
+    "ne" :["nep","Nepali"],
+    "brx" :["Devanagari","bod", "Bodo", "boro"],
+    "as" :["asm"],
+    "sa" :["san"],
+    "ks" :["Devanagari"],
+    "gom":["Devanagari"],
+    "mni":["Devanagari"],
+    "mai":["Devanagari"],
+    "sd" :["Devanagari"],
+    "doi":["Devanagari"]
 }
 
 
@@ -106,7 +118,19 @@ CROP_CONFIG = {
     'kn':{'top':15, 'bottom':10,'right':5,'left':5 },
     'ta':{'top':10, 'bottom':15,'right':5,'left':10 },
     'te':{'top':10, 'bottom':15,'right':5,'left':10 },
-    'mr':{'top':15, 'bottom':10,'right':5,'left':5}
+    'mr':{'top':15, 'bottom':10,'right':5,'left':5},
+    'ur':{'top':15, 'bottom':10,'right':5,'left':5},
+    'pan':{'top':15, 'bottom':10,'right':5,'left':5},
+    'ne':{'top':15, 'bottom':10,'right':5,'left':5},
+    'bod':{'top':15, 'bottom':10,'right':5,'left':5},
+    'asm':{'top':15, 'bottom':10,'right':5,'left':5},
+    'sa':{'top':15, 'bottom':10,'right':5,'left':5},
+    'ks':{'top':15, 'bottom':10,'right':5,'left':5},
+    'kok':{'top':15, 'bottom':10,'right':5,'left':5},
+    'mni':{'top':15, 'bottom':10,'right':5,'left':5},
+    'mai':{'top':15, 'bottom':10,'right':5,'left':5},
+    'sd':{'top':15, 'bottom':10,'right':5,'left':5},
+    'doi':{'top':15, 'bottom':10,'right':5,'left':5}
 }
 
 CLASS_2_LANG = []  #['ta']
