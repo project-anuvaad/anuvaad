@@ -84,7 +84,7 @@ LANG_MAPPING       =  {
     "te" : ["Telugu","tel"],
     "ml" :["Malayalam"],
     "ur" :["Arabic", "Urdu"],
-    "pa" :["pan","Punjabi"],
+    "pan" :["pan","Punjabi"],
     "ne" :["nep","Nepali"],
     "brx" :["Devanagari","bod", "Bodo", "boro"],
     "as" :["asm"],
