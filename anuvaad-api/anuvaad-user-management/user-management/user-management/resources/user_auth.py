@@ -169,6 +169,13 @@ class ResetPassword(Resource):
         if not user_id:
             return post_error("userId missing","userId is mandatory",None), 400
         
+        # check for old_password
+        if "old_password" in body.keys():
+            res = UserUtils.validate_user_login_input(user_name, body['old_password'])
+            if res is not None:
+                log_info("incorrect current/old password for {}".format(user_name), MODULE_CONTEXT)
+                return post_error("Invalid Current Password","current password is incorrect",None), 400
+        
         validity = UserUtils.validate_username(user_name)
         if validity is not None:
             log_info("Username/email validation failed on reset password for {}".format(user_name), MODULE_CONTEXT)

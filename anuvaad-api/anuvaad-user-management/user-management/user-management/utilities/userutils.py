@@ -301,6 +301,9 @@ class UserUtils:
             else:
                 for record in result:
                     username = record["user"]
+                    # delete tmep token after usage
+                    if document == USR_TEMP_TOKEN_MONGO_COLLECTION:
+                        collections.delete_one({'token':token})
                 # collections_usr = get_db()[USR_MONGO_COLLECTION]
                 collections_usr = db.get_mongo_instance(db_connection,USR_MONGO_COLLECTION)
                 # searching for database record matching username

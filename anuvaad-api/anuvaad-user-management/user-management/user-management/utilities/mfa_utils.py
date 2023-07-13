@@ -227,7 +227,7 @@ class MFAUtils:
             html_ = html_.replace("{{username}}", username_nomail)
             html_ = html_.replace("{{mfa_qr}}", image_id[1:-1])
             # html_ = html_.replace("{{qr_setup_key}}", qr_data['mfa_setup_key'])
-            html_ = MIMEText(html_, "html")
+            # html_ = MIMEText(html_, "html")
             message.add_alternative(html_, subtype="html")
             message.get_payload()[0].add_related(
                 base64.decodebytes(qr_data['mfa_qr_base64'].encode()), 'image', 'png',cid=image_id)
