@@ -1,5 +1,5 @@
-import React from "react";
-import { Grid, Typography, Button, Link, Paper,Box } from "@mui/material";
+import React, { useEffect } from "react";
+import { Grid, Typography, Button, Link, Paper, Box } from "@mui/material";
 import Integrations from "../container/Integrations";
 import Features from "../container/Features";
 import Principles from "../container/Principles";
@@ -10,24 +10,22 @@ import Anuvaanlogo from "../../../img/AnuvaadImg.png";
 
 function AnuvaadPortal() {
   const classes = DatasetStyle();
+
   const handleWatchDemoVideo = () => {
     const url = "https://www.youtube.com/watch?v=aerZyHnGUb4";
     window.open(url, "_blank");
   };
 
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+  }, []);
+
   return (
     <div>
       <Header />
-      <Grid
-        container
-        direction="row"
-        className={classes.section}
-      >
+      <Grid container direction="row" className={classes.section}>
         <Grid item xs={12} sm={12} md={6} lg={6} xl={6} sx={{ mt: 20, mb: 20 }}>
-          <Typography
-            variant="h2"
-            className={classes.Anuvaadtitle}
-          >
+          <Typography variant="h2" className={classes.Anuvaadtitle}>
             Anuvaad
           </Typography>
           <Typography
@@ -70,12 +68,11 @@ function AnuvaadPortal() {
           >
             Watch Demo Video
           </Button>
-          
         </Grid>
         <Grid item xs={12} sm={12} md={5} lg={5} xl={5} sx={{ mt: 2 }}>
-          <Box display={{ xs: 'none', md: 'inherit' }}>
-          <img src={Anuvaanlogo} className="aboutImg" />
-        </Box>
+          <Box display={{ xs: "none", md: "inherit" }}>
+            <img src={Anuvaanlogo} className="aboutImg" />
+          </Box>
         </Grid>
       </Grid>
 
