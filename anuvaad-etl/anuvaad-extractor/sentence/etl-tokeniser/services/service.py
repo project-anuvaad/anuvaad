@@ -33,7 +33,7 @@ class Tokenisation(object):
                     if text_locale == 'en':
                         tokenised_sentence_data = AnuvaadEngTokenizer().tokenize(paragraph)
                         tokenised_text.extend(tokenised_sentence_data)
-                    elif text_locale == 'hi' or text_locale == 'mr' or text_locale == 'ne' or text_locale == 'gom' or text_locale == 'brx' or text_locale == 'sd_Deva':
+                    elif text_locale == 'hi' or text_locale == 'mr' or text_locale == 'ne' or text_locale == 'gom' or text_locale == 'brx' or text_locale == 'sd_Deva' or text_locale == 'doi' or text_locale == 'ks_Deva' or text_locale == 'mai' or text_locale == 'sa':
                         tokenised_sentence_data = AnuvaadHindiTokenizer().tokenize(paragraph)
                         tokenised_text.extend(tokenised_sentence_data)
                     elif text_locale == 'kn':
