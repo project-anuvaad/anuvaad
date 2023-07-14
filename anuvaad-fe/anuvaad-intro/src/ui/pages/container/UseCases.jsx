@@ -27,6 +27,7 @@ function UseCases() {
         alignItems="center"
       >
         <Card className={classes.useCaseCard}>
+          <Typography variant="h4" sx={{mt:3}}>Anuvaad - Use Cases</Typography>
           <Grid sx={{ pl: 6, pr: 6, mb: 5 }}>
             <Typography className={classes.useCaseContent}>
               Document digitization and translation play a crucial role in
@@ -114,7 +115,7 @@ function UseCases() {
                   </Typography>
                   <Typography
                     variant="body1"
-                    className={classes.featuresContent}
+                    className={classes.UseCaseContent}
                   >
                     The Anuvaad platform can be extensively used in legal
                     institutions such as courts, law firms, and legal
@@ -144,7 +145,7 @@ function UseCases() {
                   </Typography>
                   <Typography
                     variant="body2"
-                    className={classes.featuresContent}
+                    className={classes.UseCaseContent}
                   >
                     Government agencies and departments dealing with
                     multilingual documents can benefit from Anuvaad. It can be
@@ -173,7 +174,7 @@ function UseCases() {
                   </Typography>
                   <Typography
                     variant="body2"
-                    className={classes.featuresContent}
+                    className={classes.UseCaseContent}
                   >
                     Anuvaad can be valuable in educational institutions,
                     particularly those offering multilingual education or
@@ -203,7 +204,7 @@ function UseCases() {
                   </Typography>
                   <Typography
                     variant="body2"
-                    className={classes.featuresContent}
+                    className={classes.UseCaseContent}
                   >
                     Companies operating in regions with diverse language
                     requirements can leverage Anuvaad for translation services.
@@ -234,7 +235,7 @@ function UseCases() {
                   </Typography>
                   <Typography
                     variant="body2"
-                    className={classes.featuresContent}
+                    className={classes.UseCaseContent}
                   >
                     Anuvaad can be utilized in healthcare institutions and
                     medical research organizations. It can support the
@@ -264,7 +265,7 @@ function UseCases() {
                   </Typography>
                   <Typography
                     variant="body2"
-                    className={classes.featuresContent}
+                    className={classes.UseCaseContent}
                   >
                     Non-profit organizations working on initiatives in
                     linguistically diverse communities can benefit from Anuvaad.
@@ -293,7 +294,7 @@ function UseCases() {
                   </Typography>
                   <Typography
                     variant="body2"
-                    className={classes.featuresContent}
+                    className={classes.UseCaseContent}
                   >
                     Anuvaad can be employed by media houses, publishers, and
                     content creators to translate articles, news reports, books,
@@ -316,6 +317,7 @@ function UseCases() {
                 fontSize: "16px",
                 color: "#707070",
                 lineHeight: "25px",
+                textAlign: "justify",
               }}
             >
               In summary, Anuvaad strives to ensure free access to high-quality
