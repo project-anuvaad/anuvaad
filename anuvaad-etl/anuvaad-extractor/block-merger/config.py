@@ -84,7 +84,7 @@ LANG_MAPPING       =  {
     "te" : ["Telugu","tel"],
     "ml" :["Malayalam"],
     "ur" :["Arabic", "Urdu"],
-    "pa" :["pan","Punjabi"],
+    "pa" :["Gurmukhi","pan"],
     "ne" :["nep","Nepali"],
     "brx" :["Devanagari","bod", "Bodo", "boro"],
     "as" :["asm"],
@@ -125,18 +125,18 @@ CROP_CONFIG = {
     'ur':{'top':15, 'bottom':10,'right':5,'left':5},
     'pa':{'top':15, 'bottom':10,'right':5,'left':5},
     'ne':{'top':15, 'bottom':10,'right':5,'left':5},
-    'bod':{'top':15, 'bottom':10,'right':5,'left':5},
+    'brx':{'top':15, 'bottom':10,'right':5,'left':5},
     'as':{'top':15, 'bottom':10,'right':5,'left':5},
     'sa':{'top':15, 'bottom':10,'right':5,'left':5},
     'ks':{'top':15, 'bottom':10,'right':5,'left':5},
+    'ks_Deva':{'top':15, 'bottom':10,'right':5,'left':5},
     'gom':{'top':15, 'bottom':10,'right':5,'left':5},
     'mni':{'top':15, 'bottom':10,'right':5,'left':5},
+    'mni_Beng':{'top':15, 'bottom':10,'right':5,'left':5},
     'mai':{'top':15, 'bottom':10,'right':5,'left':5},
     'sd':{'top':15, 'bottom':10,'right':5,'left':5},
-    'doi':{'top':15, 'bottom':10,'right':5,'left':5},
     'sd_Deva':{'top':15, 'bottom':10,'right':5,'left':5},
-    'mni_Beng':{'top':15, 'bottom':10,'right':5,'left':5},
-    'ks_Deva':{'top':15, 'bottom':10,'right':5,'left':5}
+    'doi':{'top':15, 'bottom':10,'right':5,'left':5}
 }
 
 CLASS_2_LANG = []  #['ta']
