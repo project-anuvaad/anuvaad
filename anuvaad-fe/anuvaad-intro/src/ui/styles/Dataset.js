@@ -105,6 +105,7 @@ const DatasetStyle = makeStyles({
     fontSize: "16px",
     color: "#707070",
     lineHeight: "25px",
+    textAlign: "justify",
   },
   principlesTitle: {
     // fontWeight: 500,
@@ -173,6 +174,7 @@ const DatasetStyle = makeStyles({
     color: "#707070",
     lineHeight: "25px",
     marginTop: "40px",
+    textAlign: "justify",
   },
   highlightedMenu: {
     color: "#51504f",
@@ -222,6 +224,14 @@ const DatasetStyle = makeStyles({
     color: "#51504f",
     letterSpacing: "1px",
     fontSize: "20px",
+
+  },
+  UseCaseContent: {
+    textAlign: "left",
+    fontSize: "16px",
+    color: "#707070",
+    lineHeight: "25px",
+    textAlign: "justify",
   },
 });
 
