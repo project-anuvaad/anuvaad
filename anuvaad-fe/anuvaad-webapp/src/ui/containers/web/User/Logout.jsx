@@ -7,30 +7,34 @@ import LogoutAPI from "../../../../flux/actions/apis/user/logout";
 
 class Logout extends React.Component {
 
-    componentDidMount(){
+  componentDidMount() {
 
-      // let userName = JSON.parse(localStorage.getItem('userProfile')).userName;
-      
-      // const apiObj = new LogoutAPI(userName)
+    let userName = JSON.parse(localStorage.getItem('userProfile')).userName;
 
-      // fetch(apiObj.apiEndPoint(), {
-      //   method: 'POST',
-      //   body: apiObj.getBody(),
-      //   headers: apiObj.getHeaders().headers
-      // }).then(res=>{
-      //   let response = res.json();
-      //   console.log("response --- ", response);
-      // })
-      // .catch(err=>console.log(err));
+    const apiObj = new LogoutAPI(userName)
 
+    fetch(apiObj.apiEndPoint(), {
+      method: 'POST',
+      body: JSON.stringify(apiObj.getBody()),
+      headers: apiObj.getHeaders().headers
+    }).then(res => {
+      let response = res.json();
+      // console.log("response --- ", response);
+      if (response.ok) {
         localStorage.removeItem('token')
         localStorage.removeItem('userDetails')
         localStorage.removeItem('userProfile')
         localStorage.removeItem('roles')
         this.props.logOut()
         // history.push(`${process.env.PUBLIC_URL}/`);
-        window.location.href = `${process.env.PUBLIC_URL}/user/login`
-    }
+      }
+    })
+      .catch(err => {
+        console.log(err);
+      });
+
+      window.location.href = `${process.env.PUBLIC_URL}/user/login`
+  }
 
   render() {
     return (
@@ -41,7 +45,7 @@ class Logout extends React.Component {
 
 
 const mapStateToProps = state => ({
-  
+
 });
 
 const mapDispatchToProps = dispatch =>
@@ -53,12 +57,12 @@ const mapDispatchToProps = dispatch =>
   );
 
 export default withRouter(
- 
-    connect(
-      mapStateToProps,
-      mapDispatchToProps
-    )(Logout)
-  
+
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(Logout)
+
 );
 
 

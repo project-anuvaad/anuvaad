@@ -38,7 +38,8 @@ export default class LogoutAPI extends API {
   getHeaders() {
     this.headers = {
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        'auth-token': `${decodeURI(localStorage.getItem("token"))}`,
       }
     };
     return this.headers;
