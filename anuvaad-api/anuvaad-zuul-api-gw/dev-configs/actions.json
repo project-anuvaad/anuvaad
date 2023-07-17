@@ -81,6 +81,14 @@
             "description":"API to login"
         },
         {
+            "id":"bbf8b005-647a-4fa3-a3cb-ceeb3f9a9a7b",
+            "uri":"/anuvaad/user-mgmt/v1/users/logout",
+            "module":"USER-MANAGEMENT-SYSTEM",
+            "active":true,
+            "whiteList":true,
+            "description":"API to logout"
+        },
+        {
             "id":"d0875fd6-4ae3-40ca-bb0d-b93feafe459a",
             "uri":"/anuvaad/user-mgmt/v1/users/auth-token-search",
             "module":"USER-MANAGEMENT-SYSTEM",
