@@ -95,8 +95,8 @@ LANG_MAPPING       =  {
     "mni":["Devanagari"],
     "mni_Beng":["Bengali"],
     "mai":["Devanagari"],
-    "sd_Deva" :["Devanagari"],
-    "sd" :["Arabic"],
+    "sd_Deva" :["Arabic"],
+    "sd" :["sin"],
     "doi":["Devanagari"]
 }
 
