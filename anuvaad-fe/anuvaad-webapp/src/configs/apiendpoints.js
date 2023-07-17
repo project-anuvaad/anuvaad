@@ -14,6 +14,7 @@ const endpoints = {
   workflowSync: "/anuvaad-etl/wf-manager/v1/workflow/sync/initiate",
   signup: "/anuvaad/user-mgmt/v1/users/create",
   login: "/anuvaad/user-mgmt/v1/users/login",
+  logout: "/anuvaad/user-mgmt/v1/users/logout",
   setpassword: "/anuvaad/user-mgmt/v1/users/reset-password",
   userdetails: "/anuvaad/user-mgmt/v1/users/search",
   createuser: "/anuvaad/user-mgmt/v1/users/onboard-users",

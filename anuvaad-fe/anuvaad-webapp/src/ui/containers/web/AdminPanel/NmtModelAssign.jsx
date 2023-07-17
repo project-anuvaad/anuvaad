@@ -314,7 +314,7 @@ class CreateUser extends React.Component {
         >
           {
             this.state.source_languages.map(lang =>
-              <MenuItem id={lang.language_name} key={lang.language_code} style={{fontSize: "16px", fontFamily: "Roboto"}} value={lang.language_code + ''}>{lang.language_name}</MenuItem>)
+              <MenuItem id={lang.language_name} key={lang.language_code} style={{fontSize: "16px", fontFamily: "Roboto", color: lang.language_name.includes('Alpha') ? "rgba(0,0,0,0.5)" : '#000000'}} value={lang.language_code + ''}>{lang.language_name}</MenuItem>)
           }
         </Select>
       </Grid>
@@ -357,7 +357,7 @@ class CreateUser extends React.Component {
         >
           {
             this.state.target_languages.map(lang =>
-              <MenuItem key={lang.language_code} value={lang.language_code} style={{fontSize: "16px", fontFamily: "Roboto"}}>{lang.language_name}</MenuItem>)
+              <MenuItem key={lang.language_code} value={lang.language_code} style={{fontSize: "16px", fontFamily: "Roboto", color: lang.language_name.includes('Alpha') ? "rgba(0,0,0,0.5)" : '#000000'}}>{lang.language_name}</MenuItem>)
           }
         </Select>
       </Grid>
