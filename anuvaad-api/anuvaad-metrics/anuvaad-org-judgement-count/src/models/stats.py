@@ -262,8 +262,8 @@ class jud_stats(object):
         return from_date, end_date
 
     def file_validation(self):
-        file_name1 = config.DAILY_CRON_FILE_NAME1
-        file_name2 = config.DAILY_CRON_FILE_NAME2
+        file_name1 = config.WEEKLY_CRON_FILE_NAME1
+        file_name2 = config.WEEKLY_CRON_FILE_NAME2
         stats_file_copy = config.STATS_FILE_COPY
         # file_name2 = "/home/sriharimn/Downloads/language_wise_JUD_STATS2.csv"
         # file_name1 = "/home/sriharimn/Downloads/language_wise_JUD_STATS1.csv"
