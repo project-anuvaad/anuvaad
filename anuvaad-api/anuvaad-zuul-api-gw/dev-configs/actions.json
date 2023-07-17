@@ -750,15 +750,15 @@
             "module":"USER-MANAGEMENT-SYSTEM",
             "active":true,
             "whiteList":true,
-            "description":"API for setting granularity status"
+            "description":"API for registering mfa"
         },
         {
             "id":"2b952ce0-f26b-460c-8783-ba07285acb12",
-            "uri":"/anuvaad/user-mgmt/v1/mfa/verify ",
+            "uri":"/anuvaad/user-mgmt/v1/mfa/verify",
             "module":"USER-MANAGEMENT-SYSTEM",
             "active":true,
             "whiteList":true,
-            "description":"API for setting granularity status"
+            "description":"API for verify mfa"
         },
         {
             "id":"bef8ac88-ed4c-4e21-be15-a36fd7c7c768",
@@ -766,7 +766,15 @@
             "module":"USER-MANAGEMENT-SYSTEM",
             "active":true,
             "whiteList":false,
-            "description":"API for setting granularity status"
-        }                
+            "description":"API for reset mfa"
+        },
+        {
+            "id":"e5963320-87ab-41c9-9a8b-19e346202023",
+            "uri":"/anuvaad/user-mgmt/v1/users/update-email",
+            "module":"USER-MANAGEMENT-SYSTEM",
+            "active":true,
+            "whiteList":true,
+            "description":"API for update email for users"
+        }                       
     ]
 }
