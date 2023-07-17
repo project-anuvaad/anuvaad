@@ -30,7 +30,8 @@ export default class UpdatePassword extends API {
   getBody() {
     return {
       userName: this.user_name,
-      password: this.new_password
+      password: this.new_password,
+      old_password: this.old_password
     };
   }
 
