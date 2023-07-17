@@ -94,7 +94,7 @@ class DocumentEditor extends React.Component {
    * life cycle methods
    */
   componentDidMount() {
-    // console.log("this.props ---- ", this.props);
+    // console.log("this.props.history.location.state?.data.user_id ---- ", this.props.history.location.state?.data.user_id);
     TELEMETRY.pageLoadCompleted('document-editor')
     let recordId = this.props.match.params.jobid;
     let jobId = recordId ? recordId.split("|")[0] : "";
@@ -135,7 +135,8 @@ class DocumentEditor extends React.Component {
       [jobId],
       false,
       false,
-      false
+      false,
+      [this.props.history.location.state.data.user_id ? this.props.history.location.state.data.user_id : ""]
     );
 
     fetch(apiObj.apiEndPoint(), {
@@ -720,7 +721,7 @@ class DocumentEditor extends React.Component {
       return (
         <Grid item xs={12} sm={6} lg={6} xl={6} style={{ marginLeft: "5px" }}>
           <Paper>
-            <PDFRenderer parent='document-editor' filename={this.props.match.params.inputfileid} pageNo={this.props.active_page_number} />
+            <PDFRenderer parent='document-editor' filename={this.props.match.params.inputfileid} pageNo={this.props.active_page_number} userId={this.props.history.location.state.data.user_id ? this.props.history.location.state.data.user_id : ""} />
           </Paper>
         </Grid>
       )
