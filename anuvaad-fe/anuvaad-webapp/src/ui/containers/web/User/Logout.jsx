@@ -3,10 +3,26 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { logOut } from '../../../../flux/actions/users/logout';
+import LogoutAPI from "../../../../flux/actions/apis/user/logout";
 
 class Logout extends React.Component {
 
     componentDidMount(){
+
+      // let userName = JSON.parse(localStorage.getItem('userProfile')).userName;
+      
+      // const apiObj = new LogoutAPI(userName)
+
+      // fetch(apiObj.apiEndPoint(), {
+      //   method: 'POST',
+      //   body: apiObj.getBody(),
+      //   headers: apiObj.getHeaders().headers
+      // }).then(res=>{
+      //   let response = res.json();
+      //   console.log("response --- ", response);
+      // })
+      // .catch(err=>console.log(err));
+
         localStorage.removeItem('token')
         localStorage.removeItem('userDetails')
         localStorage.removeItem('userProfile')

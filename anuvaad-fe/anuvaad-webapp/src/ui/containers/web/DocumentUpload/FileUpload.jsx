@@ -501,7 +501,7 @@ class PdfUpload extends Component {
               <MenuItem
                 id={lang.language_name}
                 key={lang.language_code}
-                style={{ fontSize: "16px", fontFamily: "Roboto" }}
+                style={{ fontSize: "16px", fontFamily: "Roboto", color: lang.language_name.includes('Alpha') ? "rgba(0,0,0,0.5)" : '#000000' }}
                 value={lang.language_code + ""}
               >
                 {lang.language_name}
@@ -551,7 +551,7 @@ class PdfUpload extends Component {
               <MenuItem
                 id={lang.language_name}
                 key={lang.language_code}
-                style={{ fontSize: "16px", fontFamily: "Roboto" }}
+                style={{ fontSize: "16px", fontFamily: "Roboto", color: lang.language_name.includes('Alpha') ? "rgba(0,0,0,0.5)" : '#000000' }}
                 value={lang.language_code + ""}
               >
                 {lang.language_name}
