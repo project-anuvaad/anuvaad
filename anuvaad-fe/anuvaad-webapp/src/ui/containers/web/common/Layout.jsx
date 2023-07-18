@@ -46,7 +46,7 @@ class App extends React.Component {
 
   renderMessage() {
     if (this.props.apistatus.message) {
-      return <Snackbars message={this.props.apistatus.message} variant={this.props.apistatus.error ? 'error' : 'success'} />;
+      return <Snackbars message={this.props.apistatus.message} variant={this.props.apistatus.error ? 'error' : 'success'} autoHideDuration={5000} />;
     }
   }
 
