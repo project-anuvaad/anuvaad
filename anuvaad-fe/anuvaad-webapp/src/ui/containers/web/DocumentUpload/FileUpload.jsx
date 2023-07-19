@@ -62,7 +62,6 @@ const theme = createMuiTheme({
 class PdfUpload extends Component {
   constructor() {
     super();
-    this.alphaLangList = ["ks", "ks_Deva", "mni_Beng", "mni", "ne", "ur"];
     this.state = {
       source: "",
       target: "",
@@ -350,9 +349,10 @@ class PdfUpload extends Component {
   };
 
   processTargetLanguageSelected = (event) => {
-    console.log("event.target ---- " , event.target)
-
-    this.setState({ target_language_code: event.target.value, isTargetAlpha: this.alphaLangList.includes(event.target.value)});
+    // console.log("event.target ---- " , event)
+    let langName = this.state.target_languages.filter(val => val.language_code === event.target.value)[0]?.language_name;
+    // console.log("langName", langName);
+    this.setState({ target_language_code: event.target.value, isTargetAlpha: langName.includes('Alpha')});
   };
 
   readFileDataAsBinary(file) {
@@ -493,7 +493,7 @@ class PdfUpload extends Component {
                 style={{fontSize: "16px", fontFamily: "Roboto"}}
                 value={lang.language_code + ""}
               >
-                <div>{lang.language_name} {this.alphaLangList.includes(lang.language_code) && `(Alpha)`}</div>
+                <div>{lang.language_name}</div>
                 
               </MenuItem>
             ))}
