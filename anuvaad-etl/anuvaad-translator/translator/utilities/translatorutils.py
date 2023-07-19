@@ -134,9 +134,10 @@ class TranslatorUtils:
             result = []
             for key in keys:
                 sent_obj={}
-                hash_values = client.hget("UTM",key)
-                if hash_values != None:
-                    val = zlib.decompress(hash_values).decode()
+                val=client.lrange(key, 0, -1)
+                #hash_values = client.hget("UTM",key)
+                if val != None:
+                    val = zlib.decompress(val).decode()
                     # val=client.lrange(key, 0, -1)
                     sent_obj["key"]=key
                     sent_obj["value"]=[val]
