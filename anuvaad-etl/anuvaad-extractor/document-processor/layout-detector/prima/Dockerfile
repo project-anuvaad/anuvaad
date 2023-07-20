@@ -4,7 +4,7 @@ WORKDIR /app
 RUN apt-get update
 RUN apt install build-essential -y
 RUN apt install g++ -y
-RUN apt-get install python3-pip -y
+# RUN apt-get install python3-pip -y
 RUN pip install -r requirements.txt
 RUN apt-get install ffmpeg libsm6 libxext6  -y
 RUN apt-get install -y make git
