@@ -544,11 +544,11 @@ class UserReport extends React.Component {
             },
             {
                 name: "created_on",
-                label: translate("common.page.label.timeStamp"),
+                label: "Created On",
                 options: {
                     filter: true,
-                    sort: true,
-                    display: "excluded",
+                    sort: false,
+                    // display: "excluded",
                     customBodyRender: (value, tableMeta, updateValue) => {
                         if (tableMeta.rowData) {
                             return (

@@ -10,7 +10,11 @@ class Logout extends React.Component {
   componentDidMount() {
     let userName = JSON.parse(localStorage.getItem('userProfile'))?.userName;
 
-    userName && localStorage.getItem('token') ? this.makeLogoutAPICall() : this.redirectToLogin();
+    userName && this.makeLogoutAPICall(userName);
+
+      setTimeout(() => {
+        this.redirectToLogin()
+      }, 500);
   }
 
   makeLogoutAPICall = (userName) => {
@@ -23,9 +27,6 @@ class Logout extends React.Component {
     }).then(res => {
       let response = res.json();
       // console.log("response --- ", response);
-      if (response.ok) {
-        this.redirectToLogin()
-      }
     })
       .catch(err => {
         console.log(err);
