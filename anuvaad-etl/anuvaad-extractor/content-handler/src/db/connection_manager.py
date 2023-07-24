@@ -13,10 +13,10 @@ def get_db():
     return client[MONGO_DB_SCHEMA]
 
 
-def get_redis():
+def get_redis(db):
     if 'redisdb' not in g:
 #         log_info("Establishing connection with redis store", AppContext.getContext())
-        g.redisdb = redis.Redis(host=REDIS_SERVER_HOST, port=REDIS_SERVER_PORT, db=8)
+        g.redisdb = redis.Redis(host=REDIS_SERVER_HOST, port=REDIS_SERVER_PORT, db=db)
     return g.redisdb
 
 def get_redis_1(db):
