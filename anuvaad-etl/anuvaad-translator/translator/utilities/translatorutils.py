@@ -136,14 +136,15 @@ class TranslatorUtils:
                 sent_obj={}
                 val=client.lrange(key, 0, -1)
                 #hash_values = client.hget("UTM",key)
-                if val != None:
+                if val != None and len(val) > 0:
                     log_info(f"VAL VALUE :: {val}",translate_wf_input)
-                    val = zlib.decompress(val).decode()
+                    val = zlib.decompress(val[0]).decode()
                     # val=client.lrange(key, 0, -1)
                     sent_obj["key"]=key
                     sent_obj["value"]=[val]
                     result.append(sent_obj)
                     return result
+            return result
                 # else:
                 #     sent_obj["key"]=key
                 #     sent_obj["value"]=[]
