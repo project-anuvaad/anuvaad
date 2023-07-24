@@ -237,13 +237,12 @@ class SentenceModel(object):
     # Initialises and fetches redis client
     def save_sentences_on_hashkey(self,key,sent):
         try:
-            # client = get_redis(db=6)
-            client1 = get_redis()
+            client = get_redis(db=6)
             compressed_data = zlib.compress(sent.encode())
-            # client.lpush(key, compressed_data)
-            # client1= get_redis_1(db=8)
-            hash_values = client1.hexists("UTM",key)
-            if hash_values == 0:
+            client.lpush(key, compressed_data)
+            client1= get_redis_1(db=8)
+            hash_values = client1.hget("UTM",key)
+            if hash_values == None:
                 client1.hset("UTM", key, compressed_data)
                 return 1
             else:
@@ -257,21 +256,20 @@ class SentenceModel(object):
 
     def get_sentence_by_keys(self,keys):
         try:
-            # client = get_redis(db=8)
-            client = get_redis()
+            client = get_redis(db=6)
             result = []
             for key in keys:
                 sent_obj={}
-                hash_values = client.hexists("UTM",key)
-                if hash_values == 1:
+                # hash_values = client.hget("UTM",key)
+                # if hash_values != None:
+                val=client.lrange(key, 0, -1)
+                if val != None:
+                    val1 = zlib.decompress(val[0]).decode()
                     # val=client.lrange(key, 0, -1)
-                    # val1 = zlib.decompress(val[0]).decode()
-                    val=client.hget("UTM",key)
-                    val1 = zlib.decompress(val).decode()
-                    sent_obj["key"]=key
-                    sent_obj["value"]=[val1]
-                    result.append(sent_obj)
-                    return result
+                sent_obj["key"]=key
+                sent_obj["value"]=[val1]
+                result.append(sent_obj)
+                return result
                 # else:
                 #     sent_obj["key"]=key
                 #     sent_obj["value"]=[]
