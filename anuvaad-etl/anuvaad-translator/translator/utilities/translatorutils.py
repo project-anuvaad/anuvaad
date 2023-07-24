@@ -122,13 +122,13 @@ class TranslatorUtils:
                 sent_key =hashlib.sha256(sentence_hash.encode('utf_16')).hexdigest()
                 data_keys.append(sent_key)
             try:
-                result=self.get_sentence_by_keys(data_keys)
+                result=self.get_sentence_by_keys(data_keys,translate_wf_input)
                 return result
             except Exception as e:
                 log_exception("Exception while fetching sentences from redis store: " + str(e), translate_wf_input, e)
                 return None
         
-    def get_sentence_by_keys(self,keys):
+    def get_sentence_by_keys(self,keys,translate_wf_input):
         try:
             client = tmxRepo.get_utm_redis_instance()
             result = []
@@ -137,6 +137,7 @@ class TranslatorUtils:
                 val=client.lrange(key, 0, -1)
                 #hash_values = client.hget("UTM",key)
                 if val != None:
+                    log_info(f"VAL VALUE :: {val}",translate_wf_input)
                     val = zlib.decompress(val).decode()
                     # val=client.lrange(key, 0, -1)
                     sent_obj["key"]=key
@@ -149,5 +150,5 @@ class TranslatorUtils:
                 #     result.append(sent_obj)
                 #     return result
         except Exception as e:
-            log_exception("Exception in fetching sentences from redis store  | Cause: " + str(e), None, e)
+            log_exception("Exception in fetching sentences from redis store  | Cause: " + str(e), translate_wf_input, e)
             return None
