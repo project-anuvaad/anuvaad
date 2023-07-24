@@ -708,7 +708,7 @@ class UserUtils:
                 html_ = open(filename).read()
                 html_ = html_.replace("{{ui_link}}", ui_link)
                 html_ = html_.replace("{{activation_link}}", activation_link)
-                html_ = MIMEText(html_, "html")
+                # html_ = MIMEText(html_, "html")
                 message.add_alternative(html_, subtype="html")
                 send_email(message)
 
@@ -757,7 +757,7 @@ class UserUtils:
             html_ = open(filename).read()
             html_ = html_.replace("{{ui_link}}", ui_link)
             html_ = html_.replace("{{reset_link}}", reset_link)
-            html_ = MIMEText(html_, "html")
+            # html_ = MIMEText(html_, "html")
             message.add_alternative(html_, subtype="html")
             send_email(message)
             # msg = Message(
