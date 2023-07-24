@@ -20,14 +20,27 @@ log = logging.getLogger('file')
 
 # Method to instantiate the kafka consumer
 def instantiate(topics):
-    consumer = KafkaConsumer(*topics,
-                             bootstrap_servers=list(str(kafka_bootstrap_server_host).split(",")),
-                             api_version=(1, 0, 0),
-                             group_id=anu_translator_consumer_grp,
-                             auto_offset_reset='latest',
-                             enable_auto_commit=True,
-                             value_deserializer=lambda x: handle_json(x))
-    return consumer
+    try:
+        consumer = KafkaConsumer(*topics,
+                                    bootstrap_servers=list(str(kafka_bootstrap_server_host).split(",")),
+                                    api_version=(1, 0, 0),
+                                    group_id=anu_translator_consumer_grp,
+                                    auto_offset_reset='latest',
+                                    enable_auto_commit=True,
+                                    value_deserializer=lambda x: handle_json(x),
+                                    max_poll_interval_ms=30000000,
+                                    session_timeout_ms=30000)
+        
+        log_info("consumer_instantiate : Consumer returned for topic: %s"%(topics), None)
+        return consumer
+    except Exception as e:
+            log_exception("consumer_instantiate : error occured for consumer topic: %s"%(topics), None, e)
+
+
+
+
+
+
 
 
 # For all the topics, returns a list of TopicPartition Objects
