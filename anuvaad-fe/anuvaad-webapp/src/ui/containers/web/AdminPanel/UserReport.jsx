@@ -270,7 +270,7 @@ class UserReport extends React.Component {
                     component="a"
                     onClick={
                         // ()=>console.log("data --- ", data)
-                        () => this.handleViewDocumentEditor(data.jobID, data.converted_filename, data.model_id, data.filename, data.workflowCode, data.source_language_code, data.target_language_code, data.user_id)
+                        () => this.handleViewDocumentEditor(data.recordId, data.converted_filename, data.model_id, data.filename, data.workflowCode, data.source_language_code, data.target_language_code, data.user_id)
                         }>
                     <LibraryBooksIcon />
                 </IconButton>

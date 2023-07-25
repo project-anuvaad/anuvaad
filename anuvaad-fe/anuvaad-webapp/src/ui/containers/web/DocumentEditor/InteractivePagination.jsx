@@ -166,8 +166,8 @@ class InteractivePagination extends React.Component {
           variant="contained"
           color="secondary"
           title="Complete"
-          disabled={!this.props.enableActionButtons}
-          style={{ backgroundColor: !this.props.enableActionButtons ? "#F5F5F5" : "green", marginLeft: 5 }}
+          disabled={!this.props.enableActionButtons || localStorage.getItem('roles') === "SUPERADMIN"}
+          style={{ backgroundColor: !this.props.enableActionButtons || localStorage.getItem('roles') === "SUPERADMIN" ? "#F5F5F5" : "green", marginLeft: 5 }}
         >
           <DoneIcon />
         </IconButton>
