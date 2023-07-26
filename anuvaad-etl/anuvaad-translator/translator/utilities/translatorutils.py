@@ -137,7 +137,7 @@ class TranslatorUtils:
                 val=client.lrange(key, 0, -1)
                 #hash_values = client.hget("UTM",key)
                 if val != None and len(val) > 0:
-                    log_info(f"VAL VALUE :: {val}",translate_wf_input)
+                    # log_info(f"VAL VALUE :: {val}",translate_wf_input)
                     val = zlib.decompress(val[0]).decode()
                     # val=client.lrange(key, 0, -1)
                     sent_obj["key"]=key
