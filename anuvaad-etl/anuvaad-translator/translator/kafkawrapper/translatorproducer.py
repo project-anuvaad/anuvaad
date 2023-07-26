@@ -34,10 +34,11 @@ class Producer:
                     partition = random.choice(list(range(0, total_no_of_partitions)))
                 if translate_wf_input == None:
                     translate_wf_input = object_in
-                log_info("Before Pushing to topic: " + topic + " and partition : "+partition, translate_wf_input)
+                log_info(f"Before Pushing to topic: {topic} :: partition {partition}", translate_wf_input)
                 producer.send(topic, value=object_in, partition=partition)
-                log_info("Pushing to topic: " + topic, translate_wf_input)
+                log_info("Pushing to topic: " + str(topic), translate_wf_input)
             producer.flush()
         except Exception as e:
             log_exception("Exception in translator while producing: " + str(e), translate_wf_input, e)
+            log_exception(f"Traceback :: {e.with_traceback()}")
             post_error("TRANSLATOR_PRODUCER_EXC", "Exception in translator while producing: " + str(e), None)
