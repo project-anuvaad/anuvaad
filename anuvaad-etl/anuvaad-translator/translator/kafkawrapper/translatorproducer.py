@@ -26,15 +26,18 @@ class Producer:
         return producer
 
     # Method to push records to a topic in the kafka queue
-    def produce(self, object_in, topic, partition):
+    def produce(self, object_in, topic, partition, translate_wf_input=None):
         producer = self.instantiate()
         try:
             if object_in:
                 if partition is None:
                     partition = random.choice(list(range(0, total_no_of_partitions)))
+                if translate_wf_input == None:
+                    translate_wf_input = object_in
+                log_info("Before Pushing to topic: " + topic + " and partition : "+partition, translate_wf_input)
                 producer.send(topic, value=object_in, partition=partition)
-                log_info("Pushing to topic: " + topic, object_in)
+                log_info("Pushing to topic: " + topic, translate_wf_input)
             producer.flush()
         except Exception as e:
-            log_exception("Exception in translator while producing: " + str(e), object_in, e)
+            log_exception("Exception in translator while producing: " + str(e), translate_wf_input, e)
             post_error("TRANSLATOR_PRODUCER_EXC", "Exception in translator while producing: " + str(e), None)
