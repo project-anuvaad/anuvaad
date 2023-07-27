@@ -341,10 +341,10 @@ def end_point_correction(region, y_margin, x_margin, ymax, xmax):
     xend = min(xmax, x + w - x_margin)
     return True, int(ystart), int(yend), int(xstart), int(xend)
 
-def mask_table_region(image, region, image_height, image_width, y_margin, x_margin, fill):
+def mask_table_region(image, region, y_margin, x_margin, fill):
     try:
         region_text = region.get('text', '')  # Get the region text or use an empty string as a default value
-
+        image_height, image_width, _ = image.shape
         # Check if the region text matches any of the specified characters or if it's an empty string
         if region_text in {"(", ")", "/"} or not region_text:
             y_margin = 0
@@ -372,7 +372,7 @@ def remove_noise(img):
     except:
         return img
 
-def process_line(line, region_class, image_height, image_width, y_margin, x_margin, fill, file_properties, page_index, region_idx, line_index, image):
+def process_line(image, line, region_class, y_margin, x_margin, fill, file_properties, page_index, region_idx, line_index):
     image_copy = image.copy()  # Create a copy of the image
     region_words = file_properties.get_region_words(page_index, region_idx, line_index, line)
     if region_words is not None:
@@ -381,7 +381,7 @@ def process_line(line, region_class, image_height, image_width, y_margin, x_marg
         for word_index, region in enumerate(region_words):
             if region is not None:
                 if region_class == "TABLE":
-                    mask_table_region(image_copy, region, image_height, image_width, y_margin, x_margin, fill)
+                    mask_table_region(image_copy, region, y_margin, x_margin, fill)
                 else:
                     flag, row_top, row_bottom, row_left, row_right = end_point_correction(region, y_margin, x_margin, image_height, image_width)
                     if flag:
@@ -393,8 +393,6 @@ def process_line(line, region_class, image_height, image_width, y_margin, x_marg
 
 def mask_image_craft(image, page_regions, page_index, file_properties, margin=0, fill=255):
     try:
-        image_height, image_width, _ = image.shape
-
         def process_region(region_idx, region):
             if "class" in region.keys():
                 region_class = region["class"]
@@ -409,10 +407,11 @@ def mask_image_craft(image, page_regions, page_index, file_properties, margin=0,
 
                     region_lines = file_properties.get_region_lines(page_index, region_idx, region)
 
+
                     if region_lines is not None:
                         for line_index, line in enumerate(region_lines):
                             if line is not None:
-                                image_copy = process_line(line, region_class, image_height, image_width, y_margin, x_margin, fill, file_properties, page_index, region_idx, line_index, image)
+                                image_copy = process_line(image, line, region_class, y_margin, x_margin, fill, file_properties, page_index, region_idx, line_index)
                                 image[...] = image_copy  # Merge the modifications into the original image
 
         Parallel(n_jobs=-1)(
