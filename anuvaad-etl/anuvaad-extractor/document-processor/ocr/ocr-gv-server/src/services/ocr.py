@@ -310,6 +310,7 @@ def segment_regions(file,words, lines,regions,page_c_words,path,file_properties,
         save_path = "None"
     else:
         start_time = time.time()
+        image   = cv2.imread(path)
         save_path = mask_image_craft(path, v_list, idx, file_properties, width, height)
         end_time = time.time()
         execution_time = end_time - start_time
