@@ -311,7 +311,7 @@ def segment_regions(file,words, lines,regions,page_c_words,path,file_properties,
     else:
         start_time = time.time()
         image   = cv2.imread(path)
-        save_path = mask_image_craft(path, v_list, idx, file_properties, width, height)
+        save_path = mask_image_craft(image, v_list, idx, file_properties, width, height)
         end_time = time.time()
         execution_time = end_time - start_time
 
@@ -375,20 +375,24 @@ def remove_noise(img):
 def process_line(image, line, region_class, y_margin, x_margin, fill, file_properties, page_index, region_idx, line_index):
     image_copy = image.copy()  # Create a copy of the image
     region_words = file_properties.get_region_words(page_index, region_idx, line_index, line)
+
     if region_words is not None:
         if config.IS_DYNAMIC and region_class != "TABLE":
             region_words = coord_adjustment(image_copy, region_words)
-        for word_index, region in enumerate(region_words):
+
+        for word_index in range(len(region_words)):
+            region = region_words[word_index]
             if region is not None:
                 if region_class == "TABLE":
                     mask_table_region(image_copy, region, y_margin, x_margin, fill)
                 else:
-                    flag, row_top, row_bottom, row_left, row_right = end_point_correction(region, y_margin, x_margin, image_height, image_width)
+                    flag, row_top, row_bottom, row_left, row_right = end_point_correction(region, y_margin, x_margin)
                     if flag:
                         if len(image_copy.shape) == 2:
                             image_copy[row_top:row_bottom, row_left:row_right] = fill
                         elif len(image_copy.shape) == 3:
                             image_copy[row_top:row_bottom, row_left:row_right, :] = fill
+
     return image_copy
 
 def mask_image_craft(image, page_regions, page_index, file_properties, margin=0, fill=255):
