@@ -311,10 +311,13 @@ def segment_regions(file,words, lines,regions,page_c_words,path,file_properties,
     else:
         start_time = time.time()
         image   = cv2.imread(path)
-        save_path = mask_image_craft(image, v_list, idx, file_properties, width, height)
+        image = mask_image_craft(image, v_list, idx, file_properties, width, height)
+        extension = path.split('.')[-1]
+        save_path = path.split('.')[0]+"_bgimages."+extension
+        image[:] = 255
+        cv2.imwrite(save_path,image)
         end_time = time.time()
         execution_time = end_time - start_time
-
         print(f"Mask Image Logic Execution Time: {execution_time:.2f} seconds")
     if "top_correction" in file['config']["OCR"].keys() and file['config']["OCR"]["top_correction"]=="True":
         v_list = coord_alignment(v_list,False)
@@ -372,60 +375,44 @@ def remove_noise(img):
     except:
         return img
 
-def process_line(image, line, region_class, y_margin, x_margin, fill, file_properties, page_index, region_idx, line_index):
-    image_copy = image.copy()  # Create a copy of the image
-    region_words = file_properties.get_region_words(page_index, region_idx, line_index, line)
-
-    if region_words is not None:
-        if config.IS_DYNAMIC and region_class != "TABLE":
-            region_words = coord_adjustment(image_copy, region_words)
-
-        for word_index in range(len(region_words)):
-            region = region_words[word_index]
-            if region is not None:
-                if region_class == "TABLE":
-                    mask_table_region(image_copy, region, y_margin, x_margin, fill)
-                else:
-                    flag, row_top, row_bottom, row_left, row_right = end_point_correction(region, y_margin, x_margin)
-                    if flag:
-                        if len(image_copy.shape) == 2:
-                            image_copy[row_top:row_bottom, row_left:row_right] = fill
-                        elif len(image_copy.shape) == 3:
-                            image_copy[row_top:row_bottom, row_left:row_right, :] = fill
-
-    return image_copy
-
-def mask_image_craft(image, page_regions, page_index, file_properties, margin=0, fill=255):
+def mask_image_craft(image, page_regions,page_index,file_properties,image_width,image_height,margin= 0 ,fill=255):
     try:
-        def process_region(region_idx, region):
-            if "class" in region.keys():
-                region_class = region["class"]
-
-                if region_class not in ["IMAGE", "OTHER", "SEPARATOR"]:
-                    if region_class == "TABLE":
-                        y_margin = 0
-                        x_margin = 0
+        #path = config.BASE_DIR+path
+        for region_idx, page_region in enumerate(page_regions):
+            
+            if page_region is not None and 'class' in page_region.keys():
+                region_class = page_region['class']
+                
+                if region_class not in ["IMAGE","OTHER","SEPARATOR"]:
+                    if region_class =='TABLE':
+                        y_margin=0; x_margin=0
                     else:
-                        y_margin = 0
-                        x_margin = 0
-
-                    region_lines = file_properties.get_region_lines(page_index, region_idx, region)
-
-
-                    if region_lines is not None:
+                        y_margin=0; x_margin=0
+                    region_lines = file_properties.get_region_lines(page_index,region_idx,page_region)
+                    
+                    if region_lines!=None:
+                        
                         for line_index, line in enumerate(region_lines):
                             if line is not None:
-                                image_copy = process_line(image, line, region_class, y_margin, x_margin, fill, file_properties, page_index, region_idx, line_index)
-                                image[...] = image_copy  # Merge the modifications into the original image
-
-        Parallel(n_jobs=-1)(
-            delayed(process_region)(region_idx, region) for region_idx, region in enumerate(page_regions) if region is not None
-        )
-
+                                region_words = file_properties.get_region_words(page_index,region_idx,line_index,line)
+                                if region_words!=None:
+                                    if config.IS_DYNAMIC and region_class!="TABLE":
+                                        region_words = coord_adjustment(image, region_words)
+                                    for word_index,region in enumerate(region_words):
+                                        if region is not None:
+                                            if region_class =='TABLE':
+                                                image = mask_table_region(image,region,image_height,image_width,y_margin,x_margin,fill)
+                                            else:
+                                                flag,row_top, row_bottom,row_left,row_right = end_point_correction(region, y_margin,x_margin,image_height,image_width)
+                                                if flag:
+                                                    if len(image.shape) == 2 :
+                                                        image[row_top  : row_bottom  , row_left : row_right ] = fill
+                                                    if len(image.shape) == 3 :
+                                                        image[row_top : row_bottom , row_left : row_right ,:] = fill
         image = remove_noise(image)
         return image
-    except Exception as e:
-        print("Service Tesseract Error in masking out image {}".format(e))
+    except Exception as e :
+        print('Service Tesseract Error in masking out image {}'.format(e))
         return image
 
 def mask_image_vision(path, page_regions,page_index,file_properties,image_width,image_height,margin= 0 ,fill=255):
