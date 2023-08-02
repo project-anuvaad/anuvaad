@@ -374,10 +374,24 @@ def remove_noise(img):
         return img
     except:
         return img
+    
+def identify_background_color(image):
+
+    # Convert the image from BGR to RGB
+    image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+
+    # Calculate the average color of the image
+    average_color = np.mean(image_rgb, axis=(0, 1))
+
+    # Round the average color values and convert to integers
+    background_color = tuple(np.round(average_color).astype(int))
+
+    return background_color
 
 def mask_image_craft(image, page_regions,page_index,file_properties,image_width,image_height,margin= 0 ,fill=255):
     try:
         #path = config.BASE_DIR+path
+        fill = identify_background_color(image)
         for region_idx, page_region in enumerate(page_regions):
             
             if page_region is not None and 'class' in page_region.keys():
