@@ -314,7 +314,7 @@ def segment_regions(file,words, lines,regions,page_c_words,path,file_properties,
         image = mask_image_craft(image, v_list, idx, file_properties, width, height)
         extension = path.split('.')[-1]
         save_path = path.split('.')[0]+"_bgimages."+extension
-        image[:] = 255
+        # image[:] = 255
         cv2.imwrite(save_path,image)
         end_time = time.time()
         execution_time = end_time - start_time
@@ -388,7 +388,7 @@ def identify_background_color(image):
 
     return background_color
 
-def mask_image_craft(image, page_regions,page_index,file_properties,image_width,image_height,margin= 0 ,fill=255):
+def mask_image_craft(image, page_regions,page_index,file_properties,image_width,image_height,margin= 0, fill=255 ):
     try:
         #path = config.BASE_DIR+path
         fill = identify_background_color(image)
