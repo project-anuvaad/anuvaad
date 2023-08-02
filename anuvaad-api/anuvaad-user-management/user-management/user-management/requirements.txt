@@ -13,4 +13,5 @@ uuid==1.30
 pyotp==2.8.0
 PyQRCode==1.2.1
 pypng==0.20220715.0
+redis==4.5.4
 
