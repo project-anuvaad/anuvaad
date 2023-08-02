@@ -3,7 +3,7 @@ import uuid
 import time
 import re
 import bcrypt
-from db import get_db,User_management_db
+from db import get_db,get_active_users_redis,User_management_db
 from anuvaad_auditor.loghandler import log_info, log_exception
 from anuvaad_auditor.errorhandler import post_error
 import jwt
@@ -24,6 +24,7 @@ from config import (
     USR_MONGO_COLLECTION,
     USR_TEMP_TOKEN_MONGO_COLLECTION,
     USR_TOKEN_MONGO_COLLECTION,
+    ACTIVE_USERS_EXP_TIME as EXP_TIME
 )
 from base64 import b64decode
 from nacl.secret import SecretBox
@@ -234,6 +235,7 @@ class UserUtils:
                     # token decoding
                     try:
                         jwt.decode(token, secret_key, algorithm="HS256")
+                        UserUtils.register_token_to_redis(value["user"],token)
                     except jwt.exceptions.ExpiredSignatureError as e:
                         log_exception(
                             "Auth-token expired, time limit exceeded", MODULE_CONTEXT, e
@@ -917,3 +919,10 @@ class UserUtils:
                 "Database exception", "Exception occurred:{}".format(
                     str(e)), None
             )
+
+    @staticmethod
+    def register_token_to_redis(username,token):
+        r_db = get_active_users_redis()
+        r_db.set(username,'1',ex=EXP_TIME)
+        log_info(f"redis: active-users db has updated/new value for key = '{username}'", MODULE_CONTEXT)
+    

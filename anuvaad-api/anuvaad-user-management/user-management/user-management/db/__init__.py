@@ -1,1 +1,1 @@
-from .connection_manager import get_db,User_management_db
+from .connection_manager import get_db,User_management_db, get_active_users_redis

@@ -214,3 +214,13 @@ class UpdateEmail(Resource):
             return post_error("Exception occurred", "Exception while getting email_change status::{}".format(str(e)), None), 400
 
 
+class ActiveUsers(Resource):
+    def get(self):
+        try:
+            result = userRepo.get_active_users()
+            log_info(f"active-users api successfull with data = {result}", MODULE_CONTEXT)
+            res = CustomResponse(Status.SUCCESS_ACTIVE_USERS.value, result)
+            return res.getresjson(), 200
+        except Exception as e:
+            log_exception(f"Exception while fetching active-users:{str(e)}", MODULE_CONTEXT, e)
+            return post_error("Exception occurred", f"Exception while fetching active-users::{str(e)}", None), 400

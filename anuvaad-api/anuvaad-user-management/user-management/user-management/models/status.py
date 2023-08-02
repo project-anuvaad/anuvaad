@@ -66,6 +66,8 @@ class Status(enum.Enum):
         'ok': False, 'http': {'status': 400}, 'why': "Data Missing"}
     SUCCESS_CHANGE_EMAIL = {'ok': True, 'http': {'status': 200},
                           'why': "email change suceess"}
+    SUCCESS_ACTIVE_USERS = {'ok': True, 'http': {'status': 200},
+                          'why': "successfull fetch active users count"}
     
     # MFA APIs Statuses
     SUCCESS_MFA_REGISTER = {

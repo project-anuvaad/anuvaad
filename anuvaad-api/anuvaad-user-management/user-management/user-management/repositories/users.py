@@ -36,3 +36,8 @@ class UserManagementRepositories:
         result = userModel.change_email(username, email)
         if result is not None:
             return result
+        
+    def get_active_users(self):
+        result = userModel.get_active_users()
+        if result is not None:
+            return result

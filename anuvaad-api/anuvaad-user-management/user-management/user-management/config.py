@@ -14,6 +14,12 @@ HOST    =   '0.0.0.0'
 PORT    =   5001
 ENABLE_CORS =   False
 
+# redis config
+REDIS_SERVER_PREFIX     = os.environ.get('REDIS_PREFIX', 'redis')
+REDIS_SERVER_HOST       = os.environ.get('REDIS_URL', 'localhost')
+REDIS_SERVER_PORT       = os.environ.get('REDIS_PORT', 6379)
+ACTIVE_USERS_EXP_TIME   = 2 * 60 # in seconds
+
 #mongodb-configs
 MONGO_DB_SCHEMA                 =   os.environ.get('MONGO_DB_IDENTIFIER', 'usermanagement')
 USR_MONGO_COLLECTION            =   os.environ.get('UMS_USR_COLLECTION', 'sample')
