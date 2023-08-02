@@ -789,7 +789,7 @@
             "uri":"/anuvaad/user-mgmt/v1/users/active-users",
             "module":"USER-MANAGEMENT-SYSTEM",
             "active":true,
-            "whiteList":false,
+            "whiteList":true,
             "description":"API for fetching no. of active users"
         }                        
     ]
