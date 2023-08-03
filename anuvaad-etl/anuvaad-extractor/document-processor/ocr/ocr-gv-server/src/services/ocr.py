@@ -344,7 +344,7 @@ def end_point_correction(region, y_margin, x_margin, ymax, xmax):
     xend = min(xmax, x + w - x_margin)
     return True, int(ystart), int(yend), int(xstart), int(xend)
 
-def mask_table_region(image, region, y_margin, x_margin, fill):
+def mask_table_region(image, region, y_margin, x_margin):
     try:
         region_text = region.get('text', '')  # Get the region text or use an empty string as a default value
         image_height, image_width, _ = image.shape
@@ -355,6 +355,7 @@ def mask_table_region(image, region, y_margin, x_margin, fill):
         if region.get('text', '') not in ["|", "।"]:
             flag, row_top, row_bottom, row_left, row_right = end_point_correction(region, y_margin, x_margin, image_height, image_width)
             if flag:
+                fill = identify_background_color(image[row_top  : row_bottom  , row_left : row_right ])
                 image[row_top:row_bottom, row_left:row_right] = fill
         return image
     except KeyError:
@@ -375,15 +376,18 @@ def remove_noise(img):
     except:
         return img
     
-def identify_background_color(image):
+def identify_background_color(region):
+    # Check if the region is not empty
+    if region is None or region.size == 0:
+        return None
 
-    # Convert the image from BGR to RGB
-    image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    # Convert the region from BGR to HSV
+    region_hsv = cv2.cvtColor(region, cv2.COLOR_BGR2HSV)
 
-    # Calculate the average color of the image
-    average_color = np.mean(image_rgb, axis=(0, 1))
+    # Calculate the average color of the region in the HSV color space
+    average_color = np.mean(region_hsv, axis=(0, 1))
 
-    # Round the average color values and convert to integers
+    # Convert the average color values to integers
     background_color = tuple(np.round(average_color).astype(int))
 
     return background_color
@@ -391,7 +395,6 @@ def identify_background_color(image):
 def mask_image_craft(image, page_regions,page_index,file_properties,image_width,image_height,margin= 0, fill=255 ):
     try:
         #path = config.BASE_DIR+path
-        fill = identify_background_color(image)
         for region_idx, page_region in enumerate(page_regions):
             
             if page_region is not None and 'class' in page_region.keys():
@@ -415,13 +418,15 @@ def mask_image_craft(image, page_regions,page_index,file_properties,image_width,
                                     for word_index,region in enumerate(region_words):
                                         if region is not None:
                                             if region_class =='TABLE':
-                                                image = mask_table_region(image,region,image_height,image_width,y_margin,x_margin,fill)
+                                                image = mask_table_region(image,region,image_height,image_width,y_margin,x_margin)
                                             else:
                                                 flag,row_top, row_bottom,row_left,row_right = end_point_correction(region, y_margin,x_margin,image_height,image_width)
                                                 if flag:
                                                     if len(image.shape) == 2 :
+                                                        fill = identify_background_color(image[row_top  : row_bottom  , row_left : row_right ])
                                                         image[row_top  : row_bottom  , row_left : row_right ] = fill
                                                     if len(image.shape) == 3 :
+                                                        fill = identify_background_color(image[row_top  : row_bottom  , row_left : row_right ])
                                                         image[row_top : row_bottom , row_left : row_right ,:] = fill
         image = remove_noise(image)
         return image
@@ -435,7 +440,6 @@ def mask_image_vision(path, page_regions,page_index,file_properties,image_width,
         
         for region in page_regions:
             row_top, row_bottom,row_left,row_right = end_point_correction(region, 2,image_height,image_width)
-            
             if len(image.shape) == 2 :
                 image[row_top - margin : row_bottom + margin , row_left - margin: row_right + margin] = fill
             if len(image.shape) == 3 :
