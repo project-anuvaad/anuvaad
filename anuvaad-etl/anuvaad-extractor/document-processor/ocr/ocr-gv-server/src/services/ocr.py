@@ -384,11 +384,18 @@ def identify_background_color(region):
     # Convert the region from BGR to HSV
     region_hsv = cv2.cvtColor(region, cv2.COLOR_BGR2HSV)
 
-    # Calculate the average color of the region in the HSV color space
-    average_color = np.mean(region_hsv, axis=(0, 1))
+    # Calculate the histogram of the Hue channel
+    hist_hue = cv2.calcHist([region_hsv], [0], None, [256], [0, 256])
 
-    # Convert the average color values to integers
-    background_color = tuple(np.round(average_color).astype(int))
+    # Find the most dominant color bin (hue value) in the histogram
+    dominant_hue_bin = np.argmax(hist_hue)
+
+    # Convert the dominant hue bin back to RGB color
+    background_color_hsv = np.array([[dominant_hue_bin, 255, 255]], dtype=np.uint8)
+    background_color_rgb = cv2.cvtColor(background_color_hsv, cv2.COLOR_HSV2BGR)
+
+    # Convert the background color values to integers
+    background_color = tuple(background_color_rgb[0, 0].astype(int))
 
     return background_color
 
