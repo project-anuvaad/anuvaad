@@ -376,26 +376,36 @@ def remove_noise(img):
     except:
         return img
     
-def identify_background_color(region):
+def identify_background_color(region, method='average'):
     # Check if the region is not empty
     if region is None or region.size == 0:
         return None
 
-    # Convert the region from BGR to HSV
-    region_hsv = cv2.cvtColor(region, cv2.COLOR_BGR2HSV)
+    # Convert the region to three channels (RGB) if it is a single-channel image (grayscale)
+    if len(region.shape) == 2:
+        region = cv2.cvtColor(region, cv2.COLOR_GRAY2BGR)
 
-    # Calculate the histogram of the Hue channel
-    hist_hue = cv2.calcHist([region_hsv], [0], None, [256], [0, 256])
+    if method == 'average':
+        # Calculate the average color of the region
+        average_color = np.mean(region, axis=(0, 1))
+        background_color = tuple(np.round(average_color).astype(int))
+    elif method == 'kmeans':
+        # Reshape the region to a 2D array of pixels
+        pixels = region.reshape((-1, 3))
 
-    # Find the most dominant color bin (hue value) in the histogram
-    dominant_hue_bin = np.argmax(hist_hue)
+        # Convert to float32 for k-means clustering
+        pixels = np.float32(pixels)
 
-    # Convert the dominant hue bin back to RGB color
-    background_color_hsv = np.array([[dominant_hue_bin, 255, 255]], dtype=np.uint8)
-    background_color_rgb = cv2.cvtColor(background_color_hsv, cv2.COLOR_HSV2BGR)
+        # Define criteria and apply k-means
+        criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 10, 1.0)
+        k = 2  # You can adjust the number of clusters as per your requirement
+        _, labels, centers = cv2.kmeans(pixels, k, None, criteria, 10, cv2.KMEANS_RANDOM_CENTERS)
 
-    # Convert the background color values to integers
-    background_color = tuple(background_color_rgb[0, 0].astype(int))
+        # Get the most frequent color as the background color
+        counts = np.bincount(labels.flatten())
+        background_color = tuple(np.round(centers[np.argmax(counts)]).astype(int))
+    else:
+        raise ValueError("Invalid method. Choose 'average' or 'kmeans'.")
 
     return background_color
 
@@ -430,10 +440,10 @@ def mask_image_craft(image, page_regions,page_index,file_properties,image_width,
                                                 flag,row_top, row_bottom,row_left,row_right = end_point_correction(region, y_margin,x_margin,image_height,image_width)
                                                 if flag:
                                                     if len(image.shape) == 2 :
-                                                        fill = identify_background_color(image[row_top  : row_bottom  , row_left : row_right ])
+                                                        fill = identify_background_color(image[row_top  : row_bottom  , row_left : row_right ], method='kmeans')
                                                         image[row_top  : row_bottom  , row_left : row_right ] = fill
                                                     if len(image.shape) == 3 :
-                                                        fill = identify_background_color(image[row_top  : row_bottom  , row_left : row_right ])
+                                                        fill = identify_background_color(image[row_top  : row_bottom  , row_left : row_right ], method='kmeans')
                                                         image[row_top : row_bottom , row_left : row_right ,:] = fill
         image = remove_noise(image)
         return image
