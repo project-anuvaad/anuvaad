@@ -9,6 +9,7 @@ from validator.wfmvalidator import WFMValidator
 from configs.wfmconfig import anu_etl_wfm_core_topic, log_msg_start, log_msg_end, module_wfm_name, page_default_limit, anu_etl_notifier_input_topic, total_no_of_partitions
 from anuvaad_auditor.errorhandler import post_error_wf, post_error, log_exception
 from anuvaad_auditor.loghandler import log_info, log_error
+from repository.redisrepo import REDISRepository
 from configs.wfmconfig import app_context, workflowCodesTranslation
 import datetime 
 
@@ -17,7 +18,7 @@ producer = Producer()
 wfmrepo = WFMRepository()
 wfmutils = WFMUtils()
 validator = WFMValidator()
-
+redisRepo = REDISRepository()
 
 class WFMService:
     def __init__(self):
@@ -41,6 +42,7 @@ class WFMService:
         log_info("Initiating ASYNC job..", wf_async_input)
         client_output = self.get_wf_details_async(wf_async_input, None, False, None)
         self.update_job_details(client_output, True)
+        self.update_active_doc_count(wf_async_input,False)
         prod_res = producer.push_to_queue(client_output, anu_etl_wfm_core_topic, total_no_of_partitions)
         if prod_res:
             client_output = self.get_wf_details_async(wf_async_input, None, False, prod_res)
@@ -283,6 +285,8 @@ class WFMService:
                     log_info(next_tool["name"] + log_msg_start + " jobID: " + task_output["jobID"], task_output)
                 else:
                     log_info("Job COMPLETED: " + task_output["jobID"], task_output)
+                    #Add code here
+                    self.update_active_doc_count(task_output,True)
                     client_output = self.get_wf_details_async(None, task_output, True, None)
                     log.info("JOB COMPLETED Client Output Data: ",client_output)
                     self.update_job_details(client_output, False)
@@ -542,3 +546,22 @@ class WFMService:
             log_info("Job FAILED: " + error["jobID"], error)
         except Exception as e:
             log_exception("Failed to update tool error: " + str(e), error, e)
+
+    def update_active_doc_count(self,wf_async_input,is_job_completed):
+        if is_job_completed == False:
+            task = None
+            translation_workflows = ['WF_A_FCBMTKTR','WF_A_FTTKTR','WF_A_FTIOTKTR']
+            digitization_workflows = ['WF_A_OD10GV','WF_A_OD15GV','WF_A_OD20TES','WF_A_FCOD10GV','WF_A_OD10GVOTK','WF_A_FCOD10GVOTK','WF_A_WDOD15GV','WF_A_WDOD15GVOTK','WF_A_FCWDLDBSOTES','WF_A_FCWDLDBSOD15GV','WF_A_FCWDLDOD15GVOTK','WF_A_FCWDLDBSOD15GVOTK','WF_A_FCWDLDBSOD15GVOTK_S','WF_A_FCWDLDBSOD20TESOTK']
+            if wf_async_input['workflowCode'] in translation_workflows:
+                task = "translation"
+            elif wf_async_input['workflowCode'] in digitization_workflows:
+                task = "digitization"
+            if task is not None:
+                input_data = {}
+                input_data['workflowCode'] = wf_async_input['workflowCode']
+                input_data["task"] = task
+                input_data['userID'] = wf_async_input['userID']
+                input_data['startTime'] = wf_async_input['receivedAt']
+                redisRepo.upsert(wf_async_input["jobID"],input_data)
+        else:
+            redisRepo.delete(wf_async_input["jobID"])
