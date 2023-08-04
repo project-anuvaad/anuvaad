@@ -548,20 +548,25 @@ class WFMService:
             log_exception("Failed to update tool error: " + str(e), error, e)
 
     def update_active_doc_count(self,wf_async_input,is_job_completed):
-        if is_job_completed == False:
-            task = None
-            translation_workflows = ['WF_A_FCBMTKTR','WF_A_FTTKTR','WF_A_FTIOTKTR']
-            digitization_workflows = ['WF_A_OD10GV','WF_A_OD15GV','WF_A_OD20TES','WF_A_FCOD10GV','WF_A_OD10GVOTK','WF_A_FCOD10GVOTK','WF_A_WDOD15GV','WF_A_WDOD15GVOTK','WF_A_FCWDLDBSOTES','WF_A_FCWDLDBSOD15GV','WF_A_FCWDLDOD15GVOTK','WF_A_FCWDLDBSOD15GVOTK','WF_A_FCWDLDBSOD15GVOTK_S','WF_A_FCWDLDBSOD20TESOTK']
-            if wf_async_input['workflowCode'] in translation_workflows:
-                task = "translation"
-            elif wf_async_input['workflowCode'] in digitization_workflows:
-                task = "digitization"
-            if task is not None:
-                input_data = {}
-                input_data['workflowCode'] = wf_async_input['workflowCode']
-                input_data["task"] = task
-                input_data['userID'] = wf_async_input['userID']
-                input_data['startTime'] = wf_async_input['receivedAt']
-                redisRepo.upsert(wf_async_input["jobID"],input_data)
-        else:
-            redisRepo.delete(wf_async_input["jobID"])
+        try:
+            if is_job_completed == False:
+                task = None
+                translation_workflows = ['WF_A_FCBMTKTR','WF_A_FTTKTR','WF_A_FTIOTKTR']
+                digitization_workflows = ['WF_A_OD10GV','WF_A_OD15GV','WF_A_OD20TES','WF_A_FCOD10GV','WF_A_OD10GVOTK','WF_A_FCOD10GVOTK','WF_A_WDOD15GV','WF_A_WDOD15GVOTK','WF_A_FCWDLDBSOTES','WF_A_FCWDLDBSOD15GV','WF_A_FCWDLDOD15GVOTK','WF_A_FCWDLDBSOD15GVOTK','WF_A_FCWDLDBSOD15GVOTK_S','WF_A_FCWDLDBSOD20TESOTK']
+                if wf_async_input['workflowCode'] in translation_workflows:
+                    task = "translation"
+                elif wf_async_input['workflowCode'] in digitization_workflows:
+                    task = "digitization"
+                if task is not None:
+                    input_data = {}
+                    input_data['workflowCode'] = wf_async_input['workflowCode']
+                    input_data["task"] = task
+                    input_data['userID'] = wf_async_input['userID']
+                    input_data['startTime'] = wf_async_input['receivedAt']
+                    redisRepo.upsert(wf_async_input["jobID"],input_data)
+                log_info(f"Active Job Status updated to started: {wf_async_input['jobID']}", wf_async_input)
+            else:
+                redisRepo.delete(wf_async_input["jobID"])
+                log_info(f"Active Job Status updated to completed: {wf_async_input['jobID']}", wf_async_input)
+        except Exception as e:
+            log_exception("Active Job Status updated failed: {wf_async_input['jobID']} " + str(e), None, e)
