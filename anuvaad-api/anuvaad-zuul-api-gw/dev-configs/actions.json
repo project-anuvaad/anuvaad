@@ -49,6 +49,14 @@
             "description":"API to mark jobs inactive for user"
         },
         {
+            "id":"2894fe1d-a2d4-4cfd-af4b-287e9bcfefdf",
+            "uri":"/anuvaad-etl/wf-manager/v1/active-docs",
+            "module":"WORKFLOW-MANAGER",
+            "active":true,
+            "whiteList":true,
+            "description":"API to retrieve active documents currently translated or digitized"
+        },
+        {
             "id":"9050cae6-b3f5-4c87-99e0-09019ad86267",
             "uri":"/anuvaad/user-mgmt/v1/users/create",
             "module":"USER-MANAGEMENT-SYSTEM",
