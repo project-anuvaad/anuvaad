@@ -433,7 +433,7 @@ def mask_image_craft(image, page_regions,page_index,file_properties,image_width,
                                     if config.IS_DYNAMIC and region_class!="TABLE":
                                         region_words = coord_adjustment(image, region_words)
                                     for word_index,region in enumerate(region_words):
-                                        if region is not None:
+                                        if region!=None:
                                             if region_class =='TABLE':
                                                 image = mask_table_region(image,region,image_height,image_width,y_margin,x_margin)
                                             else:
@@ -445,7 +445,7 @@ def mask_image_craft(image, page_regions,page_index,file_properties,image_width,
                                                     if len(image.shape) == 3 :
                                                         fill = identify_background_color(image[row_top  : row_bottom  , row_left : row_right ], method='kmeans')
                                                         image[row_top : row_bottom , row_left : row_right ,:] = fill
-        image = remove_noise(image)
+        # image = remove_noise(image)
         return image
     except Exception as e :
         print('Service Tesseract Error in masking out image {}'.format(e))
