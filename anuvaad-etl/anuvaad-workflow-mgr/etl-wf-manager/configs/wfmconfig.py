@@ -4,11 +4,11 @@ import os
 #CROSS-MODULE-COMMON-CONFIGS
 kafka_bootstrap_server_host = os.environ.get('KAFKA_BOOTSTRAP_SERVER_HOST', 'localhost:9092')
 mongo_server_host = os.environ.get('MONGO_CLUSTER_URL', 'mongodb://localhost:27017,localhost:27018/?replicaSet=foo')
+#mongo_server_host = os.environ.get('MONGO_CLUSTER_URL', 'mongodb://localhost:27017/?readPreference=primary&ssl=false')
 redis_server_prefix = os.environ.get('REDIS_PREFIX', 'redis')
 redis_server_host = os.environ.get('REDIS_URL', 'localhost')
 redis_server_port = os.environ.get('REDIS_PORT', 6379)
 active_docs_redis_db = os.environ.get('ACTIVE_DOCS_REDIS_DB', 11)
-#mongo_server_host = os.environ.get('MONGO_CLUSTER_URL', 'mongodb://localhost:27017/?readPreference=primary&ssl=false')
 app_host = os.environ.get('ANUVAAD_ETL_WFM_HOST', '0.0.0.0')
 app_port = os.environ.get('ANUVAD_ETL_WFM_PORT', 5001)
 
