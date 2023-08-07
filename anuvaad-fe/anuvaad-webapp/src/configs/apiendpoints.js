@@ -63,7 +63,8 @@ const endpoints = {
   getDocumentCountPerOrg: "/anuvaad-metrics/anuvaad-data/doc_count",
   getAllSupportedLangList: "/anuvaad-metrics/anuvaad-data/languages",
   hostedInference: "/ulca/apis/v0/model/compute",
-  getTransliterationModelId:"/ulca/apis/v0/model/getTransliterationModelId",
+  getTransliterationModelId: "/ulca/apis/v0/model/getTransliterationModelId",
+  activeUsersCount: "/anuvaad/user-mgmt/v1/users/active-users",
 
   // MFA API's
   mfa_register: "/anuvaad/user-mgmt/v1/mfa/register",
