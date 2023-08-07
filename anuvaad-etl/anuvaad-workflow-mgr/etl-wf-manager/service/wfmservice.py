@@ -567,7 +567,7 @@ class WFMService:
                     redisRepo.upsert(wf_async_input["jobID"],input_data)
                 log_info(f"Active Job Status updated to started: {wf_async_input['jobID']}", wf_async_input)
             else:
-                redisRepo.delete(wf_async_input["jobID"])
+                redisRepo.delete([wf_async_input["jobID"]])
                 log_info(f"Active Job Status updated to completed: {wf_async_input['jobID']}", wf_async_input)
         except Exception as e:
             log_exception("Active Job Status updated failed: {wf_async_input['jobID']} " + str(e), None, e)
