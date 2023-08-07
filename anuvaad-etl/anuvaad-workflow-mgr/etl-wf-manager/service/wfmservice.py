@@ -563,7 +563,7 @@ class WFMService:
                     input_data['workflowCode'] = wf_async_input['workflowCode']
                     input_data["task"] = task
                     input_data['userID'] = wf_async_input["metadata"]['userID']
-                    input_data['startTime'] = wf_async_input['receivedAt']
+                    input_data['startTime'] = wf_async_input["metadata"]['receivedAt']
                     redisRepo.upsert(wf_async_input["jobID"],input_data)
                 log_info(f"Active Job Status updated to started: {wf_async_input['jobID']}", wf_async_input)
             else:
