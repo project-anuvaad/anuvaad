@@ -188,7 +188,7 @@ def health():
     response = {"code": "200", "status": "ACTIVE"}
     return jsonify(response), 200
 
-@wfmapp.route(context_path + '/v1/ActiveDocs', methods=["GET"])
+@wfmapp.route(context_path + '/v1/active-docs', methods=["GET"])
 def active_docs():
     try:
         service = WFMService()
