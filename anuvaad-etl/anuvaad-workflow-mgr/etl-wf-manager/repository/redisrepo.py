@@ -74,7 +74,7 @@ class REDISRepository:
             log_exception("Exception in TMXREPO: search | Cause: " + str(e), None, e)
             return None
 
-    def get_active_count(self):
+    def get_active_count(self, key_list=None):
         try:
             client = self.get_redis_instance()
             result = []

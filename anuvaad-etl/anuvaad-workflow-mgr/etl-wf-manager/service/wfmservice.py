@@ -559,6 +559,7 @@ class WFMService:
                     task = "digitization"
                 if task is not None:
                     input_data = {}
+                    input_data['jobID'] = wf_async_input["jobID"]
                     input_data['workflowCode'] = wf_async_input['workflowCode']
                     input_data["task"] = task
                     input_data['userID'] = wf_async_input['userID']

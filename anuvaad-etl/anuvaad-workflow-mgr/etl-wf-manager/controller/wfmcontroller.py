@@ -194,8 +194,11 @@ def active_docs():
         service = WFMService()
         response = service.get_active_doc_count()
         log_info("RESPONSE FROM ACTIVE DOCS IN REDIS :: ",app_context)
-        response = {"code": "200", "data": response}
-        return jsonify(response), 200
+        if isinstance(response,list):
+            response = {"code": "200", "data": response, "count":len(response)}
+            return jsonify(response), 200
+        else:
+            return {"status": "FAILED", "message": "Something went wrong"}, 400
     except Exception as e:
         log_exception("Something went wrong: " + str(e), None, e)
         return {"status": "FAILED", "message": "Something went wrong"}, 400
