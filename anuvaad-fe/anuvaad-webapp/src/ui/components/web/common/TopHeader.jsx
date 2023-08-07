@@ -20,6 +20,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import AssessmentIcon from '@material-ui/icons/Assessment';
 import SettingsOutlinedIcon from '@material-ui/icons/SettingsOutlined';
+import HelpIcon from '@material-ui/icons/Help';
 import PublishIcon from '@material-ui/icons/Publish';
 import React, { useState, useEffect, useRef } from "react";
 import { Link as RouterLink, NavLink } from "react-router-dom";
@@ -618,6 +619,20 @@ export default function TopHeader(props) {
                             onClick={(e) => history.push(`${process.env.PUBLIC_URL}/analytics`)}
                         >
                             <AssessmentIcon fontSize="large" />
+                        </IconButton>
+                        <IconButton
+                            style={{ marginLeft: "5px", color: "rgba(0, 0, 0, 0.54)" }}
+                            {...{
+                                edge: "start",
+                                color: "#2C2799",
+                                "aria-label": "menu",
+                                "aria-haspopup": "true",
+                            }}
+                            title={"Help"}
+                            className={popOverIconButton}
+                            onClick={(e) => window.open("https://www.youtube.com/@projectanuvaad4271/playlists")}
+                        >
+                            <HelpIcon fontSize="large" />
                         </IconButton>
                         <Grid item>
                             <div style={{ display: "flex", alignItems: "center" }}>
