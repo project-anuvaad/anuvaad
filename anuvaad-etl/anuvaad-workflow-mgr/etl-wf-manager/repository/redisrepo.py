@@ -86,5 +86,5 @@ class REDISRepository:
                     result.append(json.loads(val))
             return result
         except Exception as e:
-            log_exception("Exception in TMXREPO: search | Cause: " + str(e), None, e)
+            log_exception("Exception in Redis Repo: search | Cause: " + str(e), None, e)
             return None

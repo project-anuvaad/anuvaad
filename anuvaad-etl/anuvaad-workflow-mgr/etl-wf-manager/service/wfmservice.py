@@ -570,3 +570,10 @@ class WFMService:
                 log_info(f"Active Job Status updated to completed: {wf_async_input['jobID']}", wf_async_input)
         except Exception as e:
             log_exception("Active Job Status updated failed: {wf_async_input['jobID']} " + str(e), None, e)
+
+    def get_active_doc_count(self):
+        try:
+            response = redisRepo.get_active_count()
+            return response
+        except Exception as e:
+            log_exception("Active Job Status Retrieval: {wf_async_input['jobID']} " + str(e), None, e)

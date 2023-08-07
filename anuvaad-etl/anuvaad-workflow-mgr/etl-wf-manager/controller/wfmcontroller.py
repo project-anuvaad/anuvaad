@@ -188,6 +188,17 @@ def health():
     response = {"code": "200", "status": "ACTIVE"}
     return jsonify(response), 200
 
+@wfmapp.route(context_path + '/v1/ActiveDocs', methods=["GET"])
+def active_docs():
+    try:
+        service = WFMService()
+        response = service.get_active_doc_count()
+        log_info("RESPONSE FROM ACTIVE DOCS IN REDIS :: ",app_context)
+        response = {"code": "200", "data": response}
+        return jsonify(response), 200
+    except Exception as e:
+        log_exception("Something went wrong: " + str(e), None, e)
+        return {"status": "FAILED", "message": "Something went wrong"}, 400
 
 # Fetches required headers from the request and adds it to the body.
 def add_headers(data, api_request):
