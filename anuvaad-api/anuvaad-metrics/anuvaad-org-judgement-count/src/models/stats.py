@@ -262,8 +262,8 @@ class jud_stats(object):
         return from_date, end_date
 
     def file_validation(self):
-        file_name1 = config.DAILY_CRON_FILE_NAME1
-        file_name2 = config.DAILY_CRON_FILE_NAME2
+        file_name1 = config.WEEKLY_CRON_FILE_NAME1
+        file_name2 = config.WEEKLY_CRON_FILE_NAME2
         stats_file_copy = config.STATS_FILE_COPY
         # file_name2 = "/home/sriharimn/Downloads/language_wise_JUD_STATS2.csv"
         # file_name1 = "/home/sriharimn/Downloads/language_wise_JUD_STATS1.csv"
@@ -277,10 +277,10 @@ class jud_stats(object):
             df.dropna(subset=['orgID'], inplace=True)
             # result = df1.merge(df, indicator=True, how="right")
             result = df.sort_values(by=["orgID"], ascending=True)
-#             mask = result["orgID"].isin(
-#                 ["ANUVAAD", "TARENTO_TESTORG", "NONMT", "ECOMMITTEE "]
-#             )
-#             result = result[~mask]
+            mask = result["orgID"].isin(
+                ["ANUVAAD", "TARENTO_TESTORG", "NONMT", "ECOMMITTEE "]
+            )
+            result = result[~mask]
         else:
             df = pd.read_csv(file_name1)
             df1 = pd.read_csv(file_name2)
