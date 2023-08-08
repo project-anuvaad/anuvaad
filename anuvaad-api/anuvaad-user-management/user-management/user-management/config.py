@@ -77,7 +77,7 @@ MAIL_SETTINGS = {
 BASE_URL                =   os.environ.get('REACT_APP_BASE_URL','https://developers.anuvaad.org/')
 
 # MFA configs
-MFA_ENABLED = True # bool(os.environ.get("MFA_ENABLED",False))
+MFA_ENABLED = bool(os.environ.get("MFA_ENABLED",False))
 MFA_SUPPORTED_TYPES = ['TOTP','HOTP']
 MFA_ISSUER = os.environ.get("MFA_ISSUER", "Anuvaad Folks")
 MFA_TOTP_INTERVAL = os.environ.get("MFA_TOTP_INTERVAL", 30) # only 30 is supported for google and microsoft auth apps
