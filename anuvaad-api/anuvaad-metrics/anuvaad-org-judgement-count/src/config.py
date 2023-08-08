@@ -83,6 +83,7 @@ LANG_MAPPING = {
     "si": "Sinhalese",
     "njz": "Nishi",
     "as": "Assamese",
+    "gom":"Goan Konkani",
 }
 
 jud = os.environ.get('ANUVAAD_JUD_METRICS','https://developers.anuvaad.org')
