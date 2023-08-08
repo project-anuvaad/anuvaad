@@ -3,7 +3,7 @@ import uuid
 import time
 import re
 import bcrypt
-from db import get_db,User_management_db
+from db import get_db,get_active_users_redis,User_management_db
 from anuvaad_auditor.loghandler import log_info, log_exception
 from anuvaad_auditor.errorhandler import post_error
 import jwt
@@ -24,6 +24,7 @@ from config import (
     USR_MONGO_COLLECTION,
     USR_TEMP_TOKEN_MONGO_COLLECTION,
     USR_TOKEN_MONGO_COLLECTION,
+    ACTIVE_USERS_EXP_TIME as EXP_TIME
 )
 from base64 import b64decode
 from nacl.secret import SecretBox
@@ -120,7 +121,7 @@ class UserUtils:
                 )
 
     @staticmethod
-    def generate_token(userdetails, collection):
+    def generate_token(userdetails, collection,session=False):
         """Issuing new token
 
         defining expiry period for token,
@@ -132,10 +133,25 @@ class UserUtils:
             time_limit = datetime.datetime.utcnow() + datetime.timedelta(
                 hours=token_life
             )
+            # generate session
+            session_data = {}
+            session_id = str(uuid.uuid4())
+            if session:
+                session_data["session_id"] = session_id
+                session_data["session_count"] = 0
+                session_data["mfa_status"] = False
+                
+                # delete old tokens which werent mfa_verified
+                collections = db.get_mongo_instance(db_connection,collection)
+                collections.delete_many({
+                    "user": userdetails["user_name"],
+                    "mfa_status": False
+                })
             # creating payload for token
             payload = {
                 "user": str(userdetails["user_name"]).split("@")[0],
                 "exp": time_limit,
+                "session_id": session_id
             }
             # generating token
             token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
@@ -155,6 +171,7 @@ class UserUtils:
                     "active": True,
                     "start_time": eval(str(time.time()).replace(".", "")[0:13]),
                     "end_time": 0,
+                    **session_data
                 }
             )
             log_info(
@@ -163,7 +180,11 @@ class UserUtils:
                 ),
                 MODULE_CONTEXT,
             )
-            return token
+            # return session id if MFA_ENABLED else auth-token
+            if session:
+                return session_id
+            else:
+                return token
         except Exception as e:
             log_exception("Database connection exception ", MODULE_CONTEXT, e)
             return post_error(
@@ -214,6 +235,7 @@ class UserUtils:
                     # token decoding
                     try:
                         jwt.decode(token, secret_key, algorithm="HS256")
+                        UserUtils.register_token_to_redis(value["user"],token)
                     except jwt.exceptions.ExpiredSignatureError as e:
                         log_exception(
                             "Auth-token expired, time limit exceeded", MODULE_CONTEXT, e
@@ -281,6 +303,9 @@ class UserUtils:
             else:
                 for record in result:
                     username = record["user"]
+                    # delete tmep token after usage
+                    if document == USR_TEMP_TOKEN_MONGO_COLLECTION:
+                        collections.delete_one({'token':token})
                 # collections_usr = get_db()[USR_MONGO_COLLECTION]
                 collections_usr = db.get_mongo_instance(db_connection,USR_MONGO_COLLECTION)
                 # searching for database record matching username
@@ -309,7 +334,7 @@ class UserUtils:
             )
 
     @staticmethod
-    def get_token(user_name):
+    def get_token(user_name,session=False):
         """Token Retrieval for login
 
         fetching token for the desired user_name,
@@ -336,6 +361,9 @@ class UserUtils:
                     secret_key = value["secret_key"]
                     token = value["token"]
                     try:
+                        if session:
+                            if value['mfa_status'] is True:
+                                raise ValueError('session already used') 
                         # decoding the jwt token using secret-key
                         jwt.decode(token, secret_key, algorithm="HS256")
                         log_info(
@@ -427,9 +455,13 @@ class UserUtils:
             # connecting to mongo instance/collection
             # collections = get_db()[USR_MONGO_COLLECTION]
             collections = db.get_mongo_instance(db_connection,USR_MONGO_COLLECTION)
+            # delete old/extra unverified entries for same user
+            collections.delete_many(
+                {"userName": user["userName"], "is_verified": False}
+            )
             # searching username with verification status = True
             user_record = collections.find(
-                {"userName": user["userName"], "is_verified": True}
+                {"userName": user["userName"]}
             )
             if user_record.count() != 0:
                 log_info("User Name is already taken", MODULE_CONTEXT)
@@ -552,7 +584,7 @@ class UserUtils:
                 user["models"] = updated_models
 
     @staticmethod
-    def validate_user_login_input(username, password):
+    def validate_user_login_input(username, password, get_role=False):
         """User credentials validation
 
         checking whether the user is verified and active,
@@ -560,7 +592,7 @@ class UserUtils:
         """
 
         try:
-            log_info(f"Initial Login validate start{username}", MODULE_CONTEXT)
+            log_info(f"Initial Login validate start for {username}", MODULE_CONTEXT)
             # connecting to mongo instance/collection
             # collections = db.get_mongo_instance(db_connection,USR_MONGO_COLLECTION)
             # collections = get_db()[USR_MONGO_COLLECTION]
@@ -569,7 +601,7 @@ class UserUtils:
             log_info("{} find verified start".format(username), MODULE_CONTEXT)
             result = collections.find(
                 {"userName": username, "is_verified": True},
-                {"password": 1, "_id": 0, "is_active": 1},
+                {"password": 1, "_id": 0, "is_active": 1, "roles":1},
             )
             log_info("{} find verified end".format(username), MODULE_CONTEXT)
             if result.count() == 0:
@@ -577,6 +609,7 @@ class UserUtils:
                 return post_error("Not verified", "User account is not verified", None)
             log_info("{} find active start".format(username), MODULE_CONTEXT)
             for value in result:
+                role = value['roles'][0]['roleCode']
                 if value["is_active"] == False:
                     log_info(
                         "{} is not an active user".format(username), MODULE_CONTEXT
@@ -606,6 +639,9 @@ class UserUtils:
                             None,
                         )
                     log_info("{} find password checkpw stop".format(username), MODULE_CONTEXT)
+                    # return role if get_role
+                    if get_role:
+                        return role
                 except Exception as e:
                     log_exception(
                         "exception while decoding password", MODULE_CONTEXT, e
@@ -616,7 +652,7 @@ class UserUtils:
                         None,
                     )
             log_info("{} find password end".format(username), MODULE_CONTEXT)
-            log_info(f"Initial Login validate end{username}", MODULE_CONTEXT)
+            log_info(f"Initial Login validate end for {username}", MODULE_CONTEXT)
         except Exception as e:
             log_exception(
                 "exception while validating username and password" + str(e),
@@ -674,7 +710,7 @@ class UserUtils:
                 html_ = open(filename).read()
                 html_ = html_.replace("{{ui_link}}", ui_link)
                 html_ = html_.replace("{{activation_link}}", activation_link)
-                html_ = MIMEText(html_, "html")
+                # html_ = MIMEText(html_, "html")
                 message.add_alternative(html_, subtype="html")
                 send_email(message)
 
@@ -723,7 +759,7 @@ class UserUtils:
             html_ = open(filename).read()
             html_ = html_.replace("{{ui_link}}", ui_link)
             html_ = html_.replace("{{reset_link}}", reset_link)
-            html_ = MIMEText(html_, "html")
+            # html_ = MIMEText(html_, "html")
             message.add_alternative(html_, subtype="html")
             send_email(message)
             # msg = Message(
@@ -757,7 +793,7 @@ class UserUtils:
             )
 
     @staticmethod
-    def validate_username(user_name):
+    def validate_username(user_name,get_email=False):
         """Validating userName/Email"""
 
         try:
@@ -781,6 +817,8 @@ class UserUtils:
                         "This operation is not allowed for an inactive user",
                         None,
                     )
+                if get_email:
+                    return {"email":value["email"]} 
         except Exception as e:
             log_exception(
                 "exception while validating username/email" + str(e), MODULE_CONTEXT, e
@@ -860,3 +898,31 @@ class UserUtils:
             return tokens[0]
         except Exception as e:
             return None
+
+    @staticmethod
+    def fetch_email(username):
+        try:
+            collections = get_db()[USR_MONGO_COLLECTION]
+            # fetching the user details from db
+            log_info(f"{username=} find start", MODULE_CONTEXT)
+            record = collections.find({"userName": username})
+            log_info(f"{username=} find end", MODULE_CONTEXT)
+            for i in record:
+                return i['email']
+        except Exception as e:
+            log_exception(
+                "exception while validating username and password" + str(e),
+                MODULE_CONTEXT,
+                e,
+            )
+            return post_error(
+                "Database exception", "Exception occurred:{}".format(
+                    str(e)), None
+            )
+
+    @staticmethod
+    def register_token_to_redis(username,token):
+        r_db = get_active_users_redis()
+        r_db.set(username,'1',ex=EXP_TIME)
+        log_info(f"redis: active-users db has updated/new value for key = '{username}'", MODULE_CONTEXT)
+    

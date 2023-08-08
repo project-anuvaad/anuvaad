@@ -64,5 +64,25 @@ class Status(enum.Enum):
         'status': 500}, 'why': "Internal Server Error"}
     ERR_GLOBAL_MISSING_PARAMETERS = {
         'ok': False, 'http': {'status': 400}, 'why': "Data Missing"}
-
+    SUCCESS_CHANGE_EMAIL = {'ok': True, 'http': {'status': 200},
+                          'why': "email change suceess"}
+    SUCCESS_ACTIVE_USERS = {'ok': True, 'http': {'status': 200},
+                          'why': "successfull fetch active users count"}
+    
+    # MFA APIs Statuses
+    SUCCESS_MFA_REGISTER = {
+        'ok': True,
+        'http': {'status': 200},
+        'why': "MFA registerd successfully"
+    }
+    SUCCESS_MFA_VERIFY = {
+        'ok': True,
+        'http': {'status': 200},
+        'why': "OTP for MFA verified successfully"
+    }
+    SUCCESS_MFA_RESET = {
+        'ok': True,
+        'http': {'status': 200},
+        'why': "MFA reset successfull."
+    }
     

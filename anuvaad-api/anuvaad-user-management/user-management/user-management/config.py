@@ -14,9 +14,16 @@ HOST    =   '0.0.0.0'
 PORT    =   5001
 ENABLE_CORS =   False
 
+# redis config
+REDIS_SERVER_PREFIX     = os.environ.get('REDIS_PREFIX', 'redis')
+REDIS_SERVER_HOST       = os.environ.get('REDIS_URL', 'localhost')
+REDIS_SERVER_PORT       = os.environ.get('REDIS_PORT', 6379)
+ACTIVE_USERS_EXP_TIME   = 2 * 60 # in seconds
+
 #mongodb-configs
 MONGO_DB_SCHEMA                 =   os.environ.get('MONGO_DB_IDENTIFIER', 'usermanagement')
 USR_MONGO_COLLECTION            =   os.environ.get('UMS_USR_COLLECTION', 'sample')
+MFA_MONGO_COLLECTION            =   os.environ.get('UMS_MFA_COLLECTION', 'mfa')
 USR_TOKEN_MONGO_COLLECTION      =   os.environ.get('UMS_USR_TOKEN_COLLECTION', 'usertokens')
 USR_TEMP_TOKEN_MONGO_COLLECTION =   os.environ.get('UMS_USR_TEMP_TOKEN_COLLECTION', 'usertemptoken')
 USR_ORG_MONGO_COLLECTION        =   os.environ.get('UMS_ORG_COLLECTION', 'organization')
@@ -52,6 +59,7 @@ EXTENSION_ORG           =   os.environ.get('EXTENSION_USR_ORG','ANUVAAD')
 ROLE_CODES_URL          =   os.environ.get('UMS_ROLE_CODES_URL','https://raw.githubusercontent.com/project-anuvaad/anuvaad/master/anuvaad-api/anuvaad-zuul-api-gw/dev-configs/roles.json')
 ROLE_CODES_DIR_PATH     =   os.environ.get('UMS_ROLE_DIR_PATH','/app/configs/') #'/home/jainy/Documents/Anuvaad_local_files/usrmgmt/'
 ROLE_CODES_FILE_NAME    =   os.environ.get('UMS_FILE_NAME','roles.json')
+ONE_ROLE_PER_ORG_LIST = str(os.environ.get('','ADMIN REVIEWER')).split()
 
 #gmail server configs
 MAIL_SETTINGS = {
@@ -68,3 +76,11 @@ MAIL_SETTINGS = {
 #React-app base url
 BASE_URL                =   os.environ.get('REACT_APP_BASE_URL','https://developers.anuvaad.org/')
 
+# MFA configs
+MFA_ENABLED = bool(os.environ.get("MFA_ENABLED",False))
+MFA_SUPPORTED_TYPES = ['TOTP','HOTP']
+MFA_ISSUER = os.environ.get("MFA_ISSUER", "Anuvaad Folks")
+MFA_TOTP_INTERVAL = os.environ.get("MFA_TOTP_INTERVAL", 30) # only 30 is supported for google and microsoft auth apps
+MFA_HOTP_COUNTER = os.environ.get("MFA_HOTP_COUNTER", 15)
+MFA_SKIP_ROLES = [SUPER_ADMIN_ROLE_KEY]
+MFA_EXPIRATION_TIME = int(os.environ.get("MFA_HOTP_COUNTER", 10 * 60)) # in seconds
