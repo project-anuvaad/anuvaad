@@ -293,6 +293,7 @@ class WFMService:
             else:  # Safety else block, in case module fails to push data to error topic
                 log_error("Job FAILED: " + task_output["jobID"], task_output, None)
                 client_output = self.get_wf_details_async(None, task_output, False, task_output["error"])
+                self.update_active_doc_count(task_output,True)
                 self.update_job_details(client_output, False)
             #self.push_to_notifier(task_output)
         except Exception as e:
