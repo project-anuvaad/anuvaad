@@ -10,7 +10,7 @@ const { refactorSourceJSON } = require("./generate-docx/utils");
 const { refactorSourceJSONnew } = require("./generate-docx/utilsnew");
 const bodyParser = require("body-parser");
 const path = require("path");
-const { CH,OCR_CH } = require("./config/end-point-config");
+const { CH,OCR_CH, OCR_CH_PORT } = require("./config/end-point-config");
 // const HOSTNAME = process.env.NODE_HOSTNAME || "anuvad"
 // const  cors = require("cors")
 // const axios = require('axios')
@@ -140,7 +140,7 @@ app.post(
     let data = "";
     var options = {
       // http://172.31.44.87:5009
-      hostname: OCR_CH,
+      hostname: OCR_CH_PORT,
       path: `/anuvaad/ocr-content-handler/v0/ocr/fetch-document?recordID=${encodeURI(
         job
       )}&start_page=0&end_page=0`,
@@ -149,7 +149,7 @@ app.post(
         "Content-Type": "application/json",
         "auth-token": authToken,
       },
-      port: "5009",
+      port: "5001",
     };
     console.log('options', options)
     var req = http.request(options, (res) => {

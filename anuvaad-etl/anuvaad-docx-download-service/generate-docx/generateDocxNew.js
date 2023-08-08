@@ -40,16 +40,21 @@ const generateDocxNew = (jobName,fname, height, width) => {
                     pObj.addText(token.src)
                     // pObj.options.indentLeft = `${text_left}`;
                 })
-            } else if (tokens.class === 'TABLE') {
+            } 
+            else if (tokens.class === 'TABLE') {
                 let tableArray = generateTableArray(tokens);
-
+                // console.log(tableArray)
                 const tableStyle = {
                     tableColWidth: 3261,
                     tableSize: 1,
                     tableAlign: 'left',
                     tableFontFamily: 'Arial Unicode MS',
                 }
-                docx.createTable(tableArray, tableStyle);
+                if (typeof tableArray !== 'undefined' && tableArray.length > 0) {
+                    docx.createTable(tableArray, tableStyle);
+                    // the array is defined and has at least one element
+                }
+                // docx.createTable(tableArray, tableStyle);
             }
         })
     })
