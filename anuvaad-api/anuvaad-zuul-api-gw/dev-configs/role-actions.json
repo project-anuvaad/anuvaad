@@ -1052,27 +1052,7 @@
         },
         {
             "role":"REVIEWER",
-            "actionID": "420add6a-c61f-4520-88ab-025378b626b8",
-            "active":true
-        },
-        {
-            "role":"REVIEWER",
-            "actionID": "d0875fd6-4ae3-40ca-bb0d-b93feafe459a",
-            "active":true
-        },
-        {
-            "role":"REVIEWER",
-            "actionID": "80e2444d-9270-4877-b79b-182d122744a7",
-            "active":true
-        },
-        {
-            "role":"REVIEWER",
             "actionID": "36122d56-6077-48eb-a2d8-303b1460d4ac",
-            "active":true
-        },
-        {
-            "role":"REVIEWER",
-            "actionID": "0f2e4131-1207-4f22-9ddd-77ba8d22066f",
             "active":true
         },
         {
@@ -1319,8 +1299,7 @@
             "role":"SUPERADMIN",
             "actionID": "01803b45-67fb-4b24-a6b3-083dfb9b09d9",
             "active":true
-        }
-        ,
+        },
         {
             "role":"SUPERADMIN",
             "actionID": "2894fe1d-a2d4-4cfd-af4b-287e9bcfefdf",
