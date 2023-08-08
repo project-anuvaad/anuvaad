@@ -18,7 +18,6 @@ lxml==4.5.1
 urllib3==1.25.8
 uuid==1.30
 xmltodict==0.12.0
-# anuvaad_auditor==0.1.6
 anuvaad-auditor==1.0.0
 Shapely==1.7.1
 fvcore
