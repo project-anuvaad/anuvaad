@@ -16,7 +16,7 @@ google-cloud==0.34.0
 google-cloud-vision==1.0.0
 googleapis-common-protos==1.52.0
 grpcio==1.32.0
-numpy==1.19.2
+numpy==1.22.0
 redis==3.5.3
 Shapely==1.7.1
 Rtree==1.0.0
