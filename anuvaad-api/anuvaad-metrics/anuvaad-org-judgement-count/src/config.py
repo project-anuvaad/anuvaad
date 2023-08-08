@@ -86,7 +86,7 @@ LANG_MAPPING = {
     "ks_Deva": "Kashmiri(Deva)" ,
     "mni_Beng" : "Manipuri(Beng)" ,
     "gom" : "Konkani(Goan)" ,
-    "sd_Deva" : "Sindhi(Deva)
+    "sd_Deva" : "Sindhi(Deva)"
 }
 
 jud = os.environ.get('ANUVAAD_JUD_METRICS','https://developers.anuvaad.org')
