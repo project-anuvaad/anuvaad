@@ -9,4 +9,4 @@ anuvaad-auditor==1.0.0
 requests==2.24.0
 indic-nlp-library==0.71
 boto3==1.17.86
-redis==3.5.3
+redis==4.4.4
