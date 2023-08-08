@@ -1,7 +1,7 @@
 aniso8601==9.0.1
 anuvaad-auditor==1.0.0
 bidict==0.21.2
-certifi==2020.12.5
+certifi==2023.7.22
 chardet==3.0.4
 click==7.1.2
 DateTime==4.3
