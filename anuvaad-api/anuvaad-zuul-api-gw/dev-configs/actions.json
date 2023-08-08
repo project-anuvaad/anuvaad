@@ -53,7 +53,7 @@
             "uri":"/anuvaad-etl/wf-manager/v1/active-docs",
             "module":"WORKFLOW-MANAGER",
             "active":true,
-            "whiteList":true,
+            "whiteList":false,
             "description":"API to retrieve active documents currently translated or digitized"
         },
         {

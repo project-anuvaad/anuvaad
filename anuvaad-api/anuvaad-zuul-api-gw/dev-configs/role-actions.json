@@ -1320,5 +1320,16 @@
             "actionID": "01803b45-67fb-4b24-a6b3-083dfb9b09d9",
             "active":true
         }
+        ,
+        {
+            "role":"SUPERADMIN",
+            "actionID": "2894fe1d-a2d4-4cfd-af4b-287e9bcfefdf",
+            "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "2894fe1d-a2d4-4cfd-af4b-287e9bcfefdf",
+            "active":true
+        }
     ]
 }
