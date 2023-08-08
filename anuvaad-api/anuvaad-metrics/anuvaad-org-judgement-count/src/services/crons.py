@@ -28,20 +28,21 @@ def get_trans_user_data_from_db_weekly_crn():
     users = config.EMAIL_NOTIFIER
     log_info("fetch data started", MODULE_CONTEXT)
     # filename = uuid.uuid4().hex
+    stats_file = config.STATS_FILE
     weekly_cron_file_name1 = config.WEEKLY_CRON_FILE_NAME1
     weekly_cron_file_name2 = config.WEEKLY_CRON_FILE_NAME2
-    # daily_cron_file_name1 = config.DAILY_CRON_FILE_NAME1
-    # daily_cron_file_name2 = config.DAILY_CRON_FILE_NAME2
-    stats_file = config.STATS_FILE
-    # stats_file_copy = config.STATS_FILE_COPY
+    daily_cron_file_name1 = config.DAILY_CRON_FILE_NAME1
+    daily_cron_file_name2 = config.DAILY_CRON_FILE_NAME2
     # file_save = str(filename)[:-10]+'_USER_WISE_JUD_Org_level_Statistics.csv'
     if os.path.exists(
         config.DOWNLOAD_FOLDER + "/" + weekly_cron_file_name1
-    ) and os.path.exists(config.DOWNLOAD_FOLDER + "/" + weekly_cron_file_name2
+    ) and os.path.exists(config.DOWNLOAD_FOLDER + "/" + weekly_cron_file_name2 
     ) and os.path.exists(config.DOWNLOAD_FOLDER + "/" + stats_file):
         os.remove(config.DOWNLOAD_FOLDER + "/" + weekly_cron_file_name1)
         os.remove(config.DOWNLOAD_FOLDER + "/" + weekly_cron_file_name2)
         os.remove(config.DOWNLOAD_FOLDER + "/" + stats_file)
+        # os.remove(config.DOWNLOAD_FOLDER + "/" + daily_cron_file_name1)
+        # os.remove(config.DOWNLOAD_FOLDER + "/" + daily_cron_file_name2)
     else:
         msg = generate_email_notification(
             users, "could not get the data files not found"
@@ -85,7 +86,7 @@ def get_trans_user_data_from_db_weekly_crn():
         result2 = result_save_doc.merge(result_ch_doc,indicator=False,how="right")
         result2.to_csv(config.DOWNLOAD_FOLDER + "/" + stats_file)
 
-        log_info(f"Data written into files {weekly_cron_file_name1,weekly_cron_file_name2}",MODULE_CONTEXT,)
+        log_info(f"Data written into files {weekly_cron_file_name1,weekly_cron_file_name2,stats_file}",MODULE_CONTEXT,)
 
         return
     except Exception as e:
@@ -95,7 +96,7 @@ def get_trans_user_data_from_db_weekly_crn():
         )
         send_email(msg)
         log_exception(
-            "Generated alert email in exception weekly cron job : {}".format(str(e)),
+            "Generated alert email in exception cron job : {}".format(str(e)),
             MODULE_CONTEXT,
             e,
         )

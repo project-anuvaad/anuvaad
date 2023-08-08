@@ -22,6 +22,10 @@ import Spinner from "@material-ui/core/CircularProgress"
 import FormControl from '@material-ui/core/FormControl';
 import CreateGlossary from '../../../../flux/actions/apis/document_translate/create_glossary';
 import ViewGlossary from '../../../../flux/actions/apis/user_glossary/fetch_user_glossary';
+import fetchTransliterationModelID from '../../../../flux/actions/apis/document_translate/fetchTransliterationModel';
+import { IndicTransliterate } from 'react-transliterate';
+import configs from '../../../../configs/configs';
+import endpoints from '../../../../configs/apiendpoints';
 
 
 const theme = createMuiTheme({
@@ -82,7 +86,9 @@ class UserGlossaryUpload extends React.Component {
             source_languages: [],
             target_languages: [],
             target: "",
-            source: ""
+            source: "",
+            sourceTransliterationModelId: "",
+            targetTransliterationModelId: ""
         }
     }
 
@@ -95,13 +101,20 @@ class UserGlossaryUpload extends React.Component {
 
     }
 
-    componentDidUpdate(prevProps) {
+    componentDidUpdate(prevProps, prevState) {
         if (prevProps.fetch_models.models !== this.props.fetch_models.models) {
             this.setState({
                 source_languages: LANG_MODEL.get_supported_languages(this.props.fetch_models.models, true),
                 target_languages: LANG_MODEL.get_supported_languages(this.props.fetch_models.models, true),
                 showLoader: false
             })
+        }
+
+        if(prevState.source_language_code !== this.state.source_language_code){
+            this.getTransliterationModelIDByLang("en", this.state.source_language_code, (modelId)=>this.setState({sourceTransliterationModelId: modelId}));
+        }
+        if(prevState.target_language_code !== this.state.target_language_code){
+            this.getTransliterationModelIDByLang("en", this.state.target_language_code, (modelId)=>this.setState({targetTransliterationModelId: modelId}));
         }
     }
 
@@ -115,6 +128,22 @@ class UserGlossaryUpload extends React.Component {
 
     processTargetLanguageSelected = (event) => {
         this.setState({ target_language_code: event.target.value })
+    }
+
+    getTransliterationModelIDByLang = (srcLangCode, targLangCode, callback) => {
+        const apiObj = new fetchTransliterationModelID(srcLangCode, targLangCode);
+        fetch(apiObj.apiEndPoint(), {
+            method: "GET",
+            headers: apiObj.getHeaders().headers
+        })
+        .then(async res=>{
+            let response =  await res.json();
+            response?.modelId && callback(response?.modelId);
+        })
+        .catch(err=>{
+            callback("");
+            console.log("err - ", err);
+        })
     }
 
 
@@ -142,7 +171,7 @@ class UserGlossaryUpload extends React.Component {
                         >
                             {
                                 this.state.source_languages.map(lang =>
-                                    <MenuItem key={lang.language_code} value={lang.language_code + ''}>{lang.language_name}</MenuItem>)
+                                    <MenuItem key={lang.language_code} value={lang.language_code + ''} style={{color: lang.language_name.includes('Alpha') ? "rgba(0,0,0,0.5)" : '#000000'}}>{lang.language_name}</MenuItem>)
                             }
                         </Select>
                     </FormControl>
@@ -175,7 +204,7 @@ class UserGlossaryUpload extends React.Component {
                         >
                             {
                                 this.state.target_languages.map(lang =>
-                                    <MenuItem key={lang.language_code} value={lang.language_code + ''}>{lang.language_name}</MenuItem>)
+                                    <MenuItem key={lang.language_code} value={lang.language_code + ''} style={{color: lang.language_name.includes('Alpha') ? "rgba(0,0,0,0.5)" : '#000000'}}>{lang.language_name}</MenuItem>)
                             }
                         </Select>
                     </FormControl>
@@ -193,7 +222,34 @@ class UserGlossaryUpload extends React.Component {
             </Grid>
             <Grid item xs={6} sm={6} lg={4} xl={4}>
                 <FormControl variant="outlined" className={this.props.classes.select}>
-                    <TextField
+                    {this.state.sourceTransliterationModelId ? 
+                    <IndicTransliterate
+                    customApiURL={`${configs.BASE_URL_ULCA + endpoints.hostedInference}`}
+                    transliterationModelId={this.state.sourceTransliterationModelId}
+                    renderComponent={(props) => {
+                        const inputRef = props.ref;
+                        delete props["ref"];
+                        return (
+                            <TextField
+                                {...props}
+                                // label="Add to glossary"
+                                // placeholder="Add to glossary"
+                                fullWidth
+                                variant="outlined"
+                                inputRef={inputRef}
+                                style={{ width: "100%", margin: '0%', marginBottom: "25px" }}
+                            />
+                        );
+                    }}
+                    value={this.state.source}
+                    onChangeText={(value) => {
+                        // this.setState({ word: text })
+                        this.setState({source: value});
+                    }}
+                    lang={this.state.source_language_code}
+                    maxOptions={5}
+                /> 
+                    : <TextField
                         value={this.state.source}
                         id="outlined-name"
                         margin="normal"
@@ -202,7 +258,7 @@ class UserGlossaryUpload extends React.Component {
                         }}
                         variant="outlined"
                         style={{ width: "100%", margin: '0%', marginBottom: "25px" }}
-                    />
+                    />}
                 </FormControl>
             </Grid>
         </Grid>
@@ -217,7 +273,34 @@ class UserGlossaryUpload extends React.Component {
             </Grid>
             <Grid item xs={6} sm={6} lg={4} xl={4}>
                 <FormControl variant="outlined" className={this.props.classes.select}>
-                    <TextField
+                {this.state.targetTransliterationModelId ? 
+                    <IndicTransliterate
+                    customApiURL={`${configs.BASE_URL_ULCA + endpoints.hostedInference}`}
+                    transliterationModelId={this.state.targetTransliterationModelId}
+                    renderComponent={(props) => {
+                        const inputRef = props.ref;
+                        delete props["ref"];
+                        return (
+                            <TextField
+                                {...props}
+                                // label="Add to glossary"
+                                // placeholder="Add to glossary"
+                                fullWidth
+                                variant="outlined"
+                                inputRef={inputRef}
+                                style={{ width: "100%", margin: '0%', marginBottom: "25px" }}
+                            />
+                        );
+                    }}
+                    value={this.state.target}
+                    onChangeText={(value) => {
+                        // this.setState({ word: text })
+                        this.setState({target: value});
+                    }}
+                    lang={this.state.target_language_code}
+                    maxOptions={5}
+                /> 
+                    :<TextField
                         value={this.state.target}
                         id="outlined-name"
                         margin="normal"
@@ -226,7 +309,7 @@ class UserGlossaryUpload extends React.Component {
                         }}
                         variant="outlined"
                         style={{ width: "100%", margin: '0%', marginBottom: "25px" }}
-                    />
+                    />}
                 </FormControl>
             </Grid>
         </Grid>

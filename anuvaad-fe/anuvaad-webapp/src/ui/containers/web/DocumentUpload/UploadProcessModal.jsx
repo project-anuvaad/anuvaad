@@ -277,9 +277,8 @@ export default function UploadProcessModal(props) {
             <div className={classes.root}>
                 <Grid
                     direction='row'
-                    justifyContent='space-between'
                     alignItems='center'
-                    style={{ display: "flex" }}
+                    style={{ display: "flex", justifyContent: 'space-between' }}
                 >
                     <div>
                         <Typography style={{ margin: 5 }} variant="subtitle1">Job ID : <b>{progressData?.jobID}</b> </Typography>

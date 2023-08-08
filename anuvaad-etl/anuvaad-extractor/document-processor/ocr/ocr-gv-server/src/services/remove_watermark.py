@@ -11,26 +11,21 @@ def clean_image(image):
           upper = np.array([255, 255, 255])
           return cv2.inRange(img_hsv, lower, upper)
      
-     # img = cv2.imread("/home/srihari/Desktop/water_mark_issue/im/Gwalior_HC_page-0001.jpg")
      img = image
 
      img_hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
 
      img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-
-     img_gray[img_gray >= 220] = 255
+     img_gray[img_gray >= 200] = 255
 
      mask1 = HSV_mask(img_hsv, [0, 0, 155])[..., None].astype(np.float32)
 
      mask2 = HSV_mask(img_hsv, [0, 20, 0])
      masked = np.uint8((img + mask1) / (1 + mask1 / 255))
 
-
-
      gray = cv2.cvtColor(masked, cv2.COLOR_BGR2GRAY)
      gray[gray >= 175] = 255
-
 
      gray[mask2 == 0] = img_gray[mask2 == 0]
 

@@ -1,6 +1,6 @@
 from flask import Blueprint
 from flask_restful import Api
-from resources import CreateUsers, UpdateUsers, SearchUsers,OnboardUsers, Health, ActivateDeactivateUser
+from resources import CreateUsers, UpdateUsers, SearchUsers,OnboardUsers, Health, ActivateDeactivateUser, UpdateEmail, ActiveUsers
 from resources import UserLogin, UserLogout, AuthTokenSearch, ForgotPassword, ResetPassword , VerifyUser, SearchRoles
 
 
@@ -56,4 +56,13 @@ Api(USER_MANAGEMENT_BLUEPRINT).add_resource(
 
 Api(USER_MANAGEMENT_BLUEPRINT).add_resource(
     Health, "/health"
+)
+
+Api(USER_MANAGEMENT_BLUEPRINT).add_resource(
+    ActiveUsers, "/v1/users/active-users"
+)
+
+# temporary API for changing email only once (all roles)
+Api(USER_MANAGEMENT_BLUEPRINT).add_resource(
+    UpdateEmail, "/v1/users/update-email"
 )

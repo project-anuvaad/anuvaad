@@ -81,6 +81,8 @@ class DocumentEditor extends React.Component {
       srcLangCode: "",
       transliterationChecked: false,
       enableActionButtons: false,
+      isDocumentCameForCorrection: false,
+      downloadFinalDocs: false,
       updateManualStartTime: false,
       fetchNext: true.valueOf,
       currentJobDetails: [],
@@ -92,7 +94,7 @@ class DocumentEditor extends React.Component {
    * life cycle methods
    */
   componentDidMount() {
-    // console.log("this.props ---- ", this.props);
+    // console.log("this.props.history.location.state?.data.user_id ---- ", this.props.history.location.state?.data.user_id);
     TELEMETRY.pageLoadCompleted('document-editor')
     let recordId = this.props.match.params.jobid;
     let jobId = recordId ? recordId.split("|")[0] : "";
@@ -133,7 +135,8 @@ class DocumentEditor extends React.Component {
       [jobId],
       false,
       false,
-      false
+      false,
+      this.props.history.location.state?.data?.user_id ? [this.props.history.location.state?.data?.user_id] : []
     );
 
     fetch(apiObj.apiEndPoint(), {
@@ -145,10 +148,14 @@ class DocumentEditor extends React.Component {
       // console.log("rsp_data ---- ", rsp_data);
       let docArr = get_document_details(rsp_data);
       this.setState({currentJobDetails: docArr[0]})
-      // console.log("docArr ------- ", docArr);
+      console.log("docArr ------- ", docArr);
       if(docArr?.length > 0){
         if(docArr[0].currentGranularStatus === "FINAL EDITING - IN PROGRESS" || docArr[0].currentGranularStatus === "AUTO TRANSLATION - COMPLETED"){
-          this.setState({enableActionButtons: true});
+          this.setState({enableActionButtons: true, isDocumentCameForCorrection: docArr[0].isDocumentCameForCorrection});
+        }
+
+        if(docArr[0].currentGranularStatus.trim() === "FINAL DOCUMENT UPLOADED"){
+          this.setState({downloadFinalDocs: true})
         }
 
         if(docArr[0].currentGranularStatus === "AUTO TRANSLATION - COMPLETED"){
@@ -210,7 +217,7 @@ class DocumentEditor extends React.Component {
       }
     }
 
-    if (prevProps.job_status !== this.props.job_status && this.state.currentJobDetails.currentGranularStatus === "AUTO TRANSLATION - COMPLETED") {
+    if (prevProps.job_status !== this.props.job_status && this.state.currentJobDetails?.currentGranularStatus === "AUTO TRANSLATION - COMPLETED") {
       let currentSavedandTotalSetencesArr = this.props.job_status?.status.split(" of ");
       let previousSavedandTotalSetencesArr = prevProps.job_status?.status.split(" of ");
       // console.log("currentSavedandTotalSetencesArr ----- ", currentSavedandTotalSetencesArr);
@@ -714,7 +721,7 @@ class DocumentEditor extends React.Component {
       return (
         <Grid item xs={12} sm={6} lg={6} xl={6} style={{ marginLeft: "5px" }}>
           <Paper>
-            <PDFRenderer parent='document-editor' filename={this.props.match.params.inputfileid} pageNo={this.props.active_page_number} />
+            <PDFRenderer parent='document-editor' filename={this.props.match.params.inputfileid} pageNo={this.props.active_page_number} userId={this.props.history.location.state?.data?.user_id ? this.props.history.location.state?.data?.user_id : ""} />
           </Paper>
         </Grid>
       )
@@ -823,7 +830,7 @@ class DocumentEditor extends React.Component {
         {
           workflow !== 'WF_A_FTTKTR'
             ?
-            pages.map((page, index) => <PageCard zoomPercent={this.state.zoomPercent} key={index} page={page} onAction={this.processSentenceAction} />)
+            pages.map((page, index) => <PageCard zoomPercent={this.state.zoomPercent} key={index} page={page} enableSourceDocumentEditing={(this.state.currentJobDetails?.currentGranularStatus === "AUTO TRANSLATION - COMPLETED" || this.state.currentJobDetails?.currentGranularStatus === "FINAL EDITING - IN PROGRESSD") ? true : false } onAction={this.processSentenceAction} />)
             :
             <PageCardHtml zoomPercent={this.state.zoomPercent} onAction={this.processSentenceAction} />
         }
@@ -885,12 +892,14 @@ class DocumentEditor extends React.Component {
             return < div key={sentence.s_id} ref={sentence.s_id} > <SentenceCard key={sentence.s_id}
               enableTransliteration={this.state.transliterationChecked}
               enableActionButtons={this.state.enableActionButtons}
+              isDocumentCameForCorrection={this.state.isDocumentCameForCorrection}
+              redoSentence={sentence.redo}
               pageNumber={page.page_no}
               recordId={this.props.match.params.jobid}
               model={LANG_MODEL.fetchModel(parseInt(this.props.match.params.modelId), this.props.fetch_models, this.props.match.params.source_language_code, this.props.match.params.target_language_code)}
               jobId={jobId}
               sentence={sentence}
-              granularStatus={this.state.currentJobDetails.currentGranularStatus.trim()}
+              granularStatus={this.state.currentJobDetails?.currentGranularStatus.trim()}
               onAction={this.processSentenceAction} />
             </div>
           })
@@ -938,13 +947,13 @@ class DocumentEditor extends React.Component {
   render() {
     return (
       <div style={{ marginTop: 5 }}>
-        <div style={{ height: "50px", marginBottom: "13px" }}> <InteractiveDocToolBar enableTransliteration={this.enableTransliteration} docView={this.state.docView} onAction={this.handleDocumentView} onShowPreview={this.showPreview} preview={this.state.preview} /></div>
+        <div style={{ height: "50px", marginBottom: "13px" }}> <InteractiveDocToolBar downloadFinalDocs={this.state.downloadFinalDocs} enableTransliteration={this.enableTransliteration} docView={this.state.docView} onAction={this.handleDocumentView} onShowPreview={this.showPreview} preview={this.state.preview} /></div>
 
         {!this.state.preview ?
           <>
             <Split className='split'>
               <div>{!this.state.docView && this.renderDocumentPages()}</div>
-              <div>{!this.props.show_pdf && (this.state.currentJobDetails && this.state.currentJobDetails.currentGranularStatus) ? this.renderSentences() : this.renderPDFDocument()}</div>
+              <div>{!this.props.show_pdf && (this.state.currentJobDetails && this.state.currentJobDetails?.currentGranularStatus) ? this.renderSentences() : this.renderPDFDocument()}</div>
             </Split>
             <div style={{ height: "65px", marginTop: "13px", bottom: "0px", position: "absolute", width: "100%" }}>
               <InteractivePagination count={this.props.document_contents.count}

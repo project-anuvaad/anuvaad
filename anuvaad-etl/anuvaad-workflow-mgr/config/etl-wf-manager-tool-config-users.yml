@@ -113,5 +113,5 @@ ToolConfigs:
   - name: SYNC-DOCUMENT-PREPROCESS
     description: Pre-process the document to check for tilt correction and watermark removal.
     api-details:
-    - uri: http://gateway_anuvaad-ocr-document-pre-processor:5001/anuvaad-etl/pre-processor/v0/pre-process
+    - uri: http://anuvaad-ocr-document-pre-processor:5001/anuvaad-etl/pre-processor/v0/pre-process
 

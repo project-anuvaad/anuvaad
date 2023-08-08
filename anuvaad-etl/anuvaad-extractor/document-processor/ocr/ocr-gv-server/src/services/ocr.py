@@ -18,6 +18,8 @@ from src.db.connection_manager import get_redis
 # from src.utilities.app_context import  app_context
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
+from joblib import Parallel, delayed
+import time
 
 region_unifier = Region_Unifier()
 removeoverlap = RemoveOverlap()
@@ -307,7 +309,16 @@ def segment_regions(file,words, lines,regions,page_c_words,path,file_properties,
     if "mask_image" in file['config']["OCR"].keys() and file['config']["OCR"]["mask_image"]=="False":
         save_path = "None"
     else:
-        save_path = mask_image_craft(path, v_list, idx, file_properties, width, height)
+        start_time = time.time()
+        image   = cv2.imread(path)
+        image = mask_image_craft(image, v_list, idx, file_properties, width, height)
+        extension = path.split('.')[-1]
+        save_path = path.split('.')[0]+"_bgimages."+extension
+        # image[:] = 255
+        cv2.imwrite(save_path,image)
+        end_time = time.time()
+        execution_time = end_time - start_time
+        print(f"Mask Image Logic Execution Time: {execution_time:.2f} seconds")
     if "top_correction" in file['config']["OCR"].keys() and file['config']["OCR"]["top_correction"]=="True":
         v_list = coord_alignment(v_list,False)
         v_list = verify__table_structure(v_list)
@@ -322,68 +333,89 @@ def segment_regions(file,words, lines,regions,page_c_words,path,file_properties,
     
     #print("v_ln_text_regionsis",len(n_text_regions))
     
+def end_point_correction(region, y_margin, x_margin, ymax, xmax):
+    x = region["boundingBox"]['vertices'][0]['x']
+    y = region["boundingBox"]['vertices'][0]['y']
+    w = abs(region["boundingBox"]['vertices'][0]['x'] - region["boundingBox"]['vertices'][1]['x'])
+    h = abs(region["boundingBox"]['vertices'][0]['y'] - region["boundingBox"]['vertices'][2]['y'])
+    ystart = max(0, y + y_margin)
+    yend = min(ymax, y + h - y_margin)
+    xstart = max(0, x + x_margin)
+    xend = min(xmax, x + w - x_margin)
+    return True, int(ystart), int(yend), int(xstart), int(xend)
 
-
-    
-def end_point_correction(region, y_margin,x_margin, ymax,xmax):
-    # check if after adding margin the endopints are still inside the image
-    x = region["boundingBox"]['vertices'][0]['x']; y = region["boundingBox"]['vertices'][0]['y']
-    w = abs(region["boundingBox"]['vertices'][0]['x']-region["boundingBox"]['vertices'][1]['x'])
-    h = abs(region["boundingBox"]['vertices'][0]['y']-region["boundingBox"]['vertices'][2]['y'])
-    if abs(h-ymax)<50:
-        return False,False,False,False,False
-    # if (y + margin) < 0:
-    #     ystart = y
-    # else:
-    ystart = y + y_margin
-    # if (y + h - margin) > ymax:
-    #     yend = y+h
-    # else:
-    yend = y + h - y_margin
-    # if (x + margin) < 0:
-    #     xstart = x
-    # else:
-    xstart = x + x_margin
-    # if (x + w - margin) > xmax:
-    #     xend = x+w
-    # else:
-    xend = x + w - x_margin
-    return True,int(ystart), int(yend), int(xstart), int(xend)
-def mask_table_region(image,region,image_height,image_width,y_margin,x_margin,fill):
+def mask_table_region(image, region, y_margin, x_margin):
     try:
-        if ('text' in region.keys() and (region['text'] in ["(", ")", "/"] or len(region['text'])==0)):
-            y_margin=0; x_margin=-2
-        if 'text' in region.keys() and region['text'] !="|" and region['text'] !="।":
-            flag,row_top, row_bottom,row_left,row_right = end_point_correction(region, y_margin,x_margin,image_height,image_width)
+        region_text = region.get('text', '')  # Get the region text or use an empty string as a default value
+        image_height, image_width, _ = image.shape
+        # Check if the region text matches any of the specified characters or if it's an empty string
+        if region_text in {"(", ")", "/"} or not region_text:
+            y_margin = 0
+            x_margin = -2
+        if region.get('text', '') not in ["|", "।"]:
+            flag, row_top, row_bottom, row_left, row_right = end_point_correction(region, y_margin, x_margin, image_height, image_width)
             if flag:
-                if len(image.shape) == 2 :
-                    image[row_top  : row_bottom  , row_left : row_right ] = fill
-                if len(image.shape) == 3 :
-                    image[row_top : row_bottom , row_left : row_right ,:] = fill
+                fill = identify_background_color(image[row_top  : row_bottom  , row_left : row_right ])
+                image[row_top:row_bottom, row_left:row_right] = fill
         return image
-    except:
+    except KeyError:
         return image
-def remove_noise(img):
+def remove_noise(img, min_area_ratio=0.001):
     try:
-        res = img.copy()
-        kernel = np.ones((10,10), np.uint8)
-        img = cv2.erode(img, kernel, iterations=1)
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        _, thresh = cv2.threshold(gray,0,255,cv2.THRESH_BINARY_INV+cv2.THRESH_OTSU)
-        contours, hierarchy = cv2.findContours(thresh,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
-        for i in contours:
-            cnt = cv2.contourArea(i)
-            if cnt < 1500:
-                x,y,w,h = cv2.boundingRect(i)
-                cv2.rectangle(res,(x-1,y-1),(x+w+1,y+h+1),(255,255,255),-1)
-        return res
+        _, thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
+        contours, _ = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+        
+        total_area = img.shape[0] * img.shape[1]
+        min_area = min_area_ratio * total_area
+        
+        for contour in contours:
+            cnt_area = cv2.contourArea(contour)
+            
+            if cnt_area < min_area:
+                x, y, w, h = cv2.boundingRect(contour)
+                img[y:y + h, x:x + w] = 255
+                
+        return img
     except:
         return img
+    
+def identify_background_color(region, method='average'):
+    # Check if the region is not empty
+    if region is None or region.size == 0:
+        return None
 
-def mask_image_craft(path, page_regions,page_index,file_properties,image_width,image_height,margin= 0 ,fill=255):
+    # Convert the region to three channels (RGB) if it is a single-channel image (grayscale)
+    if len(region.shape) == 2:
+        region = cv2.cvtColor(region, cv2.COLOR_GRAY2BGR)
+
+    if method == 'average':
+        # Calculate the average color of the region
+        average_color = np.mean(region, axis=(0, 1))
+        background_color = tuple(np.round(average_color).astype(int))
+    elif method == 'kmeans':
+        # Reshape the region to a 2D array of pixels
+        pixels = region.reshape((-1, 3))
+
+        # Convert to float32 for k-means clustering
+        pixels = np.float32(pixels)
+
+        # Define criteria and apply k-means
+        criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 10, 1.0)
+        k = 2  # You can adjust the number of clusters as per your requirement
+        _, labels, centers = cv2.kmeans(pixels, k, None, criteria, 10, cv2.KMEANS_RANDOM_CENTERS)
+
+        # Get the most frequent color as the background color
+        counts = np.bincount(labels.flatten())
+        background_color = tuple(np.round(centers[np.argmax(counts)]).astype(int))
+    else:
+        raise ValueError("Invalid method. Choose 'average' or 'kmeans'.")
+
+    return background_color
+
+def mask_image_craft(image, page_regions,page_index,file_properties,image_width,image_height,margin= 0, fill=255 ):
     try:
         #path = config.BASE_DIR+path
-        image   = cv2.imread(path)
         for region_idx, page_region in enumerate(page_regions):
             
             if page_region is not None and 'class' in page_region.keys():
@@ -403,44 +435,25 @@ def mask_image_craft(path, page_regions,page_index,file_properties,image_width,i
                                 region_words = file_properties.get_region_words(page_index,region_idx,line_index,line)
                                 if region_words!=None:
                                     if config.IS_DYNAMIC and region_class!="TABLE":
-                                        region_words = coord_adjustment(path, region_words)
+                                        region_words = coord_adjustment(image, region_words)
                                     for word_index,region in enumerate(region_words):
-                                        if region is not None:
+                                        if region!=None:
                                             if region_class =='TABLE':
-                                                image = mask_table_region(image,region,image_height,image_width,y_margin,x_margin,fill)
+                                                image = mask_table_region(image,region,image_height,image_width,y_margin,x_margin)
                                             else:
                                                 flag,row_top, row_bottom,row_left,row_right = end_point_correction(region, y_margin,x_margin,image_height,image_width)
                                                 if flag:
                                                     if len(image.shape) == 2 :
+                                                        fill = identify_background_color(image[row_top  : row_bottom  , row_left : row_right ], method='kmeans')
                                                         image[row_top  : row_bottom  , row_left : row_right ] = fill
                                                     if len(image.shape) == 3 :
+                                                        fill = identify_background_color(image[row_top  : row_bottom  , row_left : row_right ], method='kmeans')
                                                         image[row_top : row_bottom , row_left : row_right ,:] = fill
         image = remove_noise(image)
-
-                
-                                        
-        if '.jpg' in path:
-            save_path = path.split('.jpg')[0]+"_bgimages_"+'.jpg'
-        elif '.png' in path:
-            save_path = path.split('.png')[0]+"_bgimages_"+'.png'
-        else:
-            save_path = path.split('.')[0]+"_bgimages_"+'.jpg'
-
-        cv2.imwrite(save_path,image)
-        return save_path
+        return image
     except Exception as e :
         print('Service Tesseract Error in masking out image {}'.format(e))
-        if '.jpg' in path:
-            save_path = path.split('.jpg')[0]+"_bgimages_"+'.jpg'
-        elif '.png' in path:
-            save_path = path.split('.png')[0]+"_bgimages_"+'.png'
-        else:
-            save_path = path.split('.')[0]+"_bgimages_"+'.jpg'
-        img = cv2.imread(path)
-        img[:] = 255
-        cv2.imwrite(save_path,img)
-        return save_path
-
+        return image
 
 def mask_image_vision(path, page_regions,page_index,file_properties,image_width,image_height,margin= 0 ,fill=255):
     try:
@@ -448,7 +461,6 @@ def mask_image_vision(path, page_regions,page_index,file_properties,image_width,
         
         for region in page_regions:
             row_top, row_bottom,row_left,row_right = end_point_correction(region, 2,image_height,image_width)
-            
             if len(image.shape) == 2 :
                 image[row_top - margin : row_bottom + margin , row_left - margin: row_right + margin] = fill
             if len(image.shape) == 3 :

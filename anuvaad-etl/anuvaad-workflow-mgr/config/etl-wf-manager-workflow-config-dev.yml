@@ -435,7 +435,31 @@ WorkflowConfigs:
           - name: OCR-DD15-GOOGLE-VISION
           endState: true
 
-
+      - workflowCode: WF_A_FCWDLDOD15GVOTK
+        type: ASYNC
+        description: Document digitization and tokenisation without block segmenter
+        useCase: A_FWLOD15GOT
+        sequence:
+        - order: 0
+          tool:
+          - name: FILE-CONVERTER
+          endState: false
+        - order: 1
+          tool:
+          - name: WORD-DETECTOR
+          endState: false
+        - order: 2
+          tool:
+          - name: LAYOUT-DETECTOR
+          endState: false
+        - order: 3
+          tool:
+          - name: OCR-DD15-GOOGLE-VISION
+          endState: false
+        - order: 4
+          tool:
+          - name: OCR-TOKENISER
+          endState: true
 
 
       - workflowCode: WF_A_FCWDLDBSOD15GVOTK
@@ -612,6 +636,7 @@ WorkflowConfigs:
           tool:
           - name: SYNC-DOCUMENT-PREPROCESS
           endState: true
+
 
 # Conventions:
 # WF - prefix for Workflow

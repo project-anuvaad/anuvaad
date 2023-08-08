@@ -213,5 +213,20 @@ class UserAuthenticationModel(object):
         except Exception as e:
             log_exception("Database  exception ",  MODULE_CONTEXT, e)
             return post_error("Database exception", "Exception:{}".format(str(e)), None)
+        
+    def get_email_change_status(self, username):
+        try:
+            collections = get_db()[USR_MONGO_COLLECTION]
+            result = collections.find({'userName':username})
+            for i in result:
+                return {
+                    "updated_status": i.get('email_updated',False), 
+                    "registered_email" : i['email'],
+                    "userName" : i['userName']
+                }
+        except Exception as e:
+            log_exception("db connection exception " +
+                          str(e),  MODULE_CONTEXT, e)
+            return post_error("Database  exception", "An error occurred while processing on the db :{}".format(str(e)), None)
            
            

@@ -34,7 +34,7 @@ class MenuClass extends React.Component {
         }}
       >
         <div>
-          <Button
+          {role !== 'SUPERADMIN' && <Button
             style={{
               textTransform: "none",
               width: "100%",
@@ -47,7 +47,7 @@ class MenuClass extends React.Component {
             <span style={{ fontWeight: "bold", paddingLeft: "5px" }}>
               {this.findWord(this.props.splitValue)}
             </span>
-          </Button>
+          </Button>}
 
           {!this.props.targetDict && (
             <div>
@@ -72,7 +72,7 @@ class MenuClass extends React.Component {
               </Button>
               {
                 orgID !== 'NONMT' &&
-                <>{role !== 'ANNOTATOR' &&
+                <>{role !== 'ANNOTATOR' && role !== 'SUPERADMIN' &&
                   <Button
                     style={{
                       textTransform: "none",
@@ -88,7 +88,7 @@ class MenuClass extends React.Component {
               }
               {
                 orgID !== 'NONMT' &&
-                <>{role !== 'ANNOTATOR' &&
+                <>{role !== 'ANNOTATOR' && role !== 'SUPERADMIN' &&
                   <Button
                     style={{
                       textTransform: "none",

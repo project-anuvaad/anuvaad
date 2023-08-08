@@ -8,6 +8,9 @@ redis_server_prefix = os.environ.get('REDIS_PREFIX', 'redis')
 redis_server_host = os.environ.get('REDIS_URL', 'localhost')
 redis_server_port = os.environ.get('REDIS_PORT', 6379)
 tmx_redis_db = os.environ.get('ANUVAAD_TMX_REDIS_DB', 3)
+utm_redis_db = os.environ.get('ANUVAAD_UTM_REDIS_DB', 6)
+if isinstance(utm_redis_db, str):
+    utm_redis_db = eval(utm_redis_db)
 if isinstance(tmx_redis_db, str):
     tmx_redis_db = eval(tmx_redis_db)
 file_download_url = str(os.environ.get('USER_FILE_UPLOADER_HOST', 'http://gateway_anuvaad-user-fileuploader:5001')) \
@@ -35,7 +38,7 @@ nmt_attention_align_url = str(os.environ.get('NMT_HOST', 'http://172.30.0.234:50
 tool_translator = "TRANSLATOR"
 download_folder = "/app/upload/"
 tmx_default_context = os.environ.get('TRANSLATOR_TMX_DEFAULT_CONTEXT', "JUDICIARY")
-nmt_max_batch_size = os.environ.get('NMT_MAX_BATCH_SIZE', 25)
+nmt_max_batch_size = os.environ.get('NMT_MAX_BATCH_SIZE', 75)
 tmx_word_length = os.environ.get('TRANSLATOR_TMX_WORD_LENGTH', 10)
 no_of_process = os.environ.get('TRANSLATOR_NO_OF_PROC', 30)
 tmx_enabled = os.environ.get('TRANSLATOR_TMX_ENABLED', True)

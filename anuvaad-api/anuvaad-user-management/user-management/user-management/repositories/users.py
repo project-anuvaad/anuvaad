@@ -31,3 +31,13 @@ class UserManagementRepositories:
         result = userModel.get_roles_from_role_sheet()
         if result is not None:
             return result
+    
+    def change_email(self, username, email):
+        result = userModel.change_email(username, email)
+        if result is not None:
+            return result
+        
+    def get_active_users(self):
+        result = userModel.get_active_users()
+        if result is not None:
+            return result

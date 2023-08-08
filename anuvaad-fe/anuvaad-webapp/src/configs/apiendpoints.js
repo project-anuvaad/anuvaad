@@ -14,6 +14,7 @@ const endpoints = {
   workflowSync: "/anuvaad-etl/wf-manager/v1/workflow/sync/initiate",
   signup: "/anuvaad/user-mgmt/v1/users/create",
   login: "/anuvaad/user-mgmt/v1/users/login",
+  logout: "/anuvaad/user-mgmt/v1/users/logout",
   setpassword: "/anuvaad/user-mgmt/v1/users/reset-password",
   userdetails: "/anuvaad/user-mgmt/v1/users/search",
   createuser: "/anuvaad/user-mgmt/v1/users/onboard-users",
@@ -62,8 +63,14 @@ const endpoints = {
   getDocumentCountPerOrg: "/anuvaad-metrics/anuvaad-data/doc_count",
   getAllSupportedLangList: "/anuvaad-metrics/anuvaad-data/languages",
   hostedInference: "/ulca/apis/v0/model/compute",
-  getTransliterationModelId:"/ulca/apis/v0/model/getTransliterationModelId",
+  getTransliterationModelId: "/ulca/apis/v0/model/getTransliterationModelId",
+  activeUsersCount: "/anuvaad/user-mgmt/v1/users/active-users",
 
+  // MFA API's
+  mfa_register: "/anuvaad/user-mgmt/v1/mfa/register",
+  mfa_verify: "/anuvaad/user-mgmt/v1/mfa/verify",
+  mfa_reset: "/anuvaad/user-mgmt/v1/mfa/reset",
+  update_email: "/anuvaad/user-mgmt/v1/users/update-email"
 };
 
 export default endpoints;

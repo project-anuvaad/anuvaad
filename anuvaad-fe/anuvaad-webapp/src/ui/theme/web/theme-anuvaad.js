@@ -38,6 +38,7 @@ const themeAnuvaad = createMuiTheme({
     MuiMenu: {
       list: {
         minWidth: "210px",
+        maxHeight: "350px"
       },
     },
     MuiMenuItem:{
