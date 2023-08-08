@@ -360,18 +360,22 @@ def mask_table_region(image, region, y_margin, x_margin):
         return image
     except KeyError:
         return image
-def remove_noise(img):
+def remove_noise(img, min_area_ratio=0.001):
     try:
-        kernel = np.ones((10, 10), np.uint8)
-        img = cv2.erode(img, kernel, iterations=1)
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         _, thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
-        contours, _ = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+        contours, _ = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+        
+        total_area = img.shape[0] * img.shape[1]
+        min_area = min_area_ratio * total_area
+        
         for contour in contours:
-            cnt = cv2.contourArea(contour)
-            if cnt < 1500:
+            cnt_area = cv2.contourArea(contour)
+            
+            if cnt_area < min_area:
                 x, y, w, h = cv2.boundingRect(contour)
-                img[y - 1:y + h + 1, x - 1:x + w + 1] = 255
+                img[y:y + h, x:x + w] = 255
+                
         return img
     except:
         return img
@@ -445,7 +449,7 @@ def mask_image_craft(image, page_regions,page_index,file_properties,image_width,
                                                     if len(image.shape) == 3 :
                                                         fill = identify_background_color(image[row_top  : row_bottom  , row_left : row_right ], method='kmeans')
                                                         image[row_top : row_bottom , row_left : row_right ,:] = fill
-        # image = remove_noise(image)
+        image = remove_noise(image)
         return image
     except Exception as e :
         print('Service Tesseract Error in masking out image {}'.format(e))
