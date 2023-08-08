@@ -28,6 +28,7 @@ const EnterOTPModal = (props) => {
     OTPModalTitle,
     hideResendOTPButton,
     showTimer,
+    ResendButtonTitle
     // loading,
   } = { ...props };
 
@@ -236,7 +237,7 @@ return (
             disabled={!time == 0 && showTimer}
             className={classes.VerifyOtpButton}
           >
-            Resend OTP{" "}{!time == 0 && showTimer && <span style={{ paddingLeft: "8px" }}>
+            {ResendButtonTitle}{" "}{!time == 0 && showTimer && <span style={{ paddingLeft: "8px" }}>
               {`${Math.floor(time / 60)}`.padStart(2, 0)}:
               {`${time % 60}`.padStart(2, 0)}
             </span>}

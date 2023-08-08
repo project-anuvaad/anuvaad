@@ -62,6 +62,7 @@ class Login extends React.Component {
       oneTimeUpdateEmailIdSuccessMessage: false,
       ResendWithUseHOTP: false,
       ResendOtpButtonClicked: false,
+      ResendButtonTitle: "Resend OTP",
       showTimer:false,
     };
   }
@@ -152,7 +153,8 @@ class Login extends React.Component {
                 showOTPDialog: true, 
                 sessionId: resData.session_id, 
                 otpModalTitle: resData.mfa_message,
-                ResendWithUseHOTP: resData.mfa_type === "TOTP" ? true : false
+                ResendWithUseHOTP: resData.mfa_type === "TOTP" ? true : false,
+                ResendButtonTitle: resData.mfa_type === "TOTP" ? "Send OTP to Email" : "Resend OTP"
               });
             }
           } else if (resData.token){
@@ -442,6 +444,7 @@ class Login extends React.Component {
           verifySuccessMessage={this.state.verifySuccessMessage}
           hideResendOTPButton={this.state.hideResendOTPButton}
           showTimer={this.state.showTimer}
+          ResendButtonTitle={this.state.ResendButtonTitle}
         />
         <RegisterMFAModal
           open={this.state.showMFAMethodSelectionModal}

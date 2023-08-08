@@ -670,7 +670,7 @@ export default function TopHeader(props) {
                                         </Grid>
                                         <Divider style={{ marginTop: 5, marginBottom: 5, width: "100%" }} />
                                         <Grid item>
-                                            <Typography style={{ padding: 10 }} variant="caption"> Active Users : <b>{activeUserCount ? activeUserCount : ""}</b></Typography>
+                                            <Typography style={{ padding: 10 }} variant="caption"> Active Users : <b>{activeUserCount ? activeUserCount : "0"}</b></Typography>
                                         </Grid>
                                         <Divider style={{ marginTop: 5, marginBottom: 5, width: "100%" }} />
                                         {
