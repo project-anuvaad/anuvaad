@@ -18,7 +18,7 @@ ENABLE_CORS =   False
 REDIS_SERVER_PREFIX     = os.environ.get('REDIS_PREFIX', 'redis')
 REDIS_SERVER_HOST       = os.environ.get('REDIS_URL', 'localhost')
 REDIS_SERVER_PORT       = os.environ.get('REDIS_PORT', 6379)
-ACTIVE_USERS_EXP_TIME   = 2 * 60 # in seconds
+ACTIVE_USERS_EXP_TIME   = int(os.environ.get('ACTIVE_USERS_EXP_TIME', 5 * 60 )) # in seconds
 
 #mongodb-configs
 MONGO_DB_SCHEMA                 =   os.environ.get('MONGO_DB_IDENTIFIER', 'usermanagement')

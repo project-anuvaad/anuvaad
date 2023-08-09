@@ -34,6 +34,11 @@
             "code":"SUPERADMIN",
             "active":true,
             "description":"Has access to user management related resources across all orgs"
+        },
+        {
+            "code":"REVIEWER",
+            "active":true,
+            "description":"Has access to user document for review and verify of an org"
         }
     ]
 }
