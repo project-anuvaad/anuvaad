@@ -138,13 +138,13 @@ def get_reviewer_data(base=False):
             start_date = dt(*config.REVIEWER_DATA_BASE_SDATE)
             end_date = dt(*config.REVIEWER_DATA_BASE_EDATE)
             cur_file = config.DOWNLOAD_FOLDER + "/" + config.REVIEWER_DATA_BASEFILE
-            log_info(f"opted reviewer-data-updation(base) : {start_date=}|{end_date=}", MODULE_CONTEXT)
+            log_info(f"opted reviewer-data-updation(base) : s_date={start_date}|e_date={end_date}", MODULE_CONTEXT)
         else:
             # reviewer-data-cron-file
             start_date = dt(*config.REVIEWER_DATA_BASE_EDATE) + td(days=1)
             end_date = dt.now()
             cur_file = config.DOWNLOAD_FOLDER + "/" + config.REVIEWER_DATA_CRONFILE
-            log_info(f"opted reviewer-data-updation(cron) : {start_date=}|{end_date=}", MODULE_CONTEXT)
+            log_info(f"opted reviewer-data-updation(cron) : s_date={start_date}|e_date={end_date}", MODULE_CONTEXT)
         start_date = stats.get_custom_timestamp(start_date)
         end_date = stats.get_custom_timestamp(end_date)
         # get data

@@ -403,5 +403,5 @@ def update_reviewer_data():
     body = request.get_json()
     base = bool(body.get('base',False))
     manual_start_reviewerdata_scheduler(base)
-    out = CustomResponse(Status.SUCCESS.value, f"updated reviewer data for {base=}")
+    out = CustomResponse(Status.SUCCESS.value, f"updated reviewer data for base={base}")
     return out.getres()
