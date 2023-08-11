@@ -745,6 +745,14 @@
             "description":"API for Aanuvaad-Metrics languages drop down chart api"
         },
         {
+            "id":"05c0eeb8-5cef-4d5c-ae7a-b17d86c6aa06",
+            "uri":"/anuvaad-metrics/anuvaad-data/v1/upload_doc_count",
+            "module":"ANUVAAD-METRICS",
+            "active":true,
+            "whiteList":true,
+            "description":"API for Anuvaad-Metrics uploaded docs count api"
+        },
+        {
             "id":"7aec74a1-7feb-45c7-900b-a6a4458a4fef",
             "uri":"/anuvaad-etl/pre-processor/v0/pre-process",
             "module":"PRE-PROCESSOR",
