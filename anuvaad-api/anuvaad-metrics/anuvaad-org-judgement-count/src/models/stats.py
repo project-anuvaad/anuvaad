@@ -5,6 +5,7 @@ import os
 import pandas as pd
 from anuvaad_auditor.loghandler import log_info, log_exception
 from anuvaad_auditor.errorhandler import post_error
+from datetime import datetime as dt
 
 from utilities import MODULE_CONTEXT
 
@@ -17,6 +18,9 @@ class jud_stats(object):
             config.FILE_CONTENT_COLLECTION
         ]
         return usr_collection, ch_collection
+
+    def mongo_wfm_connection(self):
+        return connectmongo()[config.WFM_DB][config.WFM_COLLECTION]
 
     def fetch_data_machine_trans_tokenised(
         self, ch_collection, user, from_date, end_date
@@ -483,3 +487,41 @@ class jud_stats(object):
             total_verified_sentence_count,
             keyss,
         )
+
+    def get_reviewer_data_from_wfm(self, wfm_collection, fromdate, todate):
+        docs = wfm_collection.aggregate(
+            [
+                {
+                    "$match": {
+                        "startTime": {
+                            "$gte": fromdate, 
+                            "$lte": todate,  
+                        },
+                        "workflowCode": {
+                            '$in': ["DP_WFLOW_FBT", "WF_A_FCBMTKTR", "DP_WFLOW_FBTTR", "WF_A_FTTKTR"]
+                        },
+                    },
+                },
+                {
+                    "$group": {
+                        "_id": {
+                            'org': "$metadata.orgID",
+                            'status': {
+                                "$cond": [{"$eq": ["$granularity.currentStatus", "parallel_document_uploaded"]}, "uploaded", "in_progress"]
+                            },
+                            "src": {'$first': "$input.files.model.source_language_name"},
+                            "tgt": {'$first': "$input.files.model.target_language_name"},
+                        },
+                        "count": {"$sum": 1}
+                    }},
+            ]
+        )
+        docs = pd.DataFrame(list(docs))
+        docs = pd.concat([docs,pd.json_normalize(docs['_id'])],axis=1)
+        del docs['_id']
+        # print(docs.to_string())
+        return docs
+
+    def get_custom_timestamp(self,dt_obj: dt):
+        return dt_obj.timestamp()*1000
+
