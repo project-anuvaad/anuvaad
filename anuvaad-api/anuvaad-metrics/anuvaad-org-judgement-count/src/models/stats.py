@@ -447,6 +447,9 @@ class jud_stats(object):
             for i, j in enumerate(keyss):
                 if keyss[i]["tgt_lang"] in config.LANG_MAPPING.keys():
                     keyss[i]["tgt_label"] = config.LANG_MAPPING[keyss[i]["tgt_lang"]]
+                else:
+                    keyss[i]["tgt_label"] = keyss[i]["tgt_lang"]
+                    keyss[i]["error"] = 'language_code missing from config'
             total_docs = sum(c["total_doc"] for c in keyss)
             total_documemt_sentence_count = sum(c["doc_sent_count"] for c in keyss)
             total_verified_sentence_count = sum(c["verified_sentence"] for c in keyss)
@@ -478,6 +481,9 @@ class jud_stats(object):
 
             if keyss[i]["tgt_lang"] in config.LANG_MAPPING.keys():
                 keyss[i]["tgt_label"] = config.LANG_MAPPING[keyss[i]["tgt_lang"]]
+            else:
+                keyss[i]["tgt_label"] = keyss[i]["tgt_lang"]
+                keyss[i]["error"] = 'language_code missing from config'
         total_docs = sum(c["total_doc"] for c in keyss)
         total_documemt_sentence_count = sum(c["doc_sent_count"] for c in keyss)
         total_verified_sentence_count = sum(c["verified_sentence"] for c in keyss)
