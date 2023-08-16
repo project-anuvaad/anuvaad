@@ -78,7 +78,7 @@ class StartDigitizationUpload extends React.Component {
                 code: 'WF_A_FCOD10GVOTK',
                 version: '1.0'
             }, {
-                code: 'WF_A_FCWDLDBSOD20TESOTK',
+                code: 'WF_A_FCWDLDBSOD15GVOTK',
                 version: '1.5'
             }, {
                 code: 'WF_A_FCWDLDBSOD20TESOTK',

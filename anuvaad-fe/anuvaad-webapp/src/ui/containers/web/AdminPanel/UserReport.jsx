@@ -279,7 +279,6 @@ class UserReport extends React.Component {
     }
 
     handleViewDocumentEditor = (jobid, inputfileid, modelId, filename, workflow, source_language_code, target_language_code, user_id) => {
-        debugger
         history.push(`${process.env.PUBLIC_URL}/interactive-document/${jobid}/${inputfileid}/${modelId}/${filename}/${workflow}/${source_language_code}/${target_language_code}`, {data : {user_id: user_id}})
     }
 
