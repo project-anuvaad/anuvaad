@@ -26,7 +26,7 @@ export default class RunExperiment extends API {
     this.endpoint =
       workflow === "WF_A_FCBMTKTR" ||
       workflow === "WF_A_FCOD10GVOTK" ||
-      workflow === "WF_A_FCWDLDBSOD15GVOTK" ||
+      workflow === "WF_A_FCWDLDBSOD20TESOTK" ||
       workflow === "WF_A_FCWDLDBSOD20TESOTK" ||
       workflow === "WF_A_AN" ||
       workflow === "WF_A_FTTKTR"
@@ -94,7 +94,7 @@ export default class RunExperiment extends API {
       //List of text
     } else if (
       this.workflow === "WF_A_FCOD10GVOTK" ||
-      this.workflow === "WF_A_FCWDLDBSOD15GVOTK" ||
+      this.workflow === "WF_A_FCWDLDBSOD20TESOTK" ||
       this.workflow === "WF_A_FCWDLDBSOD20TESOTK"
     ) {
       return {

@@ -45,7 +45,7 @@ export default class BulkSearchAPI extends API {
       "limit": this.limit,
       "jobIDs": this.jobIds,
       "taskDetails": true,
-      "workflowCodes": ["WF_A_FCOD10GVOTK","WF_A_FCWDLDBSOD15GVOTK","WF_A_FCWDLDBSOD20TESOTK"],
+      "workflowCodes": ["WF_A_FCOD10GVOTK","WF_A_FCWDLDBSOD20TESOTK","WF_A_FCWDLDBSOD20TESOTK"],
       "userIDs": this.userId
     }
   }

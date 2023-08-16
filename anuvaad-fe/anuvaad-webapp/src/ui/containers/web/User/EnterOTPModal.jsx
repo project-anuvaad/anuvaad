@@ -145,9 +145,20 @@ useEffect(() => {
 
 }, []);
 
+const clearOTPInput = () => {
+  setOTP1("");
+  setOTP2("");
+  setOTP3("");
+  setOTP4("");
+  setOTP5("");
+  setOTP6("");
+
+  digit1.current.focus()
+}
+
 const onOTPSubmit = (e) => {
   e.preventDefault();
-  onSubmit(OTP);
+  onSubmit(OTP, clearOTPInput);
 }
 
 const handleOTPChange = (e, setter, index, nextRef, prevRef) => {
