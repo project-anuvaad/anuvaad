@@ -196,7 +196,7 @@ class Login extends React.Component {
       })
   }
 
-  onSubmitOTP = (otp, callback) => {
+  onSubmitOTP = (otp, clearOTPInput) => {
     const { email, sessionId } = this.state;
     this.setState({ error: false, loading: true });
     // call mfa register API here
@@ -208,19 +208,20 @@ class Login extends React.Component {
       body: JSON.stringify(apiObj.getBody())
     })
       .then(async (response) => {
+        clearOTPInput();
         const rsp_data = await response.json();
         console.log("rsp_data --- ", rsp_data);
         if (!rsp_data.ok) {
           this.setState({ error: true, loading: false, errMessage: rsp_data.message });
         } else {
           this.setState({ error: false, loading: false, verifySuccessMessage: true });
-          // callback();
           localStorage.setItem("token", rsp_data.data.token);
           this.fetchUserProfileDetails(rsp_data.data.token);
         }
       })
       .catch(err => {
         this.setState({ error: true, loading: false, errMessage: "Unable to Verify OTP!" });
+        clearOTPInput();
       })
   }
 
@@ -440,7 +441,7 @@ class Login extends React.Component {
           handleClose={() => this.handleCloseOTPModal()}
           onResend={(e) => this.onResendOTPClick(e)}
           OTPModalTitle={this.state.otpModalTitle}
-          onSubmit={(OTP) => this.onSubmitOTP(OTP)}
+          onSubmit={(OTP, clearOTPInput) => this.onSubmitOTP(OTP, clearOTPInput)}
           verifySuccessMessage={this.state.verifySuccessMessage}
           hideResendOTPButton={this.state.hideResendOTPButton}
           showTimer={this.state.showTimer}
