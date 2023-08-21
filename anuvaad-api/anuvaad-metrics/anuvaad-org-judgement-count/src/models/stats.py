@@ -295,8 +295,10 @@ class jud_stats(object):
             df1.dropna(how="all", axis=1, inplace=True)
             df1.dropna(subset=['orgID'], inplace=True)
             df.dropna(subset=['orgID'], inplace=True)
-            result = df1.merge(df, indicator=True, how="right")
-            result = df.sort_values(by=["orgID"], ascending=True)
+            result = pd.merge(df, df1[['_id', 'saved_sent_count']], on='_id', how='left')
+            result = result.sort_values(by=["orgID"], ascending=True)
+            result['saved_sent_count'].fillna(0, inplace=True)
+            result['saved_sent_count'] = result['saved_sent_count'].astype(int)
 #             mask = result["orgID"].isin(
 #                 ["ANUVAAD", "TARENTO_TESTORG", "NONMT", "ECOMMITTEE "]
 #             )

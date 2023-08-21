@@ -171,6 +171,7 @@ def manual_start_reviewerdata_scheduler(base):
 
 # static run (only once when server starts)
 manual_start_reviewerdata_scheduler(base=True)
+manual_start_reviewerdata_scheduler(base=False)
 
 # initiate cron job
 schedule_job.start()
