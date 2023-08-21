@@ -231,12 +231,12 @@ def drop_update_col(page_df):
         page_lis =[]
         for index, row in page_df.iterrows():
             if row['children'] != None:
-                sub_block_children     =  pd.read_json(row['children'])
+                sub_block_children     =  pd.read_json(row['children'], dtype={"text": str})
                 sub_block_children     =  sub_block_children.where(sub_block_children.notnull(), None)
                 child_lis = []
                 for index2,row2 in sub_block_children.iterrows():
                     if row2['children']!=None:
-                        sub_block_children2   =  pd.read_json(row2['children'])
+                        sub_block_children2   =  pd.read_json(row2['children'], dtype={"text": str})
                         sub_block_children2   = drop_cols(sub_block_children2,drop_col=['font_family','font_size'])
                         sub_block_children2.rename(columns={'font_family_updated': 'font_family', 'font_size_updated': 'font_size'},inplace=True)
 

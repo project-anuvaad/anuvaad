@@ -20,42 +20,36 @@ class ChildTextUnify(object):
         
     def get_children_text_block(self, block, drop_lis):
     
-        if block['children'] == None:
+        if block['children'] is None:
             return block['text']
         else:
             text = ""
-            block_children  =  pd.read_json(block['children'])
-            #block_children  =  block_children.reset_index(drop=True)
-            block_children  =  block_children.where(block_children.notnull(), None)
-            block_children  =  block_children.sort_values('text_top')
-
-            block_children  = block_children.reset_index(drop=True)
+            # Read JSON data and specify dtype for 'text' column
+            block_children = pd.read_json(block['children'], dtype={"text": str})
+            block_children = block_children.where(block_children.notnull(), None)
+            block_children = block_children.sort_values('text_top')
+            block_children = block_children.reset_index(drop=True)
 
             for sub_block_index in range(len(block_children)):
-                
-                sub_df  = block_children.iloc[sub_block_index]
-                sub_df  = sub_df.where(sub_df.notnull(), None)
-
-                #if 'children' in sub_df.columns:
-                if sub_df['children'] == None:
-                    text = str(text) +" " + str(sub_df['text'])
+                sub_df = block_children.iloc[sub_block_index]
+                sub_df = sub_df.where(sub_df.notnull(), None)
+                if sub_df['children'] is None:
+                    text = str(text) + " " + str(sub_df['text'])
                     continue
                 else:
-                    sub2_block_children   =  pd.read_json(sub_df['children'])
-                    sub2_block_children   =  sub2_block_children.reset_index(drop=True)
-                    sub2_block_children   =  sub2_block_children.sort_values('text_left')
-                    sub2_block_children   =  sub2_block_children.where(sub2_block_children.notnull(), None)
-                    #if 'children' in sub2_block_children.columns:
+                    sub2_block_children = pd.read_json(sub_df['children'])
+                    sub2_block_children = sub2_block_children.reset_index(drop=True)
+                    sub2_block_children = sub2_block_children.sort_values('text_left')
+                    sub2_block_children = sub2_block_children.where(sub2_block_children.notnull(), None)
+
                     for sub2_block_index in range(len(sub2_block_children)):
                         if 'attrib' in sub2_block_children.columns:
-                            if self.drop_text_regards_attrib(sub2_block_children['attrib'][sub2_block_index],drop_lis)==False:
-                                text = text+" " + str(sub2_block_children['text'][sub2_block_index])
+                            if self.drop_text_regards_attrib(sub2_block_children['attrib'][sub2_block_index], drop_lis) == False:
+                                text = text + " " + str(sub2_block_children['text'][sub2_block_index])
                         else:
-                            text = text+" " + str(sub2_block_children['text'][sub2_block_index])
-
-
-
+                            text = text + " " + str(sub2_block_children['text'][sub2_block_index])
             return text
+            
 
     def get_parent_block(self,data,drop_lis):
         new_df = data.copy(deep=True)
