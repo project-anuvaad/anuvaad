@@ -274,6 +274,9 @@ class WFMService:
                     partitions = os.environ.get(configs_global['numPartitions'],str(total_no_of_partitions))
                     log_info(f"Partitions: {partitions}",None)
                     if next_step_input is None or topic == "NA":
+                        log_error(f"NEXT STEP INPUT :: {next_step_input}",task_output, None)
+                        log_error(f"TOPIC :: {topic}",task_output, None)
+                        log_error(f"NEXT TOOL :: {next_tool}",task_output, None)
                         log_error("The workflow contains incompatible steps in sequence. Please check the wf config.",
                                   task_output, None)
                         post_error_wf("INCOMPATIBLE_TOOL_SEQUENCE",
