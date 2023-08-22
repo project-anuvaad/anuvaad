@@ -265,7 +265,7 @@ class UserReport extends React.Component {
 
     processViewDocumentEditor = (data) => {
         return (
-            <Tooltip title="View Document" placement="right">
+            this.state.role === "SUPERADMIN" && <Tooltip title="View Document" placement="right">
                 <IconButton style={{ color: '#233466', padding: '5px' }}
                     component="a"
                     onClick={
@@ -594,7 +594,7 @@ class UserReport extends React.Component {
                                 <div>
                                     {this.processDocumentView(tableMeta.rowData[1], tableMeta.rowData[0], tableMeta.rowData[5], tableMeta.rowData[6])}
                                     {this.processDocumentDownload(tableMeta.rowData[1])}
-                                    {this.processViewDocumentEditor(this.getJobsSortedByTimestamp()[tableMeta.rowIndex])}
+                                    { this.processViewDocumentEditor(this.getJobsSortedByTimestamp()[tableMeta.rowIndex])}
                                     {/* jobid - 1, inputfileid, modelId, filename, workflow, source_language_code, target_language_code */}
                                     {/* {this.processEventView(tableMeta.rowData[1], tableMeta.rowData[5], tableMeta.rowData[6])} */}
                                 </div>
