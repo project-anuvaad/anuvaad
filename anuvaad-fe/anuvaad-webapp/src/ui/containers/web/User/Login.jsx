@@ -208,11 +208,11 @@ class Login extends React.Component {
       body: JSON.stringify(apiObj.getBody())
     })
       .then(async (response) => {
-        clearOTPInput();
         const rsp_data = await response.json();
         console.log("rsp_data --- ", rsp_data);
         if (!rsp_data.ok) {
           this.setState({ error: true, loading: false, errMessage: rsp_data.message });
+          clearOTPInput();
         } else {
           this.setState({ error: false, loading: false, verifySuccessMessage: true });
           localStorage.setItem("token", rsp_data.data.token);
