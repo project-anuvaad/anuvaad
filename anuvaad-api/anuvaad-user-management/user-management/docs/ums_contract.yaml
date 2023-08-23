@@ -1,703 +1,1330 @@
-swagger: '2.0'
+openapi: 3.0.3
+
 info:
-  version: 1.0.0
-  title: Anuvaad User Management -API Contract
-  description: >-
-    A python based microservice for user management. This service will expose
-    REST APIs to maintain user and admin functionalities.
+  title: Anuvaad - User Management System (UMS)
+
+  description: |-
+    A python based microservice for user management.
+    This service will expose REST APIs to maintain user and admin functionalities.
+
+    Some useful links:
+    - [Anuvaad repository](https://github.com/project-anuvaad/anuvaad)
+
   contact:
-    name: Jainy Joy
-    email: jainy.joy@tarento.com
-schemes:
-  - https
-host: 'auth.anuvaad.org'
-basePath: '/anuvaad/user-mgmt'
-consumes:
-  - application/json
-produces:
-  - application/json
+    email: nlp-nmp@tarento.com
+
+  license:
+    name: MIT License
+    url: https://opensource.org/license/mit/
+
+  version: XX.XX.XX
+
+externalDocs:
+  description: Find out more of Anuvaad
+  url: http://anuvaad.org
   
-  
+servers:
+  - url: https://users-auth.anuvaad.org/anuvaad/user-mgmt
+    description: Anuvaad UMS (Users Env)
+
+tags:
+  - name: Users
+    description: (APIs related to Users)
+  - name: Organization 
+    description: (APIs related to Organization)
+  - name: MFA
+    description: (APIs related to MFA)
+  - name: Extention
+    description: (APIs related to Browser Extention)
+
 paths:
+
   /v1/users/create:
     post:
-      summary: REST API to register/create new users.
-      description: This API helps to create new users.
-      parameters:
-        - name: request
-          in: body
-          required: true
-          description: The user details to create.
-          schema:
-            $ref: '#/definitions/CreateUserRequest'
       tags:
-        - Create Users
+        - Users
+      summary: create new users. (Non-Org users)
+      description: This API helps to create new users (used for Non-Organization users)
+      requestBody:
+        $ref: '#/components/requestBodies/CreateUsersBody'
       responses:
         '200':
-          description: New users were created successfully.
-          schema:
-            $ref: '#/definitions/Status'
+          description: New Users created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              examples:
+                example1:
+                  $ref: '#/components/examples/CreateUsersResponse'
         '400':
-          description: On input errors causing failure in user account creation.
-          schema:
-            $ref: '#/definitions/Error'
-        '500':
-          description: On system level errors causing failure in user account creation.
-          schema:
-            $ref: '#/definitions/Error'
-            
+          description: On input errors causing failure in creating users.
+          $ref: '#/components/responses/Error'
+        '404' :
+          description: On Connection error.
+          $ref: '#/components/responses/ZuulEndpointError'
+
   /v1/users/onboard-users:
     post:
-      summary: REST API to onboard new users.
-      description: This API helps to oboard new users.
-      parameters:
-        - name: request
-          in: body
-          required: true
-          description: The user details to onboard.
-          schema:
-            $ref: '#/definitions/OnboardUserRequest'
       tags:
-        - Onboard Users
+        - Users
+      summary: onboard new users (Org Users)
+      description: This API helps to onboard new users (used by Organization Users)
+      requestBody:
+        $ref: '#/components/requestBodies/CreateUsersBody'
       responses:
         '200':
-          description: New users were onboarded successfully.
-          schema:
-            $ref: '#/definitions/Status'
+          description:  New users were onboarded successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              examples:
+                example1:
+                  $ref: '#/components/examples/OnBoardUsersResponse'
         '400':
           description: On input errors causing failure in user onboarding.
-          schema:
-            $ref: '#/definitions/Error'
-        '500':
-          description: On system level errors causing failure in user aonboarding.
-          schema:
-            $ref: '#/definitions/Error'
-            
+          $ref: '#/components/responses/Error'
+        '404' :
+          description: On Connection error.
+          $ref: '#/components/responses/ZuulEndpointError'
+      security:
+        - auth-token: []
+  
   /v1/users/verify-user:
     post:
-      summary: REST API to verify user account.
-      description: This API helps to verify email account provided by the user.
-      parameters:
-        - name: request
-          in: body
-          required: true
-          description: Request to verify user account.
-          schema:
-            $ref: '#/definitions/VerifyUserRequest'
       tags:
-        - Verify User
+        - Users
+      summary: verify user account
+      description: This API helps to verify email account provided by the user
+      requestBody:
+        $ref: '#/components/requestBodies/VerifyUserBody'
       responses:
         '200':
-          description: User has verified successfully.
-          schema:
-            $ref: '#/definitions/Status'
+          description:  user verified successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              examples:
+                example1:
+                  $ref: '#/components/examples/VerifyUserResponse'
         '400':
-          description: On input errors causing failure in user verification.
-          schema:
-            $ref: '#/definitions/Error'
-        '500':
-          description: On system level errors causing failure in user verification.
-          schema:
-            $ref: '#/definitions/Error'
-            
+          description: On input errors causing failure in user onboarding.
+          $ref: '#/components/responses/Error'
+        '404' :
+          description: On Connection error.
+          $ref: '#/components/responses/ZuulEndpointError'
+  
   /v1/users/activate-user:
     post:
-      summary: REST API for activating/deactivating a user account.
-      description: This API helps to activate or deactivate a user.
-      parameters:
-        - name: request
-          in: body
-          required: true
-          description: Request to activate/deactivate a user.
-          schema:
-            $ref: '#/definitions/ActivateUserRequest'
       tags:
-        - Activate/Deactivate User
+        - Users
+      summary: activate/deactivate user account (for Org use only)
+      description: This API helps to activate or deactivate a user
+      requestBody:
+        $ref: '#/components/requestBodies/ActivateUserBody'
       responses:
         '200':
-          description: User has activated successfully.
-          schema:
-            $ref: '#/definitions/Status'
+          description:  user activate/deactivate successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              examples:
+                example1:
+                  $ref: '#/components/examples/ActivateUserResponse'
         '400':
-          description: On input errors causing failure in user activation.
-          schema:
-            $ref: '#/definitions/Error'
-        '500':
-          description: On system level errors causing failure in user activation.
-          schema:
-            $ref: '#/definitions/Error'
-            
+          description: On input errors causing failure in user onboarding.
+          $ref: '#/components/responses/Error'
+        '404' :
+          description: On Connection error.
+          $ref: '#/components/responses/ZuulEndpointError'
+      security:
+        - auth-token: []
+  
   /v1/users/update:
     post:
-      summary: REST API to update users.
-      description: >-
-        This API helps to search an user is existing or not based on various
-        criteria.
-      parameters:
-        - name: request
-          in: body
-          required: true
-          description: Request to update user records.
-          schema:
-            $ref: '#/definitions/UpdateUserRequest'
       tags:
-        - Update User
+        - Users
+      summary: update user account info
+      description: This API helps to update user account info based on certain validations
+      requestBody:
+        $ref: '#/components/requestBodies/CreateUsersBody'
       responses:
         '200':
-          description: Users were updated successfully.
-          schema:
-            $ref: '#/definitions/Status'
+          description:  user info updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              examples:
+                example1:
+                  $ref: '#/components/examples/UpdateUserResponse'
         '400':
-          description: On input errors causing failure in user account updation.
-          schema:
-            $ref: '#/definitions/Error'
-        '500':
-          description: On system level errors causing failure in user account updation.
-          schema:
-            $ref: '#/definitions/Error'
-            
+          description: On input errors causing failure in user onboarding.
+          $ref: '#/components/responses/Error'
+        '404' :
+          description: On Connection error.
+          $ref: '#/components/responses/ZuulEndpointError'
+      security:
+        - auth-token: []
+  
   /v1/users/search:
     post:
-      summary: REST API to search users.
-      description: This API helps to search an existing users.
-      parameters:
-        - name: request
-          in: body
-          required: true
-          description: Request to search user account.
-          schema:
-            $ref: '#/definitions/SearchUserRequest'
       tags:
-        - Search User
+        - Users
+      summary: search user accounts (Org Only)
+      description: This API helps to search user accounts (used by Organization Admins Only)
+      requestBody:
+        $ref: '#/components/requestBodies/SearchUsersBody'
       responses:
         '200':
-          description: Users was updated successfully.
-          schema:
-            $ref: '#/definitions/SearchUserResponse'
-            
+          description: user info searched successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              examples:
+                example1:
+                  $ref: '#/components/examples/SearchUserResponse'
+        '400':
+          description: On input errors causing failure in user onboarding.
+          $ref: '#/components/responses/Error'
+        '404' :
+          description: On Connection error.
+          $ref: '#/components/responses/ZuulEndpointError'
+      security:
+        - auth-token: []
+  
   /v1/users/auth-token-search:
     post:
-      summary: REST API for auth token based search .
-      description: This API helps to fetch user records using his/her auth token.
-      parameters:
-        - name: request
-          in: body
-          required: true
-          description: The auth token search request.
-          schema:
-            $ref: '#/definitions/AuthTokenSearchRequest'
       tags:
-        - Search User
+        - Users
+      summary: search auth tokens
+      description: This API helps to search auth tokens and get info of token
+      requestBody:
+        $ref: '#/components/requestBodies/AuthTokenSearchBody'
       responses:
         '200':
-          description: Search is successful.
-          schema:
-            $ref: '#/definitions/SearchUserResponse'
+          description: auth-token info searched successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              examples:
+                example1:
+                  $ref: '#/components/examples/AuthTokenSearchResponse'
         '400':
-          description: On input errors causing failure in auth token search.
-          schema:
-            $ref: '#/definitions/Error'
-        '500':
-          description: On system level errors causing failure in auth token search.
-          schema:
-            $ref: '#/definitions/Error'
-            
+          description: On input errors causing failure in user onboarding.
+          $ref: '#/components/responses/Error'
+        '404' :
+          description: On Connection error.
+          $ref: '#/components/responses/ZuulEndpointError'
+  
   /v1/users/login:
     post:
-      summary: REST API to login.
-      description: This API helps to login a user.
-      parameters:
-        - name: request
-          in: body
-          required: true
-          description: The user credentials to login.
-          schema:
-            $ref: '#/definitions/UserLoginRequest'
       tags:
-        - Login
+        - Users
+      summary: perform login
+      description: This API helps to perform login with username/password and fetch token
+      requestBody:
+        $ref: '#/components/requestBodies/UserLoginBody'
       responses:
         '200':
-          description: Logged in successfully.
-          schema:
-            $ref: '#/definitions/UserLoginResponse'
+          description: user logged in successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              examples:
+                withMFA:
+                  $ref: '#/components/examples/LoginWithMFAResponse'
+                withoutMFA:
+                  $ref: '#/components/examples/LoginWithoutMFAResponse'
         '400':
-          description: On input errors causing failure in user login.
-          schema:
-            $ref: '#/definitions/Error'
-        '500':
-          description: On system level errors causing failure in user login.
-          schema:
-            $ref: '#/definitions/Error'
-            
+          description: On input errors causing failure in user onboarding.
+          $ref: '#/components/responses/Error'
+        '404' :
+          description: On Connection error.
+          $ref: '#/components/responses/ZuulEndpointError'
+  
   /v1/users/logout:
     post:
-      summary: REST API to logout.
-      description: This API helps to logout a user.
-      parameters:
-        - name: request
-          in: body
-          required: true
-          description: The user logout request.
-          schema:
-            $ref: '#/definitions/UserLogoutRequest'
       tags:
-        - Logout
+        - Users
+      summary: perform logout
+      description: This API helps to perform logout and deactivate the token
+      requestBody:
+        $ref: '#/components/requestBodies/UserLogoutBody'
       responses:
         '200':
-          description: Logged out successfully.
-          schema:
-            $ref: '#/definitions/Status'
+          description: user logged out successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              examples:
+                example1:
+                  $ref: '#/components/examples/LogoutResponse'
         '400':
-          description: On input errors causing failure in user logout.
-          schema:
-            $ref: '#/definitions/Error'
-        '500':
-          description: On system level errors causing failure in user logout.
-          schema:
-            $ref: '#/definitions/Error'
-
+          description: On input errors causing failure in user onboarding.
+          $ref: '#/components/responses/Error'
+        '404' :
+          description: On Connection error.
+          $ref: '#/components/responses/ZuulEndpointError'
+      security:
+        - auth-token: []
+      
   /v1/users/forgot-password:
     post:
-      summary: REST API for forgot password request.
-      description: This API helps to get a reset password link.
-      parameters:
-        - name: request
-          in: body
-          required: true
-          description: The forgot password request.
-          schema:
-            $ref: '#/definitions/ForgotPasswordRequest'
       tags:
-        - Forgot Password
+        - Users
+      summary: generate link to reset password for user
+      description: This API helps to provides a link to reset password for users
+      requestBody:
+        $ref: '#/components/requestBodies/ForgotPasswordBody'
       responses:
         '200':
-          description: User has notfied successfully.
-          schema:
-            $ref: '#/definitions/Status'
+          description: forgot-password link generated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              examples:
+                example1:
+                  $ref: '#/components/examples/ForgotPasswordResponse'
         '400':
-          description: On input errors causing failure in user notification.
-          schema:
-            $ref: '#/definitions/Error'
-        '500':
-          description: On system level errors causing failure in user notification.
-          schema:
-            $ref: '#/definitions/Error'
-            
+          description: On input errors causing failure in user onboarding.
+          $ref: '#/components/responses/Error'
+        '404' :
+          description: On Connection error.
+          $ref: '#/components/responses/ZuulEndpointError'
+  
   /v1/users/reset-password:
     post:
-      summary: REST API for resetting password.
-      description: This API helps to reset user's password.
-      parameters:
-        - name: request
-          in: body
-          required: true
-          description: The reset password request.
-          schema:
-            $ref: '#/definitions/ResetPasswordRequest'
       tags:
-        - Reset Password
+        - Users
+      summary: reset password of user
+      description: This API helps to get a reset password link
+      requestBody:
+        $ref: '#/components/requestBodies/ResetPasswordBody'
       responses:
         '200':
-          description: Password has resetted successfully.
-          schema:
-            $ref: '#/definitions/Status'
+          description: reser password successfull
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              examples:
+                example1:
+                  $ref: '#/components/examples/ResetPasswordResponse'
         '400':
-          description: On input errors causing failure in password resetting.
-          schema:
-            $ref: '#/definitions/Error'
-        '500':
-          description: On system level errors causing failure in password resetting.
-          schema:
-            $ref: '#/definitions/Error'
-            
+          description: On input errors causing failure in user onboarding.
+          $ref: '#/components/responses/Error'
+        '404' :
+          description: On Connection error.
+          $ref: '#/components/responses/ZuulEndpointError'
+      security:
+        - auth-token: []
+  
+  /v1/users/update-email:
+    post:
+      tags:
+        - Users
+      summary: update email (once only)
+      description: This API helps to update user's email only once.   
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateEmailBody'
+      responses:
+        '200':
+          description: email update successfull
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              examples:
+                example1:
+                  $ref: '#/components/examples/UpdateEmailResponse'
+        '400':
+          description: On input errors causing failure in user onboarding.
+          $ref: '#/components/responses/Error'
+        '404' :
+          description: On Connection error.
+          $ref: '#/components/responses/ZuulEndpointError'
+      security:
+        - auth-token: []
+
   /v1/org/upsert:
     post:
-      summary: REST API to create and update organizations.
-      description: This API helps to create and update organizations.
-      parameters:
-        - name: request
-          in: body
-          required: true
-          description: The org details to create/update.
-          schema:
-            $ref: '#/definitions/UpsertOrgRequest'
       tags:
-        - Upsert Org
+        - Organization
+      summary: create and update org
+      description: This API helps to create and update the Organization info
+      requestBody:
+        $ref: '#/components/requestBodies/UpsertOrgBody'
       responses:
         '200':
-          description: Request Successful.
-          schema:
-            $ref: '#/definitions/Status'
+          description: user creation/updation successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              examples:
+                example1:
+                  $ref: '#/components/examples/UpsertOrgResponse'
         '400':
-          description: On input errors causing failure inorg upsert.
-          schema:
-            $ref: '#/definitions/Error'
-        '500':
-          description: On system level errors causing failure in org upsert.
-          schema:
-            $ref: '#/definitions/Error'
-            
+          description: On input errors causing failure in user onboarding.
+          $ref: '#/components/responses/Error'
+        '404' :
+          description: On Connection error.
+          $ref: '#/components/responses/ZuulEndpointError'
+      security:
+        - auth-token: []
+    
   /v1/org/search:
     get:
-      summary: REST API to search organizations.
-      description: This API helps to search for organizations.
+      tags:
+        - Organization
+      summary: search orgs
+      description: This API helps to search and get info for organizations
       parameters:
         - name: org-code
-          type: string
           in: query
           required: false
           description: code of the org to search
-      tags:
-        - Search Org
+          schema:
+            type: string
+            description: code of the org to search
+            example: ANUVAAD
       responses:
         '200':
-          description: Organizations were searched successfully.
-          schema:
-            $ref: '#/definitions/SearchOrgrResponse'
+          description: user-search for organization fetch successfull
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              examples:
+                example1:
+                  $ref: '#/components/examples/SearchOrgResponse'
         '400':
-          description: On input errors causing failure in org search.
+          description: On input errors causing failure in user onboarding.
+          $ref: '#/components/responses/Error'
+        '404' :
+          description: On Connection error.
+          $ref: '#/components/responses/ZuulEndpointError'
+      security:
+        - auth-token: []
+
+  /v1/mfa/register:
+    post:
+      tags:
+        - MFA
+      summary: register for MFA
+      description: This API helps in registeration of user to MFA  
+      requestBody:
+        $ref: '#/components/requestBodies/MFARegisterBody'
+      responses:
+        '200':
+          description: MFA Registration successfull
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              examples:
+                example1:
+                  $ref: '#/components/examples/MFARegisterResponse'
+        '400':
+          description: On input errors causing failure in user onboarding.
+          $ref: '#/components/responses/Error'
+        '404' :
+          description: On Connection error.
+          $ref: '#/components/responses/ZuulEndpointError'
+      security:
+        - auth-token: []
+  
+  /v1/mfa/verify:
+    post:
+      tags:
+        - MFA
+      summary: verify otp for MFA
+      description: This API helps to verify otp of the user with mfa registeration  
+      requestBody:
+        $ref: '#/components/requestBodies/MFAVerifyBody'
+      responses:
+        '200':
+          description: OTP for mfa verified successfull
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              examples:
+                example1:
+                  $ref: '#/components/examples/MFAVerifyResponse'
+        '400':
+          description: On input errors causing failure in user onboarding.
+          $ref: '#/components/responses/Error'
+        '404' :
+          description: On Connection error.
+          $ref: '#/components/responses/ZuulEndpointError'
+      security:
+        - auth-token: []
+
+  /v1/mfa/reset:
+    post:
+      tags:
+        - MFA
+      summary: reset for MFA
+      description: This API helps to reset MFA info of the user  
+      requestBody:
+        $ref: '#/components/requestBodies/MFAResetBody'
+      responses:
+        '200':
+          description: reset of MFA Registration successfull
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              examples:
+                example1:
+                  $ref: '#/components/examples/MFAResetResponse'
+        '400':
+          description: On input errors causing failure in user onboarding.
+          $ref: '#/components/responses/Error'
+        '404' :
+          description: On Connection error.
+          $ref: '#/components/responses/ZuulEndpointError'
+      security:
+        - auth-token: []
+
+  /v1/users/active-users:
+    get:
+      tags:
+        - Users
+      summary: active users count 
+      description: This API helps to fetch the count of active users   
+      responses:
+        '200':
+          description: fetch for count of active users successfull
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              examples:
+                example1:
+                  $ref: '#/components/examples/ActiveUsersResponse'
+        '400':
+          description: On reading errors causing failure in active users.
+          $ref: '#/components/responses/Error'
+        '404' :
+          description: On Connection error.
+          $ref: '#/components/responses/ZuulEndpointError'
+
+  /v1/extension/users/get/token:
+    get:
+      tags:
+        - Extention
+      summary: get auth token
+      description: This API helps to fetch auth token from temp-token
+      parameters:
+        - in: query
+          name: id_token
+          required: false
+          description: auth token of user
           schema:
-            $ref: '#/definitions/Error'
-        '500':
-          description: On system level errors causing failure in org search.
+            type: string
+            example: xxyyzzaabbcc112233
+      responses:
+        '200':
+          description: auth-token fetch successfull
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              examples:
+                example1:
+                  $ref: '#/components/examples/GetTokenExtentionResponse'
+        '400':
+          description: On input errors causing failure in user onboarding.
+          $ref: '#/components/responses/Error'
+        '404' :
+          description: On Connection error.
+          $ref: '#/components/responses/ZuulEndpointError'
+
+components:
+  
+  requestBodies:
+  
+    CreateUsersBody:
+      description: A JSON object containing user information
+      required: true
+      content:
+        application/json:
           schema:
-            $ref: '#/definitions/Error'
-
-definitions:
-  User:
-    type: object
-    properties:
-      userID:
-        type: string
-        description: Unique 32-bit UUID per user.
-      name:
-        type: string
-        description: Name of the user.
-      userName:
-        type: string
-        description: 'User Name for the user as chosen by the user, unique for every user.'
-      password:
-        type: string
-        description: >-
-          Password for the user profile as chosen by the user abiding by the pwd
-          policy defined by the system. encrypted and stored.
-      email:
-        type: string
-        description: email id of the user.
-      phoneNo:
-        type: string
-        description: mobile number of the user
-      roles:
-        type: array
-        items:
-          type: object
-          $ref: '#/definitions/Role'
-      orgID:
-        type: string
-        description: organization Id of the user
-        
-        
-  Role:
-    type: object
-    properties:
-      roleCode:
-        type: string
-        description: Unique code per role.
-      roleDesc:
-        type: string
-        description: Description of the role.
-  AuthData:
-    type: object
-    properties:
-      userName:
-        type: string
-        description: username of the logged in user
-      token:
-        type: string
-        description: auth token for the logged in user
-        
-        
-  Org:
-    type: object
-    properties: 
-      code:
-        type: string
-      active:
-        type: boolean
-      description:
-        type: string
-  
-        
-  Status:
-    type: object
-    properties:
-      ok:
-        type: string
-        description: true or false 
-      http:
-        type: object
-        properties:
-          status:
-            type: string
-            description: status code of the request
-      why:
-        type: string
-        description: response message
-      data:
-        type: object
-        description: data returned by the request
-      count:
-        type: integer
-        description: count of data items
+            type: object
+            properties:
+              users:
+                type: array
+                items:
+                  type: object
+                  $ref: '#/components/schemas/User'
+                description: Details of the users to be registered.
     
-  
-  CreateUserRequest:
-    type: object
-    properties:
-      users:
-        type: array
-        items:
-          type: object
-          $ref: '#/definitions/User'
-        description: Details of the users to be registered.
+    VerifyUserBody:
+      description: A JSON object containing user verification information
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              userName:
+                type: string
+                description: unique username value.
+                example: abc@xyz.com
+              userID:
+                type: string
+                description: unique userid value.
+                example: 111aaa222bbb333ccc
+            required:
+              - userName
+              - userID
+    
+    ActivateUserBody:
+      description: A JSON object containing user activation information
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              userName:
+                type: string
+                description: unique username value.
+                example: abc@xyz.com
+              is_active:
+                type: boolean
+                description: active status(true or false) of the user.
+                example: true
+            required:
+              - userName
+              - is_active
+    
+    SearchUsersBody:
+      description: A JSON object containing user activation information
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              userIDs:
+                type: array
+                items:
+                  type: string
+                  description:  unique ID of user
+                  example: 123aabbcc112233aabbcc
+                description: Unique IDs of the users.
+              userNames:
+                type: array
+                items:
+                  type: string
+                  description:  unique name of user
+                  example: abc@xyz.com
+                description: Unique usernames of the users.
+              roleCodes:
+                type: array
+                items:
+                  type: string
+                  description: Parameter to search on roles.
+                  example:
+                    - TRANSLATOR
+              offset:
+                type: integer
+                description: starting range
+                example: 0
+              limit:
+                type: integer
+                description: limit count
+                example: 20
+    
+    AuthTokenSearchBody:
+      description: A JSON object containing auth token information
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              token:
+                type: string
+                description: Unique auth token of verified user
+            description: Request for user records.
+    
+    UserLoginBody:
+      description: A JSON object containing auth token information
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              userName:
+                type: string
+                description: Unique username of the user.
+                example: abc@xyz.com
+              password:
+                type: string
+                format: password
+                description: Password of the user
+                example: XYZXYZXYZ
+              useHOTP:
+                type: boolean
+                description: flag to login with fallback otp method.
+                example: false
+            required:
+              - userName
+              - password
+            description: Details of the user to be logged in.
+    
+    UserLogoutBody:
+      description: A JSON object containing user information for performing logout
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              userName:
+                type: string
+                description: Unique username of the user
+                example: abc@xyz.com
+            description: Details of the user to be logged out.
+    
+    ForgotPasswordBody:
+      description: A JSON object containing user information to generate link for resetting password
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              userName:
+                type: string
+                description: Unique username of the user.
+                example: abc@xyz.com
+            description: Request for user records.
+    
+    ResetPasswordBody:
+      description: A JSON object containing user information for resetting password
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              userName:
+                type: string
+                description: Unique username of the user.
+                example: abc@xyz.com
+              password:
+                type: string
+                description: password to be updated
+                example: XYZxyz@123
+              old_password:
+                type: string
+                description: old password for verification
+                example: Xyz@123
+            required:
+              - userName
+              - password
+            description: Request for user records.
 
+    UpsertOrgBody: 
+      description: A JSON object containing user information for resetting password
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              organizations:
+                type: array
+                items:
+                  type: object
+                  $ref: '#/components/schemas/Org'
+                description: Details of the orgs to be upserted.
+    
+    MFARegisterBody:
+      description: A JSON object containing user and mfa information for MFA registration
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              userName:
+                type: string
+                description: Unique username of the user
+                example: abc@xyz.com
+              mfaType:
+                type: string
+                description: type of MFA (choices=TOTP,HOTP)
+                enum:
+                  - TOTP
+                  - HOTP
+                example: TOTP
+              session_id:
+                type: string
+                description: session_id generated during login
+                example: aaaaa-bbb-xxxx-yy
+            description: Details of the user for MFA Registration
+    
+    MFAVerifyBody:
+      description: A JSON object containing user and mfa information for MFA verification
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              userName:
+                type: string
+                description: Unique username of the user
+                example: abc@xyz.com
+              useHOTP:
+                type: boolean
+                description: flag for fallback MFA type
+                default: false
+                example: false
+              session_id:
+                type: string
+                description: session_id generated during login
+                example: aaaaa-bbb-xxxx-yy
+              authOTP:
+                type: string
+                description: OTP for verification.
+                example: 123123
+            required:
+              - authOTP
+              - session_id
+              - userName
+            description: Details of the user for MFA Verification
 
-  OnboardUserRequest:
-    type: object
-    properties:
-      users:
-        type: array
-        items:
-          type: object
-          $ref: '#/definitions/User'
-        description: Details of the users to be registered.
-        
-        
-  ActivateUserRequest:
-    type: object
-    properties:
-      userName:
-        type: string
-        description: unique username value.
-      is_active:
-        type: boolean
-        description: active status(true or false) of the user.
+    MFAResetBody:
+      description: A JSON object containing user information for MFA reset process
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              userName:
+                type: string
+                description: Unique username of the user
+                example: abc@xyz.com
+            description: Details of the user for MFA Reset
+    
+    UpdateEmailBody:
+      description: A JSON object containing user,email information for updating email id
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              userName:
+                type: string
+                description: Unique username of the user
+                example: abc@xyz.com
+              password:
+                type: string
+                format: password
+                description: password of the user
+                example: XYZxyz@123
+              new_email:
+                type: string
+                format: email
+                description: new email id for user
+                example: xyz@abc.com
+            description: Details of the user and new email id
 
+  responses:
 
-  UpdateUserRequest:
-    type: object
-    properties:
-      users:
-        type: array
-        items:
-          type: object
-          properties: 
-            userID:
-              type: string
-              description: Unique IDs of the users
-            name:
-              type: string
-              description: Name of the user.
-            email:
-              type: string
-              description: email id of the user.
-            phoneNo:
-              type: string
-              description: mobile number of the user
-            orgID:
-              type: string
-              description: organization Id of the user
-        description: user details to update
+    Success:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              ok:
+                type: string
+                description: true or false 
+              http:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: status code of the request
+              why:
+                type: string
+                description: response message
+              data:
+                type: object
+                description: data returned by the request
+                nullable: true
+              count:
+                type: integer
+                description: count of data items 
+    
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errorID:
+                type: string
+                description: Unique UUID for the error.
+                example: "50cf24e4-5d0a-472d-9d4a-120f9a8fc300"
+              code:
+                type: string
+                description: Unique code signifying the category for the error.
+                example: "INVALID CODE"
+              message:
+                type: string
+                description: User readable message pertaining to the error
+                example: "sample error message"
+              timeStamp:
+                type: number
+                description: 13 digit epoch timestamp
+                example: 1689112383123
+              errorType:
+                type: string
+                description: typr of error
+                example: "core-error"
+    
+    ZuulEndpointError :
+      description: error in connecting upstream zuul application
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              Errors:
+                type: array
+                items:
+                  type: object
+                  $ref: '#/components/schemas/Error'
+      
+  examples:
 
-
-  SearchUserRequest:
-    type: object
-    properties:
-      userIDs:
-        type: array
-        items:
+    CreateUsersResponse:
+      summary: /v1/users/create - success
+      value:
+        ok: "true"
+        http:
+          status: 200
+        why: New users were created successfully
+        data: null
+        count: 0
+    
+    OnBoardUsersResponse:
+      summary: /v1/users/onbodard-users - success
+      value:
+        ok: "true"
+        http:
+          status: 200
+        why: New users were onboarded successfully
+        data: null
+        count: 0
+    
+    VerifyUserResponse:
+      summary: /v1/users/verify-user - success
+      value:
+        ok: "true"
+        http:
+          status: 200
+        why: User has verified/activated successfully
+        data: null
+        count: 0
+    
+    ActivateUserResponse:
+      summary: /v1/users/activate-user - success
+      value:
+        ok: "true"
+        http:
+          status: 200
+        why: Request successfull
+        data: null
+        count: 0
+    
+    UpdateUserResponse:
+      summary: /v1/users/update - success
+      value:
+        ok: "true"
+        http:
+          status: 200
+        why: users were updated successfully
+        data: null
+        count: 0
+    
+    SearchUserResponse:
+      summary: /v1/users/search - success
+      value:
+        ok: "true"
+        http:
+          status: 200
+        why: users were searched successfully
+        data:
+          - userID: 241002499d6dbb5db836c498be6381607dhwi4738239
+            name : abc
+            userName: abc@xyz.com
+            email: abc@xyz.com
+            phoneNo: 1231221233
+            roles: 
+              roleCode: XYZXYZ
+              roleDesc: sample string
+            is_verified: true
+            deactivated_time: 160698123.234381
+            activated_time: 1606989223.98781
+            is_active: true
+            orgID: ABC
+            models:
+              - 123x
+              - 123y
+          - userID: 241002499dZYD82372be6381607dhwi4738239
+            name : xyz
+            userName: xyz@xyz.com
+            email: xyz@xyz.com
+            phoneNo: 1231981233
+            roles: 
+              roleCode: XYZXYZ
+              roleDesc: sample string
+            is_verified: true
+            deactivated_time: 160698123.234381
+            activated_time: 1606989223.98781
+            is_active: true
+            orgID: ABC
+            models:
+              - 123xy
+              - 123yz
+        count: 2
+    
+    AuthTokenSearchResponse:
+      summary: /v1/users/auth-token-search - success
+      value:
+        ok: "true"
+        http:
+          status: 200
+        why: users were updated successfully
+        data:
+          userID: 241002499d6dbb5db836c498be6381607dhwi4738239
+          name : abc
+          userName: abc@xyz.com
+          email: abc@xyz.com
+          email_updated: true
+          phoneNo: 1231221233
+          roles: 
+            roleCode: XYZXYZ
+            roleDesc: sample string
+          is_verified: true
+          activated_time: 1606989223.98781
+          is_active: true
+          orgID: ABC
+        count: 0
+    
+    LoginWithMFAResponse:
+      summary: /v1/users/login (MFA) - success
+      value:
+        ok: "true"
+        http:
+          status: 200
+        why: users were updated successfully
+        data:
+          session_id: d1bc0f69-0c30-457b-b791-891d30d5801f
+          mfa_required: true
+          mfa_registration: true
+          mfa_type: TOTP
+          mfa_message: Please enter the OTP generated from the authenticator app
+          userName: dhiru579@gmail.com
+          email":
+            updated_status: true
+            registered_email: dhiru579@gmail.com
+            userName: dhiru579@gmail.com
+        count: 0
+    
+    LoginWithoutMFAResponse:
+      summary: /v1/users/login (withoutMFA) - success
+      value:
+        ok: "true"
+        http:
+          status: 200
+        why: users were updated successfully
+        data:
+          token: dwkqjqwdsdkdnndascnsacanclasndsalkda
+          mfa_required: true
+          mfa_registration: true
+          mfa_type: TOTP
+          mfa_message: Please enter the OTP generated from the authenticator app
+          userName: dhiru579@gmail.com
+          email":
+            updated_status: true
+            registered_email: dhiru579@gmail.com
+            userName: dhiru579@gmail.com
+        count: 0
+    
+    LogoutResponse:
+      summary: /v1/users/logout - success
+      value:
+        ok: "true"
+        http:
+          status: 200
+        why: user logged out successfully
+        data: null
+        count: 0
+    
+    ForgotPasswordResponse:
+      summary: /v1/users/forgot-password - success
+      value:
+        ok: "true"
+        http:
+          status: 200
+        why: User is notified successfully
+        data: null
+        count: 0
+    
+    ResetPasswordResponse:
+      summary: /v1/users/reset-password - success
+      value:
+        ok: "true"
+        http:
+          status: 200
+        why: password has resetted successfully
+        data: null
+        count: 0
+    
+    UpdateEmailResponse:
+      summary: /v1/users/update-email - success
+      value:
+        ok: "true"
+        http:
+          status: 200
+        why: email change suceess
+        data:
+          email: xyz@abx.com
+          message: email has been changed successfully.
+        count: 0
+    
+    UpsertOrgResponse:
+      summary: /v1/org/upsert - success
+      value:
+        ok: "true"
+        http:
+          status: 200
+        why: Request Successful
+        data:
+          Activated:
+            - TEST_TEA
+            - TEST_COFFEE
+          Deactivated:
+            - TEST_OLD
+            - TEST_LEGACY
+        count: 0
+    
+    SearchOrgResponse:
+      summary: /v1/org/search - success
+      value:
+        ok: "true"
+        http:
+          status: 200
+        why: organizations were searched successfully
+        data:
+          - code: TEST_X
+            activated_time: 12312312.33
+            active: true
+            description: test org by x
+            orgID: 82378129ey812eh1236219821e
+          - code: TEST_Y
+            activated_time: 37278389.33
+            active: true
+            description: test org by y
+            orgID: eiwquyewqiey28312ehdwqudi4
+        count: 0
+    
+    MFARegisterResponse:
+      summary: /v1/mfa/register - success
+      value:
+        ok: "true"
+        http:
+          status: 200
+        why: MFA registerd successfully
+        data: 
+          message": OTP data sent to your mail
+          mfa_type": HOTP
+        count: 0
+    
+    MFAVerifyResponse:
+      summary: /v1/mfa/verify - success
+      value:
+        ok: "true"
+        http:
+          status: 200
+        why: OTP for MFA verified successfully
+        data:
+          user: xyz@xyz.com
+          token: 1ehe1eu2ye27eh23e982323ue892ej2e9eu8293u3e83
+        count: 0
+    
+    MFAResetResponse:
+      summary: /v1/mfa/reset - success
+      value:
+        ok: "true"
+        http:
+          status: 200
+        why: MFA reset successfull.
+        data:
+          userName: xyz@xyz.com
+          status: true
+          message: MFA Reset Successfull
+        count: 0
+      
+    ActiveUsersResponse:
+      summary: /v1/users/active-users - success
+      value:
+        ok: "true"
+        http:
+          status: 200
+        why: successfull fetch active users count
+        data:
+          count: 4
+        count: 0
+    
+    GetTokenExtentionResponse:
+      summary: /v1/extension/users/get/token - success
+      value:
+        ok: "true"
+        http:
+          status: 200
+        why: request successfull
+        data:
+          requestID: 11aabb3399dned2jd
+          token: 3128321djw89ddyd12hedh7dhiqjwei21u90e09duq
+        count: 0
+      
+  schemas:
+      
+    User:
+      type: object
+      properties:
+        name:
           type: string
-        description: Unique IDs of the users.
-      userNames:
-        type: array
-        items:
+          description: Name of the User.
+          example: XXXX XXXX
+        userName:
           type: string
-        description: Unique usernames of the users.
-      roleCodes:
-        type: array
-        items:
+          description: Unique Name for User (chosen by the user, usually like email id)
+          example: abc@xyz.com
+        password:
           type: string
-          description: Parameter to search on roles.
-      offset:
-        type: integer
-        description: starting range 
-      limit:
-        type: integer
-        description: limit count
-        
-        
-  SearchUserResponse:
-    type: object
-    properties:
-      ok:
-        type: string
-        description: true or false 
-      http:
-        type: object
-        properties:
-          status:
-            type: string
-            description: status code of the request
-      why:
-        type: string
-        description: response message
-      data:
-        type: array
-        items:
-          type: object
-          $ref: '#/definitions/User'
-      count:
-        type: integer
-        description: count of data items
+          format: password
+          description: Password for the User
+          example: YYYYYYY
+        email:
+          type: string
+          format: email
+          description: Email ID of the User
+          example: abc@xyz.com
+        phoneNo:
+          type: string
+          description: Mobile Number of User
+          maxLength: 10
+          minLength: 10
+          example: 9909909901
+        orgID:
+          type: string
+          description: organization Id of the user
+          example: ANUVAAD
+        roles:
+          type: array
+          items:
+            type: object
+            $ref: '#/components/schemas/Role'
+      required:
+        - name
+        - userName
+        - password
+        - email
+        - roles
     
-  
-  UserLoginRequest:
-    type: object
-    properties:
-      userName:
-        type: string
-        description: Unique username of the user.
-      password:
-        type: string
-        description: Password of the user
-    description: Details of the user to be logged in.
+    Role:
+      type: object
+      properties:
+        roleCode:
+          type: string
+          description: Unique code per role.
+          example : TRANSLATOR
+        roleDesc:
+          type: string
+          description: Description of the role.
+          example : Has access to translation related resources
     
+    Error:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: status code for the error
+          example: 404
+        message:
+          type: string
+          description: message info of the code
+          example: You're trying to access an invalid/inactive resource
     
-  UserLoginResponse:
-    type: object
-    properties:
-      ok:
-        type: string
-        description: true or false 
-      http:
-        type: object
-        properties:
-          status:
-            type: string
-            description: status code of the request
-      why:
-        type: string
-        description: response message
-      data:
-        type: array
-        items:
-          type: object
-          $ref: '#/definitions/AuthData'
-      count:
-        type: integer
-        description: count of data items
-        
-        
-  UserLogoutRequest:
-    type: object
-    properties:
-      userName:
-        type: string
-        description: Unique username of the user
-    description: Details of the user to be logged out.
-
-
-  AuthTokenSearchRequest:
-    type: object
-    properties:
-      token:
-        type: string
-        description: Unique auth token of verified user
-    description: Request for user records.
-
-
-  ForgotPasswordRequest:
-    type: object
-    properties:
-      userName:
-        type: string
-        description: Unique username of the user.
-    description: Request for user records.
+    Org:
+      type: object
+      properties: 
+        code:
+          type: string
+          description: unique code(name) for the organization
+          example: ANUVAAD
+        active:
+          type: boolean
+          description: active status of the organization
+          example: false
+        description:
+          type: string
+          description: description for the organization
+          example: lorem ipsum
     
-
-  ResetPasswordRequest:
-    type: object
-    properties:
-      userName:
-        type: string
-        description: Unique username of the user.
-      password:
-        type: string
-        description: password to be updated
-    description: Request for user records.
-
-
-  VerifyUserRequest:
-    type: object
-    properties:
-      userName:
-        type: string
-        description: unique username value.
-      userID:
-        type: string
-        description: unique userid value.
-  
-  
-  UpsertOrgRequest:
-    type: object
-    properties:
-      organizations:
-        type: array
-        items:
+    SuccessResponse:
+      type: object
+      properties:
+        ok:
+          type: string
+          description: true or false 
+        http:
           type: object
-          $ref: '#/definitions/Org'
-        description: Details of the orgs to be upserted.
-  
-  
-  SearchOrgrResponse:
-    type: object
-    properties:
-      ok:
-        type: string
-        description: true or false 
-      http:
-        type: object
-        properties:
-          status:
-            type: string
-            description: status code of the request
-      why:
-        type: string
-        description: response message
-      data:
-        type: array
-        items:
+          properties:
+            status:
+              type: string
+              description: status code of the request
+        why:
+          type: string
+          description: response message
+        data:
           type: object
-          $ref: '#/definitions/Org'
-      count:
-        type: integer
-        description: count of data items
-
-  Error:
-    type: object
-    properties:
-      errorID:
-        type: string
-        description: Unique UUID for the error.
-      cause:
-        type: string
-        description: System generated cause of the error
-      code:
-        type: string
-        description: Unique code signifying the category for the error.
-      message:
-        type: string
-        description: User readable message pertaining to the error
-      timeStamp:
-        type: number
-        description: 13 digit epoch timestamp
+          description: data returned by the request
+          nullable: true
+        count:
+          type: integer
+          description: count of data items 
+  
+  securitySchemes:
+   
+    auth-token:
+      type: apiKey
+      name: auth-token
+      in: header
