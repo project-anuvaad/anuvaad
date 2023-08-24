@@ -190,7 +190,7 @@ function GetUploadedDocumentCount(props) {
                         </Box>
                         <Box className={classes.topBarInnerBox}>
                             <Typography style={{ fontSize: "0.875rem", fontWeight: "400" }}>
-                                Review In Progress
+                                Documents In Progress
                             </Typography>
                             <Typography style={{ fontSize: "1.125rem", fontWeight: "400" }}>
                                 {totalInprogressDocumentcount &&
@@ -199,7 +199,7 @@ function GetUploadedDocumentCount(props) {
                         </Box>
                         <Box className={classes.topBarInnerBox}>
                             <Typography style={{ fontSize: "0.875rem", fontWeight: "400" }}>
-                                Review Completed
+                                Documents Completed
                             </Typography>
                             <Typography style={{ fontSize: "1.125rem", fontWeight: "400" }}>
                                 {totalUploadedDocumentcount &&
@@ -274,7 +274,8 @@ function GetUploadedDocumentCount(props) {
                     style={{ textAlign: 'left', margin: "40px" }}
                 >
                     <Typography variant='h6'>
-                        Number of Documents processed per organization and language with 
+                        {/* Number of Documents processed per organization and language with  */}
+                        Document count per organization classified by languages
                     </Typography>
                     <Box style={{ marginLeft: 10 }}>
                         <FormControl variant="standard" style={{ m: 1, minWidth: 200 }}>
