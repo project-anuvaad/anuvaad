@@ -169,9 +169,15 @@ def manual_start_reviewerdata_scheduler(base):
         if job.id == "reviewer_data_job_1":
             job.func(base=base)
 
+def manual_start_transuserdata_scheduler():
+    for job in schedule_job.get_jobs():
+        if job.id == "my_job_id1":
+            job.func()
+
 # static run (only once when server starts)
 manual_start_reviewerdata_scheduler(base=True)
 manual_start_reviewerdata_scheduler(base=False)
+manual_start_transuserdata_scheduler()
 
 # initiate cron job
 schedule_job.start()
