@@ -15,43 +15,71 @@ class TranslatedDocument extends React.Component {
     }
 
     renderBlock = (block) => {
-        return (
-            <Textfit mode="multi"
-                min={8} max={block.font_size ? parseInt(block.font_size) : 16}
+        return(
+            <div
                 style={{
-                    position: "absolute",
-                    top: block.text_top + 'px',
-                    left: block.text_left + 'px',
-                    width: block.text_width + 'px',
-                    height: block.text_height + 'px',
-                    zIndex: 2,
-                    textAlign: "justify",
-                    // lineHeight: block.line_height + 'px',
+                    position: 'absolute',
+                    fontSize: block.font_size ? block.font_size : 12,
+                    height: block.text_height,
+                    left: block.text_left,
+                    top: block.text_top,
+                    // width: block.text_width,
                     fontFamily: block.font_family,
-                    fontSize: block.font_size + "px",
-                    fontColor: block.font_color,
-                    fontWeight: (block.font_family && block.font_family.includes("Bold") || block.attrib && block.attrib.toLowerCase().includes("bold")) && 'bold',
+                    color: block.font_color,
+                    zIndex: 2
                 }}
-                id={block.block_identifier}
-                key={block.block_identifier}
+                onClick={()=>console.log(block)}
             >
                 {block['texts'].map((text, i) =>
-                    <span key={i}>{i !== 0 && " "}
-                        <p
-                            style={{
-                                margin: '0px',
-                                textAlign: "justify",
-                                lineHeight: Number(block.text_height / block.childrenLength) + 'px',
-                                fontFamily: block.font_family,
-                                // fontSize: block.font_size + "px",
-                                fontColor: block.font_color,
-                                fontWeight: (block.font_family && block.font_family.includes("Bold") || block.attrib && block.attrib.toLowerCase().includes("bold")) && 'bold',
-                            }}
-                            key={text.s_id}>{text.tgt}</p></span>
+                    <span
+                        style={{
+                            // lineHeight: block.line_height,
+                        }}
+                    >{text.tgt}</span>
                 )}
-            </Textfit>
+
+            </div>
         )
     }
+
+    // renderBlock = (block) => {
+    //     return (
+    //         <Textfit mode="multi"
+    //             min={8} max={block.font_size ? parseInt(block.font_size) : 16}
+    //             style={{
+    //                 position: "absolute",
+    //                 top: block.text_top + 'px',
+    //                 left: block.text_left + 'px',
+    //                 width: block.text_width + 'px',
+    //                 height: block.text_height + 'px',
+    //                 zIndex: 2,
+    //                 textAlign: "justify",
+    //                 // lineHeight: block.line_height + 'px',
+    //                 fontFamily: block.font_family,
+    //                 fontSize: block.font_size + "px",
+    //                 fontColor: block.font_color,
+    //                 fontWeight: (block.font_family && block.font_family.includes("Bold") || block.attrib && block.attrib.toLowerCase().includes("bold")) && 'bold',
+    //             }}
+    //             id={block.block_identifier}
+    //             key={block.block_identifier}
+    //         >
+    //             {block['texts'].map((text, i) =>
+    //                 <span key={i}>{i !== 0 && " "}
+    //                     <p
+    //                         style={{
+    //                             margin: '0px',
+    //                             textAlign: "justify",
+    //                             lineHeight: Number(block.text_height / block.childrenLength) + 'px',
+    //                             fontFamily: block.font_family,
+    //                             // fontSize: block.font_size + "px",
+    //                             fontColor: block.font_color,
+    //                             fontWeight: (block.font_family && block.font_family.includes("Bold") || block.attrib && block.attrib.toLowerCase().includes("bold")) && 'bold',
+    //                         }}
+    //                         key={text.s_id}>{text.tgt}</p></span>
+    //             )}
+    //         </Textfit>
+    //     )
+    // }
 
     renderImage = (image) => {
         let style = {

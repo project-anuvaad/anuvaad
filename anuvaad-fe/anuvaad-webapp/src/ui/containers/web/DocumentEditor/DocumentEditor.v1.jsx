@@ -719,7 +719,7 @@ class DocumentEditor extends React.Component {
   renderPDFDocument = () => {
     if (!this.state.apiFetchStatus) {
       return (
-        <Grid item xs={12} sm={6} lg={6} xl={6} style={{ marginLeft: "5px" }}>
+        <Grid item xs={12} sm={6} lg={10} xl={6} style={{ marginLeft: "5px" }}>
           <Paper>
             <PDFRenderer parent='document-editor' filename={this.props.match.params.inputfileid} pageNo={this.props.active_page_number} userId={this.props.history.location.state?.data?.user_id ? this.props.history.location.state?.data?.user_id : ""} />
           </Paper>
