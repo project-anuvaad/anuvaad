@@ -260,12 +260,15 @@ class jud_stats(object):
 
     def get_time_frame_for_analytics(self):
         from_date = datetime.strptime("2000-01-01", "%Y-%m-%d")
-        end_date = datetime.now()
-        # date_time = now.strftime("%Y-%m-%d")
-        # end_date = datetime.strptime(str(date_time), "%Y-%m-%d")
+        now = datetime.now()
+        date_time = now.strftime("%Y-%m-%d")
+        end_date = datetime.strptime(str(date_time), "%Y-%m-%d")
         return from_date, end_date
 
     def file_validation(self):
+        file_name1 = config.WEEKLY_CRON_FILE_NAME1
+        file_name2 = config.WEEKLY_CRON_FILE_NAME2
+        stats_file_copy = config.STATS_FILE
         file_name1 = config.WEEKLY_CRON_FILE_NAME1
         file_name2 = config.WEEKLY_CRON_FILE_NAME2
         stats_file_copy = config.STATS_FILE
@@ -299,10 +302,10 @@ class jud_stats(object):
             result = result.sort_values(by=["orgID"], ascending=True)
             result['saved_sent_count'].fillna(0, inplace=True)
             result['saved_sent_count'] = result['saved_sent_count'].astype(int)
-#             mask = result["orgID"].isin(
-#                 ["ANUVAAD", "TARENTO_TESTORG", "NONMT", "ECOMMITTEE "]
-#             )
-#             result = result[~mask]
+            mask = result["orgID"].isin(
+                ["ANUVAAD", "TARENTO_TESTORG", "NONMT", "ECOMMITTEE "]
+            )
+            result = result[~mask]
         return result, True
 
     def doc_count(self, result):

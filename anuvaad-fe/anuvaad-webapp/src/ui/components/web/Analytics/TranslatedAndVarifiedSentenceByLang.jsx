@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 //import themeDefault from "../../../theme/theme";
-import { Grid, ThemeProvider, Box, Typography, Paper, Button, Popover } from "@material-ui/core";
+import { Grid, ThemeProvider, Box, Typography, Paper, Button, Popover, FormControl, InputLabel, MenuItem, Select } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
 import {
     BarChart,
@@ -27,11 +27,14 @@ function TranslatedAndVarifiedSentenceByLang(props) {
     // const classes = ChartStyles();
     const dispatch = useDispatch();
     const sourceData = useSelector(state => state.getTranslatedAndVerifiedSetenceCount.data?.data)
-
+    // const assignedOrgId = JSON.parse(localStorage.getItem("userProfile"))?.orgID;
     const [anchorEl, setAnchorEl] = React.useState(null);
+    const [selectedOrg, setSelectedOrg] = useState(JSON.parse(localStorage.getItem("userProfile"))?.orgID);
     const showExportPopover = Boolean(anchorEl);
 
-    // console.log(sourceData, "sourceData")
+    const allOrganization = useSelector(state=>state.getOrgList);
+
+    console.log(sourceData, "sourceData")
 
     const [totalSentences, setTotalSentences] = useState();
     const [totalVerifiedSentences, settotalVerifiedSentences] = useState();
@@ -39,11 +42,20 @@ function TranslatedAndVarifiedSentenceByLang(props) {
     const [data, setData] = useState([]);
 
     useEffect(() => {
-        if (sourceData && sourceData.language_counts) {
+        console.log("sourceData ------- ", sourceData);
+        if (sourceData && sourceData?.language_counts && sourceData?.total_documents > 0) {
             sourceData.language_counts.sort((a, b) => b.doc_sent_count - a.doc_sent_count);
+            setData(sourceData?.language_counts);
+        } else {
+            setData([]);
         }
-        setData(sourceData?.language_counts);
+        
     }, [sourceData]);
+
+    const handleOrgChange = (event) => {
+        setSelectedOrg(event.target.value);
+        props.onOrgChange(event.target.value);
+    }
 
 
     const CustomTooltip = ({ active, payload, label }) => {
@@ -169,6 +181,39 @@ function TranslatedAndVarifiedSentenceByLang(props) {
                         </Typography>
                     </Box> */}
                     </Box>
+                    <Grid
+                    container
+                    direction="row"
+                    alignItems={'center'}
+                    style={{ textAlign: 'left', margin: "40px" }}
+                >
+                    <Typography variant='h6'>
+                        Number of Sentences processed per language with
+                    </Typography>
+                    <Box style={{ marginLeft: 40 }}>
+                        <FormControl variant="standard" style={{ m: 1, minWidth: 200 }}>
+                            <InputLabel id="demo-simple-select-helper-label">Organization</InputLabel>
+                            <Select
+                                labelId="demo-simple-select-standard-label"
+                                id="demo-simple-select-standard"
+                                value={selectedOrg}
+                                label="Organization"
+                                onChange={handleOrgChange}
+                                style={{
+                                    textAlign: "left",
+                                    border: '0px solid transparent',
+                                }}
+                            >
+                                {allOrganization && allOrganization.length > 0 && allOrganization.map((el, i) => {
+                                    return <MenuItem value={el.code}>{el.code}</MenuItem>
+                                })}
+                            </Select>
+                        </FormControl>
+                    </Box>
+                    {/* <Typography style={{ fontSize: "1.125rem", fontWeight: "400" }}>
+                {getCommaSaparatedNumber(sourceData?.totalCount)}
+              </Typography> */}
+                </Grid>
                     <Grid>
                         <ResponsiveChartContainer>
                             <BarChart

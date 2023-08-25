@@ -24,7 +24,7 @@ import HelpIcon from '@material-ui/icons/Help';
 import PublishIcon from '@material-ui/icons/Publish';
 import React, { useState, useEffect, useRef } from "react";
 import { Link as RouterLink, NavLink } from "react-router-dom";
-import AnuvaadLogo from "../../../../assets/HeaderTransparentLogo.png";
+import AnuvaadLogo from "../../../../assets/suvas-logo.png";
 import configs from "../../../../configs/configs";
 import headerMenuConfig from "../../../../configs/headerMenuConfig";
 import history from "../../../../web.history";

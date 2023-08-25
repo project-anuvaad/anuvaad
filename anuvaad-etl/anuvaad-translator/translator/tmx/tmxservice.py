@@ -300,7 +300,7 @@ class TMXService:
                 if tmx_phrase["nmt_tgt"]:
                     found = False
                     for nmt_tgt_phrase in tmx_phrase["nmt_tgt"]:
-                        if nmt_tgt_phrase in tgt:
+                        if tgt is not None and nmt_tgt_phrase is not None and nmt_tgt_phrase in tgt:
                             tmx_replacement.append({"src_phrase": tmx_phrase["src"], "tmx_tgt": tmx_phrase["user_tgt"],
                                                     "tgt": str(nmt_tgt_phrase), "type": "NMT"})
                             tmx_replace_dict[nmt_tgt_phrase] = tmx_phrase["user_tgt"]
