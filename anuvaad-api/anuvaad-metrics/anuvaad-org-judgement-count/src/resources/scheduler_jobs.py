@@ -45,7 +45,7 @@ log_info("Mongo connected", MODULE_CONTEXT)
 
 # @.scheduled_job("interval", id="get_data_from_db", hours=6)
 @schedule_job.scheduled_job(
-    "cron", id="my_job_id1", day_of_week="mon-fri", hour="06,09,20", minute="25"
+    "cron", id="my_job_id1", day_of_week="mon-fri", hour="06,09,20", minute="45"
 )
 
 def get_trans_user_data_from_db_cron():
