@@ -1,9 +1,9 @@
 from utilities import MODULE_CONTEXT
-from db import get_db
+from db import get_db, get_active_users_redis
 from utilities import UserUtils, OrgUtils
 from anuvaad_auditor.loghandler import log_info, log_exception
 from anuvaad_auditor.errorhandler import post_error
-from config import USR_MONGO_COLLECTION
+from config import USR_MONGO_COLLECTION,ONE_ROLE_PER_ORG_LIST
 import time
 
 class UserManagementModel(object):
@@ -46,14 +46,13 @@ class UserManagementModel(object):
             #connecting to mongo instance/collection
             collections = get_db()[USR_MONGO_COLLECTION]
             #inserting user records on db
-            if "ADMIN" == role_info["roleCode"]:
-                admin_check = collections.find_one({"orgID":users_data['orgID'],"roles.roleCode":"ADMIN"})
-                print("ADMIN_CHECK",admin_check)
-                if admin_check == None:
+            if role_info["roleCode"] in ONE_ROLE_PER_ORG_LIST:
+                check = collections.find_one({"orgID":users_data['orgID'],"roles.roleCode":role_info["roleCode"]})
+                if check == None:
                     results = collections.insert(records)
                     log_info("Count of users created : {}".format(len(results)), MODULE_CONTEXT)
                 else:
-                    return post_error("Database exception", "already an ADMIN present for the given org", None)
+                    return post_error("Database exception", f"already an {role_info['roleCode']} present for the given org", None)
             else :
                 results = collections.insert(records)
                 log_info("Count of users created : {}".format(len(results)), MODULE_CONTEXT)
@@ -197,14 +196,13 @@ class UserManagementModel(object):
             #connecting to mongo instance/collection
             collections = get_db()[USR_MONGO_COLLECTION]
             #inserting records on database
-            if "ADMIN" == role_info["roleCode"]:
-                admin_check = collections.find_one({"orgID":users_data['orgID'],"roles.roleCode":"ADMIN"})
-                print("ADMIN_CHECK",admin_check)
-                if admin_check == None:
+            if role_info["roleCode"] in ONE_ROLE_PER_ORG_LIST:
+                check = collections.find_one({"orgID":users_data['orgID'],"roles.roleCode":role_info["roleCode"]})
+                if check == None:
                     results = collections.insert(records)
                     log_info("Count of users created : {}".format(len(results)), MODULE_CONTEXT)
                 else:
-                    return post_error("Database exception", "already an ADMIN present for the given org", None)
+                    return post_error("Database exception", f"already an {role_info['roleCode']} present for the given org", None)
             else :
                 results = collections.insert(records)
                 log_info("Count of users created : {}".format(len(results)), MODULE_CONTEXT)
@@ -222,3 +220,33 @@ class UserManagementModel(object):
         role_description=UserUtils.read_role_codes()[1]
         if role_description:
             return role_description
+    
+    def change_email(self, username, new_email):
+        try:
+            collections = get_db()[USR_MONGO_COLLECTION]
+            result = collections.find({'userName':username})
+            for i in result:
+                if i.get('email_updated',False):
+                    log_info("Email is already updated", MODULE_CONTEXT)
+                    return post_error("Email Already Updated", "Email is updated already", None)
+            collections.update(
+                {'userName':username},
+                {"$set": {"email_updated": True, "email":new_email}}
+            )
+            return {
+                'email': new_email,
+                'message': "email has been changed successfully."
+            }
+        except Exception as e:
+            log_exception("db connection exception " +
+                          str(e),  MODULE_CONTEXT, e)
+            return post_error("Database  exception", "An error occurred while processing on the db :{}".format(str(e)), None)
+    
+    def get_active_users(self):
+        count = None  # "NaN"
+        try:
+            r_db = get_active_users_redis()
+            count = len(r_db.keys())
+        except Exception as e:
+            log_exception(f"skipping with count=NaN as issue during get_active_users func : {str(e)}",  MODULE_CONTEXT, e)
+        return {'count':count}

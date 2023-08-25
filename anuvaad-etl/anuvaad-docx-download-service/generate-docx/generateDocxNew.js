@@ -43,7 +43,7 @@ const generateDocxNew = (jobName,fname, height, width) => {
             } 
             else if (tokens.class === 'TABLE') {
                 let tableArray = generateTableArray(tokens);
-                console.log(tableArray)
+                // console.log(tableArray)
                 const tableStyle = {
                     tableColWidth: 3261,
                     tableSize: 1,

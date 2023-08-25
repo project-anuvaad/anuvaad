@@ -82,7 +82,9 @@ export default class RunExperiment extends API {
       return {
         workflowCode: this.workflow,
         recordID: this.fileName,
-        locale: this.source, // Only when tokenisation and/or translation is needed
+        locale: this.source,
+        source_language_code: this.source, // Only when tokenisation and/or translation is needed
+        target_language_code: this.target,
         model: this.model, //Only when Translation is needed
         textBlocks: this.file,
         context: "JUDICIARY",

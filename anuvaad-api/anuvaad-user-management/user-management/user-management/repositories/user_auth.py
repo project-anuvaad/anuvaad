@@ -33,3 +33,7 @@ class UserAuthenticationRepositories:
     def activate_deactivate_user(self,user_email,status,rem_user,verify_user):
         result = authModel.activate_deactivate_user(user_email,status,rem_user,verify_user)
         return result
+    
+    def get_email_change_status(self,username):
+        result = authModel.get_email_change_status(username)
+        return result

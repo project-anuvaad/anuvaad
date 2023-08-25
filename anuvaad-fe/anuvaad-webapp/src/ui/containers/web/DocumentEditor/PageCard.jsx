@@ -107,7 +107,13 @@ class PageCard extends React.Component {
                     backgroundColor: flag ? 'orange' : ''
                 }}
                 id={text.block_id}
-                onDoubleClick={() => { this.handleSelectedSentenceId(text) }}
+                onDoubleClick={() => {
+                    if(this.props.enableSourceDocumentEditing){
+                        this.handleSelectedSentenceId(text) 
+                    } else {
+                        return
+                    }
+                }}
             >
                 {text.text.toString().replace(/\s{2,}/g, " ")}
             </span>

@@ -6,9 +6,9 @@ import Typography from "@material-ui/core/Typography";
 import Divider from "@material-ui/core/Divider";
 import Chip from "@material-ui/core/Chip";
 import TextField from "@material-ui/core/TextField";
-import Autocomplete from "@material-ui/lab/Autocomplete";
+// import Autocomplete from "@material-ui/lab/Autocomplete";
 import Checkbox from "@material-ui/core/Checkbox";
-import CircularProgress from "@material-ui/core/CircularProgress";
+// import CircularProgress from "@material-ui/core/CircularProgress";
 import CardActions from "@material-ui/core/CardActions";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -52,7 +52,7 @@ const TELEMETRY = require("../../../../utils/TelemetryManager");
 const BLEUCALCULATOR = require("../../../../utils/BleuScoreCalculator");
 const TMX_HIGHLIGHT = require("../../../../utils/TmxHighlight");
 
-var time = 0;
+// var time = 0;
 const styles = {
   card_active: {
     background: "rgb(211,211,211)",
@@ -67,6 +67,10 @@ const styles = {
   card_saved: {
     color: "green",
     background: "rgb(199, 228, 219)",
+  },
+  card_translation_incorrect: {
+    // color: "grey",
+    background: "rgb(205 2 46 / 40%)"
   },
   expand: {
     transform: "rotate(0deg)",
@@ -102,7 +106,7 @@ const theme = createMuiTheme({
   },
 });
 
-const filterOptions = (options, { inputValue }) => options;
+// const filterOptions = (options, { inputValue }) => options;
 
 class SentenceCard extends React.Component {
   constructor(props) {
@@ -136,7 +140,7 @@ class SentenceCard extends React.Component {
       openModal: false,
       openSuggestGlossaryModal: false,
       eventArray: [],
-      modelId:""
+      modelId: ""
     };
 
     this.textInput = React.createRef();
@@ -159,11 +163,8 @@ class SentenceCard extends React.Component {
       this.setState({ score: this.props.sentence.rating_score });
     }
 
-    console.log("this.props in setence card component -------- ", this.props);  
+  }
 
-
-}
-   
   componentWillUpdate(nextProps, nextState) {
     if (
       nextProps.document_editor_mode.mode !==
@@ -171,7 +172,7 @@ class SentenceCard extends React.Component {
     ) {
       if (this.state.cardChecked) this.setState({ cardChecked: false });
     }
-  
+
   }
 
   shouldComponentUpdate(prevProps, nextState) {
@@ -194,7 +195,7 @@ class SentenceCard extends React.Component {
       if (
         prevProps.sentence_highlight &&
         prevProps.sentence.block_identifier ===
-          prevProps.sentence_highlight.block_identifier
+        prevProps.sentence_highlight.block_identifier
       ) {
         return true;
       }
@@ -202,7 +203,7 @@ class SentenceCard extends React.Component {
     }
     return true;
 
-    
+
   }
 
   /**
@@ -257,6 +258,7 @@ class SentenceCard extends React.Component {
       if (this.props.onAction) {
         let sentence = { ...this.props.sentence };
         sentence.save = true;
+        sentence.redo = false;
         sentence.tgt = this.props.sentence.s0_tgt;
         delete sentence.block_identifier;
         let timeCalc = sentence.hasOwnProperty("time_spent_ms")
@@ -266,9 +268,9 @@ class SentenceCard extends React.Component {
         sentence.bleu_score =
           sentence.s0_tgt && sentence.tgt
             ? BLEUCALCULATOR.scoreSystem(
-                sentence.s0_tgt.trim(),
-                sentence.tgt.trim()
-              )
+              sentence.s0_tgt.trim(),
+              sentence.tgt.trim()
+            )
             : 0;
 
         if (userRole === "ANNOTATOR" && this.state.score) {
@@ -302,14 +304,15 @@ class SentenceCard extends React.Component {
         this.setState({ userEnteredText: false });
         let sentence = { ...this.props.sentence };
         sentence.save = true;
+        sentence.redo = false;
         sentence.tgt = this.state.value;
         delete sentence.block_identifier;
         sentence.bleu_score =
           sentence.s0_tgt && sentence.tgt
             ? BLEUCALCULATOR.scoreSystem(
-                sentence.s0_tgt.trim(),
-                sentence.tgt.trim()
-              )
+              sentence.s0_tgt.trim(),
+              sentence.tgt.trim()
+            )
             : 0;
         let timeCalc = sentence.hasOwnProperty("time_spent_ms")
           ? sentence.time_spent_ms + this.timeSpent()
@@ -446,7 +449,7 @@ class SentenceCard extends React.Component {
     }
   };
 
-  renderSourceSentence = () => {
+  renderSourceSentence = (enableEditingSentence) => {
     if (
       this.cardCompare() &&
       this.props.sentence.tmx_replacement &&
@@ -463,7 +466,9 @@ class SentenceCard extends React.Component {
             variant="subtitle1"
             gutterBottom
             onMouseUp={(event) => {
-              this.getSelectionText(event);
+              if (enableEditingSentence) {
+                this.getSelectionText(event);
+              }
             }}
           >
             {modified_src}
@@ -477,7 +482,9 @@ class SentenceCard extends React.Component {
           variant="subtitle1"
           gutterBottom
           onMouseUp={(event) => {
-            this.getSelectionText(event);
+            if (enableEditingSentence) {
+              this.getSelectionText(event);
+            }
           }}
         >
           {this.props.sentence.src}
@@ -758,11 +765,11 @@ class SentenceCard extends React.Component {
                         elem.focus();
                         elem.setSelectionRange(
                           [...textFieldArray.join(" ")].length +
-                            [...nextSuggestion].length +
-                            1,
+                          [...nextSuggestion].length +
+                          1,
                           [...textFieldArray.join(" ")].length +
-                            [...nextSuggestion].length +
-                            1
+                          [...nextSuggestion].length +
+                          1
                         );
                       }
                     );
@@ -815,11 +822,11 @@ class SentenceCard extends React.Component {
                       elem.focus();
                       elem.setSelectionRange(
                         [...textFieldArray.join(" ")].length +
-                          [...nextSuggestion].length +
-                          1,
+                        [...nextSuggestion].length +
+                        1,
                         [...textFieldArray.join(" ")].length +
-                          [...nextSuggestion].length +
-                          1
+                        [...nextSuggestion].length +
+                        1
                       );
                     }
                   );
@@ -943,120 +950,63 @@ class SentenceCard extends React.Component {
     return (
       <form>
         <div>
-        {this.props?.model?.target_language_code != "en" && this.props.enableTransliteration ?(
-          <IndicTransliterate
-            customApiURL={`${configs.BASE_URL_ULCA + endpoints.hostedInference}`}
-            transliterationModelId={this.props.getTransliterationModelID?.modelId}
-            renderComponent={(props) => {
-              const inputRef = props.ref;
-              delete props["ref"];
-              return (
-                <TextField
-                  {...props}
-                  label="Enter translated sentence"
-                  helperText={
-                    this.props.model &&
-                    this.props.model.status === "ACTIVE" &&
-                    this.props.model.interactive_translation &&
-                    orgID !== "NONMT"
-                      ? "Ctrl+m to move text, Ctrl+s to save, Enable transliteration to get suggestions/disable transliteration and enter manual translation"
-                      : "Ctrl+m to move text, Ctrl+s to save, Enable transliteration to get suggestions/disable transliteration and enter manual translation"
-                  }
-                  type="text"
-                  name={this.props.sentence.s_id}
-                  value={this.state.value}
-                  fullWidth
-                  multiline
-                  disabled={this.state.isCardBusy}
-                  variant="outlined"
-                  onClick={this.handleClick}
-                  inputRef={inputRef}
-                />
-              );
-            }}
-            onKeyDown={this.handleKeyDown}
-            value={this.state.value}
-            onChangeText={(text) => {
-              this.setState({ value: text });
-            }}
-            lang={this.props?.model?.target_language_code}
-            maxOptions={3}
-          />) : (<TextField  label="Enter translated sentence"
-          helperText={this.props.model && this.props.model.status === "ACTIVE" && this.props.model.interactive_translation && orgID !== 'NONMT' ? "Ctrl+m to move text,Ctrl+s to save, Enable transliteration to get suggestions/disable transliteration and enter manual translation" : "Ctrl+m to move text, Ctrl+s to save, Enable transliteration to get suggestions/disable transliteration and enter manual translation"}
-          type="text"
-          name={this.props.sentence.s_id}
-          value={this.state.value}
-          onChange={this.handleUserInputText}
-          fullWidth
-          multiline
-          disabled={this.state.isCardBusy}
-          variant="outlined"
-          onKeyDown={this.handleKeyDown}
-          onClick={this.handleClick}
-          inputRef={this.textInput}
-         
-      />)}
+          {this.props?.model?.target_language_code != "en" && this.props.enableTransliteration ? (
+            <IndicTransliterate
+              customApiURL={`${configs.BASE_URL_ULCA + endpoints.hostedInference}`}
+              transliterationModelId={this.props.getTransliterationModelID?.modelId}
+              renderComponent={(props) => {
+                const inputRef = props.ref;
+                delete props["ref"];
+                return (
+                  <TextField
+                    {...props}
+                    label="Enter translated sentence"
+                    helperText={
+                      this.props.model &&
+                        this.props.model.status === "ACTIVE" &&
+                        this.props.model.interactive_translation &&
+                        orgID !== "NONMT"
+                        ? "Ctrl+m to move text, Ctrl+s to save, Enable transliteration to get suggestions/disable transliteration and enter manual translation"
+                        : "Ctrl+m to move text, Ctrl+s to save, Enable transliteration to get suggestions/disable transliteration and enter manual translation"
+                    }
+                    type="text"
+                    name={this.props.sentence.s_id}
+                    value={this.state.value}
+                    fullWidth
+                    multiline
+                    disabled={this.state.isCardBusy}
+                    variant="outlined"
+                    onClick={this.handleClick}
+                    inputRef={inputRef}
+                  />
+                );
+              }}
+              suggestionListStyle={{
+                height: "135px",
+                overflow: "auto"
+              }}
+              onKeyDown={this.handleKeyDown}
+              value={this.state.value}
+              onChangeText={(text) => {
+                this.setState({ value: text });
+              }}
+              lang={this.props?.model?.target_language_code}
+              maxOptions={3}
+            />) : (<TextField label="Enter translated sentence"
+              helperText={this.props.model && this.props.model.status === "ACTIVE" && this.props.model.interactive_translation && orgID !== 'NONMT' ? "Ctrl+m to move text,Ctrl+s to save, Enable transliteration to get suggestions/disable transliteration and enter manual translation" : "Ctrl+m to move text, Ctrl+s to save, Enable transliteration to get suggestions/disable transliteration and enter manual translation"}
+              type="text"
+              name={this.props.sentence.s_id}
+              value={this.state.value}
+              onChange={this.handleUserInputText}
+              fullWidth
+              multiline
+              disabled={this.state.isCardBusy}
+              variant="outlined"
+              onKeyDown={this.handleKeyDown}
+              onClick={this.handleClick}
+              inputRef={this.textInput}
 
-          {/* <Autocomplete
-                        filterOptions={filterOptions}
-                        id={this.props.sentence.s_id}
-                        getOptionLabel={option => option.name ? option.name : ""}
-                        getOptionSelected={(option, value) => option.name === value.name}
-                        renderOption={(option, index) => {
-                            return this.renderAutoCompleteText(option.name, this.state.value)
-                        }}
-                        options={this.state.suggestions}
-                        disableClearable
-                        inputValue={this.state.value}
-                        fullWidth
-                        open={this.state.showSuggestions}
-                        loading={true}
-                        freeSolo={true}
-                        loadingText={this.state.isCardBusy ? 'Loading ...' : 'No suggestions found'}
-                        onChange={(event, newValue) => {
-                            let option = newValue.name ? newValue.name : newValue
-                            var elem = document.getElementById(this.props.sentence.s_id)
-                            let value = this.state.value ? this.state.value.slice(0, elem.selectionStart) : ""
-                            let trimedText = value.trim()
-                            var selectedText = option.slice(0, trimedText.length)
-                            let caretValue = option.slice(trimedText.length, option.length)
-                            this.setState({
-                                value: (selectedText ? selectedText.trim() : selectedText) + " " + (caretValue ? caretValue.trim() + " " : caretValue),
-                                showSuggestions: false,
-                                userEnteredText: true,
-                            });
-                        }}
-                        onClose={(event, newValue) => {
-                            this.setState({
-                                showSuggestions: false,
-                                suggestions: []
-                            });
-                        }}
-                        renderInput={params => (
-                            <TextField {...params} label="Enter translated sentence"
-                                helperText={this.props.model && this.props.model.status === "ACTIVE" && this.props.model.interactive_translation && orgID !== 'NONMT' ? "Ctrl+m to move text, TAB key to move suggested words, Ctrl+s to save" : "Ctrl+m to move text, Ctrl+s to save"}
-                                type="text"
-                                name={this.props.sentence.s_id}
-                                value={this.state.value}
-                                onChange={this.handleUserInputText}
-                                fullWidth
-                                multiline
-                                disabled={this.state.isCardBusy}
-                                variant="outlined"
-                                onKeyDown={this.handleKeyDown}
-                                onClick={this.handleClick}
-                                inputRef={this.textInput}
-                                InputProps={{
-                                    ...params.InputProps,
-                                    endAdornment: (
-                                        <React.Fragment>
-                                            {this.state.isCardBusy ? <CircularProgress color="inherit" size={20} /> : null}
-                                            {params.InputProps.endAdornment}
-                                        </React.Fragment>
-                                    ),
-                                }}
-                            />
-                        )} /> */}
+            />)}
         </div>
         <br />
       </form>
@@ -1085,7 +1035,7 @@ class SentenceCard extends React.Component {
   };
 
   retranslateSentence = () => {
-    console.log("this.state.value", this.state.value);
+    // console.log("this.state.value", this.state.value);
     if (this.props.onAction) {
       let eventArray = this.handleTimeCalc(
         "Retranslate",
@@ -1096,7 +1046,7 @@ class SentenceCard extends React.Component {
       );
       this.setState({ eventArray });
       this.setState({ value: "" });
-      console.log("eventArray", eventArray);
+      // console.log("eventArray", eventArray);
       this.props.onAction(
         SENTENCE_ACTION.RETRANSLATE_SENTENCE,
         this.props.pageNumber,
@@ -1338,6 +1288,7 @@ class SentenceCard extends React.Component {
         hideSplit={this.state.hideSplit}
         isopenMenuItems={this.state.isopenMenuItems}
         handleOperation={this.handleOperation.bind(this)}
+        enableActionButtons={this.props.enableActionButtons}
       />
     );
   };
@@ -1395,7 +1346,13 @@ class SentenceCard extends React.Component {
   };
 
   renderCardSelectedForMerge = () => {
-    if (this.props.document_editor_mode.mode === "EDITOR_MODE_MERGE") {
+    let checkboxRenderCondition = ((
+      !this.props.isDocumentCameForCorrection &&
+      (this.props.granularStatus.trim() === "FINAL EDITING - IN PROGRESS" ||
+        this.props.granularStatus.trim() === "AUTO TRANSLATION - COMPLETED"
+      )) ||
+      (this.props.isDocumentCameForCorrection && this.props.redoSentence));
+    if (this.props.document_editor_mode.mode === "EDITOR_MODE_MERGE" && checkboxRenderCondition) {
       return (
         <Checkbox
           checked={this.state.cardChecked}
@@ -1504,25 +1461,39 @@ class SentenceCard extends React.Component {
     );
   };
 
+  renderReviewerComment = () => {
+    // console.log("this.isSentenceIncorrect() && this.props.sentence.comments ---- ");
+    // console.log(this.isSentenceIncorrect() + "   -------  " + this.props.sentence.comments);
+    // console.log("this.props.granularStatus.trim() ---- ", this.props.granularStatus.trim());
+    return <div>
+      <Divider />
+      <Typography variant="subtitle1" gutterBottom>
+        Reviewer Comment - <b>{this.props.sentence.comments}</b>
+        <br />
+      </Typography>
+    </div>
+  }
+
   renderSentenceCard = () => {
     let userRole = localStorage.getItem("roles");
     let orgID = JSON.parse(localStorage.getItem("userProfile")).orgID;
+    let enableEditingSentence = (!this.props.isDocumentCameForCorrection && (this.props.granularStatus.trim() === "FINAL EDITING - IN PROGRESS" || this.props.granularStatus.trim() === "AUTO TRANSLATION - COMPLETED")) || (this.props.isDocumentCameForCorrection && this.props.redoSentence)
     return (
       <div key={12} style={{ padding: "1%" }}>
         <MuiThemeProvider theme={theme}>
           <Card
             style={
-              this.cardBlockCompare() || this.cardCompare()
+              this.isSentenceIncorrect() ? styles.card_translation_incorrect : this.cardBlockCompare() || this.cardCompare()
                 ? styles.card_open
                 : this.isSentenceSaved()
-                ? styles.card_saved
-                : styles.card_inactive
+                  ? styles.card_saved
+                  : styles.card_inactive
             }
           >
             <CardContent
               style={{ display: "flex", flexDirection: "row", padding: "10px" }}
             >
-              <div style={{ width: "90%" }}>{this.renderSourceSentence()}</div>
+              <div style={{ width: "90%" }}>{this.renderSourceSentence(enableEditingSentence)}</div>
               {this.renderCardIcon()}
               {this.renderCardSelectedForMerge()}
             </CardContent>
@@ -1535,17 +1506,24 @@ class SentenceCard extends React.Component {
               </CardContent>
             )}
 
+            <CardContent style={{ display: "flex", flexDirection: "row" }}>
+              {this.isSentenceIncorrect() && this.props.sentence.comments && this.renderReviewerComment()}
+            </CardContent>
+
             <Collapse in={this.cardCompare()} timeout="auto" unmountOnExit>
               <CardContent style={{ padding: "10px" }}>
+                {/* isDocumentCameForCorrection={this.state.isDocumentCameForCorrection}
+              redoSentence={sentence.redo} */}
+                {/* (this.props.granularStatus.trim() === "FINAL EDITING - IN PROGRESS" || this.props.granularStatus.trim() === "AUTO TRANSLATION - COMPLETED") && */}
                 {this.renderMTTargetSentence()}
                 <br />
                 {userRole === "ANNOTATOR" &&
-                  orgID !== "NONMT" &&
+                  orgID !== "NONMT" && enableEditingSentence &&
                   this.renderRating()}
-                {this.renderUserInputArea()}
+                {enableEditingSentence && this.renderUserInputArea()}
               </CardContent>
               <CardActions style={{ padding: "10px" }}>
-                {this.renderNormaModeButtons()}
+                {enableEditingSentence && this.renderNormaModeButtons()}
               </CardActions>
             </Collapse>
           </Card>
@@ -1620,7 +1598,18 @@ class SentenceCard extends React.Component {
     }
     return false;
   };
+
+  isSentenceIncorrect = () => {
+    if (this.props.sentence.redo && this.props.granularStatus.trim() === "FINAL EDITING - IN PROGRESS") {
+      return true
+    } else {
+      return false
+    }
+  }
+
   renderGlossaryModal = () => {
+    // console.log("this.props.enableTransliteration  ----- ", this.props.enableTransliteration );
+    // console.log("this.props?.model?.target_language_code != en ------- ", this.props?.model?.target_language_code != "en");
     return (
       <Modal
         open={this.state.openModal}
@@ -1633,6 +1622,11 @@ class SentenceCard extends React.Component {
             this.makeCreateGlossaryAPICall(tgt)
           }
           loading={this.state.loading}
+          // Transliteration props
+          enableTransliteration={this.props.enableTransliteration && this.props?.model?.target_language_code != "en"}
+          customApiURL={`${configs.BASE_URL_ULCA + endpoints.hostedInference}`}
+          transliterationModelId={this.props.getTransliterationModelID?.modelId}
+          lang={this.props?.model?.target_language_code}
         />
       </Modal>
     );
@@ -1651,6 +1645,11 @@ class SentenceCard extends React.Component {
             this.makeSuggestGlossaryAPICall(tgt)
           }
           loading={this.state.loading}
+          // Transliteration props
+          enableTransliteration={this.props.enableTransliteration && this.props?.model?.target_language_code != "en"}
+          customApiURL={`${configs.BASE_URL_ULCA + endpoints.hostedInference}`}
+          transliterationModelId={this.props.getTransliterationModelID?.modelId}
+          lang={this.props?.model?.target_language_code}
         />
       </Modal>
     );
@@ -1695,7 +1694,7 @@ class SentenceCard extends React.Component {
       locale,
       "JUDICIARY"
     );
-    console.log("apiObj", apiObj);
+    // console.log("apiObj", apiObj);
     fetch(apiObj.apiEndPoint(), {
       method: "post",
       body: JSON.stringify(apiObj.getBody()),

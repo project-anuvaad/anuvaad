@@ -62,9 +62,11 @@ configs_global = {}
 tools_global = {}
 
 yaml_file_loc = "/app/configs"
+
 #yaml_file_loc = "configs"
-yam_file_path_delimiter = "/"
 #yaml_file_name = "wfconfig.yml"
+
+yam_file_path_delimiter = "/"
 yaml_workflow_config_file_name = "wfconfig.yml"
 yaml_tools_file_name = "toolconfig.yml"
 

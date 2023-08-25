@@ -1,9 +1,10 @@
-from config import MONGO_SERVER_HOST
-from config import MONGO_DB_SCHEMA
+from config import MONGO_SERVER_HOST, REDIS_SERVER_HOST
+from config import MONGO_DB_SCHEMA, REDIS_SERVER_PORT
 from utilities import MODULE_CONTEXT
 from pymongo import MongoClient
 from anuvaad_auditor.loghandler import log_info, log_exception
 from flask import g
+import redis
 
 client = MongoClient(MONGO_SERVER_HOST)
 
@@ -32,4 +33,8 @@ class User_management_db:
         # else:
         db_instance = db
         return db_instance[collection]
-    
+
+def get_active_users_redis():
+    if 'redisdb' not in g:
+        g.redisdb = redis.Redis(host=REDIS_SERVER_HOST, port=REDIS_SERVER_PORT, db=10)
+    return g.redisdb

@@ -44,6 +44,7 @@ def process_transform_file_kf():
 
             response_gen = Response(data, DOWNLOAD_FOLDER)
             file_value_response = response_gen.workflow_response(task_id, task_starttime, transform_flow=True)
+            log_info(f"Test33: filevalueresponse = {file_value_response}",None)
 
             producer = Producer()
             producer.push_data_to_queue(config.transform_output_topic, file_value_response, data, task_id)

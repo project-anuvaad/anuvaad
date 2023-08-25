@@ -1,3 +1,4 @@
+import { get_document_details } from "../../../utils/getFormattedJobData";
 import C from "../../actions/constants";
 // import LanguageCodes from "../../ui/components/web/common/Languages.json"
 
@@ -36,70 +37,7 @@ const initialState = {
  * @param {*} input , api response of bulk search
  * @returns document details
  */
-function get_document_details(input) {
-  let documents = [];
 
-  input["jobs"].forEach((job) => {
-    let document = {};
-    let timelines = [];
-    document["filename"] = job["input"]["jobName"];
-    document["description"] = job["input"]["jobDescription"];
-    document["filetype"] = job["input"]["files"][0]["type"];
-    document["converted_filename"] = job["input"]["files"][0]["path"];
-    document["active"] = job["active"];
-    document["jobID"] = job["jobID"];
-
-    document["source_language_code"] =
-      job["input"]["files"][0]["model"]["source_language_name"];
-    document["target_language_code"] =
-      job["input"]["files"][0]["model"]["target_language_name"];
-    document["model_id"] = job["input"]["files"][0]["model"]["model_id"];
-    document["model_name"] = job["input"]["files"][0]["model"]["model_name"];
-    document["created_on"] = job["startTime"];
-    document["endTime"] = job["endTime"];
-    document["status"] = job["status"];
-    document["progress"] = "...";
-    document["word_count"] = "...";
-    document["bleu_score"] = "...";
-    document["spent_time"] = "...";
-    document["workflowCode"] = job["workflowCode"];
-
-    job["taskDetails"].forEach((task) => {
-      let timeline = {};
-      timeline["module"] = task["tool"];
-      timeline["startime"] = task["taskStarttime"];
-      if ("taskEndTime" in task) {
-        timeline["endtime"] = task["taskEndTime"];
-      } else {
-        timeline["endtime"] = task["taskendTime"];
-      }
-      timeline["stepOrder"] = task["stepOrder"];
-      timeline["status"] = task["status"];
-
-      if (task["stepOrder"] === 0 && task["status"] !== "FAILED" && task.workflowCode === 'WF_A_FCBMTKTR') {
-        document["converted_filename"] = task["output"][0]["outputFile"];
-      }
-      if (task["stepOrder"] === 2) {
-        document["recordId"] = task["output"][0]["outputFile"];
-      }
-
-      if (task["stepOrder"] === 3) {
-        document["recordId"] = task["output"][0]["outputFile"];
-      }
-      timelines.push(timeline);
-    });
-
-    document["timelines"] = timelines;
-    if (job["status"] === "FAILED") {
-      document["errorMessage"] = job["error"]["message"];
-    } else {
-      document["errorMessage"] = "";
-    }
-    documents.push(document);
-  });
-
-  return documents;
-}
 
 function timeCalculate(total_time) {
   let sec = total_time / 1000;
@@ -125,11 +63,10 @@ function update_documents_progress(documents, progresses) {
         document[
           "word_count"
         ] = `${progress["completed_word_count"]} of ${progress["total_word_count"]}`;
-        document["bleu_score"] = `${
-          Number(progress["avg_bleu_score"]) > 0
+        document["bleu_score"] = `${Number(progress["avg_bleu_score"]) > 0
             ? Number(progress["avg_bleu_score"]).toFixed(2)
             : "0"
-        } `;
+          } `;
         document["spent_time"] = timeCalculate(
           `${progress["total_time_spent_ms"]}`
         );

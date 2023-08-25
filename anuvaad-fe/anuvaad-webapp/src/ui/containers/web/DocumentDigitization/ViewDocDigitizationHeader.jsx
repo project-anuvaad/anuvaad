@@ -33,7 +33,7 @@ class ViewDocHeader extends React.Component {
                     marginBottom: 20
                 }}
             >
-                <Button
+                {/* <Button
                     id="start-translate"
                     variant="contained"
                     color="primary"
@@ -50,7 +50,7 @@ class ViewDocHeader extends React.Component {
                     }}
                 >
                     Start Digitization
-                </Button>
+                </Button> */}
             </div >
         );
     }
