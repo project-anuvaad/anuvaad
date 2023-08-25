@@ -135,8 +135,6 @@ class S3BucketUtils(object):
             return False
         
     def compress(self,file_names,zip_name):
-        print("File Paths:")
-        print(file_names)
 
         paths = config.download_folder
 

@@ -66,7 +66,7 @@ class DocumentExporterRepository(object):
                                         for word_region in line_region['regions']:
                                             if 'class' in word_region.keys() and 'text' in word_region.keys():
                                                 if word_region['class'] in ['WORD','CELL_TEXT']:
-                                                    words.append(word_region['text'])
+                                                    words.append(str(word_region['text']))
 
                                         lines.append(' '.join(words) + '\n')
                                         page_lines.append({'boundingBox': doc_utils.vertices_to_boundingbox(line_region['boundingBox']['vertices']), 
