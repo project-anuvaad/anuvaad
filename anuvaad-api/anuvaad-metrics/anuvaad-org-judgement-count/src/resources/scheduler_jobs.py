@@ -2,7 +2,8 @@ from models import jud_stats
 from utilities import MODULE_CONTEXT
 from anuvaad_auditor.loghandler import log_info, log_exception
 import config
-import datetime
+from datetime import datetime as dt
+from datetime import timedelta as td
 import os
 import pandas as pd
 from utilities import (
@@ -29,6 +30,7 @@ schedule_job = BackgroundScheduler(timezone="Asia/Kolkata")
 
 stats = jud_stats()
 usr_collection, ch_collection = stats.mongo_connection()
+wfm_collection = stats.mongo_wfm_connection()
 log_info("Mongo connected", MODULE_CONTEXT)
 
 # class IST(datetime.tzinfo):
@@ -125,11 +127,57 @@ def get_trans_user_data_from_db_cron():
         )
         return
 
-# run cron once at starting the server
+@schedule_job.scheduled_job(
+    "cron", id="reviewer_data_job_1", day_of_week="mon-fri", hour="08,18", minute="00"
+)
+def get_reviewer_data(base=False):
+    try:
+        log_info("cron for reviewer data collection started", MODULE_CONTEXT)
+        if base:
+            # reviewer-data-base-file
+            start_date = dt(*config.REVIEWER_DATA_BASE_SDATE)
+            end_date = dt(*config.REVIEWER_DATA_BASE_EDATE)
+            cur_file = config.DOWNLOAD_FOLDER + "/" + config.REVIEWER_DATA_BASEFILE
+            log_info(f"opted reviewer-data-updation(base) : s_date={start_date}|e_date={end_date}", MODULE_CONTEXT)
+        else:
+            # reviewer-data-cron-file
+            start_date = dt(*config.REVIEWER_DATA_BASE_EDATE) + td(days=1)
+            end_date = dt.now()
+            cur_file = config.DOWNLOAD_FOLDER + "/" + config.REVIEWER_DATA_CRONFILE
+            log_info(f"opted reviewer-data-updation(cron) : s_date={start_date}|e_date={end_date}", MODULE_CONTEXT)
+        start_date = stats.get_custom_timestamp(start_date)
+        end_date = stats.get_custom_timestamp(end_date)
+        # get data
+        data = stats.get_reviewer_data_from_wfm(wfm_collection, start_date, end_date)
+        log_info(f"fetch for reviewer-data complete", MODULE_CONTEXT)
+        # delete existing file
+        if os.path.exists(cur_file):
+            os.remove(cur_file)
+            log_info(f"deleted file : {cur_file}", MODULE_CONTEXT)
+        # save data
+        data.to_csv(cur_file, index=False)
+        log_info(f"cron for reviewer-data ended with save-file : {cur_file}", MODULE_CONTEXT)
+    except Exception as e:
+        log_exception("Error in reviewer-data-cron : {}".format(e), MODULE_CONTEXT, e)
+        msg = generate_email_notification(config.EMAIL_NOTIFIER, f"could not get the reviewer-data something went wrong : {e}")
+        send_email(msg)
+        log_exception(f"Generated alert email in exception reviewer-data-cron job : {str(e)}", MODULE_CONTEXT, e,)
+    return None
+
+def manual_start_reviewerdata_scheduler(base):
+    for job in schedule_job.get_jobs():
+        if job.id == "reviewer_data_job_1":
+            job.func(base=base)
+
 def manual_start_transuserdata_scheduler():
     for job in schedule_job.get_jobs():
+        if job.id == "my_job_id1":
             job.func()
 
+# static run (only once when server starts)
+manual_start_reviewerdata_scheduler(base=True)
+manual_start_reviewerdata_scheduler(base=False)
 manual_start_transuserdata_scheduler()
 
+# initiate cron job
 schedule_job.start()

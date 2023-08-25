@@ -26,6 +26,11 @@ DAILY_CRON_FILE_NAME2 = "language_wise_JUD_STATS2_daily.csv"
 STATS_FILE = "jud_stats.csv"
 STATS_FILE_COPY = "jud_stats_copy.csv"
 
+REVIEWER_DATA_BASEFILE =  "reviewer_data_base.csv"
+REVIEWER_DATA_CRONFILE =  "reviewer_data_cron.csv"
+REVIEWER_DATA_BASE_SDATE =  [2000,1,1]
+REVIEWER_DATA_BASE_EDATE =  [2023,4,30]
+
 EMAIL_NOTIFIER = ["srihari.nagaraj@tarento.com","apoorva.bellary@tarento.com"]
 
 
@@ -82,11 +87,11 @@ LANG_MAPPING = {
     "grt": "Garo",
     "si": "Sinhalese",
     "njz": "Nishi",
-    "as": "Assamese" ,
-    "ks_Deva": "Kashmiri(Deva)" ,
-    "mni_Beng" : "Manipuri(Beng)" ,
-    "gom" : "Konkani(Goan)" ,
-    "sd_Deva" : "Sindhi(Deva)"
+    "as": "Assamese",
+    'gom': "Konkani", 
+    'ks_Deva': "Kashmiri(Devanagari)", 
+    'mni_Beng': "Manipuri(Bengali)",
+    'sd_Deva': "Sindhi(Devanagari)",
 }
 
 jud = os.environ.get('ANUVAAD_JUD_METRICS','https://developers.anuvaad.org')

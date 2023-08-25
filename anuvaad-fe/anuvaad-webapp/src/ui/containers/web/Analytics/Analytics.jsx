@@ -10,6 +10,7 @@ import DocumentCountByLang from "../../../components/web/Analytics/DocumentCount
 import TranslatedAndVarifiedSentenceByLang from "../../../components/web/Analytics/TranslatedAndVarifiedSentenceByLang";
 import DocumentCountByOrg from "../../../components/web/Analytics/DocumentCountByOrg";
 import getAnuvaadSupportedLanguages from "../../../../flux/actions/apis/analytics/getSupportedLangList";
+import getAnuvaadUploadedDocumentCount from "../../../../flux/actions/apis/analytics/getAnuvaadUploadedDocumentCount";
 import { Button, Grid, Typography } from "@material-ui/core";
 // import ImageTwoTone from "@material-ui/icons/ImageTwoTone";
 // import PictureAsPdfOutlined from "@material-ui/icons/PictureAsPdfOutlined";
@@ -17,6 +18,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import downloadReportClick from "../../../../utils/downloadChart";
 import GetAppIcon from '@material-ui/icons/GetApp';
 import { Popover } from "@material-ui/core"
+import GetUploadedDocumentCount from "../../../components/web/Analytics/GetUploadedDocumentCount";
 
 
 const Analytics = () => {
@@ -38,6 +40,11 @@ const Analytics = () => {
         dispatch(APITransport(apiObj));
     }
 
+    const getUploadedDocumentCount = () => {
+        const apiObj = new getAnuvaadUploadedDocumentCount();
+        dispatch(APITransport(apiObj));
+    }
+
     const getCountByLang = (srcLang = "en") => {
         const apiObj = new getAnuvaadCountByLang(srcLang);
         dispatch(APITransport(apiObj));
@@ -52,7 +59,8 @@ const Analytics = () => {
         getSupportedLangList();
         getTranslatedAndVerifiedSetenceCount();
         getCountByLang();
-        getDocumentCountPerOrg()
+        getDocumentCountPerOrg();
+        getUploadedDocumentCount();
     }, [])
 
     return (
@@ -107,7 +115,7 @@ const Analytics = () => {
                         <Button
                             onClick={() => {
                                 setAnchorEl(null);
-                                downloadReportClick(true, "pdf", ["documentCountByLang", "translatedAndVarifiedSentenceByLang", "documentCountByOrg"], "Anuvaad-Analytics")
+                                downloadReportClick(true, "pdf", ["documentCountByLang", "translatedAndVarifiedSentenceByLang", "documentCountByOrg", "getUploadedDocumentCount"], "Anuvaad-Analytics")
                             }}
                         >
                             <Grid style={{ width: 100, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -137,6 +145,9 @@ const Analytics = () => {
                     <DocumentCountByOrg
                         onDownloadReportClick={downloadReportClick}
                     />
+                </div>
+                <div id="getUploadedDocumentCount">
+                    <GetUploadedDocumentCount onDownloadReportClick={downloadReportClick} />
                 </div>
             </div>
         </>
