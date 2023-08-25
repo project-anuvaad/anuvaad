@@ -361,7 +361,7 @@ class CreateUser extends React.Component {
     }, 5000)
   }
 
-  handleInputReceived = prop => event => this.setState({ [prop]: event.target.value });
+  handleInputReceived = prop => event => this.setState({ [prop]: prop === "emailid" ? event.target.value.toLowerCase() : event.target.value });
 
   handleValidation(key) {
     if (!this.state[key] || this.state[key].length < 2) {

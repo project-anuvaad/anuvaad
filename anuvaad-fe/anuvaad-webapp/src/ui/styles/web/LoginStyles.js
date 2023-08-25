@@ -237,6 +237,17 @@ const LoginStyles = theme => ({
     letterSpacing: 0,
     lineHeight: "1.167",
   },
+  VerifyOtpButton:{
+    alignSelf: "center",
+    width: "50%",
+    borderRadius:"15px"
+  },
+  ResendOtpButton:{
+    alignSelf: "center",
+    padding: "10px 0px 0px 0px",
+    fontFamily: "Roboto, san-serif",
+  },
+ 
 });
 
 export default LoginStyles;

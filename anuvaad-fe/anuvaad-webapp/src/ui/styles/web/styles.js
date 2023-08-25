@@ -4,7 +4,7 @@ const drawerWidth = 240;
 
 const GlobalStyles = theme => ({
   container: {
-    margin: '6em 0em 0em 0em',
+    margin: '4em 0em 0em 0em',
     width: '100%',
     // background: theme.palette.background.default,
     fontFamily: theme.typography.fontFamily,

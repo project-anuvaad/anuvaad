@@ -152,7 +152,7 @@ class DownloadDigitziedDoc extends React.Component {
                         timeOut: 3000,
                         variant: "info",
                     });
-                    console.log("api failed");
+                    // console.log("api failed");
                 } else {
                     const buffer = new Uint8Array(await response.arrayBuffer());
                     let res = Buffer.from(buffer).toString("base64");
@@ -171,7 +171,7 @@ class DownloadDigitziedDoc extends React.Component {
                     timeOut: 3000,
                     variant: "info",
                 });
-                console.log("api failed because of server or network", error);
+                // console.log("api failed because of server or network", error);
             });
     }
 

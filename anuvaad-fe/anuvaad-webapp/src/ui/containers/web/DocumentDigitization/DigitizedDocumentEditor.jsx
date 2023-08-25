@@ -794,16 +794,18 @@ class DocumentEditor extends React.Component {
                     }).then(async response => {
                         if (!response.ok) {
                             this.setState({ dialogMessage: "Unable to download file", showStatus: false, message: null })
-                            console.log('api failed')
+                            // console.log('api failed')
                         } else {
                             const buffer = new Uint8Array(await response.arrayBuffer());
-                            let res = Buffer.from(buffer).toString('base64')
-                            this.downloadBlob(res, fileName)
+                            let res = Buffer.from(buffer).toString('base64');
+                            let downloadFileName = this.props.match.params.og_fname;
+                            downloadFileName = downloadFileName.slice(0, downloadFileName.lastIndexOf("."))+"_digitized"+fileName.slice(fileName.lastIndexOf("."), fileName.length);
+                            this.downloadBlob(res, downloadFileName);
                         }
 
                     }).catch((error) => {
                         this.setState({ dialogMessage: "Unable to download file" })
-                        console.log('api failed because of server or network', error)
+                        // console.log('api failed because of server or network', error)
                     });
 
                 } else {
@@ -812,7 +814,7 @@ class DocumentEditor extends React.Component {
             }
         }).catch((error) => {
             this.setState({ showStatus: false, message: null, dialogMessage: "Unable to download file" })
-            console.log('api failed because of server or network', error)
+            // console.log('api failed because of server or network', error)
         });
     }
 
@@ -829,7 +831,7 @@ class DocumentEditor extends React.Component {
 
             }).catch((error) => {
                 this.setState({ dialogMessage: "Unable to download file" })
-                console.log("Unable to download file")
+                // console.log("Unable to download file")
             });
     }
     render() {

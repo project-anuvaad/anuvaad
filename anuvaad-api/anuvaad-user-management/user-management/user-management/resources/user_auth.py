@@ -1,13 +1,15 @@
 from flask_restful import Resource
-from repositories import UserAuthenticationRepositories
+from repositories import UserAuthenticationRepositories,MFARepositories
 from models import CustomResponse, Status
 from utilities import UserUtils
 from utilities import MODULE_CONTEXT
 from anuvaad_auditor.loghandler import log_info, log_exception
 from flask import request
 from anuvaad_auditor.errorhandler import post_error
+from config import MFA_ENABLED,MFA_SKIP_ROLES
 
 authRepo = UserAuthenticationRepositories()
+mfaRepo = MFARepositories()
 
 class UserLogin(Resource):
 
@@ -21,18 +23,35 @@ class UserLogin(Resource):
         user_name = body["userName"]
         password = body["password"]
         log_info("Request for login from {}".format(user_name),MODULE_CONTEXT)
-
-        validity=UserUtils.validate_user_login_input(user_name, password)
-        if validity is not None:
+        
+        # for single use of HOTP based mfa verification 
+        if MFA_ENABLED:
+            useHOTP = False
+            if "useHOTP" in body and body["useHOTP"]:
+                useHOTP = True
+        role=UserUtils.validate_user_login_input(user_name, password,get_role=True)
+        if type(role) == dict:
             log_info("Login credentials check failed for {}".format(user_name),MODULE_CONTEXT)
-            return validity, 400
+            return role, 400
         log_info("Login credentials check passed for {}".format(user_name),MODULE_CONTEXT)
         try:
-            result = authRepo.user_login(user_name, password)
+            if MFA_ENABLED and role not in MFA_SKIP_ROLES:
+                result = mfaRepo.generate_new_login(user_name,useHOTP)
+                if "errorID" in result :
+                    return result
+            else:
+                result = authRepo.user_login(user_name, password)
+                # mfa_required is False for non MFA server and SUPERADMINS
+                if "errorID" not in result :
+                    result['mfa_required'] = False
             if "errorID" in result :
                 log_info("Login failed for {}".format(user_name),MODULE_CONTEXT)
                 res = CustomResponse(Status.FAILURE_USR_LOGIN.value, None)
                 return res.getresjson(), 400
+            
+            # add email status
+            result['email'] = authRepo.get_email_change_status(user_name)
+
             log_info("Login successful for {}".format(user_name),MODULE_CONTEXT)
             res = CustomResponse(Status.SUCCESS_USR_LOGIN.value, result)
             return res.getresjson(), 200
@@ -149,6 +168,13 @@ class ResetPassword(Resource):
         log_info("Request received for password resetting from {}".format(user_name),MODULE_CONTEXT)
         if not user_id:
             return post_error("userId missing","userId is mandatory",None), 400
+        
+        # check for old_password
+        if "old_password" in body.keys():
+            res = UserUtils.validate_user_login_input(user_name, body['old_password'])
+            if res is not None:
+                log_info("incorrect current/old password for {}".format(user_name), MODULE_CONTEXT)
+                return post_error("Invalid Current Password","current password is incorrect",None), 400
         
         validity = UserUtils.validate_username(user_name)
         if validity is not None:

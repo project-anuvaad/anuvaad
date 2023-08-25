@@ -7,17 +7,17 @@ import Layout from "./ui/containers/web/common/Layout";
 import NotFound from "./ui/containers/web/common/NotFound";
 
 import history from "./web.history";
-import Login from "./ui/containers/web/User/Login";
+// import Login from "./ui/containers/web/User/Login";
 import UserProfile from "./ui/containers/web/User/UserProfile";
 
 import InstantTranslate from "./ui/containers/web/TranslateSentence/Dashboard";
 
-import Signup from "./ui/containers/web/User/SignUp";
-import Activate from "./ui/containers/web/User/Activate";
+// import Signup from "./ui/containers/web/User/SignUp";
+// import Activate from "./ui/containers/web/User/Activate";
 // import IntractiveTranslate from "./ui/containers/web/IntractiveTranslation";
 import { translate } from '../src/assets/localisation';
 import UpdatePassword from './ui/containers/web/User/UpdatePassword';
-import SetPassword from './ui/containers/web/User/SetPassword';
+// import SetPassword from './ui/containers/web/User/SetPassword';
 import DocumentEditorV1 from './ui/containers/web/DocumentEditor/DocumentEditor.v1';
 
 import FileUpload from './ui/containers/web/DocumentUpload/FileUpload';
@@ -47,6 +47,10 @@ import SuggestedGlossaryList from "./ui/containers/web/AdminPanel/SuggestedGloss
 import MySuggestedGlossary from "./ui/containers/web/UserGlossary/MySuggestedGlossary";
 import UserManagement from "./ui/containers/web/User/UserManagement";
 import Analytics from "./ui/containers/web/Analytics/Analytics";
+import Intro from "./ui/containers/web/Intro/Intro";
+import UploadTranslatedDocument from "./ui/containers/web/UploadTranslatedDocument/UploadTranslatedDocument";
+import ReviewDocumentList from "./ui/containers/web/AdminPanel/ReviewDocumentList";
+import DocumentReview from "./ui/containers/web/AdminPanel/DocumentReview";
 
 const PrivateRoute = ({ headerAttribute: headerAttribute, component: Component, userRoles, title, drawer, showLogo, forDemo, dontShowLoader, dontShowHeader, currentMenu, authenticate, ...rest }) => (
   <Route
@@ -126,6 +130,14 @@ class AppRoutes extends React.Component {
             /> */}
 
             <PrivateRoute
+              path={`${process.env.PUBLIC_URL}/intro`}
+              title={"Intro"}
+              component={Intro}
+              authenticate={this.authenticateUser}
+              currentMenu="intro"
+            />
+
+            <PrivateRoute
               path={`${process.env.PUBLIC_URL}/analytics`}
               title={translate('webroutes.page.title.profile')}
               component={Analytics}
@@ -161,7 +173,7 @@ class AppRoutes extends React.Component {
 
             <PrivateRoute
               path={`${process.env.PUBLIC_URL}/interactive-document/:jobid/:inputfileid/:modelId/:filename/:workflow/:source_language_code/:target_language_code`}
-              userRoles={["TRANSLATOR", "ANNOTATOR"]}
+              userRoles={["TRANSLATOR", "ANNOTATOR", "SUPERADMIN"]}
               component={DocumentEditorV1}
               title="Translate file"
               authenticate={this.authenticateUser}
@@ -182,12 +194,32 @@ class AppRoutes extends React.Component {
             />
 
             <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/document-upload/:type`}
+              path={`${process.env.PUBLIC_URL}/upload-translated-document`}
+              userRoles={["TRANSLATOR", "ANNOTATOR"]}
+              component={UploadTranslatedDocument}
+              title="Upload Translated Document"
+              authenticate={this.authenticateUser}
+              currentMenu="upload-translated-document"
+              dontShowHeader={false}
+            />
+
+            <PrivateRoute
+              path={`${process.env.PUBLIC_URL}/document-upload`}
               userRoles={["TRANSLATOR", "ANNOTATOR"]}
               component={FileUpload}
               title="Start Translate"
               authenticate={this.authenticateUser}
-              currentMenu="texttranslate"
+              currentMenu="document-upload"
+              dontShowHeader={false}
+            />
+
+            <PrivateRoute
+              path={`${process.env.PUBLIC_URL}/data-collection`}
+              userRoles={["TRANSLATOR", "ANNOTATOR"]}
+              component={FileUpload}
+              title="Start Translate"
+              authenticate={this.authenticateUser}
+              currentMenu="data-collection"
               dontShowHeader={false}
             />
 
@@ -363,12 +395,35 @@ class AppRoutes extends React.Component {
               currentMenu="user-report"
               dontShowHeader={false}
             />
+
+            <PrivateRoute
+              path={`${process.env.PUBLIC_URL}/review-documents`}
+              dontShowLoader
+              title={"Review Documents"}
+              userRoles={["ADMIN", "REVIEWER"]}
+              component={ReviewDocumentList}
+              authenticate={this.authenticateUser}
+              currentMenu="review-documents"
+              dontShowHeader={false}
+            />
+
             <PrivateRoute
               path={`${process.env.PUBLIC_URL}/document-stats/:recordId/:fname`}
               dontShowLoader
               title={"Document Stats"}
               userRoles={["ADMIN", "SUPERADMIN"]}
               component={DocumentStats}
+              authenticate={this.authenticateUser}
+              currentMenu="document-stats"
+              dontShowHeader={false}
+            />
+
+            <PrivateRoute
+              path={`${process.env.PUBLIC_URL}/review-doc/:recordId/:fname/:jobId`}
+              dontShowLoader
+              title={"Review Document"}
+              userRoles={["ADMIN", "REVIEWER"]}
+              component={DocumentReview}
               authenticate={this.authenticateUser}
               currentMenu="document-stats"
               dontShowHeader={false}

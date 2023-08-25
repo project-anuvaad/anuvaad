@@ -17,13 +17,18 @@ import Grid from '@material-ui/core/Grid';
 import Popover from '@material-ui/core/Popover';
 import MenuIcon from "@material-ui/icons/Menu";
 import CloseIcon from '@material-ui/icons/Close';
+import DashboardIcon from '@material-ui/icons/Dashboard';
+import AssessmentIcon from '@material-ui/icons/Assessment';
 import SettingsOutlinedIcon from '@material-ui/icons/SettingsOutlined';
+import HelpIcon from '@material-ui/icons/Help';
+import PublishIcon from '@material-ui/icons/Publish';
 import React, { useState, useEffect, useRef } from "react";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, NavLink } from "react-router-dom";
 import AnuvaadLogo from "../../../../assets/suvas-logo.png";
 import configs from "../../../../configs/configs";
 import headerMenuConfig from "../../../../configs/headerMenuConfig";
 import history from "../../../../web.history";
+import GetActiveUsersCountAPI from "../../../../flux/actions/apis/user/active_users_count";
 
 const useStyles = makeStyles((theme) => ({
     header: {
@@ -38,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
     },
     logo: {
         // height: "2rem",
-        width: "6rem",
+        width: "4.5rem",
         cursor: "pointer"
     },
     // ".MuiButton-label":{
@@ -54,11 +59,13 @@ const useStyles = makeStyles((theme) => ({
         fontSize: "19px",
         // size: "200px",
         marginLeft: "20px",
+        textDecoration: "none",
         '&:hover': {
             backgroundColor: "#E0E0E0",
             color: "#000000",
             // padding: 18,
-            borderRadius: 12
+            borderRadius: 12,
+            textDecoration: "none",
         }
     },
     highlightedMenuButton: {
@@ -69,7 +76,8 @@ const useStyles = makeStyles((theme) => ({
         fontWeight: 500,
         color: "#000000",
         fontSize: "19px",
-        letterSpacing: "0.5px",
+        // letterSpacing: "0.5px",
+        textDecoration: "none",
         // size: "18px",
         marginLeft: "20px",
         // backgroundColor: "#E0E0E0",
@@ -125,7 +133,7 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: "#E0E0E0"
     },
     userMenuButtonText: {
-        width : "100%",
+        width: "100%",
         fontSize: "19px",
         fontWeight: "500",
         fontFamily: "roboto",
@@ -133,35 +141,41 @@ const useStyles = makeStyles((theme) => ({
     },
     // popover button text style
     popoverMenuText: {
-        width : "100%",
+        width: "100%",
         fontSize: "0.875rem",
         fontWeight: "400",
         fontFamily: "roboto",
         padding: 5
     },
     popoverMenuButton: {
-        
+
     },
     popoverMenuButtonActive: {
 
+    },
+    popOverIconButton: {
+        '&:hover': {
+            // color: "#2C2799"
+        }
     }
 }));
 
 export default function TopHeader(props) {
-    const { 
-            header, 
-            logo, 
-            menuButton, 
-            toolbar, 
-            desktopMenuContainer, 
-            drawerContainer, 
-            popoverStyle, 
-            highlightedMenuButton, 
-            userMenuButton, 
-            activeUserMenuButton, 
-            userMenuButtonText,
-            popoverMenuText
-        } = useStyles();
+    const {
+        header,
+        logo,
+        menuButton,
+        toolbar,
+        desktopMenuContainer,
+        drawerContainer,
+        popoverStyle,
+        highlightedMenuButton,
+        userMenuButton,
+        activeUserMenuButton,
+        userMenuButtonText,
+        popoverMenuText,
+        popOverIconButton
+    } = useStyles();
 
     const { currentMenu, dontShowHeader } = props;
 
@@ -176,12 +190,43 @@ export default function TopHeader(props) {
 
     const [showUserPopoverMenuAnchorEle, setShowUserPopoverMenuAnchorEle] = useState(null);
     const [showSettingsPopoverMenuAnchorEle, setShowSettingsPopoverMenuAnchorEle] = useState(null);
+    const [showDashboardPopoverMenuAnchorEle, setShowDashboardPopoverMenuAnchorEle] = useState(null);
+
+    const [activeUserCount, setActiveUserCount] = useState(0);
 
     const assignedOrgId = JSON.parse(localStorage.getItem("userProfile"))?.orgID;
     const role = localStorage.getItem("roles");
     const userName = JSON.parse(localStorage.getItem("userProfile"))?.name.trim();
 
     const { mobileView, drawerOpen } = state;
+
+    const makeGetActiveUsersCountAPICall = () => {
+        const apiObj = new GetActiveUsersCountAPI();
+
+        fetch(apiObj.apiEndPoint(), {
+            method: "GET",
+            headers: apiObj.getHeaders().headers
+        })
+            .then( async (res) => {
+                let response = await res.json();
+                console.log("response --- ", response);
+                if (!response.ok) {
+                    // throw error message 
+                } else {
+                    setActiveUserCount(response?.data?.count);
+                }
+            })
+            .catch(err => {
+                console.log(err);
+                // show error message here when req failed
+            })
+    }
+
+    useEffect(()=>{
+        if(showUserPopoverMenuAnchorEle){
+            makeGetActiveUsersCountAPICall();
+        }
+    }, [showUserPopoverMenuAnchorEle])
 
     useEffect(() => {
         const setResponsiveness = () => {
@@ -191,6 +236,8 @@ export default function TopHeader(props) {
         };
 
         setResponsiveness();
+
+        makeGetActiveUsersCountAPICall();
 
         window.addEventListener("resize", () => setResponsiveness());
 
@@ -202,7 +249,7 @@ export default function TopHeader(props) {
     const displayDesktop = () => {
         return (
             !dontShowHeader && <Toolbar className={toolbar}>
-                {femmecubatorLogo()}
+                {renderAnuvaadLogo()}
                 <div>{getMenuButtons()}</div>
                 <div>{PopOverMenuButtons()}</div>
             </Toolbar>
@@ -210,14 +257,16 @@ export default function TopHeader(props) {
     };
 
     const displayMobile = () => {
-        const handleDrawerOpen = () =>
-            setState((prevState) => ({ ...prevState, drawerOpen: true }));
+        const handleDrawerOpen = () => {
+            makeGetActiveUsersCountAPICall();
+            setState((prevState) => ({ ...prevState, drawerOpen: true }))
+        };
         const handleDrawerClose = () =>
             setState((prevState) => ({ ...prevState, drawerOpen: false }));
 
         return (
             !dontShowHeader && <Toolbar className={toolbar}>
-                <div>{femmecubatorLogo()}</div>
+                <div>{renderAnuvaadLogo()}</div>
                 <IconButton
                     {...{
                         edge: "start",
@@ -282,8 +331,8 @@ export default function TopHeader(props) {
                                         el.onclick(assignedOrgId);
                                         closeDrawerOnMenuClick()
                                     },
-                                    style: { textDecoration: "none", color: "#000000", marginTop : 5 },
-                                    component: RouterLink,
+                                    style: { textDecoration: "none", color: "#000000", marginTop: 5 },
+                                    // component: RouterLink,
                                     className: currentMenu === el.id ? highlightedMenuButton : menuButton,
                                 }}
                             >
@@ -292,6 +341,47 @@ export default function TopHeader(props) {
                         </div>
 
                 })}
+                <Typography variant="body2" style={{ marginBottom: 3, marginTop: 3 }}>Dashboard -</Typography>
+                {headerMenuConfig.map((el, i) => {
+                    return el.menuType === "DASHBOARD" && el.rolesAllowed.includes(role) && assignedOrgId !== "NONMT" &&
+                        <div>
+                            <Button
+                                {...{
+                                    key: el.id,
+                                    id: el.id,
+                                    onClick: () => {
+                                        el.onclick(assignedOrgId);
+                                        closeDrawerOnMenuClick()
+                                    },
+                                    style: { textDecoration: "none", color: "#000000", marginTop: 5 },
+                                    // component: RouterLink,
+                                    className: currentMenu === el.id ? highlightedMenuButton : menuButton,
+                                }}
+                            >
+                                {el.title}
+                            </Button>
+                        </div>
+
+                })}
+                <Typography variant="body2" style={{ marginBottom: 3, marginTop: 3 }}>Analytics -</Typography>
+
+                <div>
+                    <Button
+                        {...{
+                            key: "analytics",
+                            id: "analytics",
+                            onClick: () => {
+                                history.push(`${process.env.PUBLIC_URL}/analytics`)
+                                closeDrawerOnMenuClick()
+                            },
+                            style: { textDecoration: "none", color: "#000000", marginTop: 5 },
+                            // component: RouterLink,
+                            className: currentMenu === "Analytics" ? highlightedMenuButton : menuButton,
+                        }}
+                    >
+                        Analytics
+                    </Button>
+                </div>
                 <Typography variant="body2" style={{ marginBottom: 3, marginTop: 3 }}>Settings -</Typography>
                 {headerMenuConfig.map((el, i) => {
                     return el.menuType === "SETTINGS" && el.rolesAllowed.includes(role) && assignedOrgId !== "NONMT" &&
@@ -304,7 +394,7 @@ export default function TopHeader(props) {
                                         el.onclick(assignedOrgId);
                                         closeDrawerOnMenuClick()
                                     },
-                                    style: { textDecoration: "none", color: "#000000", marginTop : 5 },
+                                    style: { textDecoration: "none", color: "#000000", marginTop: 5 },
                                     // component: RouterLink,
                                     className: currentMenu === el.id ? highlightedMenuButton : menuButton,
                                 }}
@@ -326,7 +416,7 @@ export default function TopHeader(props) {
                                         el.onclick(assignedOrgId);
                                         closeDrawerOnMenuClick()
                                     },
-                                    style: { textDecoration: "none", color: "#000000", marginTop : 5 },
+                                    style: { textDecoration: "none", color: "#000000", marginTop: 5 },
                                     // component: RouterLink,
                                     className: currentMenu === el.id ? highlightedMenuButton : menuButton,
                                 }}
@@ -341,40 +431,52 @@ export default function TopHeader(props) {
         );
     };
 
-    const femmecubatorLogo = () => {
-        return <img 
-                    src={headerLogoImg} 
-                    className={logo}
-                    ref={logoRef}
-                    onClick={()=>history.push(`${process.env.PUBLIC_URL}/`)}
-                    onError={(({currentTarget})=> {
-                        currentTarget.onerror = null;
-                        if(!currentTarget.src.includes(AnuvaadLogo)){
-                            currentTarget.src = AnuvaadLogo;
-                            return
-                        }
-                    })}
-                />
+    const renderAnuvaadLogo = () => {
+        return <img
+            src={headerLogoImg}
+            className={logo}
+            ref={logoRef}
+            onClick={() => {
+                let defaultPagePath = (role === "TRANSLATOR" || role === "ANNOTATOR") ? "" : (role === "REVIEWER") ? "review-documents" : "user-details"
+                history.push(`${process.env.PUBLIC_URL}/${defaultPagePath}`)
+            }
+            }
+            onError={(({ currentTarget }) => {
+                currentTarget.onerror = null;
+                if (!currentTarget.src.includes(AnuvaadLogo)) {
+                    currentTarget.src = AnuvaadLogo;
+                    return
+                }
+            })}
+        />
     };
 
     const getMenuButtons = () => {
         return (
-            <Grid container className={desktopMenuContainer}>
+            currentMenu !== "intro" && <Grid container className={desktopMenuContainer}>
                 {headerMenuConfig.map((el, i) => {
-                    return (
-                        el.menuType === "MAIN" && el.rolesAllowed.includes(role) && assignedOrgId !== "NONMT" && <Button
-                            {...{
-                                key: el.id,
-                                id: el.id,
-                                onClick: () => { el.onclick(assignedOrgId) },
-                                style: { textDecoration: "none", color: "#000000", letterSpacing: "0.5px" },
-                                // component: RouterLink,
-                                className: currentMenu === el.id ? highlightedMenuButton : menuButton,
-                            }}
+                    return el.menuType === "MAIN" && el.rolesAllowed.includes(role) && assignedOrgId !== "NONMT" &&
+                        <NavLink
+                            to={!el.followOrg ? `/${el.id}` : `/${el.id}/${assignedOrgId}`}
+                            className={currentMenu === el.id ? highlightedMenuButton : menuButton}
                         >
                             <Typography className={userMenuButtonText}>{el.title}</Typography>
-                        </Button>
-                    );
+                        </NavLink>
+                    //     <Button
+                    //     {...{
+                    //         key: el.id,
+                    //         id: el.id,
+                    //         onClick: () => { 
+                    //             el.onclick(assignedOrgId);
+                    //             // console.log(currentMenu + " === " + el.id);
+                    //         },
+                    //         style: { textDecoration: "none", color: "#000000", letterSpacing: "0.5px" },
+                    //         // component: RouterLink,
+                    //         className: currentMenu === el.id ? highlightedMenuButton : menuButton,
+                    //     }}
+                    // >
+                    //     <Typography className={userMenuButtonText}>{el.title}</Typography>
+                    // </Button>
                 })}
             </Grid>
 
@@ -386,15 +488,82 @@ export default function TopHeader(props) {
             <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <Grid container justifyContent="center" alignItems="center" spacing={2}>
-                        {(role !== "SUPERADMIN" && role !== "ADMIN") && <Grid item>
+                        {(role !== "SUPERADMIN" && role !== "ADMIN" && role !== "REVIEWER") && <Grid item>
                             <div style={{ display: "flex", alignItems: "center" }}>
                                 <IconButton
+                                    style={{ marginLeft: "5px", color: currentMenu === "upload-translated-document" ? "#2C2799" : "rgba(0, 0, 0, 0.54)" }}
                                     {...{
                                         edge: "start",
                                         color: "#2C2799",
                                         "aria-label": "menu",
                                         "aria-haspopup": "true",
                                     }}
+                                    title={"Upload Translated Document"}
+                                    className={popOverIconButton}
+                                    onClick={(e) => history.push(`${process.env.PUBLIC_URL}/upload-translated-document`)}
+                                >
+                                    <PublishIcon fontSize="large" />
+                                </IconButton>
+                                <IconButton
+                                    style={{ marginLeft: "5px", color: currentMenu === "view-document" || currentMenu === "document-digitization" ? "#2C2799" : "rgba(0, 0, 0, 0.54)" }}
+                                    {...{
+                                        edge: "start",
+                                        color: "#2C2799",
+                                        "aria-label": "menu",
+                                        "aria-haspopup": "true",
+                                    }}
+                                    className={popOverIconButton}
+                                    title={"Dashboard"}
+                                    onClick={(e) => setShowDashboardPopoverMenuAnchorEle(e.currentTarget)}
+                                >
+                                    <DashboardIcon fontSize="large" />
+                                </IconButton>
+                                <Popover
+                                    id={"simple-popover"}
+                                    open={Boolean(showDashboardPopoverMenuAnchorEle)}
+                                    anchorEl={showDashboardPopoverMenuAnchorEle}
+                                    onClose={() => setShowDashboardPopoverMenuAnchorEle(null)}
+                                    anchorOrigin={{
+                                        vertical: 'bottom',
+                                        horizontal: 'center',
+                                    }}
+                                    transformOrigin={{
+                                        vertical: 'top',
+                                        horizontal: 'center',
+                                    }}
+                                    style={{ backgroundColor: "rgba(0,0,0,0)" }}
+                                >
+                                    <Grid container direction="column" className={popoverStyle}>
+                                        {
+                                            headerMenuConfig.map((el, i) => {
+                                                return (
+                                                    el.menuType === "DASHBOARD" && el.rolesAllowed.includes(role) && assignedOrgId !== "NONMT" &&
+                                                    <Button
+                                                        variant="text"
+                                                        fullWidth
+                                                        className={currentMenu === el.id ? activeUserMenuButton : userMenuButton}
+                                                        onClick={() => {
+                                                            setShowDashboardPopoverMenuAnchorEle(null)
+                                                            el.onclick(assignedOrgId)
+                                                        }}
+                                                    >
+                                                        <Typography className={popoverMenuText} style={{ textAlignLast: "left" }}>{el.title}</Typography>
+                                                    </Button>
+                                                )
+                                            })
+                                        }
+                                    </Grid>
+                                </Popover>
+                                <IconButton
+                                    style={{ marginLeft: "5px" }}
+                                    {...{
+                                        edge: "start",
+                                        color: "#2C2799",
+                                        "aria-label": "menu",
+                                        "aria-haspopup": "true",
+                                    }}
+                                    title={"Settings"}
+                                    className={popOverIconButton}
                                     onClick={(e) => setShowSettingsPopoverMenuAnchorEle(e.currentTarget)}
                                 >
                                     <SettingsOutlinedIcon fontSize="large" />
@@ -428,7 +597,7 @@ export default function TopHeader(props) {
                                                             el.onclick(assignedOrgId)
                                                         }}
                                                     >
-                                                        <Typography className={popoverMenuText} style={{textAlignLast : "left"}}>{el.title}</Typography>
+                                                        <Typography className={popoverMenuText} style={{ textAlignLast: "left" }}>{el.title}</Typography>
                                                     </Button>
                                                 )
                                             })
@@ -437,6 +606,34 @@ export default function TopHeader(props) {
                                 </Popover>
                             </div>
                         </Grid>}
+                        <IconButton
+                            style={{ marginLeft: "5px", color: currentMenu === "analytics" ? "#2C2799" : "rgba(0, 0, 0, 0.54)" }}
+                            {...{
+                                edge: "start",
+                                color: "#2C2799",
+                                "aria-label": "menu",
+                                "aria-haspopup": "true",
+                            }}
+                            title={"Analytics"}
+                            className={popOverIconButton}
+                            onClick={(e) => history.push(`${process.env.PUBLIC_URL}/analytics`)}
+                        >
+                            <AssessmentIcon fontSize="large" />
+                        </IconButton>
+                        <IconButton
+                            style={{ marginLeft: "5px", color: "rgba(0, 0, 0, 0.54)" }}
+                            {...{
+                                edge: "start",
+                                color: "#2C2799",
+                                "aria-label": "menu",
+                                "aria-haspopup": "true",
+                            }}
+                            title={"Help"}
+                            className={popOverIconButton}
+                            onClick={(e) => window.open("https://www.youtube.com/@projectanuvaad4271/playlists")}
+                        >
+                            <HelpIcon fontSize="large" />
+                        </IconButton>
                         <Grid item>
                             <div style={{ display: "flex", alignItems: "center" }}>
 
@@ -450,7 +647,7 @@ export default function TopHeader(props) {
                                 >
                                     <Avatar style={{ backgroundColor: "#2C2799" }}>{userName?.split("")[0].toLocaleUpperCase()}</Avatar>
                                 </IconButton>
-                                    <Typography variant="subtitle1" style={{fontSize: "1.25rem"}}>{userName?.split(" ")[0]}</Typography>
+                                    <Typography variant="subtitle1" style={{ fontSize: "1.25rem" }}>{userName?.split(" ")[0]}</Typography>
                                 </Button>
                                 <Popover
                                     id={"simple-popover"}
@@ -469,7 +666,11 @@ export default function TopHeader(props) {
                                 >
                                     <Grid container direction="column" className={popoverStyle}>
                                         <Grid item>
-                                            <Typography style={{padding: 10}} variant="caption">Signed in as <b>{role ? role : ""}</b></Typography>
+                                            <Typography style={{ padding: 10 }} variant="caption">Signed in as : <b>{role ? role : ""}</b></Typography>
+                                        </Grid>
+                                        <Divider style={{ marginTop: 5, marginBottom: 5, width: "100%" }} />
+                                        <Grid item>
+                                            <Typography style={{ padding: 10 }} variant="caption"> Active Users : <b>{activeUserCount ? activeUserCount : "0"}</b></Typography>
                                         </Grid>
                                         <Divider style={{ marginTop: 5, marginBottom: 5, width: "100%" }} />
                                         {
@@ -485,7 +686,7 @@ export default function TopHeader(props) {
                                                             el.onclick(assignedOrgId)
                                                         }}
                                                     >
-                                                        <Typography className={popoverMenuText} style={{textAlignLast : "left"}}>{el.title}</Typography>
+                                                        <Typography className={popoverMenuText} style={{ textAlignLast: "left" }}>{el.title}</Typography>
                                                     </Button>
                                                 )
                                             })

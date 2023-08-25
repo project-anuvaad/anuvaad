@@ -1,0 +1,49 @@
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&amp;family=Rowdies:wght@300;400;700&amp;display=swap"
+        rel="stylesheet">
+</head>
+
+<body style="font-family: Roboto">
+    <div style="width: auto;">
+        <div style="margin-top: 3rem;
+        padding: 1rem;">
+            <h3>Dear, {{username}}!</h3>
+            <p>Scan the QR code to sign in to your Anuvaad account.</p>
+        </div>
+
+        <div style="padding: 1rem">
+            <div style="width: 50%;
+            text-align: center;">
+                <img id="qr-image" src="cid:{{mfa_qr}}">
+            </div>
+            <div style="width: 50%;
+            margin-top: 1rem;">
+                <div style="
+                width: fit-content;
+                border: 1px solid black;
+                display: grid;
+                padding: 0.2rem;  
+            ">
+                <h5>Important Links for Authenticator Apps - </h5>
+                <p>Google autheticator app : <a href="https://support.google.com/accounts/answer/1066447?hl=en&co=GENIE.Platform%3DAndroid">https://support.google.com/accounts/answer/1066447?hl=en&co=GENIE.Platform%3DAndroid</a></p>
+                <p>Microsoft autheticator app : <a href="https://support.microsoft.com/en-us/account-billing/how-to-use-the-microsoft-authenticator-app-9783c865-0308-42fb-a519-8cf666fe0acc">https://support.microsoft.com/en-us/account-billing/how-to-use-the-microsoft-authenticator-app-9783c865-0308-42fb-a519-8cf666fe0acc</a></p>
+                <p>For IOS, use inbuilt app : <a href="https://support.apple.com/en-in/guide/iphone/ipha6173c19f/ios">https://support.apple.com/en-in/guide/iphone/ipha6173c19f/ios</a></p>
+                </div>
+            </div>
+        </div>
+
+        <div style="margin-top: 1rem;
+        padding: 1rem; width: 50%;">
+            <p>Thanks & Regards,</p>
+            <p>Anuvaad Team</p>
+            <hr>
+            <p>If you haven’t asked for verification, kindly ignore.</p>
+        </div>
+    </div>
+</body>
+
+</html>

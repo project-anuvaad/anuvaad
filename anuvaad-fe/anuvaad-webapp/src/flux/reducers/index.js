@@ -74,6 +74,7 @@ import getDocumentCountPerOrg from './analytics/getDocumentCountPerOrg'
 import getAnuvaadSupportedLanguages from './analytics/getSupportedLangList';
 import getOrgList from './analytics/getOrgList';
 import getTransliterationModelID from './document_translate/fetchTransliterationModel';
+import getUploadedDocumentCount from './analytics/getUploadedDocumentCount';
 
 export default {
     login,
@@ -149,6 +150,7 @@ export default {
     getCountByLang,
     getDocumentCountPerOrg,
     getAnuvaadSupportedLanguages,
-    getOrgList,
     getTransliterationModelID,
+    getUploadedDocumentCount,
+    getOrgList
 };

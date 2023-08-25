@@ -42,7 +42,7 @@ class SaveEditedWord extends React.Component {
                     </Typography>
                     <TextField id="email" type="text" value={this.state.word} placeholder="Word"
                         margin="dense" varient="outlined" style={{ width: '80%', marginBottom: '4%', backgroundColor: 'white' }}
-                        disabled="true"
+                        // disabled="false"
                         onChange={this.handleInputFieldChange}
                     />
 

@@ -16,6 +16,7 @@ import MenuIcon from "@material-ui/icons/Menu";
 import BackIcon from "@material-ui/icons/ArrowBack";
 import CloseIcon from "@material-ui/icons/Close";
 import IconButton from "@material-ui/core/IconButton";
+import GetAppIcon from '@material-ui/icons/GetApp';
 
 import { translate } from "../../../../../src/assets/localisation";
 import GlobalStyles from "../../../styles/web/styles";
@@ -34,6 +35,7 @@ import FetchModel from "../../../../flux/actions/apis/common/fetchmodel";
 import SwitchView from "../../../../flux/actions/apis/document_translate/getViewOption";
 import clear_html_link from "../../../../flux/actions/apis/document_translate/clear_html_link";
 import clear_docx_view from "../../../../flux/actions/apis/document_translate/clear_docx_view";
+import GetHtmlLink from "../../../../flux/actions/editor/getHtmlLink";
 import { FormControlLabel, Switch } from "@material-ui/core";
 const StyledMenu = withStyles({
   paper: {
@@ -120,6 +122,51 @@ class InteractiveDocHeader extends React.Component {
     );
   };
 
+  downloadFinalDocuments = () => {
+    const jobId = this.props.match.params.jobid.split("|")[0];
+    const apiObj = new GetHtmlLink([jobId]);
+
+    this.setState({
+      anchorEl: null,
+      showStatus: true,
+      message: translate("common.page.label.download"),
+    });
+
+    fetch(apiObj.apiEndPoint(), {
+      method: "post",
+      body: JSON.stringify(apiObj.getBody()),
+      headers: apiObj.getHeaders().headers
+    })
+    .then(async res=>{
+      let response = await res.json();
+      // console.log("response -------- ", response);
+      if(!response.ok){
+        // throw error when failed
+        this.setState({dialogMessage: "Failed to download parallel documets.", variant: "error"})
+      } else {
+        console.log("response.data[0].file_link.parallel_doc ----- ", response.data[0].file_link.parallel_doc);
+        fetch(response.data[0].file_link.parallel_doc).then((res) => res.blob())
+        .then((blob) => {
+          let a = document.createElement("a");
+          let url = URL.createObjectURL(blob);
+          a.href = url;
+          a.download = `${jobId}.zip`;
+          this.setState({ showStatus: false, message: null });
+          a.click();
+        })
+        .catch((error) => {
+          this.setState({ dialogMessage: "Unable to download file" });
+          // console.log("Unable to download file");
+        });
+      }
+    })
+    .catch(err=> {
+      console.log("err ---- ", err);
+      // throw error when failed
+      this.setState({dialogMessage: "Failed to download parallel documets.", variant: "error"})
+    })
+  }
+
   fetchFile(fileType) {
     this.setState({
       anchorEl: null,
@@ -170,16 +217,18 @@ class InteractiveDocHeader extends React.Component {
                     showStatus: false,
                     message: null,
                   });
-                  console.log("api failed");
+                  // console.log("api failed");
                 } else {
                   const buffer = new Uint8Array(await response.arrayBuffer());
                   let res = Buffer.from(buffer).toString("base64");
-                  this.downloadFile(res, fileName);
+                  let downloadFileName = this.props.match.params.filename?.includes("%23") ? this.props.match.params.filename?.split("%23").join("#") : this.props.match.params.filename;
+                  downloadFileName = downloadFileName.slice(0,downloadFileName.lastIndexOf("."))+"_translated_"+this.props.match.params.target_language_code+fileName.slice(fileName.lastIndexOf("."), fileName.length);
+                  this.downloadFile(res, downloadFileName);
                 }
               })
               .catch((error) => {
                 this.setState({ dialogMessage: "Unable to download file" });
-                console.log("api failed because of server or network", error);
+                // console.log("api failed because of server or network", error);
               });
           } else {
             this.setState({
@@ -196,7 +245,7 @@ class InteractiveDocHeader extends React.Component {
           message: null,
           dialogMessage: "Unable to download file",
         });
-        console.log("api failed because of server or network", error);
+        // console.log("api failed because of server or network", error);
       });
   }
 
@@ -213,7 +262,7 @@ class InteractiveDocHeader extends React.Component {
       })
       .catch((error) => {
         this.setState({ dialogMessage: "Unable to download file" });
-        console.log("Unable to download file");
+        // console.log("Unable to download file");
       });
   };
 
@@ -271,16 +320,18 @@ class InteractiveDocHeader extends React.Component {
                   showStatus: false,
                   message: null,
                 });
-                console.log("api failed");
+                // console.log("api failed");
               } else {
                 const buffer = new Uint8Array(await response.arrayBuffer());
                 let res = Buffer.from(buffer).toString("base64");
-                this.downloadFile(res, fileName);
+                let downloadFileName = this.props.match.params.filename?.includes("%23") ? this.props.match.params.filename?.split("%23").join("#") : this.props.match.params.filename;
+                downloadFileName = downloadFileName.slice(0,downloadFileName.lastIndexOf("."))+"_translated_"+this.props.match.params.target_language_code+fileName.slice(fileName.lastIndexOf("."), fileName.length);
+                this.downloadFile(res, downloadFileName);
               }
             })
             .catch((error) => {
               this.setState({ dialogMessage: "Unable to download file" });
-              console.log("api failed because of server or network", error);
+              // console.log("api failed because of server or network", error);
             });
         } else {
           this.setState({
@@ -326,7 +377,7 @@ class InteractiveDocHeader extends React.Component {
           link.href = url;
           link.setAttribute(
             "download",
-            `${jobName}_${fname.substr(0, fname.lastIndexOf("|"))}.docx`
+            `${jobName}_translate_${this.props.match.params.target_language_code}.docx`
           );
           document.body.appendChild(link);
           link.click();
@@ -424,7 +475,7 @@ class InteractiveDocHeader extends React.Component {
           </>
         )}
 
-        <Button
+        {/* <Button
           variant="outlined"
           color="primary"
           style={{ marginLeft: "10px" }}
@@ -432,7 +483,16 @@ class InteractiveDocHeader extends React.Component {
         >
           Download
           <DownIcon />
-        </Button>
+        </Button> */}
+        <IconButton 
+          variant="outlined"
+          color="primary"
+          style={{ marginLeft: "10px" }}
+          onClick={this.handleMenu.bind(this)}
+          title="Download"
+        >
+          <GetAppIcon />
+        </IconButton>
 
         <StyledMenu
           id="menu-appbar"
@@ -485,6 +545,15 @@ class InteractiveDocHeader extends React.Component {
               As {type}
             </MenuItem>
           )}
+
+          {
+            this.props.downloadFinalDocs && <MenuItem
+            style={{ borderTop: "1px solid #D6D6D6", fontFamily: "Roboto", fontSize: "0.875rem", fontWeight: "400" }}
+            onClick={this.downloadFinalDocuments}
+          >
+            PARALLEL DOCUMENTS
+          </MenuItem>
+          }
         </StyledMenu>
       </div>
     );

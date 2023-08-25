@@ -3,6 +3,11 @@ const OCR_CH = process.env.OCR_CONTENT_HANDLER_SERVER_URL.replace("http://", "")
         ":5009",
         ""
       )
+
+const OCR_CH_PORT = process.env.OCR_CONTENT_HANDLER_SERVER_URL.replace("http://", "").replace(
+  ":5001",
+  ""
+)
       
 const CH = process.env.CONTENT_HANDLER_SERVER_URL.replace("http://", "").replace(
   ":5001/",
@@ -14,4 +19,4 @@ const CH = process.env.CONTENT_HANDLER_SERVER_URL.replace("http://", "").replace
 //       ""
 //     )
 //   : process.env.NODE_HOSTNAME;
-  module.exports = { CH, OCR_CH};
+  module.exports = { CH, OCR_CH,OCR_CH_PORT};
