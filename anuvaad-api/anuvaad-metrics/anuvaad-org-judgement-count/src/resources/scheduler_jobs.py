@@ -124,6 +124,12 @@ def get_trans_user_data_from_db_cron():
             e,
         )
         return
-    
+
+# run cron once at starting the server
+def manual_start_transuserdata_scheduler():
+    for job in schedule_job.get_jobs():
+            job.func()
+
+manual_start_transuserdata_scheduler()
 
 schedule_job.start()
