@@ -8,7 +8,7 @@ from logging.config import dictConfig
 from service.wfmservice import WFMService
 from validator.wfmvalidator import WFMValidator
 from configs.wfmconfig import context_path, app_context
-from configs.wfmconfig import module_wfm_name
+from configs.wfmconfig import module_wfm_name, anuvaad_ums_host
 from anuvaad_auditor.loghandler import log_exception, log_info
 
 wfmapp = Flask(__name__)
@@ -104,7 +104,7 @@ def search_all_jobs():
                     for each_response in response["jobs"]:
                         userSet.add(each_response["metadata"]["userID"])
                 userIds = list(userSet)    
-                ums_url = "http://gateway_anuvaad-user-management:5001/anuvaad/user-mgmt/v1/users/search"
+                ums_url = anuvaad_ums_host + "anuvaad/user-mgmt/v1/users/search"
                 ums_input = {"userIDs":userIds}
                 ums_response = requests.post(ums_url,json=ums_input)
                 #log_info(f"UMS_Response :: {ums_response.status_code} :: {ums_response.json()}",app_context)
