@@ -60,6 +60,7 @@ class TranslatorService:
             translate_wf_input["output"], translate_wf_input["status"] = error_list, "FAILED"
             translate_wf_input["error"] = error
             translate_wf_input["taskEndTime"] = eval(str(time.time()).replace('.', '')[0:13])
+            log_info("Input to kafka topic: "+translate_wf_input,translate_wf_input)
             producer.produce(translate_wf_input, anu_translator_output_topic, None)
             return {"status": "failed", "message": "Some/All files failed"}
         return {"status": "success", "message": "Sentences sent to NMT"}
@@ -165,11 +166,14 @@ class TranslatorService:
         for batch_id in batches.keys():
             batch = batches[batch_id]
             record_id_enhanced = record_id + "|" + str(len(batch))
-            nmt_in = {"record_id": record_id_enhanced, "id": file["model"]["model_id"], "message": batch}
+            nmt_in = {"record_id": record_id_enhanced, "id": file["model"]["model_id"], "message": batch, 
+                        "source_language_code" : file["model"]["source_language_code"],
+                        "target_language_code" : file["model"]["target_language_code"]}
+            #log_info("NMT INPUT DATA"+str(nmt_in)+"TO TOPIC:"+str(topic),translate_wf_input)
             if nonmt_user:
-                producer.produce(nmt_in, anu_translator_nonmt_topic, partition)
+                producer.produce(nmt_in, anu_translator_nonmt_topic, partition, translate_wf_input)
             else:
-                producer.produce(nmt_in, topic, partition)
+                producer.produce(nmt_in, topic, partition, translate_wf_input)
             log_info("B_ID: " + batch_id + " | SENTENCES: " + str(len(batch)) +
                      " | COMPUTED: " + str(bw_data[batch_id]["computed"]) + " | TMX: " + str(
                 bw_data[batch_id]["tmx_count"]), translate_wf_input)
@@ -207,6 +211,7 @@ class TranslatorService:
                         post_error_wf("API_ERROR", "No API URL found!", translate_wf_input, None)
                         break
                     url = str(api_host) + str(api_ep)
+                    log_info("NMT_INPUT : "+nmt_in,translate_wf_input)
                     response = utils.call_api(url, "POST", nmt_in, None, "userID")
                     if response["data"]:
                         log_info("B_ID: " + batch_id + " | SENTENCES: " + str(len(batch)) +
@@ -488,23 +493,26 @@ class TranslatorService:
                 user_id = translate_wf_input["metadata"]["userID"]
                 file = translate_wf_input["input"]["files"][0]
                 locale = file["model"]["source_language_code"] + "|" + file["model"]["target_language_code"]
-                api_input = {"keys": [{"userID": user_id, "src": nmt_res_sentence["src"], "locale": locale}]}
-                response = utils.call_api(fetch_user_translation_url, "POST", api_input, None, user_id)
-                #log_info(f"Test68 Response of NMT {response}",None)
-                if response:
-                    if 'data' in response.keys():
-                        if response["data"]:
-                            if response["data"][0]["value"]:
-                                tgt = json.loads(response["data"][0]["value"][0])
-                                for translation in response["data"][0]["value"]:
-                                    translation_obj = json.loads(translation)
-                                    #log_info(f"Test68 translation_obj {translation_obj}, tgt {tgt}", None)
-                                    if translation_obj["timestamp"] > tgt["timestamp"]:
-                                        tgt = translation_obj
-                                log_info("User Translation | TGT: " + str(nmt_res_sentence["tgt"]) +
-                                         " | NEW TGT: " + tgt["tgt"], translate_wf_input)
-                                nmt_res_sentence["tgt"] = tgt["tgt"]
-                                nmt_res_sentence["tmx_phrases"] = []
+                utm_input = [{"userID": user_id, "src": nmt_res_sentence["src"], "locale": locale}]
+                startTime = time.time()
+                #response = utils.call_api(fetch_user_translation_url, "POST", api_input, None, user_id)
+                response = utils.get_sentences_from_store(utm_input,translate_wf_input)
+                endTime = time.time()
+                totalTime = endTime - startTime
+                log_info("Time taken for UTM Calculation Externally : {}".format(totalTime), translate_wf_input)
+                #log_info(f"Test68 Response of UTM Calculation {response}",translate_wf_input)
+                if response and len(response) > 0:
+                    if response[0]["value"]:
+                        tgt = json.loads(response[0]["value"][0])
+                        for translation in response[0]["value"]:
+                            translation_obj = json.loads(translation)
+                            #log_info(f"Test68 translation_obj {translation_obj}, tgt {tgt}", None)
+                            if translation_obj["timestamp"] > tgt["timestamp"]:
+                                tgt = translation_obj
+                        log_info("User Translation | TGT: " + str(nmt_res_sentence["tgt"]) +
+                                    " | NEW TGT: " + tgt["tgt"], translate_wf_input)
+                        nmt_res_sentence["tgt"] = tgt["tgt"]
+                        nmt_res_sentence["tmx_phrases"] = []
             if nmt_res_sentence["tmx_phrases"]:
                 log_info("PAGE NO: {} | BATCH ID: {} "
                          "| SRC: {} | TGT: {} | TMX Count: {}".format(page_no, nmt_res_sentence["batch_id"],

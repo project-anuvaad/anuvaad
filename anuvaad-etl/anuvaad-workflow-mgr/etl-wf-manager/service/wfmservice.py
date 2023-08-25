@@ -6,10 +6,10 @@ from utilities.wfmutils import WFMUtils
 from kafkawrapper.wfmproducer import Producer
 from repository.wfmrepository import WFMRepository
 from validator.wfmvalidator import WFMValidator
-from configs.wfmconfig import anu_etl_wfm_core_topic, log_msg_start, log_msg_end, module_wfm_name, page_default_limit, \
-    anu_etl_notifier_input_topic, total_no_of_partitions
+from configs.wfmconfig import anu_etl_wfm_core_topic, log_msg_start, log_msg_end, module_wfm_name, page_default_limit, anu_etl_notifier_input_topic, total_no_of_partitions
 from anuvaad_auditor.errorhandler import post_error_wf, post_error, log_exception
 from anuvaad_auditor.loghandler import log_info, log_error
+from configs.wfmconfig import app_context
 
 log = logging.getLogger('file')
 producer = Producer()
@@ -117,7 +117,9 @@ class WFMService:
                     tool_input = wfmutils.get_tool_input_sync(tool_details["name"], None, None, wf_input)
                 else:
                     tool_input = wfmutils.get_tool_input_sync(tool_details["name"], previous_tool, tool_output, None)
-                response = wfmutils.call_api(tool_details["api-details"][0]["uri"], tool_input, wf_input["metadata"]["userID"])
+                log_info(f'Sync Call API Params: {wfmutils.get_tool_config_details(tool_details["name"])["api-details"][0]["uri"]} tool_input: {tool_input} userid: {wf_input["metadata"]["userID"]}',app_context)
+                response = wfmutils.call_api(wfmutils.get_tool_config_details(tool_details["name"])["api-details"][0]["uri"], tool_input, wf_input["metadata"]["userID"])
+                log_info(f'Sync Call API Response: {response}',app_context)
                 error = self.validate_tool_response(response, tool_details, wf_input)
                 if error:
                     return error
@@ -178,11 +180,21 @@ class WFMService:
         else:
             wf_details = wfmutils.get_job_details(task_output["jobID"])
         if wf_details is None or len(wf_details) == 0:
-            config = wfmutils.get_configs()[wf_input["workflowCode"]]
+            config = wfmutils.get_configs()['workflowCodes'][wf_input["workflowCode"]]
+            if "model" in wf_input.keys():
+                if "source_language_code" in wf_input["model"].keys():
+                    wf_input["source_language_code"] = wf_input["model"]["source_language_code"]
+                if "target_language_code" in wf_input["model"].keys():
+                    wf_input["target_language_code"] = wf_input["model"]["target_language_code"]
             client_output = {"input": wf_input, "jobID": wf_input["jobID"], "translation": config["translation"],
                              "workflowCode": wf_input["workflowCode"], "active": True,
                              "status": "STARTED", "state": "INITIATED", "metadata": wf_input["metadata"],
                              "startTime": eval(str(time.time()).replace('.', '')[0:13]), "taskDetails": []}
+            if 'source_language_code' in wf_input.keys():
+                client_output['source_language_code'] = wf_input["source_language_code"]
+            if 'target_language_code' in wf_input.keys():
+                client_output['target_language_code'] = wf_input["target_language_code"]
+            
         else:
             wf_details = wf_details[0]
             if task_output is not None:
@@ -208,8 +220,8 @@ class WFMService:
         try:
             order_of_execution = wfmutils.get_order_of_exc(wf_input["workflowCode"])
             first_step_details = order_of_execution[0]
-            first_tool = first_step_details["tool"][0]
-            input_topic = os.environ.get(first_tool["kafka-input"][0]["topic"], "NA")
+            first_tool = wfmutils.get_tool_config_details(first_step_details["tool"][0]["name"])
+            input_topic = os.environ.get(first_tool["kafka-input"], "NA")
             first_tool_input = wfmutils.get_tool_input_async(first_tool["name"], None, None, wf_input)
             if first_tool_input is None or input_topic == "NA":
                 error = post_error("INCOMPATIBLE_TOOL_SEQUENCE", "The workflow contains incompatible steps.", None)
@@ -217,7 +229,8 @@ class WFMService:
                 self.update_job_details(client_output, False)
                 log_error("The workflow contains incompatible steps.", wf_input, None)
                 return None
-            partitions = os.environ.get(first_tool["kafka-input"][0]["partitions"], str(total_no_of_partitions))
+            configs_global = wfmutils.get_configs()
+            partitions = os.environ.get(configs_global['numPartitions'],str(total_no_of_partitions))
             producer.push_to_queue(first_tool_input, input_topic, eval(partitions))
             client_output = self.get_wf_details_async(wf_input, None, False, None)
             self.update_job_details(client_output, False)
@@ -251,9 +264,12 @@ class WFMService:
                         return None
                     client_output = self.get_wf_details_async(None, task_output, False, None)
                     self.update_job_details(client_output, False)
-                    next_step_input, next_tool = next_step_details[0], next_step_details[1]
-                    topic = os.environ.get(next_tool["kafka-input"][0]["topic"], "NA")
-                    partitions = os.environ.get(next_tool["kafka-input"][0]["partitions"], str(total_no_of_partitions))
+                    next_step_input = next_step_details[0]
+                    next_tool = wfmutils.get_tool_config_details(next_step_details[1]["name"])
+                    topic = os.environ.get(next_tool["kafka-input"], "NA")
+                    configs_global = wfmutils.get_configs()
+                    partitions = os.environ.get(configs_global['numPartitions'],str(total_no_of_partitions))
+                    log_info(f"Partitions: {partitions}",None)
                     if next_step_input is None or topic == "NA":
                         log_error("The workflow contains incompatible steps in sequence. Please check the wf config.",
                                   task_output, None)
@@ -357,6 +373,9 @@ class WFMService:
                             jobIDs.append(jobID)
                         if len(jobIDs) > 0:
                             criteria["jobID"] = {"$in": jobIDs}
+            if 'filterByStartTime' in req_criteria.keys():
+                if 'startTimeStamp' in req_criteria['filterByStartTime'].keys() and 'endTimeStamp' in req_criteria['filterByStartTime'].keys():
+                            criteria["startTime"] = { "$gte": req_criteria['filterByStartTime']['startTimeStamp'], "$lte": req_criteria['filterByStartTime']['endTimeStamp']}
             if 'workflowCodes' in req_criteria.keys():
                 if req_criteria["workflowCodes"]:
                     wCodes = []
@@ -395,6 +414,35 @@ class WFMService:
             log_exception("Exception while searching jobs: " + str(e), None, e)
             return None
 
+    def set_granularity(self,data):
+        try: 
+            job_details = wfmutils.get_job_details(data["jobID"])
+            log_info("Job Details"+str(job_details),app_context)
+            job_details = job_details[0]
+            for each_granularity in data['granularity']:
+                if 'granularity' not in job_details.keys():
+                    job_details['granularity'] = {}
+                if each_granularity not in job_details['granularity'].keys():
+                    job_details['granularity'][each_granularity] = eval(str(time.time()).replace('.', '')[0:13]) 
+                    if each_granularity == 'manualEditingStartTime':
+                        job_details['granularity']['manualEditingStatus'] = "IN PROGRESS"
+                    elif each_granularity == 'manualEditingEndTime':
+                        if 'manualEditingStartTime' not in job_details['granularity'].keys():
+                            return {"status": "FAILED","message":"Setting editing end time failed"}
+                        job_details['granularity']['manualEditingStatus'] = "COMPLETED"                    
+                    elif each_granularity == "parallelDocumentUpload":
+                        job_details['granularity']['parallelDocumentUploadStatus'] = "COMPLETED"     
+                        if 'manualEditingStartTime' in job_details['granularity'].keys():
+                            if 'manualEditingEndTime' not in job_details['granularity'].keys():
+                                job_details['granularity']['manualEditingStatus'] = "COMPLETED"                    
+                                job_details['granularity']['manualEditingEndTime'] = eval(str(time.time()).replace('.', '')[0:13]) 
+                    self.update_job_details(job_details, False)
+                else:
+                    return {"status": "SUCCESS","message":"Granularity already exists"}
+            return {"status": "SUCCESS","message":"Granularity set successfully"}
+        except Exception as e:
+            log_exception("Exception while setting granularity: " + str(e), None, None)
+            return {"status": "FAILED", "message": "Exception while setting granularity", "succeeded": [], "failed": data["jobID"]}
 
     # Method to get wf configs from the remote yaml file.
     def get_wf_configs(self):

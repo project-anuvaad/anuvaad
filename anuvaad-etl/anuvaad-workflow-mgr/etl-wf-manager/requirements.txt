@@ -19,7 +19,7 @@ kafka-python==2.0.1
 lazy-object-proxy==1.4.3
 MarkupSafe==1.1.1
 mccabe==0.6.1
-mongoengine==0.19.1
+mongoengine==0.20
 numpy==1.18.2
 pylint==2.4.4
 pymongo==3.10.1
@@ -38,5 +38,5 @@ urllib3==1.25.8
 utils==1.0.1
 Werkzeug==1.0.0
 wrapt==1.11.2
+anuvaad-auditor==1.0.0
 WTForms==2.2.1
-anuvaad-auditor==0.1.4

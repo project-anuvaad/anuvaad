@@ -73,14 +73,15 @@ class FileOperation(object):
             return False
 
     # generating output filepath for output filename
-    def output_path(self,index, DOWNLOAD_FOLDER):
+    def output_path(self,index, json_data, DOWNLOAD_FOLDER):
         output_filename = '%d-'%index + str(time.time()).replace('.', '') + '.json'
+        # output_filename = json_data['input']['inputs'][index]['file']['name']
         output_filepath = os.path.join(DOWNLOAD_FOLDER, output_filename)
         return output_filepath , output_filename
 
     # writing json file of service response
     def writing_json_file(self, index, json_data, DOWNLOAD_FOLDER):
-        output_filepath , output_filename = self.output_path(index, DOWNLOAD_FOLDER)
+        output_filepath , output_filename = self.output_path(index, json_data, DOWNLOAD_FOLDER)
         with open(output_filepath, 'w') as f:
             json_object = json.dumps(json_data)
             f.write(json_object)

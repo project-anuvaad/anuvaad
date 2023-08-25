@@ -1,9 +1,9 @@
-FROM python:3.7-slim
+FROM python:3.8-slim
 RUN apt-get update
 #RUN apt-get install -y python3 python3-pip
-RUN apt-get install -y build-essential libssl-dev libffi-dev python3-dev
-RUN mkdir /usr/share/man/man1
-RUN apt-get update && apt-get install -y libreoffice
+RUN apt-get install -y build-essential libssl-dev libffi-dev  libmagic-dev python3-dev
+#RUN mkdir /usr/share/man/man1
+RUN apt-get install -y libreoffice
 COPY / /app
 WORKDIR /app
 RUN pip3 install -r requirements.txt

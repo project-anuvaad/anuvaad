@@ -15,7 +15,7 @@ class Consumer(object):
         try:
             consumer = KafkaConsumer(self.topic_name, bootstrap_servers = list((self.server_address).split(",")), \
                                      auto_offset_reset = 'earliest', group_id = config.CONSUMER_GROUP, \
-                                     enable_auto_commit=False)#,max_poll_interval_ms=30000000)
+                                     enable_auto_commit=False,max_poll_interval_ms=30000000)
             log_info("consumer_instantiate : Consumer returned for topic: %s"%(self.topic_name), None)
             return consumer
         except Exception as e:

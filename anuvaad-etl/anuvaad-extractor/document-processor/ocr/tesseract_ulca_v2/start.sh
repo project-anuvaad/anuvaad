@@ -16,8 +16,9 @@ tam_modelpath='/usr/share/tesseract-ocr/4.00/tessdata/anuvaad_tam.traineddata'
 #url_tam='https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvaad_tam.traineddata?AWSAccessKeyId=AKIAXX2AMEIRJY2GNYVZ&Signature=X6%2BwKdeOyOUFlOFs%2B7eRmzhziZ0%3D&Expires=1693557258'
 url_tam='https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvad_tam_scene_text_real.traineddata?AWSAccessKeyId=AKIAXX2AMEIRJY2GNYVZ&Signature=J1NEp22bhsW7dO3kd8iN1VX7XtI%3D&Expires=1711538482'
 hin_modelpath='/usr/share/tesseract-ocr/4.00/tessdata/anuvaad_hin.traineddata'
-#url_hin='https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvaad_hin.traineddata?AWSAccessKeyId=AKIAXX2AMEIRJY2GNYVZ&Signature=2l%2F0OwWQrD%2FIvogfijATPufjMLA%3D&Expires=1693557740'
-url_hin='https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvad_hin_scene_text_real.traineddata?AWSAccessKeyId=AKIAXX2AMEIRJY2GNYVZ&Signature=FZ6Whiiv8uTYDkPGUvMzqoOKPOI%3D&Expires=1709212126'
+hin_scene_modelpath='/usr/share/tesseract-ocr/4.00/tessdata/anuvad_hin_scene_text_real.traineddata'
+url_hin='https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvaad_hin.traineddata?AWSAccessKeyId=AKIAXX2AMEIRJY2GNYVZ&Signature=2l%2F0OwWQrD%2FIvogfijATPufjMLA%3D&Expires=1693557740'
+url_hin_scene='https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvad_hin_scene_text_real.traineddata?AWSAccessKeyId=AKIAXX2AMEIRJY2GNYVZ&Signature=FZ6Whiiv8uTYDkPGUvMzqoOKPOI%3D&Expires=1709212126'
 kan_modelpath='/usr/share/tesseract-ocr/4.00/tessdata/anuvaad_kan.traineddata'
 url_kan='https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvaad_kan.traineddata?AWSAccessKeyId=AKIAXX2AMEIRJY2GNYVZ&Signature=gDiNsqrV0n2%2BWZSMwesyqkLOYZ8%3D&Expires=1694149503'
 
@@ -57,6 +58,11 @@ fi
 
 if ! [ -f $hin_modelpath ]; then
   curl -o $hin_modelpath $url_hin
+  echo downloading hindi weight file
+fi
+
+if ! [ -f $hin_scene_modelpath ]; then
+  curl -o $hin_scene_modelpath $url_hin_scene
   echo downloading hindi weight file
 fi
 
