@@ -65,24 +65,28 @@ LANG_MAPPING = {
     "ml": "Malayalam",
     "ma": "Marathi",
     "pa": "Punjabi",
-    "kok": "Konkani",
+    "kok": "Konkani(MH)",
     "sa": "Sanskrit",
-    "sd": "Sindhi",
+    "sd": "Sindhi(Arab)",
     "ur": "Urdu",
     "ne": "Nepali",
     "brx": "bodo",
     "doi": "Dogri",
     "sat": "Santali",
-    "mni": "Manipuri",
+    "mni": "Manipuri(Mtei)",
     "lus": "Lushai",
     "kha": "Khasi",
-    "ks": "Kashmiri",
+    "ks": "Kashmiri(Arab)",
     "mai": "Maithili",
     "pnr": "Panim",
     "grt": "Garo",
     "si": "Sinhalese",
     "njz": "Nishi",
-    "as": "Assamese"
+    "as": "Assamese" ,
+    "ks_Deva": "Kashmiri(Deva)" ,
+    "mni_Beng" : "Manipuri(Beng)" ,
+    "gom" : "Konkani(Goan)" ,
+    "sd_Deva" : "Sindhi(Deva)"
 }
 
 jud = os.environ.get('ANUVAAD_JUD_METRICS','https://developers.anuvaad.org')

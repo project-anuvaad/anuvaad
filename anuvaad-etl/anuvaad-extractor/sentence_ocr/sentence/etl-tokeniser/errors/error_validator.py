@@ -66,7 +66,7 @@ class ValidationResponse(object):
     
     # checking support of tokeniser for languages
     def check_language(self, language):
-        allowed_languages = ['en', 'hi', 'mr', 'ta', 'te', 'kn', 'ml', 'bn', 'as', 'or', 'gu', 'pa', 'ur']
+        allowed_languages = ['en', 'hi', 'mr', 'ta', 'te', 'kn', 'ml', 'bn', 'as', 'or', 'gu', 'pa', 'ur','gom']
         if language not in allowed_languages:
             raise FileErrors("LOCALE_ERROR_OCR", "Currently, This language is not supported by tokeniser. \
                 We support these language codes 'en', 'hi', 'mr', 'ta', 'te', 'kn', 'ml', 'bn', 'as', 'or', 'gu', 'pa', 'ur'")
