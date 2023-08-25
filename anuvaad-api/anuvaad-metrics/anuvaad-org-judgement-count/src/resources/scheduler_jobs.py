@@ -45,9 +45,8 @@ log_info("Mongo connected", MODULE_CONTEXT)
 
 # @.scheduled_job("interval", id="get_data_from_db", hours=6)
 @schedule_job.scheduled_job(
-    "cron", id="my_job_id1", day_of_week="mon-fri", hour="06,09,20", minute="45"
+    "cron", id="my_job_id1", day_of_week="mon-fri", hour="06,20", minute="00"
 )
-
 def get_trans_user_data_from_db_cron():
     users = config.EMAIL_NOTIFIER
     log_info("fetch data started", MODULE_CONTEXT)
@@ -125,6 +124,12 @@ def get_trans_user_data_from_db_cron():
             e,
         )
         return
-    
+
+# run cron once at starting the server
+def manual_start_transuserdata_scheduler():
+    for job in schedule_job.get_jobs():
+            job.func()
+
+manual_start_transuserdata_scheduler()
 
 schedule_job.start()
