@@ -11,6 +11,7 @@ redis_server_port = os.environ.get('REDIS_PORT', 6379)
 active_docs_redis_db = os.environ.get('ACTIVE_DOCS_REDIS_DB', 11)
 app_host = os.environ.get('ANUVAAD_ETL_WFM_HOST', '0.0.0.0')
 app_port = os.environ.get('ANUVAD_ETL_WFM_PORT', 5001)
+anuvaad_ums_host = os.environ.goet('ANUVAAD_UMS_HOST','http://user_anuvaad-user-management:5001/')
 
 #Active Document (Time to Live in Seconds)
 active_doc_time = int(os.environ.get('WFM_ACTIVE_DOCS_TTL',18000))
