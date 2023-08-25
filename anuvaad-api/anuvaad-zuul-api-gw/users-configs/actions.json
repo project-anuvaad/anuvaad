@@ -791,6 +791,14 @@
             "active":true,
             "whiteList":true,
             "description":"API to logout"
+        },
+        {
+            "id":"05c0eeb8-5cef-4d5c-ae7a-b17d86c6aa06",
+            "uri":"/anuvaad-metrics/anuvaad-data/v1/upload_doc_count",
+            "module":"ANUVAAD-METRICS",
+            "active":true,
+            "whiteList":true,
+            "description":"API for Anuvaad-Metrics uploaded docs count api"
         }
     ]
 }
