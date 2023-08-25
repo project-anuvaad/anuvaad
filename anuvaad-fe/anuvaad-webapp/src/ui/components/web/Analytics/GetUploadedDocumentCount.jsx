@@ -58,7 +58,7 @@ function GetUploadedDocumentCount(props) {
         // setData(sourceData?.data);
         console.log("sourceData ---- ", sourceData);
 
-        let orgIds = [...new Set(sourceData?.data.map(el=>el.org))];
+        let orgIds = ["ALL", ...new Set(sourceData?.data.map(el => el.org))];
         // console.log("orgIds ... ", orgIds);
         setOrgIdsDataArr(orgIds);
 
@@ -66,56 +66,51 @@ function GetUploadedDocumentCount(props) {
 
     }, [sourceData]);
 
-    useEffect(()=>{
+    useEffect(() => {
         onOrgChange(selectedOrgId, selectedSourceLang);
     }, [selectedOrgId, selectedSourceLang])
 
     const onOrgChange = (orgId = selectedOrgId, srcLang = selectedSourceLang) => {
-        const filteredDataByOrgAndSrcLang = sourceData?.data.filter(el=>{
-            if(orgId === "ALL"){
+        let filteredDataByOrgAndSrcLang = sourceData?.data.filter(el => {
+            if (orgId === "ALL") {
                 return el.src === selectedSourceLang
             } else {
                 return el.org === orgId && el.src === selectedSourceLang
             }
         });
-        console.log("filteredDataByOrgAndSrcLang --- ", filteredDataByOrgAndSrcLang);
 
-        const allTgtLangsInFilteredData = [...new Set(filteredDataByOrgAndSrcLang?.map(el=>el.tgt))];
+        // format chart data when showing all organizations data combining based on source and target language
+        const allTgtLangsInFilteredData = [...new Set(filteredDataByOrgAndSrcLang?.map(el => el.tgt))];
+        
+        if (orgId === "ALL") {
+            const allOrgData = [];
+            allTgtLangsInFilteredData.map(lang => {
+                let sameTgtLangArr = [];
+                filteredDataByOrgAndSrcLang.map((dataObj) => {
+                    if (dataObj.tgt === lang) {
+                        sameTgtLangArr.push(dataObj);
+                    }
+                })
+                console.log(sameTgtLangArr);
 
-        // console.log("allTgtLangsInFilteredData --- ", allTgtLangsInFilteredData);
+                allOrgData.push(sameTgtLangArr.reduce((a, b) => {
+                    return {
+                        in_progress: a.in_progress + b.in_progress,
+                        src: a.src,
+                        tgt: a.tgt,
+                        uploaded: a.uploaded + b.uploaded
+                    }
+                }))
+            })
 
-        const allOrgData = [];
-        // allTgtLangsInFilteredData?.map((el,i)=>{
-        //     let sameTgtLangArr = [];
-        //     filteredDataByOrgAndSrcLang.map((element)=>{
-        //         if(element.tgt === el){
-        //             sameTgtLangArr.push(element)
-        //         }
-        //     })
+            filteredDataByOrgAndSrcLang = allOrgData;
 
-        //     if(sameTgtLangArr?.length > 0){
-        //         const totalInprogressDoc = 0;
-        //         const totalUploadedDoc = 0;
-        //         sameTgtLangArr.map(element=>{
-        //             console.log("element --- ", element);
-        //             return ({
-        //                 in_progress: totalInprogressDoc + element.in_progress,
-        //                 src: element.src,
-        //                 tgt: element.tgt,
-        //                 uploaded: totalUploadedDoc + element.uploaded
-        //             })
-        //         })
-        //     }
-
-        //     // console.log("sameTgtLangArr --- ", sameTgtLangArr);
-
-
-        // })
+        }
 
         let totalInprogressDocuments = 0;
         let totalUploadedDocuments = 0;
 
-        filteredDataByOrgAndSrcLang && filteredDataByOrgAndSrcLang.length > 0 && filteredDataByOrgAndSrcLang.map((el)=>{
+        filteredDataByOrgAndSrcLang && filteredDataByOrgAndSrcLang.length > 0 && filteredDataByOrgAndSrcLang.map((el) => {
             totalInprogressDocuments = totalInprogressDocuments + el.in_progress;
             totalUploadedDocuments = totalUploadedDocuments + el.uploaded;
         })
@@ -125,9 +120,6 @@ function GetUploadedDocumentCount(props) {
         setTotalDocumentcount(totalDocuments);
         setTotalInprogressDocumentcount(totalInprogressDocuments);
         setTotalUploadedDocumentcount(totalUploadedDocuments)
-
-
-        console.log("allOrgData --- ", allOrgData);
 
         const formattedDataForMetrics = filteredDataByOrgAndSrcLang;
 
@@ -143,8 +135,8 @@ function GetUploadedDocumentCount(props) {
                 <div className={classes.toolTip} >
                     <p style={{ fontWeight: "bold" }}>{`${label}`}
                         <p style={{ fontWeight: "normal" }}  >
-                            <p style={{ color: "rgba(243, 156, 18 )" }}>{`Document Uploaded : ${payload[0].payload. uploaded
-                                ? new Intl.NumberFormat("en").format(payload[0].payload. uploaded)
+                            <p style={{ color: "rgba(243, 156, 18 )" }}>{`Document Uploaded : ${payload[0].payload.uploaded
+                                ? new Intl.NumberFormat("en").format(payload[0].payload.uploaded)
                                 : 0}`}
                                 <p style={{ color: "rgba(35, 155, 86 )" }}>{`Document Inprogress : ${payload[0].payload.in_progress
                                     ? new Intl.NumberFormat("en").format(payload[0].payload.in_progress)
@@ -268,63 +260,63 @@ function GetUploadedDocumentCount(props) {
                     </Box> */}
                     </Box>
                     <Grid
-                    container
-                    direction="row"
-                    alignItems={'center'}
-                    style={{ textAlign: 'left', margin: "40px" }}
-                >
-                    <Typography variant='h6'>
-                        {/* Number of Documents processed per organization and language with  */}
-                        Document count per organization classified by languages
-                    </Typography>
-                    <Box style={{ marginLeft: 10 }}>
-                        <FormControl variant="standard" style={{ m: 1, minWidth: 200 }}>
-                            <InputLabel id="demo-simple-select-helper-label">Organization</InputLabel>
-                            <Select
-                                labelId="demo-simple-select-standard-label"
-                                id="demo-simple-select-standard"
-                                value={selectedOrgId}
-                                label="Organization"
-                                onChange={(event)=>setSelectedOrgId(event.target.value)}
-                                style={{
-                                    textAlign: "left",
-                                    border: '0px solid transparent',
-                                }}
-                            >
-                                {orgIdsDataArr && orgIdsDataArr.length > 0 && orgIdsDataArr.map((el, i) => {
-                                    return <MenuItem value={el}>{el}</MenuItem>
-                                })}
-                            </Select>
-                        </FormControl>
-                    </Box>
-                    <br />
-                    {/* <Typography variant='h6' style={{marginLeft: 20}}>
+                        container
+                        direction="row"
+                        alignItems={'center'}
+                        style={{ textAlign: 'left', margin: "40px" }}
+                    >
+                        <Typography variant='h6'>
+                            {/* Number of Documents processed per organization and language with  */}
+                            Document count per organization classified by languages
+                        </Typography>
+                        <Box style={{ marginLeft: 10 }}>
+                            <FormControl variant="standard" style={{ m: 1, minWidth: 200 }}>
+                                <InputLabel id="demo-simple-select-helper-label">Organization</InputLabel>
+                                <Select
+                                    labelId="demo-simple-select-standard-label"
+                                    id="demo-simple-select-standard"
+                                    value={selectedOrgId}
+                                    label="Organization"
+                                    onChange={(event) => setSelectedOrgId(event.target.value)}
+                                    style={{
+                                        textAlign: "left",
+                                        border: '0px solid transparent',
+                                    }}
+                                >
+                                    {orgIdsDataArr && orgIdsDataArr.length > 0 && orgIdsDataArr.map((el, i) => {
+                                        return <MenuItem value={el}>{el}</MenuItem>
+                                    })}
+                                </Select>
+                            </FormControl>
+                        </Box>
+                        <br />
+                        {/* <Typography variant='h6' style={{marginLeft: 20}}>
                         and language
                     </Typography> */}
-                    <Box style={{ marginLeft: 10 }}>
-                        <FormControl variant="standard" style={{ m: 1, minWidth: 200 }}>
-                            <InputLabel id="demo-simple-select-helper-label">Source Language</InputLabel>
-                            <Select
-                                labelId="demo-simple-select-standard-label"
-                                id="demo-simple-select-standard"
-                                value={selectedSourceLang}
-                                label="Source Language"
-                                onChange={(event)=>setSelectedSourceLang(event.target.value)}
-                                style={{
-                                    textAlign: "left",
-                                    border: '0px solid transparent',
-                                }}
-                            >
-                                {allLanguages && allLanguages.length > 0 && allLanguages.map((el, i) => {
-                                    return <MenuItem value={el.label}>{el.label}</MenuItem>
-                                })}
-                            </Select>
-                        </FormControl>
-                    </Box>
-                    {/* <Typography style={{ fontSize: "1.125rem", fontWeight: "400" }}>
+                        <Box style={{ marginLeft: 10 }}>
+                            <FormControl variant="standard" style={{ m: 1, minWidth: 200 }}>
+                                <InputLabel id="demo-simple-select-helper-label">Source Language</InputLabel>
+                                <Select
+                                    labelId="demo-simple-select-standard-label"
+                                    id="demo-simple-select-standard"
+                                    value={selectedSourceLang}
+                                    label="Source Language"
+                                    onChange={(event) => setSelectedSourceLang(event.target.value)}
+                                    style={{
+                                        textAlign: "left",
+                                        border: '0px solid transparent',
+                                    }}
+                                >
+                                    {allLanguages && allLanguages.length > 0 && allLanguages.map((el, i) => {
+                                        return <MenuItem value={el.label}>{el.label}</MenuItem>
+                                    })}
+                                </Select>
+                            </FormControl>
+                        </Box>
+                        {/* <Typography style={{ fontSize: "1.125rem", fontWeight: "400" }}>
                 {getCommaSaparatedNumber(sourceData?.totalCount)}
               </Typography> */}
-                </Grid>
+                    </Grid>
                     <Grid>
                         <ResponsiveChartContainer>
                             <BarChart
