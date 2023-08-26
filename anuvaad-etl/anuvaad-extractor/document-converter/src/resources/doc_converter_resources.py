@@ -22,13 +22,14 @@ class DocumentConverter(Resource):
         try:
             record_id = body['record_id']
             user_id = body['user_id']
-            file_type = body['file_type']
+            file_types = body['file_type']
             if 'record_id' not in body or record_id is None or 'user_id' not in body or user_id is None or \
-                'file_type' not in body or file_type is None:
+                'file_type' not in body or file_types is None:
                 res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value,None)
                 return res.getresjson(), 400
-            formated_document = document_saving(record_id, user_id, DOWNLOAD_FOLDER, file_type)
-            log_info("document type %s saved successfully"%file_type, MODULE_CONTEXT)
+            file_types = set(file_types.split(','))
+            formated_document = document_saving(record_id, user_id, DOWNLOAD_FOLDER, file_types)
+            log_info("document types %s saved successfully"%file_types, MODULE_CONTEXT)
             res = CustomResponse(Status.SUCCESS.value, formated_document)
             return res.getres()
         except ServiceError as e:

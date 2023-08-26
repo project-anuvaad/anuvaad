@@ -32,6 +32,9 @@ import DataTable from "../../../components/web/common/DataTable";
 import { Button, TableCell, TableRow, TextField, TableFooter, Typography } from "@material-ui/core";
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import UploadProcessModal from "../DocumentUpload/UploadProcessModal";
+import GranularTaskDetailsModal from "./GranularTaskDetailsModal";
+import { CustomTableFooter } from "../../../components/web/common/CustomTableFooter";
 
 const TELEMETRY = require("../../../../utils/TelemetryManager");
 
@@ -105,7 +108,7 @@ class ViewDocument extends React.Component {
     // console.log("limit (Number(this.state.inputPageNumber)-1)*10 ---> ", this.props.job_details.count);
     // this.makeAPICallJobsBulkSearch(0, (Number(this.state.inputPageNumber)-1)*10, false, false, true)
     this.tableRef.current.changePage(Number(this.state.inputPageNumber) - 1);
-    this.setState({ currentPageIndex: this.state.inputPageNumber - 1 }, ()=> {
+    this.setState({ currentPageIndex: this.state.inputPageNumber - 1 }, () => {
       this.makeAPICallDocumentsTranslationProgress();
     });
   }
@@ -250,10 +253,10 @@ class ViewDocument extends React.Component {
   getJobsAsPerPageAndLimit = (page, limit) => {
     // console.log("this.getJobsSortedByTimestamp() ------- ", this.getJobsSortedByTimestamp());
     return this.getJobsSortedByTimestamp()
-    .slice(
-      page * limit,
-      page * limit + limit
-    );
+      .slice(
+        page * limit,
+        page * limit + limit
+      );
   };
 
   getRecordIds = () => {
@@ -300,6 +303,13 @@ class ViewDocument extends React.Component {
 
   processJobTimelinesClick(jobId, recordId) {
     let taskDetails = this.getJobIdDetail(jobId);
+    // console.log("taskDetails ---- ", taskDetails);
+    this.setState({ showInfo: true, message: taskDetails, dialogType: "info", dialogTitle: "File Process Information" });
+  }
+
+  processGranularStausInfoClick(jobId, recordId) {
+    let taskDetails = this.getJobIdDetail(jobId);
+    // console.log("taskDetails ---- ", taskDetails);
     this.setState({ showInfo: true, message: taskDetails, dialogType: "info", dialogTitle: "File Process Information" });
   }
 
@@ -317,10 +327,11 @@ class ViewDocument extends React.Component {
     // this.makeAPICallJobDelete(jobId);
   };
 
-  processViewDocumentClick = (jobId, recordId, status, workflowCode) => {
+  processViewDocumentClick = (jobId, recordId, status, workflowCode, granularStatus) => {
     let role = localStorage.getItem("roles")
     let job = this.getJobIdDetail(jobId);
     job.filename = job.filename?.includes("#") ? job.filename?.split("#").join("%23") : job.filename;
+
     if (status === "COMPLETED") {
       history.push(
         `${process.env.PUBLIC_URL}/interactive-document/${job.recordId}/${job.converted_filename}/${job.model_id}/${job.filename}/${workflowCode}/${job.source_language_code}/${job.target_language_code}`,
@@ -337,7 +348,7 @@ class ViewDocument extends React.Component {
       this.handleMessageClear();
     } else {
       this.setState({
-        dialogMessage: "Document conversion failed!",
+        dialogMessage: "Document Translation Failed!",
         timeOut: 3000,
         variant: "error",
       });
@@ -388,7 +399,7 @@ class ViewDocument extends React.Component {
             timeOut: 3000,
             variant: "error",
           });
-          console.log("api failed");
+          // console.log("api failed");
         } else {
           const buffer = new Uint8Array(await response.arrayBuffer());
           let res = Buffer.from(buffer).toString("base64");
@@ -411,7 +422,7 @@ class ViewDocument extends React.Component {
           timeOut: 3000,
           variant: "error",
         });
-        console.log("api failed because of server or network", error);
+        // console.log("api failed because of server or network", error);
       });
   };
 
@@ -420,7 +431,7 @@ class ViewDocument extends React.Component {
     let sdate = new Date(startTime);
     let sec = Math.trunc(Math.abs(edate.getTime() - sdate.getTime()) / 1000);
     var date = new Date(0);
-    date.setSeconds(sec); // specify value for SECONDS here
+    date.setSeconds(sec == 0 ? 1 : sec); // specify value for SECONDS here
     return date.toISOString().substr(11, 8);
   }
 
@@ -508,6 +519,7 @@ class ViewDocument extends React.Component {
         options: {
           filter: false,
           sort: false,
+          display: false,
         },
       },
       {
@@ -517,6 +529,7 @@ class ViewDocument extends React.Component {
           filter: true,
           sort: false,
           empty: true,
+          display: false
         },
       },
       {
@@ -526,6 +539,7 @@ class ViewDocument extends React.Component {
           filter: true,
           sort: false,
           empty: true,
+          display: false,
         },
       },
       {
@@ -535,6 +549,7 @@ class ViewDocument extends React.Component {
           filter: true,
           sort: false,
           empty: true,
+          display: false,
         },
       },
       {
@@ -542,21 +557,22 @@ class ViewDocument extends React.Component {
         label: "Description",
         options: {
           display: 'false',
-          sort: false
+          sort: false,
         }
       },
       {
         name: "spent_time",
         label: "Time Spent",
         options: {
-          sort: false
+          sort: false,
+          display: false,
         }
       },
       {
         name: "endTime",
         label: "End Time",
         options: {
-          display: "excluded",
+          display: "false",
         },
       },
       {
@@ -565,6 +581,7 @@ class ViewDocument extends React.Component {
         options: {
           filter: true,
           sort: true,
+          display: true,
           customBodyRender: (value, tableMeta, updateValue) => {
             if (tableMeta.rowData) {
               return (
@@ -605,6 +622,22 @@ class ViewDocument extends React.Component {
         },
       },
       {
+        name: "currentGranularStatus",
+        label: "Status",
+        options: {
+          filter: true,
+          sort: false,
+          empty: true,
+          customBodyRender: (value, tableMeta, updateValue) => {
+            // if(value.includes("FAILED")){
+            //   return <Typography variant="body2" style={{color: "red"}}>{value}</Typography>
+            // } else {
+            return <Typography variant="body2">{value}</Typography>
+            // }
+          }
+        },
+      },
+      {
         name: "Action",
         label: translate("common.page.label.action"),
         options: {
@@ -620,12 +653,13 @@ class ViewDocument extends React.Component {
                     <IconButton
                       style={{ color: "#233466", padding: "5px" }}
                       component="a"
-                      onClick={() =>
+                      onClick={() => {
+                        // console.log("tableMeta ---- ", tableMeta)
                         this.processJobTimelinesClick(
                           tableMeta.rowData[1],
                           tableMeta.rowData[2]
                         )
-                      }
+                      }}
                     >
                       <InfoIcon />
                     </IconButton>
@@ -640,7 +674,8 @@ class ViewDocument extends React.Component {
                           tableMeta.rowData[1],
                           tableMeta.rowData[2],
                           tableMeta.rowData[6],
-                          tableMeta.rowData[14]
+                          tableMeta.rowData[14],
+                          tableMeta.rowData[15].trim()
                         )
                       }
                     >
@@ -752,66 +787,34 @@ class ViewDocument extends React.Component {
         const startIndex = page * rowsPerPage;
         const endIndex = (page + 1) * rowsPerPage;
         const totalPageCount = Math.ceil(this.props.job_details.count / 10);
-        // totalPageCount = totalPageCount > 0 && 
-        // console.log("this.state.currentPageIndex", this.state.currentPageIndex);
-        // console.log("totalPageCount", totalPageCount);
         return (
-
-          <TableFooter>
-            {totalPageCount > 0 &&
-              <TableRow>
-                <TableCell colSpan={12}>
-                  <div style={{ textAlign: "end", justifyContent: "space-evenly" }}>
-                  <Typography variant="caption" style={{ fontSize: "0.9rem", fontWeight: "600", float: 'left',padding: '10px'}}>Total Documents - <b>{this.props.job_details.count}</b></Typography>
-                    <Typography variant="caption" style={{ fontSize: "0.9rem", fontWeight: "600" }}>Page No. - </Typography>
-                    <TextField
-                      type="number"
-                      style={{ width: "4%", marginRight: "1%", marginLeft: "1%" }}
-                      ref={this.pageInputRef}
-                      onFocus={() => this.setState({ isInputActive: true })}
-                      onBlur={() => this.setState({ isInputActive: false })}
-                      InputProps={{
-
-                        inputProps: {
-                          style: { textAlign: "center" },
-                          max: totalPageCount, min: 1
-                        }
-                      }}
-                      onChange={(event) => this.handleInputPageChange(event, totalPageCount)}
-                      value={this.state.inputPageNumber}
-                    />
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      style={{ borderRadius: "15%" }}
-                      onClick={() => {
-                        this.onChangePageMAnually()
-                      }}
-                    >Go</Button>
-                    <IconButton
-                      onClick={() => {
-                        this.setState({ currentPageIndex: this.state.currentPageIndex - 1 }, ()=>this.makeAPICallDocumentsTranslationProgress())
-                        this.tableRef.current.changePage(Number(this.state.currentPageIndex - 1))
-                      }}
-                      tabIndex={this.state.currentPageIndex - 1}
-                      disabled={this.state.currentPageIndex == 0}>
-                      <ChevronLeftIcon />
-                    </IconButton>
-                    <Typography variant="caption" style={{ fontSize: "0.9rem", fontWeight: "600" }}>Page {parseInt(this.state.currentPageIndex + 1)} of {parseInt(totalPageCount)} </Typography>
-                    <IconButton
-                      onClick={() => {
-                        this.setState({ currentPageIndex: this.state.currentPageIndex + 1 }, ()=>this.makeAPICallDocumentsTranslationProgress())
-                        this.tableRef.current.changePage(Number(this.state.currentPageIndex + 1))
-                      }}
-                      tabIndex={this.state.currentPageIndex + 1}
-                      disabled={this.state.currentPageIndex == totalPageCount}>
-                      <ChevronRightIcon />
-                    </IconButton>
-                  </div>
-                </TableCell>
-              </TableRow>}
-          </TableFooter>
-
+          <CustomTableFooter
+            renderCondition={totalPageCount > 0}
+            countLabel={"Total Documents"}
+            totalCount={this.props.job_details.count}
+            pageInputRef={this.pageInputRef}
+            inputValue={this.state.inputPageNumber}
+            onInputFocus={()=>this.setState({ isInputActive: true })}
+            onInputBlur={()=>this.setState({ isInputActive: false })}
+            handleInputChange={this.handleInputPageChange}
+            totalPageCount={totalPageCount}
+            onGoToPageClick={this.onChangePageMAnually}
+            onBackArrowClick={() => {
+              this.setState({ currentPageIndex: this.state.currentPageIndex - 1 }, ()=>this.makeAPICallDocumentsTranslationProgress())
+              this.tableRef.current.changePage(Number(this.state.currentPageIndex - 1))
+            }
+            }
+            onRightArrowClick={() => {
+              this.setState({ currentPageIndex: this.state.currentPageIndex + 1 }, () => this.makeAPICallDocumentsTranslationProgress())
+              this.tableRef.current.changePage(Number(this.state.currentPageIndex + 1))
+            }
+            }
+            backArrowTabIndex={this.state.currentPageIndex - 1}
+            backArrowDisable={this.state.currentPageIndex == 0}
+            rightArrowTabIndex={this.state.currentPageIndex + 1}
+            rightArrowDisable={this.state.currentPageIndex == (totalPageCount-1)}
+            pageTextInfo={`Page ${parseInt(this.state.currentPageIndex + 1)} of ${parseInt(totalPageCount)}`}
+          />
         );
       }
     };
@@ -823,7 +826,7 @@ class ViewDocument extends React.Component {
           {!this.state.showLoader && (
             <MuiThemeProvider theme={this.getMuiTheme()}>
               <DataTable
-                title={translate("common.page.title.document")}
+                title={"Translate " + translate("common.page.title.document")}
                 data={this.getJobsSortedByTimestamp()}
                 columns={columns}
                 options={options}
@@ -833,7 +836,7 @@ class ViewDocument extends React.Component {
           )}
         </div>
         {this.state.showInfo && (
-          <Dialog
+          <GranularTaskDetailsModal
             message={this.state.message}
             type={this.state.dialogType}
             handleClose={this.handleDialogClose.bind(this)}
@@ -845,6 +848,7 @@ class ViewDocument extends React.Component {
         )}
         {(this.state.showLoader || this.state.loaderDelete) && <Spinner />}
         {this.state.dialogMessage && this.snackBarMessage()}
+        {/* <UploadProcessModal /> */}
       </div>
     );
   }

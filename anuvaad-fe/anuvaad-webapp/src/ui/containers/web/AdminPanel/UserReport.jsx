@@ -18,6 +18,7 @@ import { clearJobEntry } from "../../../../flux/actions/users/async_job_manageme
 import Tooltip from "@material-ui/core/Tooltip";
 import IconButton from "@material-ui/core/IconButton";
 import AssessmentOutlinedIcon from '@material-ui/icons/AssessmentOutlined';
+import LibraryBooksIcon from "@material-ui/icons/LibraryBooks";
 import CloudDownloadIcon from "@material-ui/icons/CloudDownload";
 import DownloadFile from "../../../../flux/actions/apis/download/download_file";
 import EventIcon from '@material-ui/icons/Event';
@@ -262,6 +263,25 @@ class UserReport extends React.Component {
         );
     }
 
+    processViewDocumentEditor = (data) => {
+        return (
+            this.state.role === "SUPERADMIN" && <Tooltip title="View Document" placement="right">
+                <IconButton style={{ color: '#233466', padding: '5px' }}
+                    component="a"
+                    onClick={
+                        // ()=>console.log("data --- ", data)
+                        () => this.handleViewDocumentEditor(data.recordId, data.converted_filename, data.model_id, data.filename, data.workflowCode, data.source_language_code, data.target_language_code, data.user_id)
+                        }>
+                    <LibraryBooksIcon />
+                </IconButton>
+            </Tooltip>
+        );
+    }
+
+    handleViewDocumentEditor = (jobid, inputfileid, modelId, filename, workflow, source_language_code, target_language_code, user_id) => {
+        history.push(`${process.env.PUBLIC_URL}/interactive-document/${jobid}/${inputfileid}/${modelId}/${filename}/${workflow}/${source_language_code}/${target_language_code}`, {data : {user_id: user_id}})
+    }
+
     handleDocumentView = (fid, fname, status, sentenceCount) => {
         if (status === 'COMPLETED' && sentenceCount[0] !== '.' && sentenceCount[0] !== '0') {
             const recordID = this.props.job_details.documents.filter(doc => doc.jobID === fid)[0].recordId
@@ -372,7 +392,7 @@ class UserReport extends React.Component {
                         timeOut: 3000,
                         variant: "info",
                     });
-                    console.log("api failed");
+                    // console.log("api failed");
                 } else {
                     const buffer = new Uint8Array(await response.arrayBuffer());
                     let res = Buffer.from(buffer).toString("base64");
@@ -395,7 +415,7 @@ class UserReport extends React.Component {
                     timeOut: 3000,
                     variant: "info",
                 });
-                console.log("api failed because of server or network", error);
+                // console.log("api failed because of server or network", error);
             });
     };
 
@@ -544,11 +564,11 @@ class UserReport extends React.Component {
             },
             {
                 name: "created_on",
-                label: translate("common.page.label.timeStamp"),
+                label: "Created On",
                 options: {
                     filter: true,
-                    sort: true,
-                    display: "excluded",
+                    sort: false,
+                    // display: "excluded",
                     customBodyRender: (value, tableMeta, updateValue) => {
                         if (tableMeta.rowData) {
                             return (
@@ -574,6 +594,8 @@ class UserReport extends React.Component {
                                 <div>
                                     {this.processDocumentView(tableMeta.rowData[1], tableMeta.rowData[0], tableMeta.rowData[5], tableMeta.rowData[6])}
                                     {this.processDocumentDownload(tableMeta.rowData[1])}
+                                    { this.processViewDocumentEditor(this.getJobsSortedByTimestamp()[tableMeta.rowIndex])}
+                                    {/* jobid - 1, inputfileid, modelId, filename, workflow, source_language_code, target_language_code */}
                                     {/* {this.processEventView(tableMeta.rowData[1], tableMeta.rowData[5], tableMeta.rowData[6])} */}
                                 </div>
                             );

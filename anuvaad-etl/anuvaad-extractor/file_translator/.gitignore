@@ -5,3 +5,4 @@ para_sen_api.py
 *.log
 uwsgi.ini
 wsgi_test.py
+# __pycache__/

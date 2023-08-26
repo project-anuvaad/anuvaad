@@ -88,30 +88,30 @@ ToolConfigs:
   - name: SYNC-BLOCK-TRANSLATOR
     description: Translates the blocks.
     api-details:
-    - uri: http://gateway_anuvaad-etl-translator:5001/anuvaad-etl/translator/v1/block/workflow/translate
+    - uri: http://anuvaad-etl-translator:5001/anuvaad-etl/translator/v1/block/workflow/translate
 
   - name: SYNC-FILE-TRANSLATOR
     description: Search WF for docx download
     api-details:
-    - uri: http://gateway_anuvaad-etl-file-translator:5001/anuvaad-etl/file-translator/v0/download-wf
+    - uri: http://anuvaad-etl-file-translator:5001/anuvaad-etl/file-translator/v0/download-wf
 
   - name: SYNC-SENTENCE-TRANSLATOR
     description: Translates the sentences.
     api-details:
-    - uri: http://gateway_anuvaad-etl-translator:5001/anuvaad-etl/translator/v1/sentences/workflow/translate
+    - uri: http://anuvaad-etl-translator:5001/anuvaad-etl/translator/v1/sentences/workflow/translate
 
   - name: SYNC-BLOCK-TOKENISER
     description: tokenises the text blocks.
     api-details:
-    - uri: http://gateway_anuvaad-etl-tokeniser:5001/anuvaad-etl/tokeniser/v0/blocks-tokenisation-wf
+    - uri: http://anuvaad-etl-tokeniser:5001/anuvaad-etl/tokeniser/v0/blocks-tokenisation-wf
 
   - name: SYNC-PARAGRAPH-TOKENIZER
     description: tokenises the text blocks.
     api-details:
-    - uri: http://gateway_anuvaad-etl-tokeniser:5001/anuvaad-etl/tokeniser/v0/paragraphs-tokenisation-wf
+    - uri: http://anuvaad-etl-tokeniser:5001/anuvaad-etl/tokeniser/v0/paragraphs-tokenisation-wf
 
   - name: SYNC-DOCUMENT-PREPROCESS
     description: Pre-process the document to check for tilt correction and watermark removal.
     api-details:
-    - uri: http://gateway_anuvaad-ocr-document-pre-processor:5001/anuvaad-etl/pre-processor/v0/pre-process
+    - uri: http://anuvaad-ocr-document-pre-processor:5001/anuvaad-etl/pre-processor/v0/pre-process
 

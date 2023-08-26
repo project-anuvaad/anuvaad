@@ -14,6 +14,7 @@ const endpoints = {
   workflowSync: "/anuvaad-etl/wf-manager/v1/workflow/sync/initiate",
   signup: "/anuvaad/user-mgmt/v1/users/create",
   login: "/anuvaad/user-mgmt/v1/users/login",
+  logout: "/anuvaad/user-mgmt/v1/users/logout",
   setpassword: "/anuvaad/user-mgmt/v1/users/reset-password",
   userdetails: "/anuvaad/user-mgmt/v1/users/search",
   createuser: "/anuvaad/user-mgmt/v1/users/onboard-users",
@@ -21,6 +22,8 @@ const endpoints = {
   fecthcontent: "/anuvaad/content-handler/v0/fetch-content",
   documentupload: "/anuvaad-api/file-uploader/v0/upload-file",
   documentConverter: "/anuvaad-etl/document-converter/v0/document-converter",
+  update_granular_status: "/anuvaad-etl/wf-manager/v1/workflow/setGranularity",
+  s3_upload_doc: "/anuvaad-api/file-uploader/v0/upload-file",
   word_dictionary: "/anuvaad/content-handler/v0/dictionary/search",
   save_content: "/anuvaad/content-handler/v0/save-content-sentence",
   translate: "/anuvaad-etl/translator/v1/text/translate",
@@ -60,8 +63,15 @@ const endpoints = {
   getDocumentCountPerOrg: "/anuvaad-metrics/anuvaad-data/doc_count",
   getAllSupportedLangList: "/anuvaad-metrics/anuvaad-data/languages",
   hostedInference: "/ulca/apis/v0/model/compute",
-  getTransliterationModelId:"/ulca/apis/v0/model/getTransliterationModelId",
+  getTransliterationModelId: "/ulca/apis/v0/model/getTransliterationModelId",
+  activeUsersCount: "/anuvaad/user-mgmt/v1/users/active-users",
+  uploadedDocumentCount: "/anuvaad-metrics/anuvaad-data/v1/upload_doc_count",
 
+  // MFA API's
+  mfa_register: "/anuvaad/user-mgmt/v1/mfa/register",
+  mfa_verify: "/anuvaad/user-mgmt/v1/mfa/verify",
+  mfa_reset: "/anuvaad/user-mgmt/v1/mfa/reset",
+  update_email: "/anuvaad/user-mgmt/v1/users/update-email"
 };
 
 export default endpoints;

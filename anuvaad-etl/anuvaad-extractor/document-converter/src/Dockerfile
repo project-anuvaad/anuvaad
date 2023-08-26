@@ -3,6 +3,8 @@ COPY / /app
 WORKDIR /app
 RUN apt-get update \
     && apt-get install build-essential libpoppler-cpp-dev pkg-config python-dev -y
+RUN apt-get install -y libreoffice
+
 RUN pip install -r requirements.txt \
     && pip cache purge
 COPY start.sh /usr/bin/start.sh

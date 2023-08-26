@@ -46,11 +46,23 @@ class App extends React.Component {
 
   renderMessage() {
     if (this.props.apistatus.message) {
-      return <Snackbars message={this.props.apistatus.message} variant={this.props.apistatus.error ? 'error' : 'success'} />;
+      return <Snackbars message={this.props.apistatus.message} variant={this.props.apistatus.error ? 'error' : 'success'} autoHideDuration={5000} />;
     }
   }
 
-  componentDidMount() { }
+  componentDidMount() {
+    // when user logout from other tab, auto logout from other tab also.
+    this.clearSession = setInterval(() => {
+      let authToken = localStorage.getItem('token');
+      if (!authToken) {
+        history.push(`${process.env.PUBLIC_URL}/logout`);
+      }
+    }, 4000);
+  }
+
+  componentWillUnmount(){
+    clearInterval(this.clearSession);
+  }
 
   componentDidUpdate(prevProps) {
     if (prevProps.apistatus !== this.props.apistatus) {
@@ -70,7 +82,7 @@ class App extends React.Component {
           {!dontShowLoader &&
             this.renderSpinner()
           }
-          
+
           {/* <Header toolBarComp={headerAttribute} dontShowHeader={dontShowHeader} currentMenu={currentMenu} forDemo={forDemo || showLogo} classes={classes} theme={theme} title={title} drawer={drawer} tocken={this.state.tocken} handleTockenChange={this.handleTockenChange.bind(this)} /> */}
 
           <div style={dontShowHeader ? { width: '100%' } : {}} className={dontShowHeader ? '' : (forDemo ? classes.containerDemo : classes.container)} onClick={this.handlDrawerTocken.bind(this)}>

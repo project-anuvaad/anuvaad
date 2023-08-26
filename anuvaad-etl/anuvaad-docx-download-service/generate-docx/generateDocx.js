@@ -35,14 +35,15 @@ const generateDocx = (jobName,fname, height, width) => {
         let pObj = docx.createP();
         if (!is_table && !is_image) {
             tokens.tokenized_sentences && tokens.tokenized_sentences.forEach(token => {
-                pObj.addText(token.tgt, {
-                    font_size: font_size,
-                    color: font_color,
-                    font_face: font_family,
-                    bold: is_bold,
-                })
-                pObj.options.indentLeft = `${text_left}`;
-            })
+                if (token.tgt != null) {
+                    pObj.addText(token.tgt, {
+                        font_size: font_size,
+                        color: font_color,
+                        font_face: font_family,
+                        bold: is_bold,
+                    })
+                    pObj.options.indentLeft = `${text_left}`;
+        }})
         }
         else if (is_table && !is_image) {
             let tableArray = generateTableArray(tokens);

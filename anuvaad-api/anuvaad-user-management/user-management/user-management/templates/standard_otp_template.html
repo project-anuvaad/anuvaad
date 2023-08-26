@@ -1,0 +1,43 @@
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&amp;family=Rowdies:wght@300;400;700&amp;display=swap"
+        rel="stylesheet">
+</head>
+
+<body style="font-family: Roboto;width: fit-content">
+    <div style="width: auto;">
+        <div style="margin-top: 0.5rem;
+        padding: 1rem;">
+            <h3>Dear {{username}},</h3>
+            <p>One Time Password (OTP) for your SUVAS MFA login is - </p>
+        </div>
+        <div style="text-align: center;
+        margin-top: 1rem;
+        padding: 1rem;
+        display: flex;
+        justify-content: center;
+        column-gap: 0.3rem;
+        width: auto;
+        flex-wrap: wrap;
+        row-gap: 1rem;
+        font-size: 2rem;
+        letter-spacing: 2rem;">
+            <!-- Generated OTP numbers will be rendered here  -->
+            <b>{{otp_code}}</b>
+        </div>
+        <div style="padding: 1rem;">
+            <p>Your OTP would be valid only for {{otp_expiry}} minutes. Kindly re-login, post expiry.</p>
+        </div>
+        <div style="padding: 1rem;">
+            <p>Thanks & Regards,</p>
+            <p>Anuvaad Team</p>
+            <hr>
+            <p>If you haven’t asked for verification, kindly ignore.</p>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -157,7 +157,7 @@ class PageCardHtml extends React.Component {
       try {
         highlightSource(source, color, id, this.highlightSentence, paper);
       } catch (error) {
-        console.log("error occurred!", source);
+        // console.log("error occurred!", source);
       }
     }
   };

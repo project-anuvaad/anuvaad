@@ -149,7 +149,7 @@ class OrganizationGlossary extends React.Component {
   }
 
   handleDeleteAllGlossary = () => {
-    console.log("handleDeleteAllGlossary")
+    // console.log("handleDeleteAllGlossary")
     this.setState({ openConfirmDialog: true })
   }
 

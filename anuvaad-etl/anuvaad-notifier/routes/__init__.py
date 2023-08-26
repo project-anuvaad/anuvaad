@@ -1,0 +1,1 @@
+from .notifier_routes import NOTIFIER_BULK_SEARCH
