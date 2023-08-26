@@ -86,7 +86,7 @@ class PdfUpload extends Component {
       formatWarning: false,
       variant: "success",
       documentState: "",
-      showProcessModal: false
+      showProcessModal: false,
       isTargetAlpha: false,
     };
   }
