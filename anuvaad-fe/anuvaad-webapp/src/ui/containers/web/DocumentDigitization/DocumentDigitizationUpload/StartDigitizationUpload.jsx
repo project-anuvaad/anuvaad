@@ -73,7 +73,7 @@ class StartDigitizationUpload extends React.Component {
             message: "File uplaoded successfully",
             variant: "success",
             showComponent: false,
-            workflow: localStorage.getItem("roles") === "TRANSLATOR" ? "WF_A_FCWDLDBSOD20TESOTK" : "",
+            workflow: localStorage.getItem("roles") === "TRANSLATOR" ? "WF_A_FCWDLDBSOD15GVOTK" : "",
             worflow_codes: [{
                 code: 'WF_A_FCOD10GVOTK',
                 version: '1.0'
