@@ -1,4 +1,4 @@
-certifi==2020.12.5
+certifi==2023.7.22
 flask==2.1.0
 flask-cors==3.0.9
 flask-restful==0.3.9
