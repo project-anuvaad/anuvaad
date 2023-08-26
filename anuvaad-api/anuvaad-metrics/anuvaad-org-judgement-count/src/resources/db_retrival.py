@@ -384,6 +384,12 @@ def fetch_reviewer_data():
         mapper = {'in_progress': "int", 'uploaded': "int"}
         renamer = {'count.in_progress': "in_progress", 'count.uploaded': "uploaded"}
         df = df.rename(columns=renamer)
+        # create default columns with 0 if not preset - start 
+        # (if no uploaded / inprogress doc then this logic is required)
+        for x_col in list(mapper.keys()): 
+            if x_col not in df.columns:
+                df[x_col] = 0 
+        # create default columns with 0 if not preset - end
         df[list(mapper.keys())] = df[list(mapper.keys())].fillna(0)
         df = df.astype(mapper)
     df = {
