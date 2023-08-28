@@ -527,6 +527,9 @@ class jud_stats(object):
         docs = pd.DataFrame(list(docs))
         docs = pd.concat([docs,pd.json_normalize(docs['_id'])],axis=1)
         del docs['_id']
+        docs = docs.dropna(subset=['org'])
+        for x_col in ['org','src','tgt']:
+            docs[x_col] = docs[x_col].str.strip()
         # print(docs.to_string())
         return docs
 

@@ -6,6 +6,7 @@ from anuvaad_auditor.loghandler import log_info, log_exception
 from flask import request, jsonify
 from anuvaad_auditor.errorhandler import post_error
 import config
+import re
 
 userRepo    =   UserManagementRepositories()
 
@@ -200,6 +201,12 @@ class UpdateEmail(Resource):
             if not validity:
                 log_info("new_email is not valid email",MODULE_CONTEXT)
                 return post_error("Invalid Email", "provided email is an invalid email"), 400
+            
+            # discard emails with suvas.com/suvas.in providers
+            suvas_regex = "([a-zA-Z0-9_.+-]+@suvas\.(com|in))"
+            if re.match(suvas_regex,new_email):
+                log_info(f"suvas.com/suvas.in found in {new_email=}",MODULE_CONTEXT)
+                return post_error("Unsupported Email", "The email you entered can't receive OTPs at the moment. Kindly enter your email id which can receive OTP for future logins."), 400
             
             # change email
             result = userRepo.change_email(username,new_email)
