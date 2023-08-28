@@ -383,7 +383,7 @@ class UserDetails extends React.Component {
             onChange={(e)=>this.onUserDetailsChange(e)}
             type="text"
             fullWidth
-            label="User Name"
+            label="Name"
           />
           <div style={{margin: 30}}></div>
           <TextField
@@ -453,7 +453,7 @@ class UserDetails extends React.Component {
         options: {
           filter: false,
           sort: true,
-          display: "exclude"
+          // display: "exclude"
         }
       },
       {
@@ -504,7 +504,7 @@ class UserDetails extends React.Component {
               return (
                 <div>
                   {this.processSwitch(tableMeta.rowData[0], tableMeta.rowData[1], tableMeta.rowData[4], tableMeta.rowData[7])}
-                  {this.processEditUserDetails(tableMeta.rowData[2], tableMeta.rowData[1], tableMeta.rowData[0])}
+                  {this.processEditUserDetails(tableMeta.rowData[2], tableMeta.rowData[3], tableMeta.rowData[0])}
                   {this.processModal(tableMeta.rowData[1])}
                   {this.processUserView(tableMeta.rowData[0], tableMeta.rowData[2])}
                 </div>
