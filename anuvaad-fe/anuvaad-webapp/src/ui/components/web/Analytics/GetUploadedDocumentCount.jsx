@@ -123,6 +123,8 @@ function GetUploadedDocumentCount(props) {
 
         const formattedDataForMetrics = filteredDataByOrgAndSrcLang;
 
+        formattedDataForMetrics.sort((a,b)=> (a.in_progress + a.uploaded) > (b.in_progress + b.uploaded) ? -1 : 1 );
+
         setData(formattedDataForMetrics);
 
     }
