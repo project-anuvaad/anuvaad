@@ -389,7 +389,7 @@ class Login extends React.Component {
               href="#"
               className={classes.forgotPassLink}
             >
-              {/* Sign Up */}
+              Sign Up
             </Link>
 
             <Link
