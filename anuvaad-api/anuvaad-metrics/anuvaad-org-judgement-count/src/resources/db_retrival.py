@@ -381,8 +381,8 @@ def fetch_reviewer_data():
         # pre filters
         df = df.dropna(subset=['org'])
         # mask unknown org
-        MASK_ORGS = ["ANUVAAD", "TARENTO_TESTORG", "NONMT", "ECOMMITTEE ", "SC_TC"]
-        df = df[~df['org'].isin(MASK_ORGS)]
+        if config.METRICS_ORG_MASKING:
+            df = df[~df['org'].isin(config.MASK_ORGS)]
         # replace some orgs
         org_replacer= {'NEPAL':'SIKKIM','SIMLA':'SHIMLA','CHATTISGARH':'CHHATTISGARH',}
         df['org'] = df['org'].replace(org_replacer)
