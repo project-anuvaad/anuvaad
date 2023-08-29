@@ -389,7 +389,7 @@ def fetch_reviewer_data():
         # apply filter to src,tgt langs
         for x_col in ['tgt','src']:
             # remove alpha from lang string
-            df[x_col] = df[x_col].replace({'(Alpha)':" "},regex=True)
+            df[x_col] = df[x_col].replace({'\(Alpha\)':""},regex=True)
             # strip lang string
             df[x_col] = df[x_col].str.strip()
             # remove not supported rows 
