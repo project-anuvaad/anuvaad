@@ -71,61 +71,63 @@ function GetUploadedDocumentCount(props) {
     }, [selectedOrgId, selectedSourceLang])
 
     const onOrgChange = (orgId = selectedOrgId, srcLang = selectedSourceLang) => {
-        let filteredDataByOrgAndSrcLang = sourceData?.data.filter(el => {
+        if (sourceData) {
+            let filteredDataByOrgAndSrcLang = sourceData?.data.filter(el => {
+                if (orgId === "ALL") {
+                    return el.src === selectedSourceLang
+                } else {
+                    return el.org === orgId && el.src === selectedSourceLang
+                }
+            });
+
+            // format chart data when showing all organizations data combining based on source and target language
+            const allTgtLangsInFilteredData = [...new Set(filteredDataByOrgAndSrcLang?.map(el => el.tgt))];
+
             if (orgId === "ALL") {
-                return el.src === selectedSourceLang
-            } else {
-                return el.org === orgId && el.src === selectedSourceLang
-            }
-        });
+                const allOrgData = [];
+                allTgtLangsInFilteredData.map(lang => {
+                    let sameTgtLangArr = [];
+                    filteredDataByOrgAndSrcLang.map((dataObj) => {
+                        if (dataObj.tgt === lang) {
+                            sameTgtLangArr.push(dataObj);
+                        }
+                    })
+                    console.log(sameTgtLangArr);
 
-        // format chart data when showing all organizations data combining based on source and target language
-        const allTgtLangsInFilteredData = [...new Set(filteredDataByOrgAndSrcLang?.map(el => el.tgt))];
-        
-        if (orgId === "ALL") {
-            const allOrgData = [];
-            allTgtLangsInFilteredData.map(lang => {
-                let sameTgtLangArr = [];
-                filteredDataByOrgAndSrcLang.map((dataObj) => {
-                    if (dataObj.tgt === lang) {
-                        sameTgtLangArr.push(dataObj);
-                    }
+                    allOrgData.push(sameTgtLangArr.reduce((a, b) => {
+                        return {
+                            in_progress: a.in_progress + b.in_progress,
+                            src: a.src,
+                            tgt: a.tgt,
+                            uploaded: a.uploaded + b.uploaded
+                        }
+                    }))
                 })
-                console.log(sameTgtLangArr);
 
-                allOrgData.push(sameTgtLangArr.reduce((a, b) => {
-                    return {
-                        in_progress: a.in_progress + b.in_progress,
-                        src: a.src,
-                        tgt: a.tgt,
-                        uploaded: a.uploaded + b.uploaded
-                    }
-                }))
+                filteredDataByOrgAndSrcLang = allOrgData;
+
+            }
+
+            let totalInprogressDocuments = 0;
+            let totalUploadedDocuments = 0;
+
+            filteredDataByOrgAndSrcLang && filteredDataByOrgAndSrcLang.length > 0 && filteredDataByOrgAndSrcLang.map((el) => {
+                totalInprogressDocuments = totalInprogressDocuments + el.in_progress;
+                totalUploadedDocuments = totalUploadedDocuments + el.uploaded;
             })
 
-            filteredDataByOrgAndSrcLang = allOrgData;
+            const totalDocuments = totalInprogressDocuments + totalUploadedDocuments;
 
+            setTotalDocumentcount(totalDocuments);
+            setTotalInprogressDocumentcount(totalInprogressDocuments);
+            setTotalUploadedDocumentcount(totalUploadedDocuments)
+
+            const formattedDataForMetrics = filteredDataByOrgAndSrcLang;
+
+            formattedDataForMetrics && formattedDataForMetrics.length > 0 && formattedDataForMetrics.sort((a, b) => (a.in_progress + a.uploaded) > (b.in_progress + b.uploaded) ? -1 : 1);
+
+            setData(formattedDataForMetrics);
         }
-
-        let totalInprogressDocuments = 0;
-        let totalUploadedDocuments = 0;
-
-        filteredDataByOrgAndSrcLang && filteredDataByOrgAndSrcLang.length > 0 && filteredDataByOrgAndSrcLang.map((el) => {
-            totalInprogressDocuments = totalInprogressDocuments + el.in_progress;
-            totalUploadedDocuments = totalUploadedDocuments + el.uploaded;
-        })
-
-        const totalDocuments = totalInprogressDocuments + totalUploadedDocuments;
-
-        setTotalDocumentcount(totalDocuments);
-        setTotalInprogressDocumentcount(totalInprogressDocuments);
-        setTotalUploadedDocumentcount(totalUploadedDocuments)
-
-        const formattedDataForMetrics = filteredDataByOrgAndSrcLang;
-
-        formattedDataForMetrics.sort((a,b)=> (a.in_progress + a.uploaded) > (b.in_progress + b.uploaded) ? -1 : 1 );
-
-        setData(formattedDataForMetrics);
 
     }
 
