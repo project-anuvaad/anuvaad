@@ -6,7 +6,7 @@ import time
 import pandas as pd
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_error
-
+from lxml import etree
 from src.utilities.xml_utils import ( get_string_xmltree, get_xmltree, get_specific_tags, get_page_texts_ordered, get_page_text_element_attrib, get_ngram)
 from src.services.xml_document_info import (get_xml_info, get_xml_image_info, get_pdf_image_info)
 from src.utilities.filesystem import (create_directory,extract_image_paths_from_pdf, extract_html_bg_image_paths_from_digital_pdf, extract_xml_path_from_digital_pdf)
@@ -48,6 +48,23 @@ def extract_pdf_metadata(filename, working_dir, base_dir):
         log_error('error extracting xml information of {}'.format(pdf_filepath), app_context.application_context, e)
         return None, None, None
     log_info('Extracting xml of {}'.format(pdf_filepath), app_context.application_context)
+    # Load and parse the XML file
+    tree = etree.parse(pdf_xml_filepath)
+    root = tree.getroot()
+    # Iterate through <text> elements and remove those with height > 40
+    elements_to_remove = []
+
+    for text_elem in root.findall(".//text"):
+        height = int(text_elem.get("height"))
+        if height > 40:
+            elements_to_remove.append(text_elem)
+
+    # Remove the collected elements from their parent
+    for elem in elements_to_remove:
+        parent_elem = elem.getparent()
+        parent_elem.remove(elem)
+    # Save the modified XML
+    tree.write(pdf_xml_filepath)
 
     try:
         log_info('Extracting background images STARTED', app_context.application_context)
