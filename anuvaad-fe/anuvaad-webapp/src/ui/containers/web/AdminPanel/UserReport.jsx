@@ -24,6 +24,7 @@ import DownloadFile from "../../../../flux/actions/apis/download/download_file";
 import EventIcon from '@material-ui/icons/Event';
 import clearEvent from '../../../../flux/actions/apis/admin/clear_user_event_report';
 import DataTable from "../../../components/web/common/DataTable";
+import { FormControl, InputLabel, MenuItem, Select } from "@material-ui/core";
 
 
 const TELEMETRY = require("../../../../utils/TelemetryManager");
@@ -40,7 +41,9 @@ class UserReport extends React.Component {
             dialogMessage: null,
             timeOut: 3000,
             variant: "info",
-            userID: [this.props.match.params.id]
+            userID: [this.props.match.params.id],
+            translationStatus: "ALL",
+            filterOptionData: [{label: "ALL"}, {label: "STARTED"}, {label: "INPROGRESS"}, {label: "COMPLETED"}, {label: "FAILED"}]
 
         };
     }
@@ -61,6 +64,7 @@ class UserReport extends React.Component {
                 false,
                 false,
                 this.state.userID,
+                this.state.translationStatus  === "ALL" ? ["STARTED", "INPROGRESS", "COMPLETED", "FAILED"]  : [this.state.translationStatus]
 
             );
         }
@@ -73,6 +77,7 @@ class UserReport extends React.Component {
                 false,
                 false,
                 this.state.userID,
+                this.state.translationStatus  === "ALL" ? ["STARTED", "INPROGRESS", "COMPLETED", "FAILED"]  : [this.state.translationStatus]
             )
             this.makeAPICallDocumentsTranslationProgress();
             this.setState({ showLoader: true })
@@ -84,7 +89,7 @@ class UserReport extends React.Component {
         TELEMETRY.pageLoadCompleted("user-report");
     }
 
-    componentDidUpdate(prevProps) {
+    componentDidUpdate(prevProps, prevState) {
         if (this.props.job_details.changedJob && this.props.job_details.changedJob.hasOwnProperty("jobID") && prevProps.job_details.changedJob !== this.props.job_details.changedJob) {
             this.setState({ showLoader: false })
             TELEMETRY.endWorkflow(this.props.job_details.changedJob.source_language_code, this.props.job_details.changedJob.target_language_code, this.props.job_details.changedJob.filename, this.props.job_details.changedJob.jobID, this.props.job_details.changedJob.status)
@@ -129,6 +134,21 @@ class UserReport extends React.Component {
         else if (this.props.job_details.progress_updated !== prevProps.job_details.progress_updated && this.props.job_details.count === prevProps.job_details.count) {
             this.setState({ showLoader: false });
         }
+
+        if(prevState.translationStatus !== this.state.translationStatus){
+            // this.setState({ showLoader: true });
+            this.makeAPICallJobsBulkSearch(
+                this.state.offset,
+                this.state.limit,
+                [""],
+                false,
+                false,
+                false,
+                this.state.userID,
+                this.state.translationStatus  === "ALL" ? ["STARTED", "INPROGRESS", "COMPLETED", "FAILED"]  : [this.state.translationStatus]
+
+            );
+        }
     }
 
     getMuiTheme = () =>
@@ -154,17 +174,21 @@ class UserReport extends React.Component {
         searchNextPage = false,
         updateExisting = false,
         userIDs = this.state.userID,
+        translationStatus = this.state.translationStatus
     ) {
         const { APITransport } = this.props;
         const apiObj = new FetchDocument(
-            offset,
-            limit,
+            0,
+            0,
             jobIds,
             searchForNewJob,
             searchNextPage,
             updateExisting,
             userIDs,
-            true
+            true,
+            false,
+            [],
+            translationStatus
         );
         APITransport(apiObj);
     }
@@ -343,6 +367,7 @@ class UserReport extends React.Component {
                 false,
                 false,
                 this.state.userID,
+                this.state.translationStatus  === "ALL" ? ["STARTED", "INPROGRESS", "COMPLETED", "FAILED"]  : [this.state.translationStatus]
             );
             // this.makeAPICallDocumentsTranslationProgress();
             this.setState({
@@ -653,6 +678,40 @@ class UserReport extends React.Component {
             <div style={{ minHeight: window.innerHeight - 2 }}>
                 <div style={{ margin: "0% 3% 3% 3%", paddingTop: "7%", paddingBottom: "1%" }}>
                     <UserReportHeader />
+                    <div
+                        style={{
+                            width: "100%",
+                            textAlign: "end",
+                            marginBottom: 10
+                        }}
+                    >
+                        <FormControl style={{ textAlign: "start" }}>
+                            <InputLabel id="demo-simple-select-label">Filter By Status</InputLabel>
+                            <Select
+                                labelId="demo-simple-select-label"
+                                id="demo-simple-select"
+                                value={this.state.translationStatus}
+                                // defaultValue={this.state.selectedFilter}
+                                style={{ width: 300, fontSize: "1rem" }}
+                                onChange={(e) => {
+                                    // console.log("e.target.value   ", e.target.value);
+                                    this.setState({ translationStatus: e.target.value })
+                                }}
+                            >
+                                {
+                                    this.state.filterOptionData.map((el, i) => {
+                                        return <MenuItem
+                                            selected={i === 0}
+                                            value={el.label}
+                                            style={{fontSize: "1rem"}}
+                                        >
+                                            {el.label}
+                                        </MenuItem>
+                                    })
+                                }
+                            </Select>
+                        </FormControl>
+                    </div>
                     {/* {!this.state.showLoader && ( */}
                     <MuiThemeProvider theme={this.getMuiTheme()}>
                         <DataTable
