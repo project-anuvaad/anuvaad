@@ -24,6 +24,8 @@ import DownloadFile from "../../../../flux/actions/apis/download/download_file";
 import EventIcon from '@material-ui/icons/Event';
 import clearEvent from '../../../../flux/actions/apis/admin/clear_user_event_report';
 import DataTable from "../../../components/web/common/DataTable";
+import { FormControl, InputLabel, MenuItem, Select } from "@material-ui/core";
+import { CustomTableFooter } from "../../../components/web/common/CustomTableFooter";
 
 
 const TELEMETRY = require("../../../../utils/TelemetryManager");
@@ -31,6 +33,8 @@ const TELEMETRY = require("../../../../utils/TelemetryManager");
 class UserReport extends React.Component {
     constructor(props) {
         super(props);
+        this.tableRef = React.createRef();
+        this.pageInputRef = React.createRef();
         this.state = {
             role: localStorage.getItem("roles"),
             showInfo: false,
@@ -40,8 +44,11 @@ class UserReport extends React.Component {
             dialogMessage: null,
             timeOut: 3000,
             variant: "info",
-            userID: [this.props.match.params.id]
-
+            userID: [this.props.match.params.id],
+            translationStatus: "ALL",
+            filterOptionData: [{ label: "ALL" }, { label: "STARTED" }, { label: "INPROGRESS" }, { label: "COMPLETED" }, { label: "FAILED" }],
+            isInputActive: false,
+            inputPageNumber: 1,
         };
     }
 
@@ -61,6 +68,7 @@ class UserReport extends React.Component {
                 false,
                 false,
                 this.state.userID,
+                this.state.translationStatus == "ALL" ? ["STARTED", "INPROGRESS", "COMPLETED", "FAILED"] : [this.state.translationStatus]
 
             );
         }
@@ -73,6 +81,7 @@ class UserReport extends React.Component {
                 false,
                 false,
                 this.state.userID,
+                this.state.translationStatus == "ALL" ? ["STARTED", "INPROGRESS", "COMPLETED", "FAILED"] : [this.state.translationStatus]
             )
             this.makeAPICallDocumentsTranslationProgress();
             this.setState({ showLoader: true })
@@ -84,7 +93,7 @@ class UserReport extends React.Component {
         TELEMETRY.pageLoadCompleted("user-report");
     }
 
-    componentDidUpdate(prevProps) {
+    componentDidUpdate(prevProps, prevState) {
         if (this.props.job_details.changedJob && this.props.job_details.changedJob.hasOwnProperty("jobID") && prevProps.job_details.changedJob !== this.props.job_details.changedJob) {
             this.setState({ showLoader: false })
             TELEMETRY.endWorkflow(this.props.job_details.changedJob.source_language_code, this.props.job_details.changedJob.target_language_code, this.props.job_details.changedJob.filename, this.props.job_details.changedJob.jobID, this.props.job_details.changedJob.status)
@@ -129,6 +138,23 @@ class UserReport extends React.Component {
         else if (this.props.job_details.progress_updated !== prevProps.job_details.progress_updated && this.props.job_details.count === prevProps.job_details.count) {
             this.setState({ showLoader: false });
         }
+
+        if (prevState.translationStatus !== this.state.translationStatus) {
+            this.setState({ offset: 0, limit: 0, currentPageIndex: 0, }, () => {
+                this.makeAPICallJobsBulkSearch(
+                    this.state.offset,
+                    this.state.limit,
+                    [""],
+                    false,
+                    false,
+                    false,
+                    this.state.userID,
+                    this.state.translationStatus == "ALL" ? ["STARTED", "INPROGRESS", "COMPLETED", "FAILED"] : [this.state.translationStatus]
+
+                );
+            });
+
+        }
     }
 
     getMuiTheme = () =>
@@ -154,6 +180,7 @@ class UserReport extends React.Component {
         searchNextPage = false,
         updateExisting = false,
         userIDs = this.state.userID,
+        translationStatus = []
     ) {
         const { APITransport } = this.props;
         const apiObj = new FetchDocument(
@@ -164,7 +191,10 @@ class UserReport extends React.Component {
             searchNextPage,
             updateExisting,
             userIDs,
-            true
+            true,
+            false,
+            [],
+            translationStatus
         );
         APITransport(apiObj);
     }
@@ -175,9 +205,9 @@ class UserReport extends React.Component {
         } else {
             var recordIds = this.getRecordIds();
         }
-       
+
         if (recordIds.length > 0) {
-            const uniqueIDs = recordIds.filter((val,id,array) => array.indexOf(val) == id);
+            const uniqueIDs = recordIds.filter((val, id, array) => array.indexOf(val) == id);
             const { APITransport } = this.props;
             const apiObj = new JobStatus(uniqueIDs, true);
             // const apiObj = new JobStatus(recordIds, true);
@@ -200,7 +230,7 @@ class UserReport extends React.Component {
     };
 
     getJobsAsPerPageAndLimit = (page, limit) => {
-        if(limit === 0) {
+        if (limit === 0) {
             // limit = 10  
             this.setState({ limit: 10 });
         }
@@ -266,12 +296,13 @@ class UserReport extends React.Component {
     processViewDocumentEditor = (data) => {
         return (
             this.state.role === "SUPERADMIN" && <Tooltip title="View Document" placement="right">
-                <IconButton style={{ color: '#233466', padding: '5px' }}
+                <IconButton style={{ color: data.status !== "COMPLETED" ? 'grey' : '#233466', padding: '5px' }}
                     component="a"
+                    disabled={data.status !== "COMPLETED"}
                     onClick={
                         // ()=>console.log("data --- ", data)
                         () => this.handleViewDocumentEditor(data.recordId, data.converted_filename, data.model_id, data.filename, data.workflowCode, data.source_language_code, data.target_language_code, data.user_id)
-                        }>
+                    }>
                     <LibraryBooksIcon />
                 </IconButton>
             </Tooltip>
@@ -279,7 +310,7 @@ class UserReport extends React.Component {
     }
 
     handleViewDocumentEditor = (jobid, inputfileid, modelId, filename, workflow, source_language_code, target_language_code, user_id) => {
-        history.push(`${process.env.PUBLIC_URL}/interactive-document/${jobid}/${inputfileid}/${modelId}/${filename}/${workflow}/${source_language_code}/${target_language_code}`, {data : {user_id: user_id}})
+        history.push(`${process.env.PUBLIC_URL}/interactive-document/${jobid}/${inputfileid}/${modelId}/${filename}/${workflow}/${source_language_code}/${target_language_code}`, { data: { user_id: user_id } })
     }
 
     handleDocumentView = (fid, fname, status, sentenceCount) => {
@@ -342,7 +373,9 @@ class UserReport extends React.Component {
                 this.state.limit,
                 false,
                 false,
+                false,
                 this.state.userID,
+                this.state.translationStatus == "ALL" ? ["STARTED", "INPROGRESS", "COMPLETED", "FAILED"] : [this.state.translationStatus]
             );
             // this.makeAPICallDocumentsTranslationProgress();
             this.setState({
@@ -450,6 +483,28 @@ class UserReport extends React.Component {
             this.setState({ dialogMessage: "" })
         }, 3000)
     }
+
+    handleInputPageChange = (event, totalPageCount) => {
+        if (event.target.value <= totalPageCount) {
+          this.setState({ inputPageNumber: event.target.value })
+        } else if (event.target.value > totalPageCount) {
+          this.setState({ inputPageNumber: totalPageCount })
+        } else if (event.target.value == 0) {
+          this.setState({ inputPageNumber: 1 })
+        } else if (event.target.value < 0) {
+          this.setState({ inputPageNumber: 1 })
+        }
+      }
+
+      onChangePageMAnually = () => {
+        // console.log("offset", 0);
+        // console.log("limit (Number(this.state.inputPageNumber)-1)*10 ---> ", this.props.job_details.count);
+        // this.makeAPICallJobsBulkSearch(0, (Number(this.state.inputPageNumber)-1)*10, false, false, true)
+        this.tableRef.current.changePage(Number(this.state.inputPageNumber) - 1);
+        this.setState({ currentPageIndex: this.state.inputPageNumber - 1 }, () => {
+          this.makeAPICallDocumentsTranslationProgress();
+        });
+      }
 
     render() {
         const columns = [
@@ -594,7 +649,7 @@ class UserReport extends React.Component {
                                 <div>
                                     {this.processDocumentView(tableMeta.rowData[1], tableMeta.rowData[0], tableMeta.rowData[5], tableMeta.rowData[6])}
                                     {this.processDocumentDownload(tableMeta.rowData[1])}
-                                    { this.processViewDocumentEditor(this.getJobsSortedByTimestamp()[tableMeta.rowIndex])}
+                                    {this.processViewDocumentEditor(this.getJobsSortedByTimestamp()[tableMeta.rowIndex])}
                                     {/* jobid - 1, inputfileid, modelId, filename, workflow, source_language_code, target_language_code */}
                                     {/* {this.processEventView(tableMeta.rowData[1], tableMeta.rowData[5], tableMeta.rowData[6])} */}
                                 </div>
@@ -621,21 +676,21 @@ class UserReport extends React.Component {
                 options: { sortDirection: "desc" },
             },
 
-            onTableChange: (action, tableState) => {
-                switch (action) {
-                    case "changePage":
-                        this.processTableClickedNextOrPrevious(
-                            tableState.page
-                        );
-                        this.setState({ showLoader: true, limit: tableState.rowsPerPage })
-                        break;
-                    case "changeRowsPerPage":
-                        this.setState({ showLoader: true, limit: tableState.rowsPerPage, currentPageIndex: tableState.page  })
-                        this.makeAPICallDocumentsTranslationProgress(tableState.rowsPerPage);
-                        break;
-                    default:
-                }
-            },
+            // onTableChange: (action, tableState) => {
+            //     switch (action) {
+            //         case "changePage":
+            //             this.processTableClickedNextOrPrevious(
+            //                 tableState.page
+            //             );
+            //             this.setState({ showLoader: true, limit: tableState.rowsPerPage })
+            //             break;
+            //         case "changeRowsPerPage":
+            //             this.setState({ showLoader: true, limit: tableState.rowsPerPage, currentPageIndex: tableState.page })
+            //             this.makeAPICallDocumentsTranslationProgress(tableState.rowsPerPage);
+            //             break;
+            //         default:
+            //     }
+            // },
             count: this.props.job_details.count,
             filterType: "checkbox",
             download: false,
@@ -648,11 +703,85 @@ class UserReport extends React.Component {
                 direction: "desc",
             },
             page: this.state.currentPageIndex,
+            customFooter: (
+                count,
+                page,
+                rowsPerPage,
+                changeRowsPerPage,
+                changePage
+              ) => {
+                const startIndex = page * rowsPerPage;
+                const endIndex = (page + 1) * rowsPerPage;
+                const totalPageCount = Math.ceil(this.props.job_details.count / 10);
+                return (
+                  <CustomTableFooter
+                    renderCondition={totalPageCount > 0}
+                    countLabel={"Total Documents"}
+                    totalCount={this.props.job_details.count}
+                    pageInputRef={this.pageInputRef}
+                    inputValue={this.state.inputPageNumber}
+                    onInputFocus={()=>this.setState({ isInputActive: true })}
+                    onInputBlur={()=>this.setState({ isInputActive: false })}
+                    handleInputChange={this.handleInputPageChange}
+                    totalPageCount={totalPageCount}
+                    onGoToPageClick={this.onChangePageMAnually}
+                    onBackArrowClick={() => {
+                      this.setState({ currentPageIndex: this.state.currentPageIndex - 1 }, ()=>this.makeAPICallDocumentsTranslationProgress())
+                      this.tableRef.current.changePage(Number(this.state.currentPageIndex - 1))
+                    }
+                    }
+                    onRightArrowClick={() => {
+                      this.setState({ currentPageIndex: this.state.currentPageIndex + 1 }, () => this.makeAPICallDocumentsTranslationProgress())
+                      this.tableRef.current.changePage(Number(this.state.currentPageIndex + 1))
+                    }
+                    }
+                    backArrowTabIndex={this.state.currentPageIndex - 1}
+                    backArrowDisable={this.state.currentPageIndex == 0}
+                    rightArrowTabIndex={this.state.currentPageIndex + 1}
+                    rightArrowDisable={this.state.currentPageIndex == (totalPageCount-1)}
+                    pageTextInfo={`Page ${parseInt(this.state.currentPageIndex + 1)} of ${parseInt(totalPageCount)}`}
+                  />
+                );
+              }
         };
         return (
             <div style={{ minHeight: window.innerHeight - 2 }}>
                 <div style={{ margin: "0% 3% 3% 3%", paddingTop: "7%", paddingBottom: "1%" }}>
                     <UserReportHeader />
+                    <div
+                        style={{
+                            width: "100%",
+                            textAlign: "end",
+                            marginBottom: 10
+                        }}
+                    >
+                        <FormControl style={{ textAlign: "start" }}>
+                            <InputLabel id="demo-simple-select-label">Filter By Status</InputLabel>
+                            <Select
+                                labelId="demo-simple-select-label"
+                                id="demo-simple-select"
+                                value={this.state.translationStatus}
+                                // defaultValue={this.state.selectedFilter}
+                                style={{ width: 300, fontSize: "1rem" }}
+                                onChange={(e) => {
+                                    // console.log("e.target.value   ", e.target.value);
+                                    this.setState({ translationStatus: e.target.value })
+                                }}
+                            >
+                                {
+                                    this.state.filterOptionData.map((el, i) => {
+                                        return <MenuItem
+                                            selected={i === 0}
+                                            value={el.label}
+                                            style={{ fontSize: "1rem" }}
+                                        >
+                                            {el.label}
+                                        </MenuItem>
+                                    })
+                                }
+                            </Select>
+                        </FormControl>
+                    </div>
                     {/* {!this.state.showLoader && ( */}
                     <MuiThemeProvider theme={this.getMuiTheme()}>
                         <DataTable
@@ -660,6 +789,7 @@ class UserReport extends React.Component {
                             data={this.getJobsSortedByTimestamp()}
                             columns={columns}
                             options={options}
+                            innerRef={this.tableRef}
                         />
                     </MuiThemeProvider>
                     {/* )} */}

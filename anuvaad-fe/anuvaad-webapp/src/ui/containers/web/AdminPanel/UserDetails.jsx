@@ -63,6 +63,7 @@ class UserDetails extends React.Component {
         userName: "",
         userEmail: "",
         displayName: "",
+        name: "",
         userId: ""
       } , 
       showEditUserModal: false
@@ -264,12 +265,13 @@ class UserDetails extends React.Component {
     this.setState({ isModalOpen: true, username: userName })
   }
 
-  openEditUserModal = (userName, userEmail, userId) => {
+  openEditUserModal = (userName, userEmail, name, userId) => {
     const currentEditableUserDetails = {...this.state.currentEditableUserDetails};
     currentEditableUserDetails.userName = userName;
     currentEditableUserDetails.userEmail = userEmail;
     currentEditableUserDetails.displayName = userName;
     currentEditableUserDetails.userId = userId;
+    currentEditableUserDetails.name = name;
     this.setState({currentEditableUserDetails}, ()=> {this.setState({showEditUserModal: true})})
   }
 
@@ -316,14 +318,14 @@ class UserDetails extends React.Component {
     );
   }
 
-  processEditUserDetails = (userName, userEmail, userId) => {
+  processEditUserDetails = (userName, userEmail, name, userId) => {
     return(
       <Tooltip title="Edit User Info" placement="left">
         <IconButton 
           style={{ color: '#233466', padding: '5px' }} 
           component="a" 
           onClick={() => {
-            this.openEditUserModal(userName, userEmail, userId);
+            this.openEditUserModal(userName, userEmail, name, userId);
           }} 
         >
           <EditOutlinedIcon />
@@ -343,7 +345,7 @@ class UserDetails extends React.Component {
       {
         "userID": this.state.currentEditableUserDetails.userId,
         "email": this.state.currentEditableUserDetails.userEmail,
-        "name": this.state.currentEditableUserDetails.userName
+        "name": this.state.currentEditableUserDetails.name
       }
     ]
     const apiObj = new CreateUsers(modifiedUserData);
@@ -382,6 +384,18 @@ class UserDetails extends React.Component {
             defaultValue={this.state.currentEditableUserDetails.userName} 
             onChange={(e)=>this.onUserDetailsChange(e)}
             type="text"
+            disabled
+            fullWidth
+            label="User Name"
+          />
+          <div style={{margin: 30}}></div>
+          <TextField
+            margin="dense"
+            name="name"
+            defaultValue={this.state.currentEditableUserDetails.name} 
+            onChange={(e)=>this.onUserDetailsChange(e)}
+            type="text"
+            disabled
             fullWidth
             label="Name"
           />
@@ -504,7 +518,7 @@ class UserDetails extends React.Component {
               return (
                 <div>
                   {this.processSwitch(tableMeta.rowData[0], tableMeta.rowData[1], tableMeta.rowData[4], tableMeta.rowData[7])}
-                  {this.processEditUserDetails(tableMeta.rowData[2], tableMeta.rowData[3], tableMeta.rowData[0])}
+                  {this.processEditUserDetails(tableMeta.rowData[1], tableMeta.rowData[3], tableMeta.rowData[2],  tableMeta.rowData[0])}
                   {this.processModal(tableMeta.rowData[1])}
                   {this.processUserView(tableMeta.rowData[0], tableMeta.rowData[2])}
                 </div>

@@ -655,7 +655,7 @@ class InteractiveDocHeader extends React.Component {
             onClick={() => {
               this.props.clear_html_link();
               this.props.clear_docx_view();
-              history.push(`${process.env.PUBLIC_URL}/view-document`);
+              history.goBack();
             }}
             className={classes.menuButton}
             color="inherit"
