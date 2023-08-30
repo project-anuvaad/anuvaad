@@ -64,7 +64,7 @@ class UserReport extends React.Component {
                 false,
                 false,
                 this.state.userID,
-                this.state.translationStatus  === "ALL" ? ["STARTED", "INPROGRESS", "COMPLETED", "FAILED"]  : [this.state.translationStatus]
+                this.state.translationStatus  == "ALL" ? ["STARTED", "INPROGRESS", "COMPLETED", "FAILED"]  : [this.state.translationStatus]
 
             );
         }
@@ -77,7 +77,7 @@ class UserReport extends React.Component {
                 false,
                 false,
                 this.state.userID,
-                this.state.translationStatus  === "ALL" ? ["STARTED", "INPROGRESS", "COMPLETED", "FAILED"]  : [this.state.translationStatus]
+                this.state.translationStatus  == "ALL" ? ["STARTED", "INPROGRESS", "COMPLETED", "FAILED"]  : [this.state.translationStatus]
             )
             this.makeAPICallDocumentsTranslationProgress();
             this.setState({ showLoader: true })
@@ -145,7 +145,7 @@ class UserReport extends React.Component {
                 false,
                 false,
                 this.state.userID,
-                this.state.translationStatus  === "ALL" ? ["STARTED", "INPROGRESS", "COMPLETED", "FAILED"]  : [this.state.translationStatus]
+                this.state.translationStatus  == "ALL" ? ["STARTED", "INPROGRESS", "COMPLETED", "FAILED"]  : [this.state.translationStatus]
 
             );
         }
@@ -174,12 +174,12 @@ class UserReport extends React.Component {
         searchNextPage = false,
         updateExisting = false,
         userIDs = this.state.userID,
-        translationStatus = this.state.translationStatus
+        translationStatus = []
     ) {
         const { APITransport } = this.props;
         const apiObj = new FetchDocument(
-            0,
-            0,
+            offset,
+            limit,
             jobIds,
             searchForNewJob,
             searchNextPage,
@@ -290,8 +290,9 @@ class UserReport extends React.Component {
     processViewDocumentEditor = (data) => {
         return (
             this.state.role === "SUPERADMIN" && <Tooltip title="View Document" placement="right">
-                <IconButton style={{ color: '#233466', padding: '5px' }}
+                <IconButton style={{ color: data.status !== "COMPLETED" ? 'grey' : '#233466', padding: '5px' }}
                     component="a"
+                    disabled={data.status !== "COMPLETED"}
                     onClick={
                         // ()=>console.log("data --- ", data)
                         () => this.handleViewDocumentEditor(data.recordId, data.converted_filename, data.model_id, data.filename, data.workflowCode, data.source_language_code, data.target_language_code, data.user_id)
@@ -367,7 +368,7 @@ class UserReport extends React.Component {
                 false,
                 false,
                 this.state.userID,
-                this.state.translationStatus  === "ALL" ? ["STARTED", "INPROGRESS", "COMPLETED", "FAILED"]  : [this.state.translationStatus]
+                this.state.translationStatus  == "ALL" ? ["STARTED", "INPROGRESS", "COMPLETED", "FAILED"]  : [this.state.translationStatus]
             );
             // this.makeAPICallDocumentsTranslationProgress();
             this.setState({
