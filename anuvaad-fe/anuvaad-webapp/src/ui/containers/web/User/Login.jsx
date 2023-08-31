@@ -226,6 +226,7 @@ class Login extends React.Component {
   }
 
   OnUpdateEmailIdClick = (new_email) => {
+    this.handleClose();
     const {email, password} = this.state;
     const apiObj = new UpdateEmail(email, password, new_email);
     fetch(apiObj.apiEndPoint(), {
@@ -241,6 +242,8 @@ class Login extends React.Component {
         setTimeout(() => {
           this.setState({showOneTimeUpdateEmailIdModal: false, oneTimeUpdateEmailIdSuccessMessage: false})
         }, 4000);
+      } else {
+        this.setState({ error: true, loading: false, errMessage: rsp_data?.message, showOneTimeUpdateEmailIdModal: false, oneTimeUpdateEmailIdSuccessMessage: false });
       }
     })
     .catch(err => {
@@ -303,6 +306,10 @@ class Login extends React.Component {
   handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
+
+  handleClose = () => {
+    this.setState({error: false, errMessage: ""})
+  }
 
   
 

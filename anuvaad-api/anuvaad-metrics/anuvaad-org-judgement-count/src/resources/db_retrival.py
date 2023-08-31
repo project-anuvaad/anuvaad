@@ -378,6 +378,23 @@ def fetch_reviewer_data():
         df = pd.concat([df,df1],axis=0,ignore_index=True)
     # aggreagate data
     if len(df) > 0 :
+        # pre filters
+        df = df.dropna(subset=['org'])
+        # mask unknown org
+        if config.METRICS_ORG_MASKING:
+            df = df[~df['org'].isin(config.MASK_ORGS)]
+        # replace some orgs
+        org_replacer= {'NEPAL':'SIKKIM','SIMLA':'SHIMLA','CHATTISGARH':'CHHATTISGARH',}
+        df['org'] = df['org'].replace(org_replacer)
+        # apply filter to src,tgt langs
+        for x_col in ['tgt','src']:
+            # remove alpha from lang string
+            df[x_col] = df[x_col].replace({'\(Alpha\)':""},regex=True)
+            # strip lang string
+            df[x_col] = df[x_col].str.strip()
+            # remove not supported rows 
+            df = df[~df[x_col].str.contains('Not Supported')]
+        # aggregate data
         df = df.groupby(['org', 'src', 'tgt']).apply(lambda x : pd.Series({'count':x.groupby('status').sum().to_dict()['count']}))
         df = pd.concat([df.reset_index(),pd.json_normalize(df['count'])],axis=1)
         del df['count']

@@ -42,7 +42,7 @@ class ViewDocument extends React.Component {
   constructor(props) {
     super(props);
     this.tableRef = React.createRef();
-    this.pageInputRef = React.createRef()
+    this.pageInputRef = React.createRef();
     this.state = {
       role: localStorage.getItem("roles"),
       showInfo: false,

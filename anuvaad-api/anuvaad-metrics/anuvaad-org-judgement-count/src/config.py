@@ -31,6 +31,10 @@ REVIEWER_DATA_CRONFILE =  "reviewer_data_cron.csv"
 REVIEWER_DATA_BASE_SDATE =  [2000,1,1]
 REVIEWER_DATA_BASE_EDATE =  [2023,4,30]
 
+MASK_ORGS = ["ANUVAAD", "TARENTO_TESTORG", "NONMT", "ECOMMITTEE ", "SC_TC", "SUVAS", "ULCA_ANUVAAD"]
+
+METRICS_ORG_MASKING = (os.getenv('METRICS_ORG_MASKING', 'True') == 'True') # if (value is 'True' or env does not exists) then boolTrue else boolFalse
+
 EMAIL_NOTIFIER = ["srihari.nagaraj@tarento.com","apoorva.bellary@tarento.com"]
 
 

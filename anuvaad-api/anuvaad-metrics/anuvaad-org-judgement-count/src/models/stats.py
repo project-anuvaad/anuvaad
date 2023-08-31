@@ -281,10 +281,11 @@ class jud_stats(object):
             df.dropna(subset=['orgID'], inplace=True)
             # result = df1.merge(df, indicator=True, how="right")
             result = df.sort_values(by=["orgID"], ascending=True)
-            mask = result["orgID"].isin(
-                ["ANUVAAD", "TARENTO_TESTORG", "NONMT", "ECOMMITTEE "]
-            )
-            result = result[~mask]
+            if config.METRICS_ORG_MASKING:
+                mask = result["orgID"].isin(
+                    config.MASK_ORGS
+                )
+                result = result[~mask]
         else:
             df = pd.read_csv(file_name1)
             df1 = pd.read_csv(file_name2)
@@ -527,6 +528,9 @@ class jud_stats(object):
         docs = pd.DataFrame(list(docs))
         docs = pd.concat([docs,pd.json_normalize(docs['_id'])],axis=1)
         del docs['_id']
+        docs = docs.dropna(subset=['org'])
+        for x_col in ['org','src','tgt']:
+            docs[x_col] = docs[x_col].str.strip()
         # print(docs.to_string())
         return docs
 
