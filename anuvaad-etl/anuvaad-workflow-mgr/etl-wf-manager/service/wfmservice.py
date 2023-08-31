@@ -419,7 +419,7 @@ class WFMService:
             if 'statuses' in req_criteria.keys():
                 if req_criteria["statuses"]:
                     statuses = []
-                    for status in statuses:
+                    for status in req_criteria["statuses"]:
                         if status:
                             statuses.append(status)
                         if len(statuses) > 0:
