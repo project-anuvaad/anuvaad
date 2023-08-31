@@ -46,7 +46,7 @@ class UserReport extends React.Component {
             variant: "info",
             userID: [this.props.match.params.id],
             translationStatus: "ALL",
-            filterOptionData: [{ label: "ALL" }, { label: "STARTED" }, { label: "INPROGRESS" }, { label: "COMPLETED" }, { label: "FAILED" }],
+            filterOptionData: [{ label: "ALL" }, { label: "INPROGRESS" }, { label: "COMPLETED" }, { label: "FAILED" }],
             isInputActive: false,
             inputPageNumber: 1,
         };
