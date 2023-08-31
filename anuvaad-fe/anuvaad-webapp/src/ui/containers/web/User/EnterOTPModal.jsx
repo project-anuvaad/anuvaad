@@ -32,6 +32,8 @@ const EnterOTPModal = (props) => {
     // loading,
   } = { ...props };
 
+  const [otpBoxFocused, setOtpBoxFocused] = useState(true);
+
   const [OTP1, setOTP1] = useState("");
   const [OTP2, setOTP2] = useState("");
   const [OTP3, setOTP3] = useState("");
@@ -59,6 +61,7 @@ const EnterOTPModal = (props) => {
       style: { textAlignLast: "center" },
       inputProps: { maxLength: 1 },
       value: OTP1,
+      onKeyUp: (e) => handleKeyboardBackspacePress(e, null),
       onChange: (e) => handleOTPChange(e, setOTP1, 1, digit2, null)
     },
     {
@@ -68,6 +71,7 @@ const EnterOTPModal = (props) => {
       style: { textAlignLast: "center" },
       inputProps: { maxLength: 1 },
       value: OTP2,
+      onKeyUp: (e) => handleKeyboardBackspacePress(e, digit1),
       onChange: (e) => handleOTPChange(e, setOTP2, 2, digit3, digit1)
     },
     {
@@ -77,6 +81,7 @@ const EnterOTPModal = (props) => {
       style: { textAlignLast: "center" },
       inputProps: { maxLength: 1 },
       value: OTP3,
+      onKeyUp: (e) => handleKeyboardBackspacePress(e, digit2),
       onChange: (e) => handleOTPChange(e, setOTP3, 3, digit4, digit2)
     },
     {
@@ -86,6 +91,7 @@ const EnterOTPModal = (props) => {
       style: { textAlignLast: "center" },
       inputProps: { maxLength: 1 },
       value: OTP4,
+      onKeyUp: (e) => handleKeyboardBackspacePress(e, digit3),
       onChange: (e) => handleOTPChange(e, setOTP4, 4, digit5, digit3)
     },
     {
@@ -95,6 +101,7 @@ const EnterOTPModal = (props) => {
       style: { textAlignLast: "center" },
       inputProps: { maxLength: 1 },
       value: OTP5,
+      onKeyUp: (e) => handleKeyboardBackspacePress(e, digit4),
       onChange: (e) => handleOTPChange(e, setOTP5, 5, digit6, digit4)
     },
     {
@@ -104,6 +111,7 @@ const EnterOTPModal = (props) => {
       style: { textAlignLast: "center" },
       inputProps: { maxLength: 1 },
       value: OTP6,
+      onKeyUp: (e) => handleKeyboardBackspacePress(e, digit5),
       onChange: (e) => handleOTPChange(e, setOTP6, 6, null, digit5)
     }
   ]
@@ -131,14 +139,40 @@ useEffect(() => {
   setOTP(`${OTP1}${OTP2}${OTP3}${OTP4}${OTP5}${OTP6}`);
 }, [OTP1, OTP2, OTP3, OTP4, OTP5, OTP6])
 
+const copyPasteOTPHandler = (event) => {
+  if(otpBoxFocused && event.ctrlKey && event.code === 'KeyV'){
+    navigator.clipboard.readText().then((copiedText) => {
+      let numberRegExp = new RegExp(`^[0-9]{6}$`);
+      console.log(copiedText); // copied text will be shown here.
+      if(numberRegExp.test(copiedText)){
+        copiedText.split("").map((el,i)=>{
+          i === 0 && setOTP1(el);
+          i === 1 && setOTP2(el); 
+          i === 2 && setOTP3(el);
+          i === 3 && setOTP4(el);
+          i === 4 && setOTP5(el);
+          i === 5 && setOTP6(el);
+          digit6.current.focus()
+        })
+      }
+    });
+    
+  }
+}
+
 useEffect(() => {
+
+  window.addEventListener('keydown', copyPasteOTPHandler);
 
   const timerId = setTimeout(() => {
     handleClose();
   }, 10 * 60 * 1000);
 
+  
+
   return () => {
     clearTimeout(timerId);
+    window.removeEventListener('keydown', copyPasteOTPHandler);
   };
 
 
@@ -165,7 +199,12 @@ const handleOTPChange = (e, setter, index, nextRef, prevRef) => {
   setter(e.target.value);
   if (e.target.value.toString().length > 0 && index < 6 && nextRef?.current) {
     nextRef.current.focus();
-  } else if (e.target.value.toString().length <= 0 && index > 1 && prevRef?.current) {
+  }
+}
+
+const handleKeyboardBackspacePress = (e, prevRef) => {
+  // console.log(e);
+  if(e.keyCode === 8 && prevRef?.current){
     prevRef.current.focus();
   }
 }
@@ -222,6 +261,9 @@ return (
             inputProps={el.inputProps}
             variant="outlined"
             value={el.value}
+            onKeyUp={el.onKeyUp}
+            onFocus={()=>setOtpBoxFocused(true)}
+            onBlur={()=>setOtpBoxFocused(false)}
             onChange={el.onChange} />
           })}
         </div>
