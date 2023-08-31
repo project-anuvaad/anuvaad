@@ -34,6 +34,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { Button, TextField } from "@material-ui/core";
 import CreateUsers from "../../../../flux/actions/apis/user/update_user";
+import { CustomTableFooter } from "../../../components/web/common/CustomTableFooter";
 
 
 const TELEMETRY = require('../../../../utils/TelemetryManager')
@@ -41,6 +42,8 @@ const TELEMETRY = require('../../../../utils/TelemetryManager')
 class UserDetails extends React.Component {
   constructor(props) {
     super(props);
+    this.tableRef = React.createRef();
+    this.pageInputRef = React.createRef();
     this.state = {
       role: localStorage.getItem("roles"),
       showInfo: false,
@@ -66,7 +69,9 @@ class UserDetails extends React.Component {
         name: "",
         userId: ""
       } , 
-      showEditUserModal: false
+      showEditUserModal: false,
+      inputPageNumber: 1,
+      isInputActive: false
     };
 
   }
@@ -433,6 +438,28 @@ class UserDetails extends React.Component {
     )
   }
 
+  handleInputPageChange = (event, totalPageCount) => {
+    if (event.target.value <= totalPageCount) {
+      this.setState({ inputPageNumber: event.target.value })
+    } else if (event.target.value > totalPageCount) {
+      this.setState({ inputPageNumber: totalPageCount })
+    } else if (event.target.value == 0) {
+      this.setState({ inputPageNumber: 1 })
+    } else if (event.target.value < 0) {
+      this.setState({ inputPageNumber: 1 })
+    }
+  }
+
+  onChangePageMAnually = () => {
+    // console.log("offset", 0);
+    // console.log("limit (Number(this.state.inputPageNumber)-1)*10 ---> ", this.props.job_details.count);
+    // this.makeAPICallJobsBulkSearch(0, (Number(this.state.inputPageNumber)-1)*10, false, false, true)
+    this.tableRef.current.changePage(Number(this.state.inputPageNumber) - 1);
+    this.setState({ currentPageIndex: this.state.inputPageNumber - 1 }, () => {
+      this.makeAPICallDocumentsTranslationProgress();
+    });
+  }
+
   render() {
     const columns = [
       {
@@ -560,14 +587,55 @@ class UserDetails extends React.Component {
         },
         options: { sortDirection: 'desc' }
       },
-      count: this.props.count,
+      count: this.props.userinfo.data?.length,
       rowsPerPageOptions: [10, 20, 50],
       filterType: "checkbox",
       download: true,
       print: false,
       fixedHeader: true,
       filter: false,
-      selectableRows: "none"
+      selectableRows: "none",
+      page: this.state.currentPageIndex,
+      customFooter: (
+        count,
+        page,
+        rowsPerPage,
+        changeRowsPerPage,
+        changePage
+      ) => {
+        const startIndex = page * rowsPerPage;
+        const endIndex = (page + 1) * rowsPerPage;
+        const totalPageCount = Math.ceil(this.props.userinfo.data?.length / 10);
+        return (
+          <CustomTableFooter
+            renderCondition={totalPageCount > 0}
+            countLabel={"Total Records"}
+            totalCount={this.props.userinfo.data?.length}
+            pageInputRef={this.pageInputRef}
+            inputValue={this.state.inputPageNumber}
+            onInputFocus={()=>this.setState({ isInputActive: true })}
+            onInputBlur={()=>this.setState({ isInputActive: false })}
+            handleInputChange={this.handleInputPageChange}
+            totalPageCount={totalPageCount}
+            onGoToPageClick={this.onChangePageMAnually}
+            onBackArrowClick={() => {
+              this.setState({ currentPageIndex: this.state.currentPageIndex - 1 })
+              this.tableRef.current.changePage(Number(this.state.currentPageIndex - 1))
+            }
+            }
+            onRightArrowClick={() => {
+              this.setState({ currentPageIndex: this.state.currentPageIndex + 1 })
+              this.tableRef.current.changePage(Number(this.state.currentPageIndex + 1))
+            }
+            }
+            backArrowTabIndex={this.state.currentPageIndex - 1}
+            backArrowDisable={this.state.currentPageIndex == 0}
+            rightArrowTabIndex={this.state.currentPageIndex + 1}
+            rightArrowDisable={this.state.currentPageIndex == (totalPageCount-1)}
+            pageTextInfo={`Page ${parseInt(this.state.currentPageIndex + 1)} of ${parseInt(totalPageCount)}`}
+          />
+        );
+      }
     };
 
     return (
@@ -579,7 +647,7 @@ class UserDetails extends React.Component {
             (!this.state.showLoader || this.props.count) &&
             <MuiThemeProvider theme={this.getMuiTheme()}>
               <DataTable title={translate("common.page.title.userdetails")}
-                columns={columns} options={options} data={this.props.userinfo.data} />
+                columns={columns} options={options} data={this.props.userinfo.data} innerRef={this.tableRef} />
             </MuiThemeProvider>
           }
         </div>
