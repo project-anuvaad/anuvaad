@@ -136,7 +136,7 @@ def get_tess_text(image_crop,org_lang, median_height,left,top,cls,c_x,c_y,lang_d
     # lang_detected="Devanagari"
     # lang_detected = page_lang_detection(image_crop,lang)
     tess_lang = config.TESS_LANG_MAPPING[org_lang][0]
-    lang = 'eng+' + org_lang if org_lang != 'en' else lang
+    lang = 'eng+' + tess_lang if org_lang != 'en' else lang
     height_check = median_height * 1.5
     if cls in ['CELL']:
         height_check = median_height*1.2
