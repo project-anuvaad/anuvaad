@@ -705,7 +705,7 @@ class DocumentEditor extends React.Component {
     let jobId = recordId ? recordId.split("|")[0] : ""
     TELEMETRY.endTranslatorFlow(jobId)
     this.props.ClearContent()
-    history.push(`${process.env.PUBLIC_URL}/view-document`);
+    // history.goBack();
   }
 
   /**
