@@ -20,6 +20,7 @@ import IconButton from "@material-ui/core/IconButton";
 import AssessmentOutlinedIcon from '@material-ui/icons/AssessmentOutlined';
 import LibraryBooksIcon from "@material-ui/icons/LibraryBooks";
 import CloudDownloadIcon from "@material-ui/icons/CloudDownload";
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import DownloadFile from "../../../../flux/actions/apis/download/download_file";
 import EventIcon from '@material-ui/icons/Event';
 import clearEvent from '../../../../flux/actions/apis/admin/clear_user_event_report';
@@ -49,6 +50,7 @@ class UserReport extends React.Component {
             filterOptionData: [{ label: "ALL" }, { label: "INPROGRESS" }, { label: "COMPLETED" }, { label: "FAILED" }],
             isInputActive: false,
             inputPageNumber: 1,
+            showLoader: false,
         };
     }
 
@@ -155,6 +157,10 @@ class UserReport extends React.Component {
             });
 
         }
+
+        if(prevProps.job_details !== this.props.job_details){
+            this.setState({showLoader: false})
+        }
     }
 
     getMuiTheme = () =>
@@ -182,6 +188,7 @@ class UserReport extends React.Component {
         userIDs = this.state.userID,
         translationStatus = []
     ) {
+        this.setState({showLoader: true})
         const { APITransport } = this.props;
         const apiObj = new FetchDocument(
             offset,
@@ -664,7 +671,7 @@ class UserReport extends React.Component {
             textLabels: {
                 body: {
                     noMatch:
-                        this.props.fetch_document.state,
+                    this.state.showLoader ? "Loading..." : "No Records Found...",
                 },
                 toolbar: {
                     search: translate("graderReport.page.muiTable.search"),
@@ -751,10 +758,13 @@ class UserReport extends React.Component {
                     <div
                         style={{
                             width: "100%",
-                            textAlign: "end",
+                            // textAlign: "end",
+                            display: "flex",
+                            justifyContent: "space-between",
                             marginBottom: 10
                         }}
                     >
+                        <IconButton onClick={()=>history.goBack()}><ArrowBackIcon /></IconButton>
                         <FormControl style={{ textAlign: "start" }}>
                             <InputLabel id="demo-simple-select-label">Filter By Status</InputLabel>
                             <Select

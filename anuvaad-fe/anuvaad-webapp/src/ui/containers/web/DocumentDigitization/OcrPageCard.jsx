@@ -82,13 +82,14 @@ class OcrPageCard extends React.Component {
 
                 {
                     region['regions'] &&
-                    region['regions'].map(line => this.renderText(line, region))
+                    region['regions']?.map(line => this.renderText(line, region))
                 }
             </div>
         );
     }
 
     renderText = (line, region) => {
+        console.log(" line ---- ", line);
         return (
             <div
                 style={{
@@ -102,7 +103,7 @@ class OcrPageCard extends React.Component {
                 }}
                 key={line.identifier}>
                 {
-                    line.regions.map(word =>
+                    line.regions?.map(word =>
                         line.class !== 'CELL' ?
                             this.renderTextSpan(word, line, region) :
                             this.renderTable(word, line, region)

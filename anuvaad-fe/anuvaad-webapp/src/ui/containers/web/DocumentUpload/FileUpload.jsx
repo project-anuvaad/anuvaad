@@ -367,7 +367,7 @@ class PdfUpload extends Component {
       this.fetchDocumentTranslationProcess([this.props.workflowStatus.jobID]);
 
       setInterval(() => {
-        if (this.state.documentState.status === "INPROGRESS") {
+        if (this.state.documentState.status === "INPROGRESS" || this.state.documentState.status === "STARTED") {
           this.fetchDocumentTranslationProcess([this.props.workflowStatus.jobID]);
         } else {
           return
