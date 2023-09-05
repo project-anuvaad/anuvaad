@@ -11,7 +11,7 @@ import NewCorpusStyle from "../../../styles/web/Newcorpus";
 import FileContent from "../../../../flux/actions/apis/document_translate/fetchcontent";
 import UserReportHeader from "./UserReportHeader"
 import DataTable from "../../../components/web/common/DataTable";
-import { Button, FilledInput, FormControl, FormControlLabel, IconButton, Input, InputAdornment, OutlinedInput, Switch, TextField } from "@material-ui/core";
+import { Button, FilledInput, FormControl, FormControlLabel, IconButton, Input, InputAdornment, OutlinedInput, Switch, TextField, Typography } from "@material-ui/core";
 import history from "../../../../web.history";
 import BackIcon from '@material-ui/icons/ArrowBack';
 import CheckIcon from '@material-ui/icons/Check';
@@ -24,10 +24,13 @@ import FetchDocument from "../../../../flux/actions/apis/view_document/fetch_doc
 import { get_document_details } from "../../../../utils/getFormattedJobData";
 import UploadDocToS3 from "../../../../flux/actions/apis/document_translate/s3_upload_doc";
 import ClearContent from "../../../../flux/actions/apis/document_translate/clearcontent";
+import { CustomTableFooter } from "../../../components/web/common/CustomTableFooter";
 
 class DocumentReview extends React.Component {
   constructor(props) {
     super(props);
+    this.tableRef = React.createRef();
+    this.pageInputRef = React.createRef();
     this.state = {
       role: localStorage.getItem("roles"),
       data: [],
@@ -45,7 +48,10 @@ class DocumentReview extends React.Component {
         open: false,
         message: "",
         variant: "info"
-      }
+      },
+      isInputActive: false,
+      inputPageNumber: 1,
+      currentPageIndex: 0,
     };
   }
 
@@ -264,9 +270,9 @@ class DocumentReview extends React.Component {
   }
 
   onReviewChange = (e, tableMeta) => {
-    // console.log("tableMeta --- ", tableMeta);
     let fetchContentData = this.props.fetchContent;
     fetchContentData.data[tableMeta.rowIndex].review = e.target.value;
+    console.log("fetchContentData --- ", fetchContentData);
     updateReviewInFetchContent(fetchContentData);
   }
 
@@ -318,6 +324,23 @@ class DocumentReview extends React.Component {
       .catch(error => console.log('error', error));
   }
 
+  onChangePageMAnually = () => {
+    this.tableRef.current.changePage(Number(this.state.inputPageNumber) - 1)
+    this.setState({ currentPageIndex: this.state.inputPageNumber - 1 })
+}
+
+handleInputPageChange = (event, totalPageCount) => {
+    if (event.target.value <= totalPageCount) {
+        this.setState({ inputPageNumber: event.target.value })
+    } else if (event.target.value > totalPageCount) {
+        this.setState({ inputPageNumber: totalPageCount })
+    } else if (event.target.value == 0) {
+        this.setState({ inputPageNumber: 1 })
+    } else if (event.target.value < 0) {
+        this.setState({ inputPageNumber: 1 })
+    }
+}
+
   render() {
     const columns = [
       {
@@ -346,7 +369,8 @@ class DocumentReview extends React.Component {
           sort: false,
           setCellProps: () => ({ style: { maxWidth: "250px" } }),
           customBodyRender: (value, tableMeta, updateValue) => {
-            if (tableMeta.rowData[4] == "-") {
+            // console.log("tableMeta --- ", tableMeta);
+            if (tableMeta.rowData[3] == "-") {
               return "-"
             } else {
               return value
@@ -354,15 +378,15 @@ class DocumentReview extends React.Component {
           }
         }
       },
-      {
-        name: "tgt",
-        label: 'Proof Read',
-        options: {
-          filter: false,
-          sort: true,
-          display: "exclude"
-        }
-      },
+      // {
+      //   name: "tgt",
+      //   label: 'Proof Read',
+      //   options: {
+      //     filter: false,
+      //     sort: true,
+      //     display: "exclude"
+      //   }
+      // },
 
       {
         name: "bleu_score",
@@ -370,18 +394,18 @@ class DocumentReview extends React.Component {
         options: {
           filter: false,
           sort: false,
-          display: false
+          display: "excluded",
         }
       },
-      {
-        name: "time_spent",
-        label: "Time Spent",
-        options: {
-          filter: false,
-          sort: false,
-          display: "exclude"
-        }
-      },
+      // {
+      //   name: "time_spent",
+      //   label: "Time Spent",
+      //   options: {
+      //     filter: false,
+      //     sort: false,
+      //     display: "exclude"
+      //   }
+      // },
       {
         name: "comments",
         label: "Comment",
@@ -461,7 +485,7 @@ class DocumentReview extends React.Component {
       //     default:
       //   }
       // },
-      count: this.props.count,
+      count: this.props.fetchContent?.data?.length,
       rowsPerPageOptions: [10, 25, this.props.fetchContent?.data ? this.props.fetchContent?.data?.length : 100],
       filterType: "checkbox",
       download: true,
@@ -473,7 +497,47 @@ class DocumentReview extends React.Component {
         name: 'registered_time',
         direction: 'desc'
       },
-      page: this.state.currentPageIndex
+      page: this.state.currentPageIndex,
+      customFooter: (
+        count,
+        page,
+        rowsPerPage,
+        changeRowsPerPage,
+        changePage
+    ) => {
+        const startIndex = page * rowsPerPage;
+        const endIndex = (page + 1) * rowsPerPage;
+        const totalPageCount = Math.ceil(this.props.fetchContent?.data?.length / 10);
+        return (
+            <CustomTableFooter
+                renderCondition={totalPageCount > 0}
+                countLabel={"Total Documents"}
+                totalCount={this.props.fetchContent?.data?.length}
+                pageInputRef={this.pageInputRef}
+                inputValue={this.state.inputPageNumber}
+                onInputFocus={() => this.setState({ isInputActive: true })}
+                onInputBlur={() => this.setState({ isInputActive: false })}
+                handleInputChange={this.handleInputPageChange}
+                totalPageCount={totalPageCount}
+                onGoToPageClick={this.onChangePageMAnually}
+                onBackArrowClick={() => {
+                    this.setState({ currentPageIndex: this.state.currentPageIndex - 1 })
+                    this.tableRef.current.changePage(Number(this.state.currentPageIndex - 1))
+                }
+                }
+                onRightArrowClick={() => {
+                    this.setState({ currentPageIndex: this.state.currentPageIndex + 1 })
+                    this.tableRef.current.changePage(Number(this.state.currentPageIndex + 1))
+                }
+                }
+                backArrowTabIndex={this.state.currentPageIndex - 1}
+                backArrowDisable={this.state.currentPageIndex == 0}
+                rightArrowTabIndex={this.state.currentPageIndex + 1}
+                rightArrowDisable={this.state.currentPageIndex == (totalPageCount-1)}
+                pageTextInfo={`Page ${parseInt(this.state.currentPageIndex + 1)} of ${parseInt(totalPageCount)}`}
+            />
+        );
+    }
     };
 
     return (
@@ -500,6 +564,7 @@ class DocumentReview extends React.Component {
           <MuiThemeProvider theme={this.getMuiTheme()}>
             <DataTable title={this.props.match.params.fname}
               columns={columns} options={options}
+              innerRef={this.tableRef}
               data={this.props.apistatus.progress ? [] : this.props.fetchContent.data} />
           </MuiThemeProvider>
           {!this.state.disableActions && <div style={{ textAlign: "end", marginTop: 15, alignItems: "center" }}>
