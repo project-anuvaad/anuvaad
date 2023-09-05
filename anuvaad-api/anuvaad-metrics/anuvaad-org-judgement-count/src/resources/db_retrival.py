@@ -384,8 +384,7 @@ def fetch_reviewer_data():
         if config.METRICS_ORG_MASKING:
             df = df[~df['org'].isin(config.MASK_ORGS)]
         # replace some orgs
-        org_replacer= {'NEPAL':'SIKKIM','SIMLA':'SHIMLA','CHATTISGARH':'CHHATTISGARH',}
-        df['org'] = df['org'].replace(org_replacer)
+        df['org'] = df['org'].replace(config.ORG_REPLACER)
         # apply filter to src,tgt langs
         for x_col in ['tgt','src']:
             # remove alpha from lang string
