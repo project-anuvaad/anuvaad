@@ -280,6 +280,7 @@ class jud_stats(object):
             df = pd.read_csv(stats)
             df.dropna(subset=['orgID'], inplace=True)
             # result = df1.merge(df, indicator=True, how="right")
+            df['orgID'] = df['orgID'].replace(config.ORG_REPLACER)
             result = df.sort_values(by=["orgID"], ascending=True)
             if config.METRICS_ORG_MASKING:
                 mask = result["orgID"].isin(
