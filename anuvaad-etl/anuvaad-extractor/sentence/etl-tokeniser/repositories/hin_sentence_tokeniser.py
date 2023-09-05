@@ -1,6 +1,7 @@
 import re
 from nltk.tokenize.punkt import PunktSentenceTokenizer, PunktParameters, PunktTrainer, PunktLanguageVars
 from nltk.tokenize import sent_tokenize
+from anuvaad_auditor.loghandler import log_info
 
 
 """
@@ -63,42 +64,108 @@ class AnuvaadHindiTokenizer(object):
     def tokenize(self, text):
         print('--------------Process started-------------')
         text = self.serialize_with_abbrevations(text)
+        log_info(f"After serialize_with_abbrevations : {text}",text)
+
         text = self.serialize_colon_abbreviations(text)
+        log_info(f"After serialize_colon_abbreviations : {text}",text)
+
         text = self.serialize_pattern(text)
+        log_info(f"After serialize_pattern : {text}",text)
+
         text = self.serialize_dates(text)
+        log_info(f"After serialize_pattern : {text}",text)
+
         text = self.serialize_time(text)
+        log_info(f"After serialize_time : {text}",text)
+
         text = self.serialize_table_points(text)
+        log_info(f"After serialize_table_points : {text}",text)
+
         text = self.serialize_url(text)
+        log_info(f"After serialize_url : {text}",text)
+
         text = self.serialize_dots(text)
+        log_info(f"After serialize_dots : {text}",text)
+
         text = self.serialize_brackets(text)
+        log_info(f"After serialize_brackets : {text}",text)
+
         text = self.serialize_dot_with_number(text)
+        log_info(f"After serialize_dot_with_number : {text}",text)
+
         text = self.serialize_dot_with_number_beginning(text)
+        log_info(f"After serialize_dot_with_number_beginning : {text}",text)
+
         text = self.serialize_quotes_with_number(text)
+        log_info(f"After serialize_quotes_with_number : {text}",text)
+
         text = self.serialize_bullet_points(text)
+        log_info(f"After serialize_bullet_points : {text}",text)
+
         text = self.serialize_decimal(text)
+        log_info(f"After serialize_decimal : {text}",text)
+
         text = self.add_space_after_sentence_end(text)
+        log_info(f"After add_space_after_sentence_end : {text}",text)
+
         text = self.serialize_end(text)
+        log_info(f"After serialize_end : {text}",text)
+
         sentences = self._tokenizer.tokenize(text)
+        log_info(f"After tokenize : {sentences}",sentences)
+
         output = []
         for se in sentences:
             se = self.deserialize_dates(se)
+            log_info(f"After deserialize_dates : {se}",se)
+
             se = self.deserialize_time(se)
+            log_info(f"After deserialize_time : {se}",se)
+
             se = self.deserialize_pattern(se)
+            log_info(f"After deserialize_pattern : {se}",se)
+
             se = self.deserialize_url(se)
+            log_info(f"After deserialize_url : {se}",se)
+
             se = self.deserialize_dots(se)
+            log_info(f"After deserialize_dots : {se}",se)
+
             se = self.deserialize_decimal(se)
+            log_info(f"After deserialize_decimal : {se}",se)
+
             se = self.deserialize_brackets(se)
+            log_info(f"After deserialize_brackets : {se}",se)
+
             se = self.deserialize_dot_with_number(se)
+            log_info(f"After deserialize_dot_with_number : {se}",se)
+
             se = self.deserialize_dot_with_number_beginning(se)
+            log_info(f"After deserialize_dot_with_number_beginning : {se}",se)
+
             se = self.deserialize_quotes_with_number(se)
+            log_info(f"After deserialize_quotes_with_number : {se}",se)
+
             se = self.deserialize_colon_abbreviations(se)
+            log_info(f"After deserialize_colon_abbreviations : {se}",se)
+
             se = self.deserialize_with_abbrevations(se)
+            log_info(f"After deserialize_with_abbrevations : {se}",se)
+
             se = self.deserialize_bullet_points(se)
+            log_info(f"After deserialize_bullet_points : {se}",se)
+
             se = self.deserialize_table_points(se)
+            log_info(f"After deserialize_table_points : {se}",se)
+
             se = self.deserialize_end(se)
+            log_info(f"After deserialize_end : {se}",se)
+
             if se != '' and se!= 'END_|_END':
                 output.append(se.strip())
         print('--------------Process finished-------------')
+        log_info(f"final output : {output}",output)
+
         return output
 
     def serialize_url(self, text):

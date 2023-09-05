@@ -30,6 +30,8 @@ class Tokenisation(object):
             if paragraph is not None:
                 try:
                     paragraph = self.remove_extra_spaces(paragraph)
+                    log_info(f"After remove_extra_spaces : {paragraph}",paragraph)
+
                     if text_locale == 'en':
                         tokenised_sentence_data = AnuvaadEngTokenizer().tokenize(paragraph)
                         tokenised_text.extend(tokenised_sentence_data)
