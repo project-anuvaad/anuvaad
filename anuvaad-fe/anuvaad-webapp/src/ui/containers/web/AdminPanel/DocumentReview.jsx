@@ -297,7 +297,8 @@ class DocumentReview extends React.Component {
         // console.log(result);
         if (result.ok) {
           if (this.state.currentJobDetails.currentGranularStatus === "FINAL EDITING - COMPLETED") {
-            this.updateGranularity(["reviewerInProgress"], "Review Comment Updated!", false)
+            this.updateGranularity(["reviewerInProgress"], "Review Comment Updated!", false);
+            this.getCurrentJobDetail();
           } else {
             let currentInfoState = { ...this.state.snackbarInfo };
             currentInfoState = {
@@ -306,9 +307,7 @@ class DocumentReview extends React.Component {
               variant: "info"
             };
             this.setState({ snackbarInfo: currentInfoState });
-            this.getCurrentJobDetail();
           }
-          this.fetchDocumentContent();
         } else {
           let currentInfoState = { ...this.state.snackbarInfo };
             currentInfoState = {
@@ -484,14 +483,14 @@ handleInputPageChange = (event, totalPageCount) => {
         },
         options: { sortDirection: 'desc' }
       },
-      // onTableChange: (action, tableState) => {
-      //   switch (action) {
-      //     case 'changePage':
-      //       this.processTableClickedNextOrPrevious(tableState.page)
-      //       break;
-      //     default:
-      //   }
-      // },
+      onTableChange: (action, tableState) => {
+        switch (action) {
+          case 'changePage':
+            this.fetchDocumentContent()
+            break;
+          default:
+        }
+      },
       count: this.props.fetchContent?.data?.length,
       rowsPerPageOptions: [10, 25, this.props.fetchContent?.data ? this.props.fetchContent?.data?.length : 100],
       filterType: "checkbox",
