@@ -254,7 +254,7 @@ class AnuvaadEngTokenizer(object):
         return text
 
     def serialize_consecutive_dots(self, text):
-        pattern = re.compile(r'([.\s]{3,})')
+        pattern = re.compile(r'([.]{2,}[\s]{0,})')
         text = pattern.sub('YY__YY', text)
         return text
 
