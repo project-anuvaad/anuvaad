@@ -1309,6 +1309,11 @@
             "role":"ADMIN",
             "actionID": "2894fe1d-a2d4-4cfd-af4b-287e9bcfefdf",
             "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "a45dbb7a-f9a1-4c26-b008-09979ef24b38",
+            "active":true
         }
     ]
 }

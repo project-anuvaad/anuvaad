@@ -72,6 +72,24 @@ class BlockModel(object):
             AppContext.addRecordID(record_id)
             log_exception("db connection exception ",  AppContext.getContext(), e)
             return False
+        
+    def get_blocks_by_page_recordid(self, record_id, start_page, end_page):
+        try:
+            page_nos = {}
+            if end_page != 0: 
+                page_nos['page_no'] = {'$in': list(range(start_page,end_page+1))}
+            print(f'{page_nos=}')
+            collections = get_db()[DB_SCHEMA_NAME]
+            results        = collections.aggregate([
+                                { '$match' : {'record_id': record_id, **page_nos} },
+                                { '$group': { '_id': {'data_type': '$data_type','page_no':'$page_no'}, 'data': { '$push': "$data" } } },
+                                { "$sort": {'_id.page_no': 1}}
+                                ])
+            return results
+        except Exception as e:
+            AppContext.addRecordID(record_id)
+            log_exception("db connection exception ",  AppContext.getContext(), e)
+            return False
 
     def get_block_by_block_identifier(self, record_id, user_id, block_identifier):
         try:

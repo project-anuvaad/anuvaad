@@ -1,12 +1,16 @@
 from flask import Blueprint
 from flask_restful import Api
 
-from resources import FileContentGetResource, FileContentSaveResource, FileContentUpdateResource, FileContentStoreReference, FileContentGetReference
+from resources import FileContentGetResource, FileContentSaveResource, FileContentUpdateResource, FileContentStoreReference, FileContentGetReference, FileContentGetV1Resource
 
 FILE_CONTENT_BLUEPRINT = Blueprint("file_content", __name__)
 
 Api(FILE_CONTENT_BLUEPRINT).add_resource(
     FileContentGetResource, "/v0/fetch-content"
+)
+
+Api(FILE_CONTENT_BLUEPRINT).add_resource(
+    FileContentGetV1Resource, "/v1/fetch-content"
 )
 
 Api(FILE_CONTENT_BLUEPRINT).add_resource(

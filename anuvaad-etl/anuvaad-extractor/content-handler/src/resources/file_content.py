@@ -88,6 +88,34 @@ class FileContentGetResource(Resource):
             res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
             return res.getresjson(), 400
         
+class FileContentGetV1Resource(Resource):
+    def get(self):
+
+        parser = reqparse.RequestParser()
+        parser.add_argument('start_page', type=int, location='args', help='start_page can be 0, set start_page & end_page as 0 to get entire document', default=1)
+        parser.add_argument('end_page',  type=int, location='args', help='end_page can be 0, set start_page & end_page as 0 to get entire document', default=1)
+        parser.add_argument('job_id', type=str, location='args', help='Job Id is required', required=False)
+        parser.add_argument('record_id', type=str, location='args', help='record_id is required', required=True)
+
+        args    = parser.parse_args()
+        AppContext.addRecordID(args['record_id'])
+        log_info("FileContentGetResource record_id {} ".format(args['record_id']), AppContext.getContext())
+
+        try:
+            result  = fileContentRepo.get_new(args['record_id'], args['start_page'], args['end_page'])
+            if result == False:
+                res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
+                return res.getresjson(), 400
+            AppContext.addRecordID(args['record_id'])
+            log_info("FileContentGetResource record_id {} has {} pages".format(args['record_id'], result['total']), AppContext.getContext())
+            res = CustomResponse(Status.SUCCESS.value, result['pages'], result['total'])
+            return res.getres()
+        except Exception as e:
+            AppContext.addRecordID(args['record_id'])
+            log_exception("FileContentGetResource ",  AppContext.getContext(), e)
+            res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
+            return res.getresjson(), 400
+        
         
 class FileContentUpdateResource(Resource):
     def post(self):

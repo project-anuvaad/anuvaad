@@ -146,6 +146,30 @@ class FileContentRepositories:
         data['end_page']    = end_page
         data['total']       = total_page_count
         return data
+    
+    def get_new(self, record_id, start_page, end_page):
+        if start_page > end_page:
+            return False
+
+        data            = {}
+        data['pages']   = []
+        blocks = self.blockModel.get_blocks_by_page_recordid(record_id, start_page, end_page)
+        
+        page = {}
+        for i in blocks:
+            if page.get('page_no',None) == None:
+                page['page_no'] = i['_id']['page_no']
+                page['page_height'] = i['data'][0]['page_info']['page_height']
+                page['page_width'] = i['data'][0]['page_info']['page_width']
+            if page['page_no'] != i['_id']['page_no']:
+                data['pages'].append(page)
+                page = {}
+            page[i['_id']['data_type']] = i['data']
+        data['pages'].append(page)
+
+        # data['total']       = total_page_count
+        data['total'] = self.blockModel.get_document_total_page_count(record_id)
+        return data
 
     def update(self, record_id,user_id, blocks, workflowCode, modifiedSentences=None):
         updated_blocks  = []
