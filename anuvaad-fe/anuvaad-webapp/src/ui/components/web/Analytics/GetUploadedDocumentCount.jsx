@@ -407,7 +407,7 @@ function GetUploadedDocumentCount(props) {
                                 padding: 10,
                                 textAlign: "end",
                             }}
-                        ><b>Note:</b> the count below mentioned includes deleted files also</Typography>
+                        ><b>Note:</b> The count above mentioned includes active and inactive documents</Typography>
                     </Grid>
                 </Paper>
             </Box>
