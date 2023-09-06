@@ -26,6 +26,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import DeleteTmx from "../../../../flux/actions/apis/tmx/tmxDelete";
 import DataTable from "../../../components/web/common/DataTable";
 import ConfirmBox from "../../../components/web/common/ConfirmBox";
+import { CustomTableFooter } from "../../../components/web/common/CustomTableFooter";
 
 var delete_glossary = require("../../../../utils/deleteGlossary.operation");
 
@@ -46,6 +47,8 @@ class OrganizationGlossary extends React.Component {
     super(props);
     this.orgID = this.props.match.params.orgId;
     this.userID = JSON.parse(localStorage.getItem("userProfile")).userID;
+    this.tableRef = React.createRef();
+    this.pageInputRef = React.createRef();
     this.state = {
       loading: false,
       open: false,
@@ -57,6 +60,9 @@ class OrganizationGlossary extends React.Component {
       openDeleteSelectedGlossaryConfirmDialogue: false,
       openSingleGlossaryDeleteConfirmBox: false,
       singleDeletionArr: [],
+      isInputActive: false,
+      inputPageNumber: 1,
+      currentPageIndex: 0
     }
   }
 
@@ -301,6 +307,28 @@ class OrganizationGlossary extends React.Component {
     )
   }
 
+  handleInputPageChange = (event, totalPageCount) => {
+    if (event.target.value <= totalPageCount) {
+      this.setState({ inputPageNumber: event.target.value })
+    } else if (event.target.value > totalPageCount) {
+      this.setState({ inputPageNumber: totalPageCount })
+    } else if (event.target.value == 0) {
+      this.setState({ inputPageNumber: 1 })
+    } else if (event.target.value < 0) {
+      this.setState({ inputPageNumber: 1 })
+    }
+  }
+
+  onChangePageMAnually = () => {
+    // console.log("offset", 0);
+    // console.log("limit (Number(this.state.inputPageNumber)-1)*10 ---> ", this.props.job_details.count);
+    // this.makeAPICallJobsBulkSearch(0, (Number(this.state.inputPageNumber)-1)*10, false, false, true)
+    this.tableRef.current.changePage(Number(this.state.inputPageNumber) - 1);
+    // this.setState({ currentPageIndex: this.state.inputPageNumber - 1 }, () => {
+    //   this.makeAPICallDocumentsTranslationProgress();
+    // });
+  }
+
   render() {
     const columns = [
       {
@@ -419,6 +447,47 @@ class OrganizationGlossary extends React.Component {
       },
       onRowsDelete: () => {
         this.setState({ openDeleteSelectedGlossaryConfirmDialogue: true });
+      },
+      page: this.state.currentPageIndex,
+      customFooter: (
+        count,
+        page,
+        rowsPerPage,
+        changeRowsPerPage,
+        changePage
+      ) => {
+        const startIndex = page * rowsPerPage;
+        const endIndex = (page + 1) * rowsPerPage;
+        const totalPageCount = Math.ceil(this.props.glossaryData.count / 10);
+        return (
+          <CustomTableFooter
+            renderCondition={totalPageCount > 0}
+            countLabel={"Total Glossary"}
+            totalCount={this.props.glossaryData.count}
+            pageInputRef={this.pageInputRef}
+            inputValue={this.state.inputPageNumber}
+            onInputFocus={()=>this.setState({ isInputActive: true })}
+            onInputBlur={()=>this.setState({ isInputActive: false })}
+            handleInputChange={this.handleInputPageChange}
+            totalPageCount={totalPageCount}
+            onGoToPageClick={this.onChangePageMAnually}
+            onBackArrowClick={() => {
+              this.setState({ currentPageIndex: this.state.currentPageIndex - 1 })
+              this.tableRef.current.changePage(Number(this.state.currentPageIndex - 1))
+            }
+            }
+            onRightArrowClick={() => {
+              this.setState({ currentPageIndex: this.state.currentPageIndex + 1 })
+              this.tableRef.current.changePage(Number(this.state.currentPageIndex + 1))
+            }
+            }
+            backArrowTabIndex={this.state.currentPageIndex - 1}
+            backArrowDisable={this.state.currentPageIndex == 0}
+            rightArrowTabIndex={this.state.currentPageIndex + 1}
+            rightArrowDisable={this.state.currentPageIndex == (totalPageCount-1)}
+            pageTextInfo={`Page ${parseInt(this.state.currentPageIndex + 1)} of ${parseInt(totalPageCount)}`}
+          />
+        );
       }
     };
     return (
@@ -437,6 +506,7 @@ class OrganizationGlossary extends React.Component {
                 columns={columns}
                 options={options}
                 data={this.props.glossaryData.result}
+                innerRef={this.tableRef}
               />
             </MuiThemeProvider>
           }

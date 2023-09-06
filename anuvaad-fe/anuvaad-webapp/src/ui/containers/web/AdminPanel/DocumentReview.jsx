@@ -308,6 +308,7 @@ class DocumentReview extends React.Component {
             this.setState({ snackbarInfo: currentInfoState });
             this.getCurrentJobDetail();
           }
+          this.fetchDocumentContent();
         } else {
           let currentInfoState = { ...this.state.snackbarInfo };
             currentInfoState = {
@@ -433,21 +434,27 @@ handleInputPageChange = (event, totalPageCount) => {
           setCellHeaderProps: () => { return { align: "center" } },
           setCellProps: () => { return { align: "center" } },
           customBodyRender: (value, tableMeta, updateValue) => {
-            if (tableMeta.rowData) {
+            // if (tableMeta.rowData) {
+              let previousComment = tableMeta.rowData[4] && tableMeta.rowData[4] != undefined ? tableMeta.rowData[4] : "";
               return (
                 <div style={{ alignItems: "center" }}>
                   <OutlinedInput
+                  key={tableMeta.rowIndex}
                     placeholder="Add Review"
-                    defaultValue={tableMeta.tableData[tableMeta.rowIndex]?.comments ? tableMeta.tableData[tableMeta.rowIndex]?.comments : ""}
+                    // disabled
+                    defaultValue={previousComment}
                     onChange={e => this.onReviewChange(e, tableMeta)}
-                    style={{ borderColor: tableMeta.tableData[tableMeta.rowIndex]?.comments ? "rgb(97 231 55 / 87%)" : "#2C2799" }}
+                    style={{ borderColor: previousComment ? "rgb(97 231 55 / 87%)" : "#2C2799" }}
                     fullWidth
                     endAdornment={
                       <InputAdornment position="end">
                         <IconButton
                           title="Add comment for this translation if you want correction."
                           aria-label="add comment"
-                          onClick={(e) => this.onSubmitIndividualReview(tableMeta.tableData[tableMeta.rowIndex])}
+                          onClick={(e) => 
+                            // console.log("tableMeta ---- ", tableMeta )
+                            this.onSubmitIndividualReview(tableMeta.tableData[tableMeta.rowIndex])
+                              }
                         >
                           <CheckIcon />
                         </IconButton>
@@ -456,7 +463,7 @@ handleInputPageChange = (event, totalPageCount) => {
                   />
                 </div>
               );
-            }
+            // }
           },
         }
       }
@@ -466,7 +473,7 @@ handleInputPageChange = (event, totalPageCount) => {
     const options = {
       textLabels: {
         body: {
-          noMatch: "Loading...."
+          noMatch: this.props.apistatus.progress ? "Loading...." : "No Records Found..."
         },
         toolbar: {
           search: translate("graderReport.page.muiTable.search"),
@@ -546,7 +553,7 @@ handleInputPageChange = (event, totalPageCount) => {
         // overflow: 'auto'
       }}>
 
-        {this.state.currentJobDetails && <div style={{ margin: '0% 3% 3% 3%', paddingTop: "4%" }}>
+        {<div style={{ margin: '0% 3% 3% 3%', paddingTop: "4%" }}>
           {/* <UserReportHeader /> */}
           <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 2, alignItems: "center" }}>
             <div>

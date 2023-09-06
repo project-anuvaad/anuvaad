@@ -1,5 +1,7 @@
 export const pattern =
   "( |<([^>]+)>*|&[a-zA-Z0-9]*;|[_,;\\:\\-\\n\\+\\?\\^\\$\\*{}()|[\\]\\\\]||<(\\/[a-z])*>)*";
+
+const validStrRegex = "^[^a-zA-Z0-9 ]{0,5}[a-zA-Z0-9 ]{1}.*";
 export const highlightSource = (
   source,
   color,
@@ -7,7 +9,7 @@ export const highlightSource = (
   highlightSentence,
   paper
 ) => {
-  if (source.replace(/[|,|\.|\-]+/g, "") !== "") {
+if (source.match(validStrRegex) && source.replace(/[|,|\.|\-]+/g, "") !== "") {
     let regExpSource = source
       .replace(/[|,|\.|\-]+/g, "")
       .split(" ")
