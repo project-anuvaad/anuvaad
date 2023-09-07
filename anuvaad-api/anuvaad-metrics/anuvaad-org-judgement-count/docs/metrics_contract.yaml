@@ -1,0 +1,384 @@
+openapi: 3.0.3
+
+info:
+  title: Anuvaad - Metrics
+
+  description: |-
+    A python based microservice for metrics.
+    This service will expose REST APIs to provide various metrics on anuvaad application data.
+
+    Some useful links:
+    - [Anuvaad repository](https://github.com/project-anuvaad/anuvaad)
+
+  contact:
+    email: nlp-nmp@tarento.com
+
+  license:
+    name: MIT License
+    url: https://opensource.org/license/mit/
+
+  version: XX.XX.XX
+
+externalDocs:
+  description: Find out more of Anuvaad
+  url: https://anuvaad.org
+  
+servers:
+  - url: https://users-auth.anuvaad.org/anuvaad-metrics
+    description: Anuvaad Metrics (Users Env)
+
+tags:
+  - name: Metrics
+    description: (APIs related to Metrics)
+
+paths:
+
+  /anuvaad-data/lang_count:
+    post:
+      tags:
+        - Metrics
+      summary: get documnets count by source language
+      description: This API helps to get metrics on no. of documents per target language with specific source language as input.
+      requestBody:
+        $ref: '#/components/requestBodies/LangCountBody'
+      responses:
+        '200':
+          description: metrics for lang_count successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              examples:
+                example1:
+                  $ref: '#/components/examples/LangCountResponse'
+        '400':
+          description: On input errors causing failure in fetching metrics.
+          $ref: '#/components/responses/Error'
+        '404' :
+          description: On Connection error.
+          $ref: '#/components/responses/ZuulEndpointError'
+  
+  /anuvaad-data/languages:
+    get:
+      tags:
+        - Metrics
+      summary: get list of language and orgs
+      description: This API helps to get metrics list of language with active metadata and orgs 
+      responses:
+        '200':
+          description: metrics for languages successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              examples:
+                example1:
+                  $ref: '#/components/examples/LanguagesResponse'
+        '400':
+          description: On input errors causing failure in fetching metrics.
+          $ref: '#/components/responses/Error'
+        '404' :
+          description: On Connection error.
+          $ref: '#/components/responses/ZuulEndpointError'
+
+  /anuvaad-data/verified_count:
+    get:
+      tags:
+        - Metrics
+      summary: get verified verified sentences count
+      description: This API helps to get metrics on no of verified sentences based on target language
+      responses:
+        '200':
+          description: metrics for verified_count successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              examples:
+                example1:
+                  $ref: '#/components/examples/VerifiedCountResponse'
+        '400':
+          description: On input errors causing failure in fetching metrics.
+          $ref: '#/components/responses/Error'
+        '404' :
+          description: On Connection error.
+          $ref: '#/components/responses/ZuulEndpointError'
+
+  /anuvaad-data/doc_count:
+    get:
+      tags:
+        - Metrics
+      summary: get documents count by organization 
+      description: This API helps to get metrics on no of documents translated/digitized by organization
+      responses:
+        '200':
+          description: metrics for doc_count successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              examples:
+                example1:
+                  $ref: '#/components/examples/DocCountResponse'
+        '400':
+          description: On input errors causing failure in fetching metrics.
+          $ref: '#/components/responses/Error'
+        '404' :
+          description: On Connection error.
+          $ref: '#/components/responses/ZuulEndpointError'
+
+  /anuvaad-data/v1/upload_doc_count:
+    get:
+      tags:
+        - Metrics
+      summary: get reviewed documents count 
+      description: This API helps to get metrics on no of reviewed documents by organization, source language, target language
+      responses:
+        '200':
+          description: metrics for upload_doc_count successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              examples:
+                example1:
+                  $ref: '#/components/examples/UploadDocCountResponse'
+        '400':
+          description: On input errors causing failure in fetching metrics.
+          $ref: '#/components/responses/Error'
+        '404' :
+          description: On Connection error.
+          $ref: '#/components/responses/ZuulEndpointError'
+components:
+  
+  requestBodies:
+  
+    LangCountBody:
+      description: A JSON object containing source language info
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              src_lang:
+                type: string
+                minLength: 2
+                maxLength: 3
+                description: source language code.
+                example: en
+    
+  responses:
+
+    Success:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              ok:
+                type: string
+                description: true or false 
+              status:
+                type: string
+                description: status code of the request
+              why:
+                type: string
+                description: response message
+              data:
+                type: object
+                description: data returned by the request
+                nullable: true
+                  
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errorID:
+                type: string
+                description: Unique UUID for the error.
+                example: "50cf24e4-5d0a-472d-9d4a-120f9a8fc300"
+              code:
+                type: string
+                description: Unique code signifying the category for the error.
+                example: "INVALID CODE"
+              message:
+                type: string
+                description: User readable message pertaining to the error
+                example: "sample error message"
+              timeStamp:
+                type: number
+                description: 13 digit epoch timestamp
+                example: 1689112383123
+              errorType:
+                type: string
+                description: typr of error
+                example: "core-error"
+    
+    ZuulEndpointError :
+      description: error in connecting upstream zuul application
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              Errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      description: status code for the error
+                      example: 404
+                    message:
+                      type: string
+                      description: message info of the code
+                      example: You're trying to access an invalid/inactive resource
+      
+  examples:
+
+    LangCountResponse:
+      summary: /anuvaad-data/lang_count - success
+      value:
+        ok: "true"
+        status: 200
+        why: Request successful
+        data:
+          total_document_sentence_count: 1251
+          total_documents: 408
+          total_verified_sentence_count: 116
+          language_counts:
+            - doc_sent_count: 75
+              org: ANUVAAD
+              src_label: English
+              src_lang: en
+              tgt_label: Assamese
+              tgt_lang: as
+              total_doc: 15
+              verified_sentence: 5
+            - doc_sent_count: 121
+              org: ANUVAAD
+              src_label: English
+              src_lang: en
+              tgt_label: Bengali
+              tgt_lang: bn
+              total_doc: 50
+              verified_sentence: 16
+
+    LanguagesResponse:
+      summary: /anuvaad-data/languages - success
+      value:
+        ok: "true"
+        status: 200
+        why: Request successful
+        data:
+          languages:
+            - active: true
+              code: en
+              label: English
+            - active: true
+              code: hi
+              label: Hindi
+          orgs:
+            - code: SUPREME COURT
+            - code: IITB
+
+    VerifiedCountResponse:
+      summary: /anuvaad-data/verified_count - success
+      value:
+        ok: "true"
+        status: 200
+        why: Request successful
+        data:
+          language_counts:
+          - doc_sent_count: 848975
+            tgt_label: Hindi
+            tgt_lang: hi
+            total_doc: 1543
+            verified_sentence: 812
+          - doc_sent_count: 69237
+            tgt_label: English
+            tgt_lang: en
+            total_doc: 499
+            verified_sentence: 60
+          total_document_sentence_count: 1323464
+          total_documents: 2999
+          total_verified_sentence_count: 1183
+        
+    DocCountResponse:
+      summary: /anuvaad-data/doc_count - success
+      value:
+        ok: "true"
+        status: 200
+        why: Request successful
+        data:
+          language_counts:
+          - doc_sent_count: 1282074
+            org: ANUVAAD
+            total_doc: 2778
+            verified_sentence: 989
+          - doc_sent_count: 18604
+            org: DEVTEST
+            total_doc: 88
+            verified_sentence: 81
+          total_document_sentence_count: 1323464
+          total_documents: 2999
+          total_verified_sentence_count: 1183
+
+    UploadDocCountResponse:
+      summary: /anuvaad-data/v1/upload_doc_count - success
+      value:
+        ok: "true"
+        status: 200
+        why: Request successful
+        data:
+          total_inprogress: 3753
+          total_orgs: 18
+          total_uploaded: 30
+          data:
+            - in_progress: 5
+              org: TESTORG123
+              src: English
+              tgt: Hindi
+              uploaded: 0
+            - in_progress: 2
+              org: XMAS
+              src: English
+              tgt: Kannada
+              uploaded: 2
+            - in_progress: 1
+              org: YMAS
+              src: English
+              tgt: Kashmiri
+              uploaded: 0
+
+  schemas:
+      
+    SuccessResponse:
+      type: object
+      properties:
+        ok:
+          type: string
+          description: true or false 
+        http:
+          type: object
+          properties:
+            status:
+              type: string
+              description: status code of the request
+        why:
+          type: string
+          description: response message
+        data:
+          type: object
+          description: data returned by the request
+          nullable: true
+        count:
+          type: integer
+          description: count of data items 
+  
