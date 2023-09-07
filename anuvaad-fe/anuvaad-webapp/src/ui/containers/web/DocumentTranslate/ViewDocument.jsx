@@ -476,6 +476,7 @@ class ViewDocument extends React.Component {
         options: {
           filter: false,
           sort: false,
+          viewColumns: false,
           setCellProps: () => ({
             style: {
               wordBreak: "break-word"
@@ -501,6 +502,7 @@ class ViewDocument extends React.Component {
         name: "source_language_code",
         label: translate("common.page.label.source"),
         options: {
+          viewColumns: false,
           filter: false,
           sort: false,
         },
@@ -509,6 +511,7 @@ class ViewDocument extends React.Component {
         name: "target_language_code",
         label: translate("common.page.label.target"),
         options: {
+          viewColumns: false,
           filter: false,
           sort: false,
         },
@@ -751,20 +754,18 @@ class ViewDocument extends React.Component {
       //   this.setState({ limit })
 
       // },
+
       rowsPerPageOptions: [10],
 
-      // onTableChange: (action, tableState) => {
-      //   switch (action) {
-      //     case "changePage":
-      //       // console.log("tableState",tableState);
-      //       this.processTableClickedNextOrPrevious(
-      //         tableState.page,
-      //         tableState.sortOrder
-      //       );
-      //       break;
-      //     default:
-      //   }
-      // },
+      onTableChange: (action, tableState) => {
+        switch (action) {
+          case "search":
+            this.tableRef.current.changePage(0);
+            this.setState({ currentPageIndex: 0 });
+            break;
+          default:
+        }
+      },
       count: this.props.job_details.count,
       filterType: "checkbox",
       download: this.getJobsSortedByTimestamp()?.length > 0 ? true : false,
