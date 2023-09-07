@@ -521,6 +521,7 @@ class UserReport extends React.Component {
                 options: {
                     filter: false,
                     sort: false,
+                    viewColumns: false,
                     // display: "excluded",
                 },
             },
@@ -542,6 +543,7 @@ class UserReport extends React.Component {
                 name: "source_language_code",
                 label: translate("common.page.label.source"),
                 options: {
+                    viewColumns: false,
                     filter: false,
                     sort: false,
                 },
@@ -550,6 +552,7 @@ class UserReport extends React.Component {
                 name: "target_language_code",
                 label: translate("common.page.label.target"),
                 options: {
+                    viewColumns: false,
                     filter: false,
                     sort: false,
                 },

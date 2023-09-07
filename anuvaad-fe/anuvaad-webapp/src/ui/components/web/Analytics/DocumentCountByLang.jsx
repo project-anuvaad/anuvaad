@@ -139,9 +139,9 @@ const DocumentCountByLang = (props) => {
                             >
                                 <Button
                                     fullWidth
-                                    onClick={() => { 
+                                    onClick={() => {
                                         setAnchorEl(null)
-                                        onDownloadReportClick(true, "img", ["documentCountByLang"], "Anuvaad-Analytics") 
+                                        onDownloadReportClick(true, "img", ["documentCountByLang"], "Anuvaad-Analytics")
                                     }}
                                 >
                                     <Grid style={{ display: "flex", width: "100%", justifyContent: "flex-start", alignItems: "center" }}>
@@ -150,9 +150,9 @@ const DocumentCountByLang = (props) => {
                                 </Button>
                                 <Button
                                     fullWidth
-                                    onClick={() => { 
+                                    onClick={() => {
                                         setAnchorEl(null)
-                                        onDownloadReportClick(true, "pdf", ["documentCountByLang"], "Anuvaad-Analytics") 
+                                        onDownloadReportClick(true, "pdf", ["documentCountByLang"], "Anuvaad-Analytics")
                                     }}
                                 >
                                     <Grid style={{ display: "flex", width: "100%", justifyContent: "flex-start", alignItems: "center" }}>
@@ -290,6 +290,15 @@ const DocumentCountByLang = (props) => {
                         </Box>
                     )}
                 </Box>
+                <Grid>
+                    <Typography
+                        style={{
+                            fontSize: 14,
+                            padding: 10,
+                            textAlign: "end",
+                        }}
+                    ><b>Note:</b> The count above mentioned includes active and inactive documents</Typography>
+                </Grid>
             </Paper>
         </Box>
     );

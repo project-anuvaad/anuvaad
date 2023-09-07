@@ -65,6 +65,7 @@ const endpoints = {
   hostedInference: "/ulca/apis/v0/model/compute",
   getTransliterationModelId: "/ulca/apis/v0/model/getTransliterationModelId",
   activeUsersCount: "/anuvaad/user-mgmt/v1/users/active-users",
+  activeDocumentsCount: "/anuvaad-etl/wf-manager/v1/active-docs",
   uploadedDocumentCount: "/anuvaad-metrics/anuvaad-data/v1/upload_doc_count",
 
   // MFA API's
