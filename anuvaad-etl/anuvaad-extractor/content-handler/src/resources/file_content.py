@@ -64,8 +64,8 @@ class FileContentGetResource(Resource):
     def get(self):
 
         parser = reqparse.RequestParser()
-        parser.add_argument('start_page', type=int, location='args', help='start_page can be 0, set start_page & end_page as 0 to get entire document', required=True)
-        parser.add_argument('end_page',  type=int, location='args', help='end_page can be 0, set start_page & end_page as 0 to get entire document', required=True)
+        parser.add_argument('start_page', type=int, location='args', help='start_page can be 0, set start_page & end_page as 0 to get entire document', default=1)
+        parser.add_argument('end_page',  type=int, location='args', help='end_page can be 0, set start_page & end_page as 0 to get entire document', default=1)
         parser.add_argument('job_id', type=str, location='args', help='Job Id is required', required=False)
         parser.add_argument('record_id', type=str, location='args', help='record_id is required', required=True)
 

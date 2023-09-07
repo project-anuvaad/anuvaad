@@ -113,38 +113,62 @@ class FileContentRepositories:
             return False
         return True
         
-    def get(self, record_id, start_page=1, end_page=5):
-        total_page_count    = self.blockModel.get_document_total_page_count(record_id)
+    def get(self, record_id, start_page, end_page):
+        # total_page_count    = self.blockModel.get_document_total_page_count(record_id)
 
-        if start_page == 0 and end_page == 0:
-            start_page  = 1
-            end_page    = total_page_count
+        # if start_page == 0 and end_page == 0:
+        #     start_page  = 1
+        #     end_page    = total_page_count
         
-        if start_page == 0:
-            start_page  = 1
-        if end_page == 0:
-            end_page   = 5
+        # if start_page == 0:
+        #     start_page  = 1
+        # if end_page == 0:
+        #     end_page   = 5
+        # if start_page > end_page:
+        #     return False
+
+        # data            = {}
+        # data['pages']   = []
+        # for i in range(start_page, end_page+1):
+        #     page_blocks = self.blockModel.get_blocks_by_page(record_id, i)
+
+        #     page    = {}
+        #     for block in page_blocks:
+        #         page[block['_id']] = block['data']
+        #         if len(block['data']) > 0 :
+        #             page['page_height']     = block['data'][0]['page_info']['page_height']
+        #             page['page_no']         = block['data'][0]['page_info']['page_no']
+        #             page['page_width']      = block['data'][0]['page_info']['page_width']
+
+        #     data['pages'].append(page)
+
+        # data['start_page']  = start_page
+        # data['end_page']    = end_page
+        # data['total']       = total_page_count
+        # return data
+        
+        # new fetching logic with just 2 agg calls to mdb instead of n+1 call (n=total_no_of_pages_to_fetch)
         if start_page > end_page:
             return False
 
         data            = {}
         data['pages']   = []
-        for i in range(start_page, end_page+1):
-            page_blocks = self.blockModel.get_blocks_by_page(record_id, i)
+        blocks = self.blockModel.get_blocks_by_page_recordid(record_id, start_page, end_page)
 
-            page    = {}
-            for block in page_blocks:
-                page[block['_id']] = block['data']
-                if len(block['data']) > 0 :
-                    page['page_height']     = block['data'][0]['page_info']['page_height']
-                    page['page_no']         = block['data'][0]['page_info']['page_no']
-                    page['page_width']      = block['data'][0]['page_info']['page_width']
+        page = {}
+        for i in blocks:
+            if page.get('page_no',None) == None:
+                page['page_no'] = i['_id']['page_no']
+                page['page_height'] = i['data'][0]['page_info']['page_height']
+                page['page_width'] = i['data'][0]['page_info']['page_width']
+            if page['page_no'] != i['_id']['page_no']:
+                data['pages'].append(page)
+                page = {}
+            page[i['_id']['data_type']] = i['data']
+        data['pages'].append(page)
 
-            data['pages'].append(page)
-
-        data['start_page']  = start_page
-        data['end_page']    = end_page
-        data['total']       = total_page_count
+        # data['total']       = total_page_count
+        data['total'] = self.blockModel.get_document_total_page_count(record_id)
         return data
 
     def update(self, record_id,user_id, blocks, workflowCode, modifiedSentences=None):
