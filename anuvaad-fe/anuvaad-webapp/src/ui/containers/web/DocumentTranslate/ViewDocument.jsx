@@ -29,12 +29,13 @@ import { clearJobEntry } from "../../../../flux/actions/users/async_job_manageme
 import DownloadFile from "../../../../flux/actions/apis/download/download_file";
 import fetchpageno from '../../../../flux/actions/apis/view_document/fetch_page_no';
 import DataTable from "../../../components/web/common/DataTable";
-import { Button, TableCell, TableRow, TextField, TableFooter, Typography } from "@material-ui/core";
+import { Button, TableCell, TableRow, TextField, TableFooter, Typography, FormControl, InputLabel, Select, MenuItem } from "@material-ui/core";
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import UploadProcessModal from "../DocumentUpload/UploadProcessModal";
 import GranularTaskDetailsModal from "./GranularTaskDetailsModal";
 import { CustomTableFooter } from "../../../components/web/common/CustomTableFooter";
+import ClearContent from "../../../../flux/actions/apis/document_translate/clearcontent";
 
 const TELEMETRY = require("../../../../utils/TelemetryManager");
 
@@ -55,6 +56,21 @@ class ViewDocument extends React.Component {
       variant: "info",
       isInputActive: false,
       inputPageNumber: 1,
+      selectedGranularStatus: [],
+      filterOptionData: [
+        {
+          label: "All", 
+          value: []
+        },
+          // ["auto_translation_inprogress", "auto_translation_completed", "manual_editing_inprogress", "manual_editing_completed", "reviewer_in_progress", "manual_reediting_completed", "manual_reediting_in_progress", "reviewer_completed", "parallel_document_uploaded"] },
+        {label: "Auto Translation - In Progress", value: ["auto_translation_inprogress"] },
+        {label: "Auto Translation - Completed", value: ["auto_translation_completed"] },
+        {label: "Manual Editing - In Progress", value: ["manual_editing_in_progress", "manual_reediting_in_progress"] },
+        {label: "Manual Editing - Completed", value: ["manual_editing_completed", "manual_reediting_completed"] },
+        {label: "Review - In Progress", value: ["reviewer_in_progress"] },
+        {label: "Review - Completed", value: ["reviewer_completed"] },
+        {label: "Parallel Document Upload", value: ["parallel_document_uploaded"] },
+      ]
     };
   }
 
@@ -65,26 +81,33 @@ class ViewDocument extends React.Component {
     this.timerId = setInterval(this.checkInprogressJobStatus.bind(this), 30000);
     TELEMETRY.pageLoadStarted("view-document");
 
-    if (this.props.job_details.documents.length < 1) {
-      this.makeAPICallJobsBulkSearch(
-        this.state.offset,
-        this.state.limit,
-        false,
-        false
-      );
-      this.setState({ showLoader: true });
-    } else if (this.props.async_job_status.job) {
-      /**
-       * a job got started, fetch it status
-       */
-      this.makeAPICallJobsBulkSearch(
-        this.state.offset,
-        this.state.limit,
-        [this.props.async_job_status.job.jobID],
-        true,
-        false
-      );
-    }
+    // if (this.props.job_details.documents.length < 1) {
+    //   this.makeAPICallJobsBulkSearch(
+    //     this.state.offset,
+    //     this.state.limit,
+    //     false,
+    //     false
+    //   );
+    //   this.setState({ showLoader: true });
+    // } else if (this.props.async_job_status.job) {
+    //   /**
+    //    * a job got started, fetch it status
+    //    */
+    //   this.makeAPICallJobsBulkSearch(
+    //     this.state.offset,
+    //     this.state.limit,
+    //     [this.props.async_job_status.job.jobID],
+    //     true,
+    //     false
+    //   );
+    // }
+    this.makeAPICallJobsBulkSearch(
+      this.state.offset,
+      this.state.limit,
+      false,
+      false
+    );
+    this.setState({ showLoader: true });
     this.makeAPICallDocumentsTranslationProgress();
 
     window.addEventListener("keydown", (e) => this.keyPress(e));
@@ -97,16 +120,11 @@ class ViewDocument extends React.Component {
     // e.preventDefault();
     if (e.code === "Enter" && this.state.isInputActive) {
       e.preventDefault();
-      // handleTransliterationModelClose();
-      // console.log("enter key press.");
       this.onChangePageMAnually();
     }
   };
 
   onChangePageMAnually = () => {
-    // console.log("offset", 0);
-    // console.log("limit (Number(this.state.inputPageNumber)-1)*10 ---> ", this.props.job_details.count);
-    // this.makeAPICallJobsBulkSearch(0, (Number(this.state.inputPageNumber)-1)*10, false, false, true)
     this.tableRef.current.changePage(Number(this.state.inputPageNumber) - 1);
     this.setState({ currentPageIndex: this.state.inputPageNumber - 1 }, () => {
       this.makeAPICallDocumentsTranslationProgress();
@@ -114,11 +132,12 @@ class ViewDocument extends React.Component {
   }
 
   componentWillUnmount() {
+    ClearContent();
     clearInterval(this.timerId);
     TELEMETRY.pageLoadCompleted("view-document");
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
     if (this.props.job_details.changedJob && this.props.job_details.changedJob.hasOwnProperty("jobID") && prevProps.job_details.changedJob !== this.props.job_details.changedJob) {
       TELEMETRY.endWorkflow(this.props.job_details.changedJob.source_language_code, this.props.job_details.changedJob.target_language_code, this.props.job_details.changedJob.filename, this.props.job_details.changedJob.jobID, this.props.job_details.changedJob.status)
     }
@@ -144,12 +163,24 @@ class ViewDocument extends React.Component {
       }
       this.props.clearJobEntry();
     } else if (
-      prevProps.job_details.documents.length === 0 &&
+      (prevProps.job_details.documents.length === 0 &&
       this.props.job_details.documents.length === 0 &&
       !this.props.apistatus.progress &&
-      this.state.showLoader
+      this.state.showLoader) || 
+      (!this.props.apistatus.progress &&
+      this.state.showLoader)
     ) {
       this.setState({ showLoader: false });
+    }
+
+    if(prevState.selectedGranularStatus !== this.state.selectedGranularStatus){
+      this.makeAPICallJobsBulkSearch(
+        this.state.offset,
+        this.state.limit,
+        false,
+        false
+      );
+      this.setState({ showLoader: true });
     }
   }
 
@@ -202,12 +233,16 @@ class ViewDocument extends React.Component {
   ) {
     const { APITransport } = this.props;
     const apiObj = new FetchDocument(
-      offset,
-      this.props.job_details.count,
+      0,
+      0,
       jobIds,
       searchForNewJob,
       searchNextPage,
-      updateExisting
+      updateExisting,
+      false,
+      false,
+      false,
+      this.state.selectedGranularStatus
     );
     APITransport(apiObj);
   }
@@ -575,7 +610,7 @@ class ViewDocument extends React.Component {
         name: "endTime",
         label: "End Time",
         options: {
-          display: "false",
+          display: "excluded",
         },
       },
       {
@@ -632,11 +667,7 @@ class ViewDocument extends React.Component {
           sort: false,
           empty: true,
           customBodyRender: (value, tableMeta, updateValue) => {
-            // if(value.includes("FAILED")){
-            //   return <Typography variant="body2" style={{color: "red"}}>{value}</Typography>
-            // } else {
-            return <Typography variant="body2">{value}</Typography>
-            // }
+            return <Typography variant="body2" style={{color: value.trim() === "FINAL DOCUMENT UPLOADED" ? "#0f650f9c" : "#000000" }}><b>{value}</b></Typography>
           }
         },
       },
@@ -826,6 +857,40 @@ class ViewDocument extends React.Component {
           <ToolBar />
           {!this.state.showLoader && (
             <MuiThemeProvider theme={this.getMuiTheme()}>
+                                  <div
+                        style={{
+                            width: "100%",
+                            textAlign: "end",
+                            marginBottom: 10
+                        }}
+                    >
+                        <FormControl style={{ textAlign: "start" }}>
+                            <InputLabel id="demo-simple-select-label">Filter By Status</InputLabel>
+                            <Select
+                                labelId="demo-simple-select-label"
+                                id="demo-simple-select"
+                                value={this.state.selectedGranularStatus}
+                                // defaultValue={this.state.selectedFilter}
+                                style={{ width: 300, fontSize: "1rem" }}
+                                onChange={(e) => {
+                                    // console.log("e.target.value   ", e.target.value);
+                                    this.setState({ selectedGranularStatus: e.target.value })
+                                }}
+                            >
+                                {
+                                    this.state.filterOptionData.map((el, i) => {
+                                        return <MenuItem
+                                            selected={i === 0}
+                                            value={el.value}
+                                            style={{ fontSize: "1rem" }}
+                                        >
+                                            {el.label}
+                                        </MenuItem>
+                                    })
+                                }
+                            </Select>
+                        </FormControl>
+                    </div>
               <DataTable
                 title={"Translate " + translate("common.page.title.document")}
                 data={this.getJobsSortedByTimestamp()}
