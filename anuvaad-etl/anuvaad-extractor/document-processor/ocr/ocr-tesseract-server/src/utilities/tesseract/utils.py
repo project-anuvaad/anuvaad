@@ -88,7 +88,7 @@ def language_filter(org_lang,detected_lang,double_ocr=False):
     if double_ocr:
         map_org_lang = config.LANG_MAPPING[org_lang][0]
     else:
-        map_org_lang = config.LANG_MAPPING[org_lang][1]
+        map_org_lang = config.LANG_MAPPING[org_lang][0]
     if detected_lang in config.DETECT_LANG_MAPPING.keys():
         map_detect_lang = config.DETECT_LANG_MAPPING[detected_lang][0]
     else:

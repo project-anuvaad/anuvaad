@@ -64,31 +64,31 @@ HORIZONTAL_MERGING=True
 LANG_MAPPING = {
     "en": ["Latin", "Latin"],
     "kn": ['Kannada', "anuvaad_kan"],
-    "gu": ["Gujrati", "guj"],
-    "or": ["Oriya", "anuvaad_ori"],
+    "gu": ["guj", "guj"],
+    "or": ["ori", "anuvaad_ori"],
     "hi": ["Devanagari", "anuvaad_hin"],
     "bn": ["Bengali", "anuvaad_ben"],
     "mr": ["Devanagari", "Devanagari"],
     "ta": ['Tamil', "anuvaad_tam"],
     "te": ["Telugu", "Telugu"],
     "ml": ["Malayalam", "anuvaad_mal"],
-    "ma": ["Marathi", "anuvaad_mar"],
-    "pa": ["Punjabi", "Punjabi"],
+    "ma": ["Devanagari", "anuvaad_mar"],
+    "pa": ["Gurmukhi", "Punjabi"],
 }
 
 DETECT_LANG_MAPPING = {
     "Latin": ["Latin"],
-    "Kannada": ['anuvaad_kan'],
+    "Kannada": ['Kannada'],
     "Gujrati": ["guj"],
-    "Oriya": ["anuvaad_ori"],
-    "Devanagari": ["anuvaad_hin"],
-    "Bengali": ["anuvaad_ben"],
-    "Tamil": ['anuvaad_tam'],
+    "Oriya": ["ori"],
+    "Devanagari": ["Devanagari"],
+    "Bengali": ["Bengali"],
+    "Tamil": ['Tamil'],
     "Telugu": ["Telugu"],
-    "Malayalam": ["anuvaad_mal"],
-    "Marathi": ["anuvaad_mar"],
-    "Punjabi": ["Punjabi"],
-    "Santali":["Santali"]
+    "Malayalam": ["Malayalam"],
+    "Marathi": ["Devanagari"],
+    "Punjabi": ["Gurmukhi"],
+    "Santali":["san"]
 
 }
 

@@ -36,24 +36,21 @@ mar_modelpath="/usr/share/tesseract-ocr/4.00/tessdata/anuvaad_mar.traineddata"
 url_mar="https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvaad_mar.traineddata?AWSAccessKeyId=$AWSACCESSKEYID_VALUE&Signature=IxrMX10X0UH8W6zOG0hPtfBTsgQ%3D&Expires=1754635174"
 
 ori_modelpath="/usr/share/tesseract-ocr/4.00/tessdata/anuvaad_ori.traineddata"
-url_ori="https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvaad_ori.traineddata?AWSAccessKeyId=$AWSACCESSKEYID_VALUE&Signature=umHUkGq2K%2FA5xlfogBFypadiXD4%3D&Expires=3419847575"
+url_ori="https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvaad_ori.traineddata?AWSAccessKeyId=$AWSACCESSKEYID_VALUE&Signature=mMJ6Ai9%2FtftZUD1MIV7DjtxdyPo%3D&Expires=1754652062"
 
-rm $tam_modelpath
+# rm $tam_modelpath
 if ! [ -f $tam_modelpath ]; then
   curl -o $tam_modelpath $url_tam
   echo downloading tamil weight file
 fi
-rm $hin_modelpath
 if ! [ -f $hin_modelpath ]; then
   curl -o $hin_modelpath $url_hin
   echo downloading hindi weight file
 fi
-rm $kan_modelpath
 if ! [ -f $kan_modelpath ]; then
   curl -o $kan_modelpath $url_kan
   echo downloading kannada weight file
 fi
-rm $ben_modelpath
 if ! [ -f $ben_modelpath ]; then
   curl -o $ben_modelpath $url_ben
   echo downloading bengali weight file
@@ -63,12 +60,10 @@ if ! [ -f $mal_modelpath ]; then
   curl -o $mal_modelpath $url_mal
   echo downloading malyalam weight file
 fi
-rm $mar_modelpath
 if ! [ -f $mar_modelpath ]; then
   curl -o $mar_modelpath $url_mar
   echo downloading marathi weight file
 fi
-rm $ori_modelpath
 if ! [ -f $ori_modelpath ]; then
   curl -o $ori_modelpath $url_ori
   echo downloading oriya weight file
