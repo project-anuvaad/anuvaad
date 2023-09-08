@@ -106,16 +106,16 @@ DETECT_LANG_MAPPING = {
 }
 
 TESS_LANG_MAPPING = {
-    "en": ['eng'],
-    "kn": ['kan'],
+    "en": ['Latin'],
+    "kn": ['anuvaad_kan'],
     "gu": ['guj'],
-    "or": ['ori'],
-    "hi": ['hin'],
-    "bn": ['ben'],
-    "mr": ['mar'],
-    "ta": ['tam'],
-    "te": ['tel'],
-    "ml": ['mal'],
-    "ma": ['mar'],  
-    "pa": ['pan']  
+    "or": ['anuvaad_ori'],
+    "hi": ['anuvaad_hin'],
+    "bn": ['anuvaad_ben'],
+    "mr": ['anuvaad_hin'],
+    "ta": ['anuvaad_tam'],
+    "te": ['Telugu'],
+    "ml": ['anuvaad_mal'],
+    "ma": ['anuvaad_mar'],  
+    "pa": ['Gurmukhi']  
 }
