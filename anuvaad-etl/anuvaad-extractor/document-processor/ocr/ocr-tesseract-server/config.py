@@ -61,32 +61,19 @@ C_Y = 0
 
 HORIZONTAL_MERGING=True
 
-LANG_MAPPING       =  {
-    "en" : ["Latin","eng"],
-    "kn" : ['Kannada',"kan"],
-    "gu": ["guj"],
-    "or": ["ori"],
-    "hi" : ["Devanagari","hin","eng"],
-    "bn" : ["Bengali","ben"],
-    "mr": ["Devanagari","hin","eng"],
-    "ta": ['Tamil',"tam"],
-    "te" : ["Telugu","tel"],
-    "ml" :["Malayalam"],
-    "ur" :["Arabic", "Urdu"],
-    "pa" :["Gurmukhi","pan"],
-    "ne" :["nep","Nepali"],
-    "brx" :["Devanagari","bod", "Bodo", "boro"],
-    "as" :["asm"],
-    "sa" :["san"],
-    "ks" :["Arabic"],
-    "ks_Deva" :["Devanagari"],
-    "gom":["Devanagari"],
-    "mni":["Devanagari"],
-    "mni_Beng":["Bengali"],
-    "mai":["Devanagari"],
-    "sd_Deva" :["Arabic"],
-    "sd" :["sin"],
-    "doi":["Devanagari"]
+LANG_MAPPING = {
+    "en": ["Latin", "Latin"],
+    "kn": ['Kannada', "anuvaad_kan"],
+    "gu": ["Gujrati", "guj"],
+    "or": ["Oriya", "anuvaad_ori"],
+    "hi": ["Devanagari", "anuvaad_hin"],
+    "bn": ["Bengali", "anuvaad_ben"],
+    "mr": ["Devanagari", "Devanagari"],
+    "ta": ['Tamil', "anuvaad_tam"],
+    "te": ["Telugu", "Telugu"],
+    "ml": ["Malayalam", "anuvaad_mal"],
+    "ma": ["Marathi", "anuvaad_mar"],
+    "pa": ["Punjabi", "Punjabi"],
 }
 
 DETECT_LANG_MAPPING = {
@@ -100,22 +87,22 @@ DETECT_LANG_MAPPING = {
     "Telugu": ["Telugu"],
     "Malayalam": ["anuvaad_mal"],
     "Marathi": ["anuvaad_mar"],
-    "Punjabi": ["Gurmukhi"],
-    "Santali":["san"]
+    "Punjabi": ["Punjabi"],
+    "Santali":["Santali"]
 
 }
 
 TESS_LANG_MAPPING = {
-    "en": ['Latin'],
-    "kn": ['anuvaad_kan'],
+    "en": ['eng'],
+    "kn": ['kan'],
     "gu": ['guj'],
-    "or": ['anuvaad_ori'],
-    "hi": ['anuvaad_hin'],
-    "bn": ['anuvaad_ben'],
-    "mr": ['anuvaad_hin'],
-    "ta": ['anuvaad_tam'],
-    "te": ['Telugu'],
-    "ml": ['anuvaad_mal'],
-    "ma": ['anuvaad_mar'],  
-    "pa": ['Gurmukhi']  
+    "or": ['ori'],
+    "hi": ['hin'],
+    "bn": ['ben'],
+    "mr": ['mar'],
+    "ta": ['tam'],
+    "te": ['tel'],
+    "ml": ['mal'],
+    "ma": ['mar'],  
+    "pa": ['pan']  
 }
