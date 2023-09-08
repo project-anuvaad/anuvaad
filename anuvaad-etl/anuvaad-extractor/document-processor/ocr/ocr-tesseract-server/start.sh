@@ -19,16 +19,16 @@ curl -L -o /usr/share/tesseract-ocr/4.00/tessdata/sin.traineddata https://github
 
 AWSACCESSKEYID_VALUE="${AWSAccessKeyId}"
 tam_modelpath="/usr/share/tesseract-ocr/4.00/tessdata/anuvaad_tam.traineddata"
-url_tam="https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvaad_tam.traineddata?AWSAccessKeyId=${AWSACCESSKEYID_VALUE}&Signature=RwcbjKZWrAYqnlQ62pSPD270Ofc%3D&Expires=3419848351"
+url_tam="https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvaad_tam.traineddata?AWSAccessKeyId=${AWSACCESSKEYID_VALUE}&Signature=jJkfrpBDMWuSoQhUKGUP9cTpx30%3D&Expires=1754635442"
 
 hin_modelpath="/usr/share/tesseract-ocr/4.00/tessdata/anuvaad_hin.traineddata"
-url_hin="https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvaad_hin.traineddata?AWSAccessKeyId=AKIAXX2AMEIRJY2GNYVZ&Signature=dX9m0P5%2BMC7CDc%2FUrffdL061nus%3D&Expires=1754635416"
+url_hin="https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvaad_hin.traineddata?AWSAccessKeyId=${AWSACCESSKEYID_VALUE}&Signature=dX9m0P5%2BMC7CDc%2FUrffdL061nus%3D&Expires=1754635416"
 
 kan_modelpath="/usr/share/tesseract-ocr/4.00/tessdata/anuvaad_kan.traineddata"
-url_kan="https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvaad_kan.traineddata?AWSAccessKeyId=AKIAXX2AMEIRJY2GNYVZ&Signature=5qlHjRXtO9p7l76R3zuZVNS2JI8%3D&Expires=1754635377"
+url_kan="https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvaad_kan.traineddata?AWSAccessKeyId=${AWSACCESSKEYID_VALUE}&Signature=5qlHjRXtO9p7l76R3zuZVNS2JI8%3D&Expires=1754635377"
 
 ben_modelpath="/usr/share/tesseract-ocr/4.00/tessdata/anuvaad_ben.traineddata"
-url_ben="https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvaad_ben.traineddata?AWSAccessKeyId=AKIAXX2AMEIRJY2GNYVZ&Signature=6169AmxSvEo8vU2VVEE%2Bj2Ycqe0%3D&Expires=1754635317"
+url_ben="https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvaad_ben.traineddata?AWSAccessKeyId=${AWSACCESSKEYID_VALUE}&Signature=6169AmxSvEo8vU2VVEE%2Bj2Ycqe0%3D&Expires=1754635317"
 
 mal_modelpath="/usr/share/tesseract-ocr/4.00/tessdata/anuvaad_mal.traineddata"
 url_mal="https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvaad_mal.traineddata?AWSAccessKeyId=${AWSACCESSKEYID_VALUE}&Signature=hpor%2Fh1cheEGSvZK%2FUvyOa44CkE%3D&Expires=3419847488"
