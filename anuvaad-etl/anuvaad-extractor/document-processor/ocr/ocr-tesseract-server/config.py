@@ -61,25 +61,38 @@ C_Y = 0
 
 HORIZONTAL_MERGING=True
 
-LANG_MAPPING = {
-    "en": ["Latin", "Latin"],
-    "kn": ['Kannada', "anuvaad_kan"],
-    "gu": ["Gujrati", "Gujrati"],
-    "or": ["Oriya", "anuvaad_ori"],
-    "hi": ["Devanagari", "anuvaad_hin"],
-    "bn": ["Bengali", "anuvaad_ben"],
-    "mr": ["Devanagari", "Devanagari"],
-    "ta": ['Tamil', "anuvaad_tam"],
-    "te": ["Telugu", "Telugu"],
-    "ml": ["Malayalam", "anuvaad_mal"],
-    "ma": ["Marathi", "anuvaad_mar"],
-    "pa": ["Punjabi", "Punjabi"],
+LANG_MAPPING       =  {
+    "en" : ["Latin","eng"],
+    "kn" : ['Kannada',"kan"],
+    "gu": ["guj"],
+    "or": ["ori"],
+    "hi" : ["Devanagari","hin","eng"],
+    "bn" : ["Bengali","ben"],
+    "mr": ["Devanagari","hin","eng"],
+    "ta": ['Tamil',"tam"],
+    "te" : ["Telugu","tel"],
+    "ml" :["Malayalam"],
+    "ur" :["Arabic", "Urdu"],
+    "pa" :["Gurmukhi","pan"],
+    "ne" :["nep","Nepali"],
+    "brx" :["Devanagari","bod", "Bodo", "boro"],
+    "as" :["asm"],
+    "sa" :["san"],
+    "ks" :["Arabic"],
+    "ks_Deva" :["Devanagari"],
+    "gom":["Devanagari"],
+    "mni":["Devanagari"],
+    "mni_Beng":["Bengali"],
+    "mai":["Devanagari"],
+    "sd_Deva" :["Arabic"],
+    "sd" :["sin"],
+    "doi":["Devanagari"]
 }
 
 DETECT_LANG_MAPPING = {
     "Latin": ["Latin"],
     "Kannada": ['anuvaad_kan'],
-    "Gujrati": ["Gujrati"],
+    "Gujrati": ["guj"],
     "Oriya": ["anuvaad_ori"],
     "Devanagari": ["anuvaad_hin"],
     "Bengali": ["anuvaad_ben"],
@@ -87,8 +100,8 @@ DETECT_LANG_MAPPING = {
     "Telugu": ["Telugu"],
     "Malayalam": ["anuvaad_mal"],
     "Marathi": ["anuvaad_mar"],
-    "Punjabi": ["Punjabi"],
-    "Santali":["Santali"]
+    "Punjabi": ["Gurmukhi"],
+    "Santali":["san"]
 
 }
 

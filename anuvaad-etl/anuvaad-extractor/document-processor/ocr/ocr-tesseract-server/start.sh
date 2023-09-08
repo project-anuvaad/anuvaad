@@ -19,7 +19,7 @@ curl -L -o /usr/share/tesseract-ocr/4.00/tessdata/sin.traineddata https://github
 
 AWSACCESSKEYID_VALUE="${AWSAccessKeyId}"
 tam_modelpath="/usr/share/tesseract-ocr/4.00/tessdata/anuvaad_tam.traineddata"
-url_tam="https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvaad_hin.traineddata?AWSAccessKeyId=${AWSACCESSKEYID_VALUE}&Signature=VRBCFPq%2FBqLQ%2B7LScEElRLa88Gc%3D&Expires=3419778762"
+url_tam="https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvaad_tam.traineddata?AWSAccessKeyId=${AWSACCESSKEYID_VALUE}&Signature=RwcbjKZWrAYqnlQ62pSPD270Ofc%3D&Expires=3419848351"
 
 hin_modelpath="/usr/share/tesseract-ocr/4.00/tessdata/anuvaad_hin.traineddata"
 url_hin="https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvaad_hin.traineddata?AWSAccessKeyId=${AWSACCESSKEYID_VALUE}&Signature=VRBCFPq%2FBqLQ%2B7LScEElRLa88Gc%3D&Expires=3419778762"
