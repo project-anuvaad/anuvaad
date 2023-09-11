@@ -1,5 +1,4 @@
 Flask-Cors==3.0.10
-# anuvaad_auditor==0.1.6
 anuvaad-auditor==1.0.0
 Flask-RESTful==0.3.8
 six==1.15.0

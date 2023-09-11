@@ -82,7 +82,22 @@ LANG_MAPPING       =  {
     "mr": ["Devanagari","hin","eng"],
     "ta": ['Tamil',"tam"],
     "te" : ["Telugu","tel"],
-    "ml" :["Malayalam"]
+    "ml" :["Malayalam"],
+    "ur" :["Arabic", "Urdu"],
+    "pa" :["Gurmukhi","pan"],
+    "ne" :["nep","Nepali"],
+    "brx" :["Devanagari","bod", "Bodo", "boro"],
+    "as" :["asm"],
+    "sa" :["san"],
+    "ks" :["Arabic"],
+    "ks_Deva" :["Devanagari"],
+    "gom":["Devanagari"],
+    "mni":["Devanagari"],
+    "mni_Beng":["Bengali"],
+    "mai":["Devanagari"],
+    "sd_Deva" :["Arabic"],
+    "sd" :["sin"],
+    "doi":["Devanagari"]
 }
 
 
@@ -106,7 +121,22 @@ CROP_CONFIG = {
     'kn':{'top':15, 'bottom':10,'right':5,'left':5 },
     'ta':{'top':10, 'bottom':15,'right':5,'left':10 },
     'te':{'top':10, 'bottom':15,'right':5,'left':10 },
-    'mr':{'top':15, 'bottom':10,'right':5,'left':5}
+    'mr':{'top':15, 'bottom':10,'right':5,'left':5},
+    'ur':{'top':15, 'bottom':10,'right':5,'left':5},
+    'pa':{'top':15, 'bottom':10,'right':5,'left':5},
+    'ne':{'top':15, 'bottom':10,'right':5,'left':5},
+    'brx':{'top':15, 'bottom':10,'right':5,'left':5},
+    'as':{'top':15, 'bottom':10,'right':5,'left':5},
+    'sa':{'top':15, 'bottom':10,'right':5,'left':5},
+    'ks':{'top':15, 'bottom':10,'right':5,'left':5},
+    'ks_Deva':{'top':15, 'bottom':10,'right':5,'left':5},
+    'gom':{'top':15, 'bottom':10,'right':5,'left':5},
+    'mni':{'top':15, 'bottom':10,'right':5,'left':5},
+    'mni_Beng':{'top':15, 'bottom':10,'right':5,'left':5},
+    'mai':{'top':15, 'bottom':10,'right':5,'left':5},
+    'sd':{'top':15, 'bottom':10,'right':5,'left':5},
+    'sd_Deva':{'top':15, 'bottom':10,'right':5,'left':5},
+    'doi':{'top':15, 'bottom':10,'right':5,'left':5}
 }
 
 CLASS_2_LANG = []  #['ta']
@@ -130,7 +160,7 @@ LAYOUT_CONFIG_PATH = "./src/utilities/primalaynet/config.yaml"
 # LAYOUT_MODEL_PATH = '/home/dhiraj/Downloads/model_final.pth'
 # LAYOUT_CONFIG_PATH = '/home/dhiraj/Documents/anuvaad/anuvaad-etl/anuvaad-extractor/block-merger/src/utilities/primalaynet/config.yaml'
 
-HEADER_FOOTER_BY_PRIMA = True
+HEADER_FOOTER_BY_PRIMA = False
 
 LAYOUT_CLASSES = ['HEADER','FOOTER']
 

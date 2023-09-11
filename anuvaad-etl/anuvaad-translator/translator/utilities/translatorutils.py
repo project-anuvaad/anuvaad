@@ -3,6 +3,7 @@ import logging
 import os
 import re
 import time
+import zlib
 
 import requests
 import hashlib
@@ -121,23 +122,34 @@ class TranslatorUtils:
                 sent_key =hashlib.sha256(sentence_hash.encode('utf_16')).hexdigest()
                 data_keys.append(sent_key)
             try:
-                result=self.get_sentence_by_keys(data_keys)
+                result=self.get_sentence_by_keys(data_keys,translate_wf_input)
                 return result
             except Exception as e:
                 log_exception("Exception while fetching sentences from redis store: " + str(e), translate_wf_input, e)
                 return None
         
-    def get_sentence_by_keys(self,keys):
-            try:
-                client = tmxRepo.get_utm_redis_instance()
-                result = []
-                for key in keys:
-                    sent_obj={}
-                    val=client.lrange(key, 0, -1)
+    def get_sentence_by_keys(self,keys,translate_wf_input):
+        try:
+            client = tmxRepo.get_utm_redis_instance()
+            result = []
+            for key in keys:
+                sent_obj={}
+                val=client.lrange(key, 0, -1)
+                #hash_values = client.hget("UTM",key)
+                if val != None and len(val) > 0:
+                    log_info(f"VAL VALUE :: {val}",translate_wf_input)
+                    val = zlib.decompress(val[0]).decode()
+                    # val=client.lrange(key, 0, -1)
                     sent_obj["key"]=key
-                    sent_obj["value"]=val
+                    sent_obj["value"]=[val]
                     result.append(sent_obj)
-                return result
-            except Exception as e:
-                log_exception("Exception in fetching sentences from redis store  | Cause: " + str(e), None, e)
-                return None
+                    return result
+            return result
+                # else:
+                #     sent_obj["key"]=key
+                #     sent_obj["value"]=[]
+                #     result.append(sent_obj)
+                #     return result
+        except Exception as e:
+            log_exception("Exception in fetching sentences from redis store  | Cause: " + str(e), translate_wf_input, e)
+            return None

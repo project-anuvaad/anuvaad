@@ -49,6 +49,14 @@
             "description":"API to mark jobs inactive for user"
         },
         {
+            "id":"2894fe1d-a2d4-4cfd-af4b-287e9bcfefdf",
+            "uri":"/anuvaad-etl/wf-manager/v1/active-docs",
+            "module":"WORKFLOW-MANAGER",
+            "active":true,
+            "whiteList":false,
+            "description":"API to retrieve active documents currently translated or digitized"
+        },
+        {
             "id":"9050cae6-b3f5-4c87-99e0-09019ad86267",
             "uri":"/anuvaad/user-mgmt/v1/users/create",
             "module":"USER-MANAGEMENT-SYSTEM",
@@ -79,6 +87,14 @@
             "active":true,
             "whiteList":true,
             "description":"API to login"
+        },
+        {
+            "id":"bbf8b005-647a-4fa3-a3cb-ceeb3f9a9a7b",
+            "uri":"/anuvaad/user-mgmt/v1/users/logout",
+            "module":"USER-MANAGEMENT-SYSTEM",
+            "active":true,
+            "whiteList":true,
+            "description":"API to logout"
         },
         {
             "id":"d0875fd6-4ae3-40ca-bb0d-b93feafe459a",
@@ -729,6 +745,14 @@
             "description":"API for Aanuvaad-Metrics languages drop down chart api"
         },
         {
+            "id":"05c0eeb8-5cef-4d5c-ae7a-b17d86c6aa06",
+            "uri":"/anuvaad-metrics/anuvaad-data/v1/upload_doc_count",
+            "module":"ANUVAAD-METRICS",
+            "active":true,
+            "whiteList":true,
+            "description":"API for Anuvaad-Metrics uploaded docs count api"
+        },
+        {
             "id":"7aec74a1-7feb-45c7-900b-a6a4458a4fef",
             "uri":"/anuvaad-etl/pre-processor/v0/pre-process",
             "module":"PRE-PROCESSOR",
@@ -750,15 +774,15 @@
             "module":"USER-MANAGEMENT-SYSTEM",
             "active":true,
             "whiteList":true,
-            "description":"API for setting granularity status"
+            "description":"API for registering mfa"
         },
         {
             "id":"2b952ce0-f26b-460c-8783-ba07285acb12",
-            "uri":"/anuvaad/user-mgmt/v1/mfa/verify ",
+            "uri":"/anuvaad/user-mgmt/v1/mfa/verify",
             "module":"USER-MANAGEMENT-SYSTEM",
             "active":true,
             "whiteList":true,
-            "description":"API for setting granularity status"
+            "description":"API for verify mfa"
         },
         {
             "id":"bef8ac88-ed4c-4e21-be15-a36fd7c7c768",
@@ -766,7 +790,23 @@
             "module":"USER-MANAGEMENT-SYSTEM",
             "active":true,
             "whiteList":false,
-            "description":"API for setting granularity status"
-        }                
+            "description":"API for reset mfa"
+        },
+        {
+            "id":"e5963320-87ab-41c9-9a8b-19e346202023",
+            "uri":"/anuvaad/user-mgmt/v1/users/update-email",
+            "module":"USER-MANAGEMENT-SYSTEM",
+            "active":true,
+            "whiteList":true,
+            "description":"API for update email for users"
+        },
+        {
+            "id":"5696403b-2a6d-48f3-846a-94ba97dba411",
+            "uri":"/anuvaad/user-mgmt/v1/users/active-users",
+            "module":"USER-MANAGEMENT-SYSTEM",
+            "active":true,
+            "whiteList":true,
+            "description":"API for fetching no. of active users"
+        }                        
     ]
 }

@@ -171,7 +171,7 @@ class UserGlossaryUpload extends React.Component {
                         >
                             {
                                 this.state.source_languages.map(lang =>
-                                    <MenuItem key={lang.language_code} value={lang.language_code + ''}>{lang.language_name}</MenuItem>)
+                                    <MenuItem key={lang.language_code} value={lang.language_code + ''} style={{color: lang.language_name.includes('Alpha') ? "rgba(0,0,0,0.5)" : '#000000'}}>{lang.language_name}</MenuItem>)
                             }
                         </Select>
                     </FormControl>
@@ -204,7 +204,7 @@ class UserGlossaryUpload extends React.Component {
                         >
                             {
                                 this.state.target_languages.map(lang =>
-                                    <MenuItem key={lang.language_code} value={lang.language_code + ''}>{lang.language_name}</MenuItem>)
+                                    <MenuItem key={lang.language_code} value={lang.language_code + ''} style={{color: lang.language_name.includes('Alpha') ? "rgba(0,0,0,0.5)" : '#000000'}}>{lang.language_name}</MenuItem>)
                             }
                         </Select>
                     </FormControl>

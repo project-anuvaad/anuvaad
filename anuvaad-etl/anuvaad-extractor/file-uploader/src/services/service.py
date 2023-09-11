@@ -22,6 +22,10 @@ from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
 from models.response import CustomResponse
 from models.status import Status
+import requests
+import json
+from urllib.parse import urljoin
+
 
 ALLOWED_FILE_TYPES = config.ALLOWED_FILE_TYPES
 ALLOWED_FILE_EXTENSIONS = config.ALLOWED_FILE_EXTENSIONS
@@ -114,7 +118,49 @@ def reduce_page(filenames,filepath,file_extension):
     filepath =  config.download_folder + '/'+ filenames +file_extension #filename.ilename+ str(j) +"."+filename.file_extension
     return filepath
 
-
+def file_autoupload_s3(job_id,src_file,record_id,userid):
+    try:
+        headers = {"Content-Type": "application/json; charset=utf-8"}
+        doc_converter = urljoin(config.DOC_CONVERTER, config.DOC_CONVERTER_ENDPOINT)
+        body = json.dumps({"record_id":record_id,"user_id":userid,"file_type":"txt,xlsx"})
+        doc = requests.post(doc_converter,data=body,headers=headers)
+        if doc.status_code == 200:
+            docs = doc.json()
+            txt = docs['translated_document']['txt']
+            xlsx = docs['translated_document']['xlsx']
+            txt_path = os.path.join(config.download_folder, txt)
+            xlsx_path =os.path.join(config.download_folder, xlsx)
+            src_filename = str(src_file)
+            src_file_path = os.path.join(config.download_folder, src_filename)
+            if os.path.exists(txt_path) and os.path.exists(xlsx_path) :
+                if os.path.exists(src_file_path):
+                    file_names= [xlsx, txt,src_filename]
+                else:
+                    file_names= [xlsx, txt]
+                zip_name =str(job_id)+".zip"
+                s3_bucket = S3BucketUtils()
+                s3_bucket.compress(file_names,zip_name)
+                zip_path = os.path.join(config.download_folder, zip_name)
+                upload_to_s3 = s3_bucket.upload_file(zip_path,None)
+                fc_obj = FetchContent()
+                fc_obj.store_reference_link(job_id=job_id, location=upload_to_s3)
+                log_info("SUCCESS: File Uploaded to s3-- " ,None)
+                os.remove(zip_path)
+                res = CustomResponse(Status.SUCCESS.value, str(upload_to_s3))
+                return res.getres()
+            else:
+                log_info("ERROR: file not found -- " ,None)
+                res = CustomResponse(Status.ERROR_NOTFOUND_FILE.value, None)
+                return res.getresjson(), 400
+        else:
+            log_info("ERROR: file not found -- " ,None)
+            res = CustomResponse(Status.ERROR_NOTFOUND_FILE.value, None)
+            return res.getresjson(), 400
+    except Exception as e:
+        log_exception("Exception while uploading the file: " ,None, str(e))
+        res = CustomResponse(Status.FAILURE.value, None)
+        return res.getresjson(), 500
+    
 def file_upload_s3(f,src_file,job_id):
     try:
         mime_type = f.mimetype

@@ -5,9 +5,16 @@ import os
 kafka_bootstrap_server_host = os.environ.get('KAFKA_BOOTSTRAP_SERVER_HOST', 'localhost:9092')
 mongo_server_host = os.environ.get('MONGO_CLUSTER_URL', 'mongodb://localhost:27017,localhost:27018/?replicaSet=foo')
 #mongo_server_host = os.environ.get('MONGO_CLUSTER_URL', 'mongodb://localhost:27017/?readPreference=primary&ssl=false')
+redis_server_prefix = os.environ.get('REDIS_PREFIX', 'redis')
+redis_server_host = os.environ.get('REDIS_URL', 'localhost')
+redis_server_port = os.environ.get('REDIS_PORT', 6379)
+active_docs_redis_db = os.environ.get('ACTIVE_DOCS_REDIS_DB', 11)
 app_host = os.environ.get('ANUVAAD_ETL_WFM_HOST', '0.0.0.0')
 app_port = os.environ.get('ANUVAD_ETL_WFM_PORT', 5001)
+anuvaad_ums_host = os.environ.get('ANUVAAD_UMS_HOST','http://user_anuvaad-user-management:5001/')
 
+#Active Document (Time to Live in Seconds)
+active_doc_time = int(os.environ.get('WFM_ACTIVE_DOCS_TTL',18000))
 
 #MODULE-SPECIFIC-CONFIGS
 #common-variables
@@ -70,4 +77,7 @@ tool_config_url = os.environ.get('ANUVAAD_ETL_TOOL_CONFIG_FILE_URL',
 log_msg_start = " process started."
 log_msg_end = " process ended."
 log_msg_error = " has encountered an exception, job ended."
-granularity_list = ["manualEditingStartTime","manualEditingEndTime","parallelDocumentUpload"]
+
+#Specific variables
+granularity_list = ["manualEditingStartTime","manualEditingEndTime","parallelDocumentUpload","reviewerInProgress","reviewerCompleted"]
+workflowCodesTranslation = ["DP_WFLOW_FBT","WF_A_FCBMTKTR","DP_WFLOW_FBTTR","WF_A_FTTKTR"]

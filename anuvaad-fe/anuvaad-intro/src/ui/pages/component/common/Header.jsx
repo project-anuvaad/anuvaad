@@ -11,15 +11,16 @@ import Button from "@mui/material/Button";
 import { Grid } from "@mui/material";
 import DatasetStyle from "../../../styles/Dataset";
 import Anuvaanlogo from "../../../../img/Anuvaanlogo.png";
-import {Routes, Route, useNavigate,Link} from 'react-router-dom';
-
-
+import { Routes, Route, useNavigate, Link } from "react-router-dom";
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 
 const drawerWidth = 240;
 
 export default function DrawerAppBar(props) {
   const classes = DatasetStyle();
   const navigate = useNavigate();
+  let location = useLocation();
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
 
@@ -27,15 +28,32 @@ export default function DrawerAppBar(props) {
     setMobileOpen((prevState) => !prevState);
   };
 
-  const handleClickUseCases = () =>{
-    navigate('/useCases');
+  const handleClickUseCases = () => {
+    navigate("/useCases");
+  };
 
-  }
+  const handleClickHome = () => {
+    navigate("/");
+  };
 
   const drawer = (
     <Box onClick={handleDrawerToggle} sx={{ textAlign: "center", mt: 3 }}>
       <Grid>
         <img src={Anuvaanlogo} style={{ maxWidth: "90px" }} alt="logo" />
+
+        <Grid>
+          {" "}
+          <Button
+            onClick={handleClickHome}
+            className={
+              location.pathname === "/"
+                ? classes.highlightedMenu
+                : classes.headerMenu
+            }
+          >
+            Home
+          </Button>
+        </Grid>
 
         <Grid>
           {" "}
@@ -67,25 +85,22 @@ export default function DrawerAppBar(props) {
             </Button>
           </a>
         </Grid>
-        
+
         <Grid>
           {" "}
-          <a
-                target="_blank"
-                href="https://users.anuvaad.org/"
-              >
-                <Button
-                  sx={{
-                    color: "#51504f",
-                    textTransform: "capitalize",
-                    fontSize: "16px",
-                    fontFamily: "roboto,sans-serif",
-                    ml: 3,
-                  }}
-                >
-                  Try Demo
-                </Button>
-              </a>
+          <a target="_blank" href="https://users.anuvaad.org/">
+            <Button
+              sx={{
+                color: "#51504f",
+                textTransform: "capitalize",
+                fontSize: "16px",
+                fontFamily: "roboto,sans-serif",
+                ml: 3,
+              }}
+            >
+              Try Demo
+            </Button>
+          </a>
         </Grid>
         <Grid>
           {" "}
@@ -107,19 +122,16 @@ export default function DrawerAppBar(props) {
         </Grid>
         <Grid>
           {" "}
-         
-            <Button
+          <Button
             onClick={handleClickUseCases}
-              sx={{
-                color: "#51504f",
-                textTransform: "capitalize",
-                fontSize: "16px",
-                fontFamily: "roboto,sans-serif",
-              }}
-            >
-              Use Cases
-            </Button>
-         
+            className={
+              location.pathname === "/useCases"
+                ? classes.highlightedMenu
+                : classes.headerMenu
+            }
+          >
+            Use Cases
+          </Button>
         </Grid>
       </Grid>
     </Box>
@@ -142,7 +154,17 @@ export default function DrawerAppBar(props) {
         <Toolbar>
           <Box sx={{ display: { xs: "none", sm: "block" } }}>
             <Grid>
-            <a target="_blank" href=" https://anuvaad.sunbird.org/">
+              <Button
+                onClick={handleClickHome}
+                className={
+                  location.pathname === "/"
+                    ? classes.highlightedMenu
+                    : classes.headerMenu
+                }
+              >
+                Home
+              </Button>
+              <a target="_blank" href=" https://anuvaad.sunbird.org/">
                 <Button
                   sx={{
                     color: "#51504f",
@@ -172,10 +194,7 @@ export default function DrawerAppBar(props) {
                 </Button>
               </a>
 
-              <a
-                target="_blank"
-                href="https://users.anuvaad.org/"
-              >
+              <a target="_blank" href="https://users.anuvaad.org/">
                 <Button
                   sx={{
                     color: "#51504f",
@@ -188,7 +207,7 @@ export default function DrawerAppBar(props) {
                   Try Demo
                 </Button>
               </a>
-             
+
               <a
                 target="_blank"
                 href=" https://github.com/project-anuvaad/anuvaad/wiki"
@@ -208,16 +227,14 @@ export default function DrawerAppBar(props) {
 
               <Button
                 onClick={handleClickUseCases}
-              sx={{
-                color: "#51504f",
-                textTransform: "capitalize",
-                fontSize: "16px",
-                fontFamily: "roboto,sans-serif",
-                ml: 3,
-              }}
-            >
-              Use Cases
-            </Button>
+                className={
+                  location.pathname === "/useCases"
+                    ? classes.highlightedMenu
+                    : classes.headerMenu
+                }
+              >
+                Use Cases
+              </Button>
             </Grid>
           </Box>
           <IconButton
@@ -236,7 +253,6 @@ export default function DrawerAppBar(props) {
             <MenuIcon />
           </IconButton>
           <Grid
-           
             sx={{
               flexGrow: 1,
               display: { xs: "none", sm: "flex" },
@@ -245,7 +261,7 @@ export default function DrawerAppBar(props) {
             }}
           >
             <Link to={`/`}>
-            <img src={Anuvaanlogo} style={{ maxWidth: "83px" }} alt="logo" />
+              <img src={Anuvaanlogo} style={{ maxWidth: "83px" }} alt="logo" />
             </Link>
           </Grid>
         </Toolbar>

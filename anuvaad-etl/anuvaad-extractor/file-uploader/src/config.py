@@ -39,16 +39,22 @@ aws_link_prefix = f'https://{aws_bucket_name}.s3.amazonaws.com/'
 
 
 # Content Handler
-FETCH_CONTENT_URL_DEFAULT = 'http://gateway_anuvaad-content-handler:5001/'
+FETCH_CONTENT_URL_DEFAULT = 'http://anuvaad-content-handler:5001/'
 FETCH_CONTENT_URL_VAR = 'CONTENT_HANDLER_URL'
 CH_URL = os.environ.get(FETCH_CONTENT_URL_VAR, FETCH_CONTENT_URL_DEFAULT)
 
 #Workflow manager Granularity
-WFM_GRANULARITY_DEFAULT = 'http://gateway_anuvaad-etl-wf-manager:5001/'
+WFM_GRANULARITY_DEFAULT = 'http://anuvaad-etl-wf-manager:5001/'
 WFM_GRANULARITY_VAR = 'WORKFLOW_MANAGER_URL'
 WFM_GRANULARITY =  os.environ.get(WFM_GRANULARITY_VAR, WFM_GRANULARITY_DEFAULT)
 
+#Doc COnverter
+DOC_CONVERTER_DEFAULT = 'http://anuvaad-etl-document-converter:5001/'
+DOC_CONVERTER_VAR = 'DOC_CONVERTER_URL'
+DOC_CONVERTER =  os.environ.get(DOC_CONVERTER_VAR, DOC_CONVERTER_DEFAULT)
+
 WFM_GRANULARITY_END_POINT = "anuvaad-etl/wf-manager/v1/workflow/setGranularity"
+DOC_CONVERTER_ENDPOINT ="anuvaad-etl/document-converter/v0/document-converter"
 
 FETCH_CONTENT_ENDPOINT = 'anuvaad/content-handler/v0/fetch-content'
 REF_LINK_STORE_ENDPOINT = 'anuvaad/content-handler/v0/ref-link/store'

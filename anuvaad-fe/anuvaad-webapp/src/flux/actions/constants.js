@@ -9,6 +9,7 @@ const constants = {
     APISTATUS: 'APISTATUS',
     LOGIN: 'LOGIN',
     LOGOUT: 'LOGOUT',
+    LOGOUT: 'LOGOUT',
     QNA: 'QNA',
     AUTO_ML: 'AUTO_ML',
     NMT: 'NMT',

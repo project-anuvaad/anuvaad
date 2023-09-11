@@ -1,4 +1,4 @@
-anuvaad_auditor==0.1.6
+anuvaad_auditor==1.0.0
 bcrypt==3.2.0
 DateTime==4.3
 Flask==2.1.0
@@ -10,5 +10,8 @@ pymongo==3.11.1
 PyNaCl==1.4.0
 requests==2.24.0
 uuid==1.30
-
+pyotp==2.8.0
+PyQRCode==1.2.1
+pypng==0.20220715.0
+redis==4.5.4
 

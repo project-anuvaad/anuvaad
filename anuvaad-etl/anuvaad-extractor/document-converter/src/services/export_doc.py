@@ -31,15 +31,15 @@ class DocumentExporterService:
                 output_filename = convert_to(output_file_folder, export_result)
                 # zip_file= FileUtilities.zipfile_creation(export_result)
                 log_info("pdf file formation done!! file folder: %s"%output_filename, MODULE_CONTEXT)
-                return output_filename
+                return os.path.basename(output_filename)
 
             if file_type == 'txt':
                 log_info("document type %s formation started"%file_type, MODULE_CONTEXT)
                 output_filename=os.path.join(output_file_folder,str(record_id).replace(".json","")+'_'+str(randint(100, 999))+".txt")
                 export_result=exportRepo.write_to_txt(data,output_filename)
-                zip_file= FileUtilities.zipfile_creation(output_filename)
-                log_info("txt file formation done!! file folder: %s"%zip_file, MODULE_CONTEXT)
-                return zip_file
+                # zip_file= FileUtilities.zipfile_creation(output_filename)
+                log_info("txt file formation done!! file folder: %s"%output_filename, MODULE_CONTEXT)
+                return os.path.basename(output_filename)
 
         except Exception as e:
             log_exception("Document type {} saving failed due to exception | {}".format(file_type,str(e)), MODULE_CONTEXT, None)
