@@ -56,12 +56,9 @@ class ViewDocument extends React.Component {
       variant: "info",
       isInputActive: false,
       inputPageNumber: 1,
-      selectedGranularStatus: [],
+      selectedGranularStatus: false,
       filterOptionData: [
-        {
-          label: "All", 
-          value: []
-        },
+        {label: "All", value: false},
           // ["auto_translation_inprogress", "auto_translation_completed", "manual_editing_inprogress", "manual_editing_completed", "reviewer_in_progress", "manual_reediting_completed", "manual_reediting_in_progress", "reviewer_completed", "parallel_document_uploaded"] },
         {label: "Auto Translation - In Progress", value: ["auto_translation_inprogress"] },
         {label: "Auto Translation - Completed", value: ["auto_translation_completed"] },
@@ -879,8 +876,9 @@ class ViewDocument extends React.Component {
                             >
                                 {
                                     this.state.filterOptionData.map((el, i) => {
+                                      console.log("el --- ", el);
                                         return <MenuItem
-                                            selected={i === 0}
+                                            selected={i == 0}
                                             value={el.value}
                                             style={{ fontSize: "1rem" }}
                                         >
