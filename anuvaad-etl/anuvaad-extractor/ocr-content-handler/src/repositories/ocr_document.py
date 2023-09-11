@@ -86,17 +86,44 @@ class DigitalDocumentRepositories:
         return True
 
 
-    def get_pages(self, record_id, start_page=1, end_page=5):
+    def get_pages(self, record_id, start_page, end_page):
 
-        total_page_count    = self.docModel.get_document_total_page_count(record_id)
-        if start_page == 0 and end_page == 0:
-            start_page  = 1
-            end_page    = total_page_count
+        # total_page_count    = self.docModel.get_document_total_page_count(record_id)
+        # if start_page == 0 and end_page == 0:
+        #     start_page  = 1
+        #     end_page    = total_page_count
         
-        if start_page == 0:
-            start_page  = 1
-        if end_page == 0:
-            end_page   = 5
+        # if start_page == 0:
+        #     start_page  = 1
+        # if end_page == 0:
+        #     end_page   = 5
+        # if start_page > end_page:
+        #     return False
+        # if start_page > total_page_count:
+        #     return False
+
+        # AppContext.addRecordID(record_id)
+        # log_info("DigitalDocumentRepo fetching doc by pages for record_id:{}".format(str(record_id)), AppContext.getContext())
+        # pages           = []
+        # data            = {}
+        # data_page       = []
+        # for i in range(start_page, end_page+1):
+        #     page_block = self.docModel.get_record_by_page(record_id, i)
+        #     if page_block == False:
+        #         return False
+        #     else:
+        #         data_page.append(page_block)
+            
+    
+        # pg_block_formated=self.format_page_data(data_page)
+
+        # data['pages']       = pg_block_formated
+        # data['start_page']  = start_page
+        # data['end_page']    = end_page
+        # data['total']       = total_page_count
+        # return data
+    
+        total_page_count    = self.docModel.get_document_total_page_count(record_id)
         if start_page > end_page:
             return False
         if start_page > total_page_count:
@@ -104,22 +131,10 @@ class DigitalDocumentRepositories:
 
         AppContext.addRecordID(record_id)
         log_info("DigitalDocumentRepo fetching doc by pages for record_id:{}".format(str(record_id)), AppContext.getContext())
-        pages           = []
         data            = {}
-        data_page       = []
-        for i in range(start_page, end_page+1):
-            page_block = self.docModel.get_record_by_page(record_id, i)
-            if page_block == False:
-                return False
-            else:
-                data_page.append(page_block)
-            
-    
-        pg_block_formated=self.format_page_data(data_page)
-
-        data['pages']       = pg_block_formated
-        data['start_page']  = start_page
-        data['end_page']    = end_page
+        page_blocks = self.docModel.get_record_by_startendpage(record_id,start_page,end_page)
+        page_blocks=self.format_page_data_new(page_blocks)
+        data['pages']       = page_blocks
         data['total']       = total_page_count
         return data
 
@@ -183,6 +198,36 @@ class DigitalDocumentRepositories:
             block_info["page_no"]   = block["page_info"]["page_no"]
             block_info["regions"]   = block["regions"]
 
+            pages["pages"].append(block_info)
+        return pages
+    
+    def format_page_data_new(self,page_blocks):
+        # file properties
+        file = {
+            'name' : page_blocks[0]['data'][0]['file_name'],
+            'type' : page_blocks[0]['data'][0]['file_type'],
+        }
+        if "file_identifier" in page_blocks[0]['data'][0]:
+            file["identifier"]      = page_blocks[0]['data'][0]["file_identifier"]
+
+        # config properties
+        config = {
+            "language" : page_blocks[0]['data'][0]["file_locale"],
+        }
+
+        pages = {
+            "file" : file,
+            "config" : config,
+            "pages" : [],
+        }
+        for block in page_blocks:
+            block_info = {}
+            block_info["identifier"]= block["data"][0]["page_info"]["page_identifier"]
+            block_info["resolution"]= block["data"][0]["page_info"]["page_resolution"]
+            block_info["path"]      = block["data"][0]["page_info"]["page_img_path"]
+            block_info["boundingBox"]= block["data"][0]["page_info"]["page_boundingBox"]
+            block_info["page_no"]   = block["data"][0]["page_info"]["page_no"]
+            block_info["regions"]   = block["data"][0]["regions"]
             pages["pages"].append(block_info)
         return pages
 

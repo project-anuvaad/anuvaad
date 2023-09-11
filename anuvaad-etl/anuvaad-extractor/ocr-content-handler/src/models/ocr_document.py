@@ -79,6 +79,22 @@ class DigitalDocumentModel(object):
             AppContext.addRecordID(record_id)
             log_exception("Exception on fetching record by page | DigitalDocumentModel :{}".format(str(e)) , AppContext.getContext(), e)
             return False
+    
+    def get_record_by_startendpage(self, record_id, start_page, end_page):
+        try:
+            page_nos = {}
+            if end_page != 0: 
+                page_nos['page_info.page_no'] = {'$in': list(range(start_page,end_page+1))}
+            collections = get_db()[DB_SCHEMA_NAME]
+            results        = collections.aggregate([
+                                { '$match' : {'recordID': record_id,**page_nos} },
+                                { '$group' : { '_id': '$page_info.page_no', 'data':{'$push':"$$ROOT"}}},
+                                { "$sort": {'_id': 1}} ])
+            return list(results)
+        except Exception as e:
+            AppContext.addRecordID(record_id)
+            log_exception("Exception on fetching record by start,endpage | DigitalDocumentModel :{}".format(str(e)) , AppContext.getContext(), e)
+            return False
         
     
 
