@@ -235,7 +235,8 @@ class OrganizationList extends React.Component {
         label: "Organization Name",
         options: {
           filter: false,
-          sort: false
+          sort: false,
+          viewColumns: false,
         }
       },
       {
@@ -244,6 +245,7 @@ class OrganizationList extends React.Component {
         options: {
           filter: false,
           sort: true,
+          viewColumns: false,
         }
       },
       {
@@ -252,8 +254,8 @@ class OrganizationList extends React.Component {
         options: {
           filter: false,
           sort: false,
-          display: "exclude"
-
+          display: "exclude",
+          viewColumns: false,
         }
       },
       {
@@ -263,6 +265,7 @@ class OrganizationList extends React.Component {
           filter: true,
           sort: true,
           empty: true,
+          viewColumns: false,
           customBodyRender: (value, tableMeta, updateValue) => {
             if (tableMeta.rowData) {
               return (

@@ -349,6 +349,7 @@ handleInputPageChange = (event, totalPageCount) => {
         options: {
           filter: false,
           sort: true,
+          viewColumns: false,
           setCellProps: () => ({ style: { maxWidth: "250px" } }),
         }
       },
@@ -358,6 +359,7 @@ handleInputPageChange = (event, totalPageCount) => {
         options: {
           filter: false,
           sort: false,
+          viewColumns: false,
           setCellProps: () => ({ style: { maxWidth: "250px" } }),
         }
       },
@@ -367,6 +369,7 @@ handleInputPageChange = (event, totalPageCount) => {
         options: {
           filter: false,
           sort: false,
+          viewColumns: false,
           setCellProps: () => ({ style: { maxWidth: "250px" } }),
           customBodyRender: (value, tableMeta, updateValue) => {
             // console.log("tableMeta --- ", tableMeta);
@@ -429,6 +432,7 @@ handleInputPageChange = (event, totalPageCount) => {
         options: {
           filter: false,
           sort: false,
+          viewColumns: false,
           display: this.state.disableActions ? "excluded" : true,
           setCellHeaderProps: () => { return { align: "center" } },
           setCellProps: () => { return { align: "center" } },
