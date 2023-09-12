@@ -160,6 +160,8 @@ class DocumentEditor extends React.Component {
 
         if(docArr[0].currentGranularStatus === "AUTO TRANSLATION - COMPLETED"){
           this.setState({updateManualStartTime: true});
+        } else {
+          this.setState({updateManualStartTime: false});
         }
       }
     })

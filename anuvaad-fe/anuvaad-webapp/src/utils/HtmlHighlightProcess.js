@@ -9,6 +9,7 @@ export const highlightSource = (
   highlightSentence,
   paper
 ) => {
+source = source.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 if (source.match(validStrRegex) && source.replace(/[|,|\.|\-]+/g, "") !== "") {
     let regExpSource = source
       .replace(/[|,|\.|\-]+/g, "")

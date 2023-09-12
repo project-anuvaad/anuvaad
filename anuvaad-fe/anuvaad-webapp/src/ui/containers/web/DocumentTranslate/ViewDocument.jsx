@@ -876,7 +876,6 @@ class ViewDocument extends React.Component {
                             >
                                 {
                                     this.state.filterOptionData.map((el, i) => {
-                                      console.log("el --- ", el);
                                         return <MenuItem
                                             selected={i == 0}
                                             value={el.value}
