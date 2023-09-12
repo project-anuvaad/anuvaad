@@ -47,7 +47,7 @@ function success(res, api, dispatch) {
 }
 
 function error(err, api, dispatch) {
-  let errorMsg = err.response && err.response.data && err.response.data.why ? err.response.data.why : Strings.error.message.http.default;
+  let errorMsg = err.response && err.response.data && err.response.data.why ? err.response.data.why : err.response.data.message ? err.response.data.message : Strings.error.message.http.default;
   TELEMETRY.log('', err.response && err.response.data ? JSON.stringify(err.response.data) : err.response, api.endpoint)
   if (api.errorMsg || api.errorMsg === null) {
     errorMsg = api.errorMsg === null ? "" : api.errorMsg;
