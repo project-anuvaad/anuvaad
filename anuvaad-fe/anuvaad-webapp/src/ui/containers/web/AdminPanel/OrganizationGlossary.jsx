@@ -337,6 +337,7 @@ class OrganizationGlossary extends React.Component {
         options: {
           filter: false,
           sort: false,
+          viewColumns: false,
         },
       },
       {
@@ -345,6 +346,7 @@ class OrganizationGlossary extends React.Component {
         options: {
           filter: false,
           sort: false,
+          viewColumns: false,
         },
       },
       {
@@ -380,7 +382,8 @@ class OrganizationGlossary extends React.Component {
         label: "Glossary Type",
         option: {
           filter: false,
-          sort: false
+          sort: false,
+          viewColumns: false,
         }
       },
       {

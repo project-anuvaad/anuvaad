@@ -86,6 +86,7 @@ class DocumentStats extends React.Component {
         options: {
           filter: false,
           sort: true,
+          viewColumns: false,
         }
       },
       {
@@ -94,6 +95,7 @@ class DocumentStats extends React.Component {
         options: {
           filter: false,
           sort: false,
+          viewColumns: false,
         }
       },
       {
