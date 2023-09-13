@@ -75,7 +75,6 @@ class AnuvaadUrduTokenizer(object):
         text = self.serialize_decimal(text)
         text = self.add_space_after_sentence_end(text)
         text = self.serialize_end(text)
-        print("serialize_end  : ",text)
         sentences = self._tokenizer.tokenize(text)
         output = []
         for se in sentences:
