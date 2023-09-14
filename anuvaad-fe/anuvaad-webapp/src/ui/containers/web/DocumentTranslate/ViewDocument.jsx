@@ -65,8 +65,7 @@ class ViewDocument extends React.Component {
         {label: "Manual Editing - In Progress", value: ["manual_editing_in_progress", "manual_reediting_in_progress"] },
         {label: "Manual Editing - Completed", value: ["manual_editing_completed", "manual_reediting_completed"] },
         {label: "Review - In Progress", value: ["reviewer_in_progress"] },
-        {label: "Review - Completed", value: ["reviewer_completed"] },
-        {label: "Parallel Document Upload", value: ["parallel_document_uploaded"] },
+        {label: "Review - Completed", value: ["reviewer_completed", "parallel_document_uploaded"] },
       ]
     };
   }
