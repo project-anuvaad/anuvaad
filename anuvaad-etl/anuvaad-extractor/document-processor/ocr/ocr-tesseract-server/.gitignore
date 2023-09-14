@@ -1,2 +1,4 @@
 upload
 src/notebooks/upload
+*.pyc
+__pycache__/

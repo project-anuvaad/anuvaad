@@ -17,6 +17,17 @@ from src.utilities.utils import sort_regions
 device = torch.device("cuda")
 #os.environ["CUDA_VISIBLE_DEVICES"] = ""
 
+from huggingface_hub import hf_hub_download
+from PIL import Image
+from transformers import DetrFeatureExtractor
+from transformers import TableTransformerForObjectDetection
+import matplotlib.pyplot as plt
+import torch
+import pandas as pd
+
+feature_extractor = DetrFeatureExtractor()
+model = TableTransformerForObjectDetection.from_pretrained("microsoft/table-transformer-structure-recognition")
+
 seed = 1234
 random.seed(seed)
 torch.manual_seed(seed)
@@ -81,6 +92,19 @@ class PRIMA(object):
 			bbox.append(list(ele.coordinates))
 			tag.append(ele.type)
 			score.append(format(ele.score,'.2f'))
+		return bbox,tag,score
+	
+	def prima_region_cell(self,layout):
+		# bbox = []; tag =[]; score =[]
+		tag = layout['labels'].tolist()
+		score = layout['scores'].tolist()
+		bbox = layout['boxes'].tolist()
+		# for idx, ele in enumerate(layout):
+
+		#     #if ele.type not in ['TableRegion']:
+		#     bbox.append(list(ele.boxes))
+		#     tag.append(ele.type)
+		#     score.append(format(ele.score,'.2f'))
 		return bbox,tag,score
 
 	def craft_refinement(self, boxes_final, coords, layout_class,score):
@@ -203,6 +227,25 @@ class PRIMA(object):
 			temp_dict['class']      = self.class_mapping(tags[idx])
 			final_coord.append(temp_dict)
 		return final_coord
+	
+	def update_box_format_cell(self,coords,tags,score):
+		final_coord =[]
+		for idx,coord in enumerate(coords):
+			temp_dict = {}; vert=[]
+			temp_dict['identifier'] = str(uuid.uuid4())
+			vert.append({'x':coord[0],'y':coord[1]})
+			vert.append({'x':coord[2],'y':coord[1]})
+			vert.append({'x':coord[2],'y':coord[3]})
+			vert.append({'x':coord[0],'y':coord[3]})
+			temp_dict['boundingBox']={}
+			temp_dict['boundingBox']["vertices"] = vert
+			temp_dict['score'] = score[idx]
+
+#             temp_dict['class']      = self.class_mapping(tags[idx])
+			temp_dict['class']      = "CELL"
+			final_coord.append(temp_dict)
+		return final_coord
+	
 	def update_coord(self,reg1,reg2,clss):
         #try:
 		box1_top = keys.get_top(reg1); box1_bottom = keys.get_bottom(reg1)
@@ -319,49 +362,63 @@ prima = PRIMA()
 
 def cell_layout(regions,image):
 	#try:
-	#print(image,"iiiiiiiiiiiiiiiiiiiiiiiiii")
-	#image   = cv2.imread("/home/naresh/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/layout-detector/prima/"+image)
-	#image   = cv2.imread(page_path)
+	    #print(image,"iiiiiiiiiiiiiiiiiiiiiiiiii")
+        #image   = cv2.imread("/home/naresh/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/layout-detector/prima/"+image)
+        #image   = cv2.imread(page_path)
 
-	height, width, channels = image.shape
-	table_regions = []
-	other_regions = []
-	for region in regions:
-		if region['class']=='TABLE' or region['class']=='TableRegion':
-			table_regions.append(region)
-		else:
-			other_regions.append(region)
-	other_regions.sort(key=lambda x: x['boundingBox']['vertices'][0]['y'],reverse=False)
-	other_regions,col_count = sort_regions(other_regions,False,0,[])
-	if len(table_regions)>0:
-		for idx,region in enumerate(table_regions):
-			region = region['boundingBox']['vertices']
-			bbox = [[region[0]['x'],region[0]['y'],region[2]['x'],region[2]['y']]]
-			tab_layouts  = prima.update_box_format(bbox,['TableRegion'],["99"])[0]
-			blank_image = np.zeros(image.shape, dtype=np.uint8)
-			blank_image[:,0:image.shape[1]//2] = (255,255,255)      # (B, G, R)
-			blank_image[:,image.shape[1]//2:image.shape[1]] = (255,255,255)
-			ymin = int(region[0]['y']) ; ymax = int(region[2]['y']) ; xmin = int(region[0]['x']); xmax = int(region[2]['x'])
-			crop_img = image[ymin:ymax,xmin:xmax,:]
-			blank_image[ymin:ymax,xmin:xmax] = crop_img
-			layout   = model_primatablenet.detect(blank_image)
-			bbox,tag,score = prima.prima_region(layout)
-			layouts_updated  = prima.update_box_format(bbox,tag,score)
-			#################### sort cell regions
-			layouts_updated.sort(key=lambda x: x['boundingBox']['vertices'][0]['y'],reverse=False)
-			sorted_layouts,col_count = sort_regions(layouts_updated,True,0,[])
-			if col_count==0:
-				col_count=1
-			row_count = int(len(sorted_layouts)/col_count)
-			tab_layouts['rows']=row_count
-			tab_layouts['columns']=col_count
-			tab_layouts['regions']=sorted_layouts
-			#table_region_process.append(tab_layouts)
-			other_regions.append(tab_layouts)
-		return other_regions
-	else:
-		return regions
+        height, width, channels = image.shape
+        table_regions = []
+        other_regions = []
+        for region in regions:
+            if region['class']=='TABLE' or region['class']=='TableRegion':
+                table_regions.append(region)
+            else:
+                other_regions.append(region)
+#         other_regions.sort(key=lambda x: x['boundingBox']['vertices'][0]['y'],reverse=False)
+#         print(other_regions)
+#         other_regions,col_count = sort_regions(other_regions,False,0,[])
+        if len(table_regions)>0:
+            for idx,region in enumerate(table_regions):
+                region = region['boundingBox']['vertices']
+                bbox = [[region[0]['x'],region[0]['y'],region[2]['x'],region[2]['y']]]
+                tab_layouts  = prima.update_box_format(bbox,['TableRegion'],["99"])[0]
+                blank_image = np.zeros(image.shape, dtype=np.uint8)
+                blank_image[:,0:image.shape[1]//2] = (255,255,255)      # (B, G, R)
+                blank_image[:,image.shape[1]//2:image.shape[1]] = (255,255,255)
+                ymin = int(region[0]['y']) ; ymax = int(region[2]['y']) ; xmin = int(region[0]['x']); xmax = int(region[2]['x'])
+                crop_img = image[ymin:ymax,xmin:xmax,:]
+                blank_image[ymin:ymax,xmin:xmax] = crop_img
+                cv2.imwrite("/home/sriharimn/Documents/tables_images/images/table_crops/"+str(uuid.uuid4())+".jpg",blank_image)
+#                 layout   = model_primatablenet.detect(blank_image)
+                
+                encoding = feature_extractor(blank_image, return_tensors="pt")
+                encoding.keys()
+                with torch.no_grad():
+                    outputs = model(**encoding)
+                print(encoding['pixel_values'].shape)
+                height, width, channels = blank_image.shape
+                layout = feature_extractor.post_process_object_detection(outputs, threshold=0.7, target_sizes=[(height, width)])[0]
+                bbox,tag,score = prima.prima_region_cell(layout)
 
+
+#                 bbox,tag,score = prima.prima_region(layout)
+#                 print(tag)
+                layouts_updated  = prima.update_box_format_cell(bbox,tag,score)
+                #################### sort cell regions
+                layouts_updated.sort(key=lambda x: x['boundingBox']['vertices'][0]['y'],reverse=False)
+                sorted_layouts,col_count = sort_regions(layouts_updated,True,0,[])
+                if col_count==0:
+                    col_count=1
+                row_count = int(len(sorted_layouts)/col_count)
+                tab_layouts['rows']=row_count
+                tab_layouts['columns']=col_count
+                tab_layouts['regions']=sorted_layouts
+#                 print(tab_layouts)
+                #table_region_process.append(tab_layouts)
+                other_regions.append(tab_layouts)
+            return other_regions
+        else:
+            return regions
 		
 	# except Exception as e:
 	# 	log_exception("Error occured during cell layout detection",  app_context.application_context, e)

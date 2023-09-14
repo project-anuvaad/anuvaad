@@ -2,11 +2,12 @@ import config
 import cv2
 import numpy as np
 
-def get_energy_density(image_path):
+def get_energy_density(image):
     #image_path   = "/home/naresh/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/ocr-gv-server/"+image_path
-    image   = cv2.imread(image_path,0)
+    # image   = cv2.imread(image_path,0)
+    gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     
-    binary  = cv2.adaptiveThreshold(image,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY,101,15)
+    binary  = cv2.adaptiveThreshold(gray_image,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY,101,15)
     distance_transform =cv2.distanceTransform(binary.copy(), distanceType=cv2.DIST_L2, maskSize=5)
     energy_density = 1 /  (distance_transform + 1)**2
     

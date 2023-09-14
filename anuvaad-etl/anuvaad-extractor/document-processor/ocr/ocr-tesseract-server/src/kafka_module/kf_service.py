@@ -104,7 +104,7 @@ def tesseract_ocr_request_worker():
         #################
         task_id         = str("tesseract_ocr" + str(time.time()).replace('.', ''))
         ###################
-        task_starttime  = str(time.time()).replace('.', '')
+        task_starttime  = eval(str(time.time()).replace('.', '')[0:13])
         input_files, workflow_id, jobid, tool_name, step_order = file_ops.json_input_format(data)
         
         log_info("tesseract_ocr_request_worker processing -- received message "+str(jobid), data)

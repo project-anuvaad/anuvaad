@@ -74,7 +74,7 @@ def df_to_json(p_df,block_key =''):
                     if block['children'] == None :
                         pass
                     else :
-                        block['children'] = df_to_json(pd.read_json(row['children']), block_key = block['block_id'])
+                        block['children'] = df_to_json(pd.read_json(row['children'], dtype={"text": str}), block_key = block['block_id'])
                 page_data.append(block)
         else:
             page_data = None

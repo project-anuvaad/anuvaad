@@ -6,7 +6,7 @@ import time
 import pandas as pd
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_error
-
+from lxml import etree
 from src.utilities.xml_utils import ( get_string_xmltree, get_xmltree, get_specific_tags, get_page_texts_ordered, get_page_text_element_attrib, get_ngram)
 from src.services.xml_document_info import (get_xml_info, get_xml_image_info, get_pdf_image_info)
 from src.utilities.filesystem import (create_directory,extract_image_paths_from_pdf, extract_html_bg_image_paths_from_digital_pdf, extract_xml_path_from_digital_pdf)
@@ -42,15 +42,29 @@ def extract_pdf_metadata(filename, working_dir, base_dir):
 
     log_info('filepath {}, working_dir {}'.format(pdf_filepath, working_dir), app_context.application_context)
     try:
-        log_info('start', app_context.application_context) 
-        pdf_image_paths         = extract_image_paths_from_pdf(pdf_filepath, working_dir)
-        log_info('start1'.format(pdf_filepath, working_dir), app_context.application_context) 
+        pdf_image_paths         = extract_image_paths_from_pdf(pdf_filepath, working_dir) 
         pdf_xml_filepath        = extract_xml_path_from_digital_pdf(pdf_filepath, working_dir)
-        log_info('Extracting xml path ENDED', app_context.application_context)
     except Exception as e:
         log_error('error extracting xml information of {}'.format(pdf_filepath), app_context.application_context, e)
         return None, None, None
     log_info('Extracting xml of {}'.format(pdf_filepath), app_context.application_context)
+    # Load and parse the XML file
+    tree = etree.parse(pdf_xml_filepath)
+    root = tree.getroot()
+    # Iterate through <text> elements and remove those with height > 40
+    elements_to_remove = []
+
+    for text_elem in root.findall(".//text"):
+        height = int(text_elem.get("height"))
+        if height > 40:
+            elements_to_remove.append(text_elem)
+
+    # Remove the collected elements from their parent
+    for elem in elements_to_remove:
+        parent_elem = elem.getparent()
+        parent_elem.remove(elem)
+    # Save the modified XML
+    tree.write(pdf_xml_filepath)
 
     try:
         log_info('Extracting background images STARTED', app_context.application_context)
@@ -81,7 +95,6 @@ def process_input_pdf(filename, base_dir, lang):
     if ret == False:
         log_error('create_pdf_processing_paths failed', app_context.application_context, None)
         return None, None, None, None, None, None, None
-    log_info('extracting pdf metadata starting...', app_context.application_context)
     pdf_xml_filepath, pdf_image_paths, pdf_bg_img_filepaths   = extract_pdf_metadata(filename, working_dir, base_dir)
     if pdf_xml_filepath == None or pdf_bg_img_filepaths == None or pdf_image_paths == None:
         log_error('extract_pdf_metadata failed', app_context.application_context, None)
@@ -235,12 +248,12 @@ def drop_update_col(page_df):
         page_lis =[]
         for index, row in page_df.iterrows():
             if row['children'] != None:
-                sub_block_children     =  pd.read_json(row['children'])
+                sub_block_children     =  pd.read_json(row['children'], dtype={"text": str})
                 sub_block_children     =  sub_block_children.where(sub_block_children.notnull(), None)
                 child_lis = []
                 for index2,row2 in sub_block_children.iterrows():
                     if row2['children']!=None:
-                        sub_block_children2   =  pd.read_json(row2['children'])
+                        sub_block_children2   =  pd.read_json(row2['children'], dtype={"text": str})
                         sub_block_children2   = drop_cols(sub_block_children2,drop_col=['font_family','font_size'])
                         sub_block_children2.rename(columns={'font_family_updated': 'font_family', 'font_size_updated': 'font_size'},inplace=True)
 
