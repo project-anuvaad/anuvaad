@@ -310,16 +310,12 @@ def segment_regions(file,words, lines,regions,page_c_words,path,file_properties,
     if "mask_image" in file['config']["OCR"].keys() and file['config']["OCR"]["mask_image"]=="False":
         save_path = "None"
     else:
-        start_time = time.time()
         image   = cv2.imread(path)
         image = mask_image_craft(image, v_list, idx, file_properties, width, height)
         extension = path.split('.')[-1]
         save_path = path.split('.')[0]+"_bgimages."+extension
         # image[:] = 255
         cv2.imwrite(save_path,image)
-        end_time = time.time()
-        execution_time = end_time - start_time
-        print(f"Mask Image Logic Execution Time: {execution_time:.2f} seconds")
     if "top_correction" in file['config']["OCR"].keys() and file['config']["OCR"]["top_correction"]=="True":
         v_list = coord_alignment(v_list,False)
         v_list = verify__table_structure(v_list)
