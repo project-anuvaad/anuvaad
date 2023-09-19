@@ -31,15 +31,20 @@ servers:
 
 tags:
   - name: Users
-    description: ( UMS- APIs related to Users)
+    description: ( UMS- APIs related to Users )
   - name: Organization 
-    description: ( UMS - APIs related to Organization)
+    description: ( UMS - APIs related to Organization )
   - name: MFA
-    description: ( UMS - APIs related to MFA)
+    description: ( UMS - APIs related to MFA )
   - name: Extention
-    description: ( UMS - APIs related to Browser Extention)
+    description: ( UMS - APIs related to Browser Extention )
   - name: File translator
-    description: ( Apis related to initiate the job and download the same)
+    description: ( Apis related to initiate the job and download the same )
+  - name: Content Handler
+    description: ( CH - Apis to trigger and orchestrate the content handler part of anuvaad-extractor )
+  - name: Dictionary
+    description: ( CH - APIs related to Browser Extention )
+    
 paths:
 
   /anuvaad/user-mgmt/v1/users/create:
@@ -595,7 +600,252 @@ paths:
           $ref: '#/components/responses/DownloadWFResponse'
       security:
         - auth-token: []
+  #Content handler
+  /anuvaad/content-handler/v0/save-content:
+    post:
+      tags:
+      - Content Handler
+      summary: REST API to save file content.
+      description: This api takes file data as json and save it in db, it's an sync
+        api.
+      parameters:
+      - name: userid
+        in: header
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Request format accepted by this API.
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/Request'
+        required: true
+      responses:
+        200:
+          description: On successful completion of the job.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Response'
+        400:
+          description: On input errors causing a failure in the job.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-codegen-request-body-name: request
+  /anuvaad/content-handler/v0/fetch-content:
+    get:
+      tags:
+      - Content Handler
+      summary: REST API to retreive file content.
+      description: This api takes process identifier and sends the content corresponding
+        to that process, it's an sync api.
+      parameters:
+      - name: job_id
+        in: query
+        description: The job_id for the content
+        schema:
+          type: string
+      - name: record_id
+        in: query
+        description: The record_id for the content
+        schema:
+          type: string
+      - name: start_page
+        in: query
+        description: The start page for the content
+        schema:
+          type: number
+      - name: end_page
+        in: query
+        description: The end page for the content
+        schema:
+          type: number
+      responses:
+        200:
+          description: On successful completion of the job.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ContentResponse'
+        400:
+          description: On input errors causing a failure in the job.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error'
+  /anuvaad/content-handler/v0/update-content:
+    post:
+      tags:
+      - Content Handler
+      summary: REST API to update file content.
+      description: This api takes array of blocks(which can be of any type,i.e. text-block,
+        images, tables) and update it in db, it's an sync api.
+      requestBody:
+        description: Request format accepted by this API.
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/UpdateBlocks'
+        required: true
+      responses:
+        200:
+          description: On successful completion of the job.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/UpdateBlocks'
+        400:
+          description: On input errors causing a failure in the job.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-codegen-request-body-name: request
+  /anuvaad/content-handler/v0/fetch-content-sentence:
+    post:
+      tags:
+      - Content Handler
+      summary: API to get sentence
+      parameters:
+      - name: userid
+        in: header
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Request format accepted by this API.
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/SentencesSearch'
+        required: true
+      responses:
+        200:
+          description: On successful completion of the job.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/SentenceResponse'
+        400:
+          description: On input errors causing a failure in the job.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-codegen-request-body-name: request
+  /anuvaad/content-handler/v0/save-content-sentence:
+    post:
+      tags:
+      - Content Handler
+      summary: API to update a sentence or array of sentence object
+      parameters:
+      - name: userid
+        in: header
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Request format accepted by this API.
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/UpdateSentences'
+        required: true
+      responses:
+        200:
+          description: On successful completion of the job.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/SentenceResponse'
+        400:
+          description: On input errors causing a failure in the job.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-codegen-request-body-name: request
   
+  /anuvaad/content-handler/v0/records/search:
+    post:
+      tags:
+      - Content Handler
+      summary: API to fetch word(s) meaning
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/RecordsSearch'
+        required: true
+      responses:
+        200:
+          description: On successful completion of the job.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/RecordsSearchResponse'
+        400:
+          description: On input errors causing a failure in the job.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-codegen-request-body-name: words
+      
+  /anuvaad/content-handler/v0/dictionary/update:
+    post:
+      tags:
+      - Dictionary
+      summary: API to update or save words in dictionary
+      requestBody:
+        description: array of words
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/Words'
+        required: true
+      responses:
+        200:
+          description: On successful completion of the job.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/WordResponse'
+        400:
+          description: On input errors causing a failure in the job.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-codegen-request-body-name: words
+  /anuvaad/content-handler/v0/dictionary/search:
+    post:
+      tags:
+      - Dictionary
+      summary: API to fetch word(s) meaning
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/DictionarySearchRequest'
+        required: true
+      responses:
+        200:
+          description: On successful completion of the job.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/WordResponse'
+        400:
+          description: On input errors causing a failure in the job.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-codegen-request-body-name: words
   
   
 
@@ -1579,6 +1829,288 @@ components:
             - SENTENCES-ALIGNED
             - TRANSLATED
             - INITIATED
+   #content handler
+    Sentence:
+      type: object
+      properties:
+        n_id:
+          type: string
+          description: NMT identifier
+        s_id:
+          type: string
+          description: sentence identifier, once defined this cannot be updated
+        src:
+          type: string
+          description: source sentence
+        tgt:
+          type: string
+          description: translated sentence
+        s0_src:
+          type: string
+          description: baseline source sentence, cannot be updated
+        s0_tgt:
+          type: string
+          description: baseline translated sentence, cannot be updated
+        save:
+          type: boolean
+          description: save flag true or false
+    UpdateSentences:
+      type: object
+      properties:
+        sentences:
+          type: array
+          items:
+            $ref: '#/components/schemas/Sentence'
+        workflowCode:
+          type: string
+          description: workflow code to identify update type
+    Sentences:
+      type: object
+      properties:
+        sentences:
+          type: array
+          items:
+            $ref: '#/components/schemas/Sentence'
+    SentencesSearch:
+      type: object
+      properties:
+        sentences:
+          type: array
+          description: array of s_id string
+          items:
+            type: string
+    SentenceResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/Sentences'
+        ok:
+          type: boolean
+          description: request successful indicator.
+        why:
+          type: string
+          description: Response message.
+        count:
+          type: number
+          description: Total Available pages
+        http:
+          $ref: '#/components/schemas/HttpOutput'
+    RecordsSearch:
+      type: object
+      properties:
+        record_ids:
+          type: array
+          description: array of record_id string
+          items:
+            type: string
+    RecordSearchResponse:
+      type: object
+      properties:
+        total_count:
+          type: integer
+          description: count of total sentences present under that record_id
+        record_id:
+          type: string
+          description: record_id
+        completed_count:
+          type: integer
+          description: count of saved sentences present under that record_id
+    RecordsSearchResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          description: array of s_id string
+          items:
+            $ref: '#/components/schemas/RecordSearchResponse'
+        ok:
+          type: boolean
+          description: request successful indicator.
+        why:
+          type: string
+          description: Response message.
+        count:
+          type: number
+          description: Total Available pages
+        http:
+          $ref: '#/components/schemas/HttpOutput'
+    HttpOutput:
+      type: object
+      properties:
+        status:
+          type: number
+          description: Status code.
+    Obj:
+      type: object
+    Result:
+      type: object
+      properties:
+        page_no:
+          type: number
+        page_width:
+          type: number
+        page_height:
+          type: number
+        lines:
+          type: array
+          items:
+            $ref: '#/components/schemas/Obj'
+        tables:
+          type: array
+          items:
+            $ref: '#/components/schemas/Obj'
+        images:
+          type: array
+          items:
+            $ref: '#/components/schemas/Obj'
+        text_blocks:
+          type: array
+          items:
+            $ref: '#/components/schemas/Obj'
+    Request:
+      type: object
+      properties:
+        record_id:
+          type: string
+          description: Record id for the file to be converted.
+        file_locale:
+          type: string
+          description: File locale for the file to be converted.
+        src_lang:
+          type: string
+          description: source language code, e.g. en,hi etc
+        tgt_lang:
+          type: string
+          description: target langugage code
+        pages:
+          type: array
+          description: File id for the file to be converted.
+          items:
+            $ref: '#/components/schemas/Result'
+    UpdateBlocks:
+      type: object
+      properties:
+        modifiedSentences:
+          type: array
+          description: list of modified sentence identifier
+          items:
+            type: string
+            format: uuidv4
+        blocks:
+          type: array
+          description: list of blocks to be updated under a given workflow code
+          items:
+            $ref: '#/components/schemas/Block'
+        workflowCode:
+          type: string
+          description: workflow code to identify update type
+    Blocks:
+      type: object
+      properties:
+        blocks:
+          type: array
+          items:
+            $ref: '#/components/schemas/Block'
+    Block:
+      type: object
+    DictionarySearchRequest:
+      type: object
+      properties:
+        word:
+          type: string
+          description: word of interest
+        word_locale:
+          type: string
+          description: possible language code, https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes
+        target_locale:
+          type: string
+          description: language code in word meaning is sought. https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes
+    Word:
+      type: object
+      properties:
+        name:
+          type: string
+          description: dictionary word
+        locale:
+          type: string
+          description: This value should be 'en' otherwise request will be rejected
+        pos:
+          type: array
+          description: Part-of-speech of the word in the given locale
+          items:
+            type: string
+        examples:
+          type: array
+          description: usage of word in the sentence
+          items:
+            type: string
+        parallel_words:
+          type: array
+          description: parallel word that exists in other language for the given word
+          items:
+            $ref: '#/components/schemas/Word'
+    Words:
+      type: object
+      properties:
+        words:
+          minItems: 1
+          type: array
+          items:
+            $ref: '#/components/schemas/Word'
+    WordResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            words:
+              type: array
+              items:
+                $ref: '#/components/schemas/Word'
+          description: response object
+        ok:
+          type: boolean
+          description: request successful indicator.
+        why:
+          type: string
+          description: Response message.
+        count:
+          type: number
+          description: Total Available pages
+        http:
+          $ref: '#/components/schemas/HttpOutput'
+    Response:
+      type: object
+      properties:
+        data:
+          type: string
+        ok:
+          type: boolean
+          description: request successful indicator.
+        why:
+          type: string
+          description: Response message.
+        http:
+          $ref: '#/components/schemas/HttpOutput'
+    ContentResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Result'
+        ok:
+          type: boolean
+          description: request successful indicator.
+        why:
+          type: string
+          description: Response message.
+        count:
+          type: number
+          description: Total Available pages
+        http:
+          $ref: '#/components/schemas/HttpOutput'
+
   
   securitySchemes:
    
