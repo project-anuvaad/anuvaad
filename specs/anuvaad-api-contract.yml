@@ -559,6 +559,72 @@ paths:
           description: On Connection error.
           $ref: '#/components/responses/ZuulEndpointError'
           
+  #file Handler
+  /v0/upload-file:
+    post:
+      tags:
+        - File Handler
+      summary: Upload a file
+      description: This api takes a file and uploads it to server.
+      requestBody:
+        $ref: '#/components/requestBodies/UploadFileBody'
+      responses:
+        '200':
+          description: On successful completion of the uploading file.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              examples:
+                example1:
+                  $ref: '#/components/examples/UploadFileResponse'
+        '400':
+          description: On input errors causing failure in creating users.
+          $ref: '#/components/responses/Error'
+        '404' :
+          description: On Connection error.
+          $ref: '#/components/responses/ZuulEndpointError'
+      security:
+        - auth-token: []
+
+  /v0/download-file:
+    get:
+      tags:
+        - File Handler
+      summary: download the file
+      description: This api takes file name and user id and gives the file.
+      parameters:
+        - name: filename
+          in: header
+          schema:
+            type: string
+            example: Bovids_translated.xlsx
+          required: true
+          description: The filename to be downloaded
+        - name: userid
+          in: header
+          schema:
+            type: string
+            example: 1fd9911b7a4940419950v5eab3b163cf1615886263733
+          required: true
+          description: unique identifier of the user
+      responses:
+        '200':
+          description: successful download of the file
+          content:
+            application/json:
+              schema:
+                type: string
+                format: binary
+        '400':
+          description: On input errors causing failure in creating users.
+          $ref: '#/components/responses/Error'
+        '404' :
+          description: On Connection error.
+          $ref: '#/components/responses/ZuulEndpointError'
+      security:
+        - auth-token: []
+  
   #File Translator
   /anuvaad-api/file-uploader/v0/transform-wf:
     post:
@@ -852,7 +918,20 @@ paths:
 components:
   
   requestBodies:
-  
+  #File Handler
+    UploadFileBody:
+      description: A form containing file data.
+      required: true
+      content:
+        multipart/form-data:
+          schema:
+            type: object
+            properties:
+              file: 
+                type: string
+                format: binary
+                description: file to be uploaded.
+    #UMS
     CreateUsersBody:
       description: A JSON object containing user information
       required: true
@@ -1316,7 +1395,17 @@ components:
                 example: DP_WFLOW_p
       
   examples:
-
+    #FH
+    UploadFileResponse:
+      summary: /v0/upload-file - success
+      value:
+        ok: "true"
+        http:
+          status: 200
+        why: request successful
+        data: a68fd586-93c6-4be5-9c2b-71520b0c2052.docx
+        count: 0
+    #UMS
     CreateUsersResponse:
       summary: /v1/users/create - success
       value:
