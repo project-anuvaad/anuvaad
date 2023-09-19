@@ -41,7 +41,7 @@ tags:
   - name:  File Handler
     description: ( FH - APIs related to upload and download a particular file )
   - name: File translator
-    description: ( Apis related to initiate the job and download the same )
+    description: ( FT - Apis related to initiate the job and download the same )
   - name: Content Handler
     description: ( CH - Apis to trigger and orchestrate the content handler part of anuvaad-extractor )
   - name: Dictionary
