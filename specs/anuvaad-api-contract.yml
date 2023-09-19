@@ -38,6 +38,8 @@ tags:
     description: ( UMS - APIs related to MFA )
   - name: Extention
     description: ( UMS - APIs related to Browser Extention )
+  - name:  File Handler
+    description: ( FH - APIs related to upload and download a particular file )
   - name: File translator
     description: ( Apis related to initiate the job and download the same )
   - name: Content Handler
@@ -1395,7 +1397,7 @@ components:
                 example: DP_WFLOW_p
       
   examples:
-    #FH
+    #File Handler
     UploadFileResponse:
       summary: /v0/upload-file - success
       value:
