@@ -105,5 +105,8 @@ LANG_MAPPING = {
 
 jud = os.environ.get('ANUVAAD_JUD_METRICS','https://developers.anuvaad.org')
 
+TRANSLITERATION_URL = os.environ.get('TRANSLITERATION_URL','https://api.dhruva.ai4bharat.org/services/inference/transliteration')
+ACCESS_TOKEN = os.environ.get('DHRUVA_ACCESS_TOKEN',"None")
+
 backup_file_1 = "d735bdc62fa94076bb5adf_USER_WISE_JUD_STATS1.csv"
 backup_file_2 = "d735bdc62fa94076bb5adf_USER_WISE_JUD_STATS2.csv"
