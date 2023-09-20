@@ -21,6 +21,7 @@ import AddOrg from "../../../../flux/actions/apis/organization/addOrganization";
 import Visibility from "@material-ui/icons/Visibility";
 import history from "../../../../web.history";
 import DataTable from "../../../components/web/common/DataTable";
+import { CustomTableFooter } from "../../../components/web/common/CustomTableFooter";
 
 
 const TELEMETRY = require('../../../../utils/TelemetryManager')
@@ -28,6 +29,8 @@ const TELEMETRY = require('../../../../utils/TelemetryManager')
 class OrganizationList extends React.Component {
   constructor(props) {
     super(props);
+    this.tableRef = React.createRef();
+    this.pageInputRef = React.createRef();
     this.state = {
 
 
@@ -37,6 +40,9 @@ class OrganizationList extends React.Component {
 
       showLoader: false,
       status: false,
+      isInputActive: false,
+      inputPageNumber: 1,
+      currentPageIndex: 0
     };
 
   }
@@ -198,6 +204,28 @@ class OrganizationList extends React.Component {
     }
   })
 
+  handleInputPageChange = (event, totalPageCount) => {
+    if (event.target.value <= totalPageCount) {
+      this.setState({ inputPageNumber: event.target.value })
+    } else if (event.target.value > totalPageCount) {
+      this.setState({ inputPageNumber: totalPageCount })
+    } else if (event.target.value == 0) {
+      this.setState({ inputPageNumber: 1 })
+    } else if (event.target.value < 0) {
+      this.setState({ inputPageNumber: 1 })
+    }
+  }
+
+  onChangePageMAnually = () => {
+    // console.log("offset", 0);
+    // console.log("limit (Number(this.state.inputPageNumber)-1)*10 ---> ", this.props.job_details.count);
+    // this.makeAPICallJobsBulkSearch(0, (Number(this.state.inputPageNumber)-1)*10, false, false, true)
+    this.tableRef.current.changePage(Number(this.state.inputPageNumber) - 1);
+    // this.setState({ currentPageIndex: this.state.inputPageNumber - 1 }, () => {
+    //   this.makeAPICallDocumentsTranslationProgress();
+    // });
+  }
+
 
   render() {
     const columns = [
@@ -207,7 +235,8 @@ class OrganizationList extends React.Component {
         label: "Organization Name",
         options: {
           filter: false,
-          sort: false
+          sort: false,
+          viewColumns: false,
         }
       },
       {
@@ -216,6 +245,7 @@ class OrganizationList extends React.Component {
         options: {
           filter: false,
           sort: true,
+          viewColumns: false,
         }
       },
       {
@@ -224,8 +254,8 @@ class OrganizationList extends React.Component {
         options: {
           filter: false,
           sort: false,
-          display: "exclude"
-
+          display: "exclude",
+          viewColumns: false,
         }
       },
       {
@@ -235,6 +265,7 @@ class OrganizationList extends React.Component {
           filter: true,
           sort: true,
           empty: true,
+          viewColumns: false,
           customBodyRender: (value, tableMeta, updateValue) => {
             if (tableMeta.rowData) {
               return (
@@ -296,7 +327,7 @@ class OrganizationList extends React.Component {
         // options: { sortDirection: 'asc' }
       },
 
-      count: this.props.count,
+      count: this.props.organizationList?.length,
       rowsPerPageOptions: [10, 20, 50],
       filterType: "checkbox",
       download: false,
@@ -304,7 +335,47 @@ class OrganizationList extends React.Component {
       fixedHeader: true,
       filter: false,
       selectableRows: "none",
-      page: this.state.currentPageIndex
+      page: this.state.currentPageIndex,
+      customFooter: (
+        count,
+        page,
+        rowsPerPage,
+        changeRowsPerPage,
+        changePage
+      ) => {
+        const startIndex = page * rowsPerPage;
+        const endIndex = (page + 1) * rowsPerPage;
+        const totalPageCount = Math.ceil(this.props.organizationList?.length / 10);
+        return (
+          <CustomTableFooter
+            renderCondition={totalPageCount > 0}
+            countLabel={"Total Glossary"}
+            totalCount={this.props.organizationList?.length}
+            pageInputRef={this.pageInputRef}
+            inputValue={this.state.inputPageNumber}
+            onInputFocus={()=>this.setState({ isInputActive: true })}
+            onInputBlur={()=>this.setState({ isInputActive: false })}
+            handleInputChange={this.handleInputPageChange}
+            totalPageCount={totalPageCount}
+            onGoToPageClick={this.onChangePageMAnually}
+            onBackArrowClick={() => {
+              this.setState({ currentPageIndex: this.state.currentPageIndex - 1 })
+              this.tableRef.current.changePage(Number(this.state.currentPageIndex - 1))
+            }
+            }
+            onRightArrowClick={() => {
+              this.setState({ currentPageIndex: this.state.currentPageIndex + 1 })
+              this.tableRef.current.changePage(Number(this.state.currentPageIndex + 1))
+            }
+            }
+            backArrowTabIndex={this.state.currentPageIndex - 1}
+            backArrowDisable={this.state.currentPageIndex == 0}
+            rightArrowTabIndex={this.state.currentPageIndex + 1}
+            rightArrowDisable={this.state.currentPageIndex == (totalPageCount-1)}
+            pageTextInfo={`Page ${parseInt(this.state.currentPageIndex + 1)} of ${parseInt(totalPageCount)}`}
+          />
+        );
+      }
     };
 
     return (
@@ -316,7 +387,7 @@ class OrganizationList extends React.Component {
             (!this.state.showLoader || this.props.count) &&
             <MuiThemeProvider theme={this.getMuiTheme()}>
               <DataTable title={translate("common.page.title.orgList")}
-                columns={columns} options={options} data={this.props.organizationList} />
+                columns={columns} options={options} data={this.props.organizationList} innerRef={this.tableRef} />
             </MuiThemeProvider>
           }
           {(this.state.showLoader) && <Spinner />}

@@ -116,9 +116,9 @@ const DocumentCountByOrg = (props) => {
               >
                 <Button
                   fullWidth
-                  onClick={() => { 
+                  onClick={() => {
                     setAnchorEl(null)
-                    onDownloadReportClick(true, "img", ["documentCountByOrg"], "Anuvaad-Analytics") 
+                    onDownloadReportClick(true, "img", ["documentCountByOrg"], "Anuvaad-Analytics")
                   }}
                 >
                   <Grid style={{ display: "flex", width: "100%", justifyContent: "flex-start", alignItems: "center" }}>
@@ -127,9 +127,9 @@ const DocumentCountByOrg = (props) => {
                 </Button>
                 <Button
                   fullWidth
-                  onClick={() => { 
+                  onClick={() => {
                     setAnchorEl(null)
-                    onDownloadReportClick(true, "pdf", ["documentCountByOrg"], "Anuvaad-Analytics") 
+                    onDownloadReportClick(true, "pdf", ["documentCountByOrg"], "Anuvaad-Analytics")
                   }}
                 >
                   <Grid style={{ display: "flex", width: "100%", justifyContent: "flex-start", alignItems: "center" }}>

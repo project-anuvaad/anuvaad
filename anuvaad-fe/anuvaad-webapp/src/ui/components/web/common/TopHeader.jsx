@@ -29,6 +29,7 @@ import configs from "../../../../configs/configs";
 import headerMenuConfig from "../../../../configs/headerMenuConfig";
 import history from "../../../../web.history";
 import GetActiveUsersCountAPI from "../../../../flux/actions/apis/user/active_users_count";
+import GetActiveDocumentsCountAPI from "../../../../flux/actions/apis/user/active_documents_count";
 
 const useStyles = makeStyles((theme) => ({
     header: {
@@ -193,6 +194,7 @@ export default function TopHeader(props) {
     const [showDashboardPopoverMenuAnchorEle, setShowDashboardPopoverMenuAnchorEle] = useState(null);
 
     const [activeUserCount, setActiveUserCount] = useState(0);
+    const [activeDocumentsCount, setActiveDocumentsCount] = useState(0);
 
     const assignedOrgId = JSON.parse(localStorage.getItem("userProfile"))?.orgID;
     const role = localStorage.getItem("roles");
@@ -209,7 +211,6 @@ export default function TopHeader(props) {
         })
             .then( async (res) => {
                 let response = await res.json();
-                console.log("response --- ", response);
                 if (!response.ok) {
                     // throw error message 
                 } else {
@@ -222,9 +223,34 @@ export default function TopHeader(props) {
             })
     }
 
+    const makeGetActiveDocumentsCountAPICall = () => {
+        if(localStorage.getItem("roles") === "SUPERADMIN"){
+            const apiObj = new GetActiveDocumentsCountAPI();
+
+        fetch(apiObj.apiEndPoint(), {
+            method: "GET",
+            headers: apiObj.getHeaders().headers
+        })
+            .then( async (res) => {
+                let response = await res.json();
+                console.log("response --- ", response);
+                if (!response.ok) {
+                    // throw error message 
+                } else {
+                    setActiveDocumentsCount(response?.count);
+                }
+            })
+            .catch(err => {
+                console.log(err);
+                // show error message here when req failed
+            })
+        }
+    }
+
     useEffect(()=>{
         if(showUserPopoverMenuAnchorEle){
             makeGetActiveUsersCountAPICall();
+            makeGetActiveDocumentsCountAPICall()
         }
     }, [showUserPopoverMenuAnchorEle])
 
@@ -238,6 +264,7 @@ export default function TopHeader(props) {
         setResponsiveness();
 
         makeGetActiveUsersCountAPICall();
+        makeGetActiveDocumentsCountAPICall();
 
         window.addEventListener("resize", () => setResponsiveness());
 
@@ -672,6 +699,9 @@ export default function TopHeader(props) {
                                         <Grid item>
                                             <Typography style={{ padding: 10 }} variant="caption"> Active Users : <b>{activeUserCount ? activeUserCount : "0"}</b></Typography>
                                         </Grid>
+                                        {localStorage.getItem("roles") === "SUPERADMIN"  &&<Grid item>
+                                            <Typography style={{ padding: 10 }} variant="caption"> Active Documents : <b>{activeDocumentsCount ? activeDocumentsCount : "0"}</b></Typography>
+                                        </Grid>}
                                         <Divider style={{ marginTop: 5, marginBottom: 5, width: "100%" }} />
                                         {
                                             headerMenuConfig.map((el, i) => {
