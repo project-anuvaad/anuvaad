@@ -135,7 +135,7 @@ class StartDigitizationUpload extends React.Component {
             this.fetchDocumentDigitizeProcess([this.props.workflowStatus.jobID]);
 
             setInterval(() => {
-                if (this.state.documentState.status === "INPROGRESS") {
+                if (this.state.documentState.status === "INPROGRESS" || this.state.documentState.status === "STARTED") {
                     this.fetchDocumentDigitizeProcess([this.props.workflowStatus.jobID]);
                 } else {
                     return

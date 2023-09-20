@@ -952,7 +952,7 @@ class SentenceCard extends React.Component {
         <div>
           {this.props?.model?.target_language_code != "en" && this.props.enableTransliteration ? (
             <IndicTransliterate
-              customApiURL={`${configs.BASE_URL_ULCA + endpoints.hostedInference}`}
+              customApiURL={`${configs.BASE_URL_AUTO + endpoints.transliteration}`}
               transliterationModelId={this.props.getTransliterationModelID?.modelId}
               renderComponent={(props) => {
                 const inputRef = props.ref;

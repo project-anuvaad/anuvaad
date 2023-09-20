@@ -400,15 +400,6 @@ function GetUploadedDocumentCount(props) {
                             </BarChart>
                         </ResponsiveChartContainer>
                     </Grid>
-                    <Grid>
-                        <Typography
-                            style={{
-                                fontSize: 14,
-                                padding: 10,
-                                textAlign: "end",
-                            }}
-                        ><b>Note:</b> The count above mentioned includes active and inactive documents</Typography>
-                    </Grid>
                 </Paper>
             </Box>
         </>
