@@ -40,7 +40,7 @@ ORG_REPLACER= {
 
 METRICS_ORG_MASKING = (os.getenv('METRICS_ORG_MASKING', 'True') == 'True') # if (value is 'True' or env does not exists) then boolTrue else boolFalse
 
-EMAIL_NOTIFIER = ["srihari.nagaraj@tarento.com","apoorva.bellary@tarento.com"]
+EMAIL_NOTIFIER = ["rathan.muralidhar@tarento.com","apoorva.bellary@tarento.com"]
 
 
 USER_COLLECTION = "sample"
@@ -104,6 +104,9 @@ LANG_MAPPING = {
 }
 
 jud = os.environ.get('ANUVAAD_JUD_METRICS','https://developers.anuvaad.org')
+
+TRANSLITERATION_URL = os.environ.get('TRANSLITERATION_URL','https://api.dhruva.ai4bharat.org/services/inference/transliteration')
+ACCESS_TOKEN = os.environ.get('DHRUVA_ACCESS_TOKEN',"None")
 
 backup_file_1 = "d735bdc62fa94076bb5adf_USER_WISE_JUD_STATS1.csv"
 backup_file_2 = "d735bdc62fa94076bb5adf_USER_WISE_JUD_STATS2.csv"
