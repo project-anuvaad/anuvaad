@@ -147,8 +147,8 @@ class UploadTranslatedDocument extends Component {
             
             let uploadFileName = uploadJobName?.substr(0, uploadJobName?.lastIndexOf("."));
             let selectedFileName = selectedJobName?.substr(0, selectedJobName?.lastIndexOf("."))
-            if (selectedFileName + "_translated" !== uploadFileName) {
-                alert(`Translated file name should be "${selectedFileName}_translated". Please rename the file and try again.`)
+            if (selectedFileName + "_translated_" + this.state.selectedJob?.target_language_code !== uploadFileName) {
+                alert(`Translated file name should be "${selectedFileName}_translated_${this.state.selectedJob?.target_language_code}". Please rename the file and try again.`)
             } else {
                 this.setState({ showCompleteConfirmBox: true })
             }
