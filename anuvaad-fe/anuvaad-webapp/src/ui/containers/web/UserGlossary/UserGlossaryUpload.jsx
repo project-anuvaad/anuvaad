@@ -222,9 +222,9 @@ class UserGlossaryUpload extends React.Component {
             </Grid>
             <Grid item xs={6} sm={6} lg={4} xl={4}>
                 <FormControl variant="outlined" className={this.props.classes.select}>
-                    {this.state.sourceTransliterationModelId ? 
+                    {this.state.source_language_code !== "en" ? 
                     <IndicTransliterate
-                    customApiURL={`${configs.BASE_URL_ULCA + endpoints.hostedInference}`}
+                    customApiURL={`${configs.BASE_URL_AUTO + endpoints.transliteration}`}
                     transliterationModelId={this.state.sourceTransliterationModelId}
                     renderComponent={(props) => {
                         const inputRef = props.ref;
@@ -273,9 +273,9 @@ class UserGlossaryUpload extends React.Component {
             </Grid>
             <Grid item xs={6} sm={6} lg={4} xl={4}>
                 <FormControl variant="outlined" className={this.props.classes.select}>
-                {this.state.targetTransliterationModelId ? 
+                {this.state.target_language_code !== "en" ? 
                     <IndicTransliterate
-                    customApiURL={`${configs.BASE_URL_ULCA + endpoints.hostedInference}`}
+                    customApiURL={`${configs.BASE_URL_AUTO + endpoints.transliteration}`}
                     transliterationModelId={this.state.targetTransliterationModelId}
                     renderComponent={(props) => {
                         const inputRef = props.ref;
