@@ -139,9 +139,9 @@ const DocumentCountByLang = (props) => {
                             >
                                 <Button
                                     fullWidth
-                                    onClick={() => { 
+                                    onClick={() => {
                                         setAnchorEl(null)
-                                        onDownloadReportClick(true, "img", ["documentCountByLang"], "Anuvaad-Analytics") 
+                                        onDownloadReportClick(true, "img", ["documentCountByLang"], "Anuvaad-Analytics")
                                     }}
                                 >
                                     <Grid style={{ display: "flex", width: "100%", justifyContent: "flex-start", alignItems: "center" }}>
@@ -150,9 +150,9 @@ const DocumentCountByLang = (props) => {
                                 </Button>
                                 <Button
                                     fullWidth
-                                    onClick={() => { 
+                                    onClick={() => {
                                         setAnchorEl(null)
-                                        onDownloadReportClick(true, "pdf", ["documentCountByLang"], "Anuvaad-Analytics") 
+                                        onDownloadReportClick(true, "pdf", ["documentCountByLang"], "Anuvaad-Analytics")
                                     }}
                                 >
                                     <Grid style={{ display: "flex", width: "100%", justifyContent: "flex-start", alignItems: "center" }}>

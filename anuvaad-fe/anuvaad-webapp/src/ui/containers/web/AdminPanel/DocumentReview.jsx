@@ -11,7 +11,7 @@ import NewCorpusStyle from "../../../styles/web/Newcorpus";
 import FileContent from "../../../../flux/actions/apis/document_translate/fetchcontent";
 import UserReportHeader from "./UserReportHeader"
 import DataTable from "../../../components/web/common/DataTable";
-import { Button, FilledInput, FormControl, FormControlLabel, IconButton, Input, InputAdornment, OutlinedInput, Switch, TextField } from "@material-ui/core";
+import { Button, FilledInput, FormControl, FormControlLabel, IconButton, Input, InputAdornment, OutlinedInput, Switch, TextField, Typography } from "@material-ui/core";
 import history from "../../../../web.history";
 import BackIcon from '@material-ui/icons/ArrowBack';
 import CheckIcon from '@material-ui/icons/Check';
@@ -24,10 +24,13 @@ import FetchDocument from "../../../../flux/actions/apis/view_document/fetch_doc
 import { get_document_details } from "../../../../utils/getFormattedJobData";
 import UploadDocToS3 from "../../../../flux/actions/apis/document_translate/s3_upload_doc";
 import ClearContent from "../../../../flux/actions/apis/document_translate/clearcontent";
+import { CustomTableFooter } from "../../../components/web/common/CustomTableFooter";
 
 class DocumentReview extends React.Component {
   constructor(props) {
     super(props);
+    this.tableRef = React.createRef();
+    this.pageInputRef = React.createRef();
     this.state = {
       role: localStorage.getItem("roles"),
       data: [],
@@ -45,7 +48,10 @@ class DocumentReview extends React.Component {
         open: false,
         message: "",
         variant: "info"
-      }
+      },
+      isInputActive: false,
+      inputPageNumber: 1,
+      currentPageIndex: 0,
     };
   }
 
@@ -264,9 +270,9 @@ class DocumentReview extends React.Component {
   }
 
   onReviewChange = (e, tableMeta) => {
-    // console.log("tableMeta --- ", tableMeta);
     let fetchContentData = this.props.fetchContent;
     fetchContentData.data[tableMeta.rowIndex].review = e.target.value;
+    console.log("fetchContentData --- ", fetchContentData);
     updateReviewInFetchContent(fetchContentData);
   }
 
@@ -291,7 +297,8 @@ class DocumentReview extends React.Component {
         // console.log(result);
         if (result.ok) {
           if (this.state.currentJobDetails.currentGranularStatus === "FINAL EDITING - COMPLETED") {
-            this.updateGranularity(["reviewerInProgress"], "Review Comment Updated!", false)
+            this.updateGranularity(["reviewerInProgress"], "Review Comment Updated!", false);
+            this.getCurrentJobDetail();
           } else {
             let currentInfoState = { ...this.state.snackbarInfo };
             currentInfoState = {
@@ -300,7 +307,6 @@ class DocumentReview extends React.Component {
               variant: "info"
             };
             this.setState({ snackbarInfo: currentInfoState });
-            this.getCurrentJobDetail();
           }
         } else {
           let currentInfoState = { ...this.state.snackbarInfo };
@@ -318,6 +324,23 @@ class DocumentReview extends React.Component {
       .catch(error => console.log('error', error));
   }
 
+  onChangePageMAnually = () => {
+    this.tableRef.current.changePage(Number(this.state.inputPageNumber) - 1)
+    this.setState({ currentPageIndex: this.state.inputPageNumber - 1 })
+}
+
+handleInputPageChange = (event, totalPageCount) => {
+    if (event.target.value <= totalPageCount) {
+        this.setState({ inputPageNumber: event.target.value })
+    } else if (event.target.value > totalPageCount) {
+        this.setState({ inputPageNumber: totalPageCount })
+    } else if (event.target.value == 0) {
+        this.setState({ inputPageNumber: 1 })
+    } else if (event.target.value < 0) {
+        this.setState({ inputPageNumber: 1 })
+    }
+}
+
   render() {
     const columns = [
       {
@@ -326,6 +349,7 @@ class DocumentReview extends React.Component {
         options: {
           filter: false,
           sort: true,
+          viewColumns: false,
           setCellProps: () => ({ style: { maxWidth: "250px" } }),
         }
       },
@@ -335,6 +359,7 @@ class DocumentReview extends React.Component {
         options: {
           filter: false,
           sort: false,
+          viewColumns: false,
           setCellProps: () => ({ style: { maxWidth: "250px" } }),
         }
       },
@@ -344,9 +369,11 @@ class DocumentReview extends React.Component {
         options: {
           filter: false,
           sort: false,
+          viewColumns: false,
           setCellProps: () => ({ style: { maxWidth: "250px" } }),
           customBodyRender: (value, tableMeta, updateValue) => {
-            if (tableMeta.rowData[4] == "-") {
+            // console.log("tableMeta --- ", tableMeta);
+            if (tableMeta.rowData[3] == "-") {
               return "-"
             } else {
               return value
@@ -354,15 +381,15 @@ class DocumentReview extends React.Component {
           }
         }
       },
-      {
-        name: "tgt",
-        label: 'Proof Read',
-        options: {
-          filter: false,
-          sort: true,
-          display: "exclude"
-        }
-      },
+      // {
+      //   name: "tgt",
+      //   label: 'Proof Read',
+      //   options: {
+      //     filter: false,
+      //     sort: true,
+      //     display: "exclude"
+      //   }
+      // },
 
       {
         name: "bleu_score",
@@ -370,18 +397,18 @@ class DocumentReview extends React.Component {
         options: {
           filter: false,
           sort: false,
-          display: false
+          display: "excluded",
         }
       },
-      {
-        name: "time_spent",
-        label: "Time Spent",
-        options: {
-          filter: false,
-          sort: false,
-          display: "exclude"
-        }
-      },
+      // {
+      //   name: "time_spent",
+      //   label: "Time Spent",
+      //   options: {
+      //     filter: false,
+      //     sort: false,
+      //     display: "exclude"
+      //   }
+      // },
       {
         name: "comments",
         label: "Comment",
@@ -405,25 +432,32 @@ class DocumentReview extends React.Component {
         options: {
           filter: false,
           sort: false,
+          viewColumns: false,
           display: this.state.disableActions ? "excluded" : true,
           setCellHeaderProps: () => { return { align: "center" } },
           setCellProps: () => { return { align: "center" } },
           customBodyRender: (value, tableMeta, updateValue) => {
-            if (tableMeta.rowData) {
+            // if (tableMeta.rowData) {
+              let previousComment = tableMeta.rowData[4] && tableMeta.rowData[4] != undefined ? tableMeta.rowData[4] : "";
               return (
                 <div style={{ alignItems: "center" }}>
                   <OutlinedInput
+                  key={tableMeta.rowIndex}
                     placeholder="Add Review"
-                    defaultValue={tableMeta.tableData[tableMeta.rowIndex]?.comments ? tableMeta.tableData[tableMeta.rowIndex]?.comments : ""}
+                    // disabled
+                    defaultValue={previousComment}
                     onChange={e => this.onReviewChange(e, tableMeta)}
-                    style={{ borderColor: tableMeta.tableData[tableMeta.rowIndex]?.comments ? "rgb(97 231 55 / 87%)" : "#2C2799" }}
+                    style={{ borderColor: previousComment ? "rgb(97 231 55 / 87%)" : "#2C2799" }}
                     fullWidth
                     endAdornment={
                       <InputAdornment position="end">
                         <IconButton
                           title="Add comment for this translation if you want correction."
                           aria-label="add comment"
-                          onClick={(e) => this.onSubmitIndividualReview(tableMeta.tableData[tableMeta.rowIndex])}
+                          onClick={(e) => 
+                            // console.log("tableMeta ---- ", tableMeta )
+                            this.onSubmitIndividualReview(tableMeta.tableData[tableMeta.rowIndex])
+                              }
                         >
                           <CheckIcon />
                         </IconButton>
@@ -432,7 +466,7 @@ class DocumentReview extends React.Component {
                   />
                 </div>
               );
-            }
+            // }
           },
         }
       }
@@ -442,7 +476,7 @@ class DocumentReview extends React.Component {
     const options = {
       textLabels: {
         body: {
-          noMatch: "Loading...."
+          noMatch: this.props.apistatus.progress ? "Loading...." : "No Records Found..."
         },
         toolbar: {
           search: translate("graderReport.page.muiTable.search"),
@@ -453,15 +487,15 @@ class DocumentReview extends React.Component {
         },
         options: { sortDirection: 'desc' }
       },
-      // onTableChange: (action, tableState) => {
-      //   switch (action) {
-      //     case 'changePage':
-      //       this.processTableClickedNextOrPrevious(tableState.page)
-      //       break;
-      //     default:
-      //   }
-      // },
-      count: this.props.count,
+      onTableChange: (action, tableState) => {
+        switch (action) {
+          case 'changePage':
+            this.fetchDocumentContent()
+            break;
+          default:
+        }
+      },
+      count: this.props.fetchContent?.data?.length,
       rowsPerPageOptions: [10, 25, this.props.fetchContent?.data ? this.props.fetchContent?.data?.length : 100],
       filterType: "checkbox",
       download: true,
@@ -473,7 +507,47 @@ class DocumentReview extends React.Component {
         name: 'registered_time',
         direction: 'desc'
       },
-      page: this.state.currentPageIndex
+      page: this.state.currentPageIndex,
+      customFooter: (
+        count,
+        page,
+        rowsPerPage,
+        changeRowsPerPage,
+        changePage
+    ) => {
+        const startIndex = page * rowsPerPage;
+        const endIndex = (page + 1) * rowsPerPage;
+        const totalPageCount = Math.ceil(this.props.fetchContent?.data?.length / 10);
+        return (
+            <CustomTableFooter
+                renderCondition={totalPageCount > 0}
+                countLabel={"Total Documents"}
+                totalCount={this.props.fetchContent?.data?.length}
+                pageInputRef={this.pageInputRef}
+                inputValue={this.state.inputPageNumber}
+                onInputFocus={() => this.setState({ isInputActive: true })}
+                onInputBlur={() => this.setState({ isInputActive: false })}
+                handleInputChange={this.handleInputPageChange}
+                totalPageCount={totalPageCount}
+                onGoToPageClick={this.onChangePageMAnually}
+                onBackArrowClick={() => {
+                    this.setState({ currentPageIndex: this.state.currentPageIndex - 1 })
+                    this.tableRef.current.changePage(Number(this.state.currentPageIndex - 1))
+                }
+                }
+                onRightArrowClick={() => {
+                    this.setState({ currentPageIndex: this.state.currentPageIndex + 1 })
+                    this.tableRef.current.changePage(Number(this.state.currentPageIndex + 1))
+                }
+                }
+                backArrowTabIndex={this.state.currentPageIndex - 1}
+                backArrowDisable={this.state.currentPageIndex == 0}
+                rightArrowTabIndex={this.state.currentPageIndex + 1}
+                rightArrowDisable={this.state.currentPageIndex == (totalPageCount-1)}
+                pageTextInfo={`Page ${parseInt(this.state.currentPageIndex + 1)} of ${parseInt(totalPageCount)}`}
+            />
+        );
+    }
     };
 
     return (
@@ -482,7 +556,7 @@ class DocumentReview extends React.Component {
         // overflow: 'auto'
       }}>
 
-        {this.state.currentJobDetails && <div style={{ margin: '0% 3% 3% 3%', paddingTop: "4%" }}>
+        {<div style={{ margin: '0% 3% 3% 3%', paddingTop: "4%" }}>
           {/* <UserReportHeader /> */}
           <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 2, alignItems: "center" }}>
             <div>
@@ -500,6 +574,7 @@ class DocumentReview extends React.Component {
           <MuiThemeProvider theme={this.getMuiTheme()}>
             <DataTable title={this.props.match.params.fname}
               columns={columns} options={options}
+              innerRef={this.tableRef}
               data={this.props.apistatus.progress ? [] : this.props.fetchContent.data} />
           </MuiThemeProvider>
           {!this.state.disableActions && <div style={{ textAlign: "end", marginTop: 15, alignItems: "center" }}>

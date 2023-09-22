@@ -5,6 +5,8 @@ import Button from "@material-ui/core/Button";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';
 import { IndicTransliterate } from 'react-transliterate';
+import configs from '../../../../configs/configs';
+import endpoints from '../../../../configs/apiendpoints';
 
 
 class AddToGlossaryModal extends React.Component {
@@ -42,7 +44,7 @@ class AddToGlossaryModal extends React.Component {
                     </span>
                     {this.props.enableTransliteration ?
                         <IndicTransliterate
-                            customApiURL={this.props.customApiURL}
+                            customApiURL={`${configs.BASE_URL_AUTO + endpoints.transliteration}`}
                             transliterationModelId={this.props.transliterationModelId}
                             renderComponent={(props) => {
                                 const inputRef = props.ref;

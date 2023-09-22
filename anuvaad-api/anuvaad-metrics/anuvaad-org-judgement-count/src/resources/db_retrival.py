@@ -384,8 +384,7 @@ def fetch_reviewer_data():
         if config.METRICS_ORG_MASKING:
             df = df[~df['org'].isin(config.MASK_ORGS)]
         # replace some orgs
-        org_replacer= {'NEPAL':'SIKKIM','SIMLA':'SHIMLA','CHATTISGARH':'CHHATTISGARH',}
-        df['org'] = df['org'].replace(org_replacer)
+        df['org'] = df['org'].replace(config.ORG_REPLACER)
         # apply filter to src,tgt langs
         for x_col in ['tgt','src']:
             # remove alpha from lang string
@@ -428,3 +427,27 @@ def update_reviewer_data():
     manual_start_reviewerdata_scheduler(base)
     out = CustomResponse(Status.SUCCESS.value, f"updated reviewer data for base={base}")
     return out.getres()
+
+@app.route(config.API_URL_PREFIX + "/transliteration", methods=["POST"])
+def transliterate():
+    if request.method != "POST":
+        return None
+    try:
+        payload = json.dumps(request.get_json())
+        headers = {
+        'Authorization': config.ACCESS_TOKEN
+        }
+        response = requests.request("POST", config.TRANSLITERATION_URL, headers=headers, data=payload)
+        if response.status_code >=200 and response.status_code <= 204:
+            out = CustomResponse(Status.SUCCESS.value, response.json())
+            return out.getres()
+        status = Status.SYSTEM_ERR.value
+        status["message"] = "Unable to perform transliteration at this point of time."
+        out = CustomResponse(status, None)
+        return out.getres()
+    except Exception as e:
+        log_exception("Error in transliteration: {}".format(e), MODULE_CONTEXT, e)
+        status = Status.SYSTEM_ERR.value
+        status["message"] = "Unable to perform transliteration at this point of time. " + str(e)
+        out = CustomResponse(status, None)
+        return out.getres()

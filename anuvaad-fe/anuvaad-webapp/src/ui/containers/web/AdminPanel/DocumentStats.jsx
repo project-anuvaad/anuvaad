@@ -12,6 +12,9 @@ import FileContent from "../../../../flux/actions/apis/document_translate/fetchc
 import UserReportHeader from "./UserReportHeader"
 import DataTable from "../../../components/web/common/DataTable";
 import { CustomTableFooter } from "../../../components/web/common/CustomTableFooter";
+import { Grid, IconButton } from "@material-ui/core";
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import history from "../../../../web.history";
 
 class DocumentStats extends React.Component {
   constructor(props) {
@@ -83,6 +86,7 @@ class DocumentStats extends React.Component {
         options: {
           filter: false,
           sort: true,
+          viewColumns: false,
         }
       },
       {
@@ -91,6 +95,7 @@ class DocumentStats extends React.Component {
         options: {
           filter: false,
           sort: false,
+          viewColumns: false,
         }
       },
       {
@@ -213,6 +218,9 @@ class DocumentStats extends React.Component {
 
         <div style={{ margin: '0% 3% 3% 3%', paddingTop: "7%" }}>
           <UserReportHeader />
+          <Grid>
+          <IconButton onClick={()=>history.goBack()}><ArrowBackIcon /></IconButton>
+          </Grid>
           {
             <MuiThemeProvider theme={this.getMuiTheme()}>
               <DataTable title={this.props.match.params.fname}

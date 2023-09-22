@@ -120,6 +120,7 @@ class SuggestedGlossaryList extends React.Component {
         options: {
           filter: false,
           sort: false,
+          viewColumns: false,
         },
       },
       {
@@ -128,6 +129,7 @@ class SuggestedGlossaryList extends React.Component {
         options: {
           filter: false,
           sort: false,
+          viewColumns: false,
         },
       },
       {
@@ -136,6 +138,7 @@ class SuggestedGlossaryList extends React.Component {
         options: {
           filter: false,
           sort: false,
+          viewColumns: false,
           display: localStorage.getItem("roles").includes("SUPERADMIN") ? true : 'excluded',
         },
       },
@@ -163,6 +166,7 @@ class SuggestedGlossaryList extends React.Component {
         options: {
           filter: true,
           sort: true,
+          viewColumns: false,
         },
       },
       {

@@ -132,8 +132,16 @@ useEffect(() => {
       });
     }, 1000);
   }
-  return () => clearInterval(interval);
+  return () => {
+    clearInterval(interval)
+  };
 }, [showTimer, running]);
+
+useEffect(()=>{
+  if(open){    
+    setTime(120);
+  }
+}, [open])
 
 useEffect(() => {
   setOTP(`${OTP1}${OTP2}${OTP3}${OTP4}${OTP5}${OTP6}`);
@@ -168,14 +176,11 @@ useEffect(() => {
     handleClose();
   }, 10 * 60 * 1000);
 
-  
-
   return () => {
     clearTimeout(timerId);
     window.removeEventListener('keydown', copyPasteOTPHandler);
+    
   };
-
-
 
 }, []);
 

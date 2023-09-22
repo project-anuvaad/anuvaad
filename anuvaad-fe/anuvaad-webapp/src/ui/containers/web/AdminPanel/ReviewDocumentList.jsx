@@ -515,6 +515,7 @@ class ReviewDocumentList extends React.Component {
                 options: {
                     filter: false,
                     sort: false,
+                    viewColumns: false,
                     // display: "excluded",
                 },
             },
@@ -524,6 +525,7 @@ class ReviewDocumentList extends React.Component {
                 options: {
                     filter: false,
                     sort: false,
+                    viewColumns: false,
                     // display: "excluded",
                 },
             },
@@ -547,6 +549,7 @@ class ReviewDocumentList extends React.Component {
                 options: {
                     filter: false,
                     sort: false,
+                    viewColumns: false,
                 },
             },
             {
@@ -555,6 +558,7 @@ class ReviewDocumentList extends React.Component {
                 options: {
                     filter: false,
                     sort: false,
+                    viewColumns: false,
                 },
             },
             {
@@ -676,7 +680,7 @@ class ReviewDocumentList extends React.Component {
             textLabels: {
                 body: {
                     noMatch:
-                        this.props.job_details.state,
+                        this.props.apistatus.loading ? "Loading..." : this.props.job_details.state,
                 },
                 toolbar: {
                     search: translate("graderReport.page.muiTable.search"),
@@ -779,7 +783,7 @@ class ReviewDocumentList extends React.Component {
                                 style={{ width: 300, fontSize: "1rem" }}
                                 onChange={(e) => {
                                     // console.log("e.target.value   ", e.target.value);
-                                    this.setState({ selectedFilter: e.target.value })
+                                    this.setState({ selectedFilter: e.target.value });
                                 }}
                             >
                                 {

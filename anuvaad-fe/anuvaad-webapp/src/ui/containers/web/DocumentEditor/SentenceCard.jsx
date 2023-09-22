@@ -46,6 +46,7 @@ import SuggestGlossary from "../../../../flux/actions/apis/document_translate/su
 import endpoints from "../../../../configs/apiendpoints";
 import configs from "../../../../configs/configs";
 import { IndicTransliterate } from 'react-transliterate';
+import { shouldTypeRTL } from "../../../../utils/shouldTypeRTL";
 
 
 const TELEMETRY = require("../../../../utils/TelemetryManager");
@@ -952,7 +953,7 @@ class SentenceCard extends React.Component {
         <div>
           {this.props?.model?.target_language_code != "en" && this.props.enableTransliteration ? (
             <IndicTransliterate
-              customApiURL={`${configs.BASE_URL_ULCA + endpoints.hostedInference}`}
+              customApiURL={`${configs.BASE_URL_AUTO + endpoints.transliteration}`}
               transliterationModelId={this.props.getTransliterationModelID?.modelId}
               renderComponent={(props) => {
                 const inputRef = props.ref;
@@ -985,6 +986,7 @@ class SentenceCard extends React.Component {
                 height: "135px",
                 overflow: "auto"
               }}
+              direction={shouldTypeRTL(this.props?.model?.target_language_code) ? "rtl" : 'ltr'}
               onKeyDown={this.handleKeyDown}
               value={this.state.value}
               onChangeText={(text) => {
@@ -999,6 +1001,7 @@ class SentenceCard extends React.Component {
               value={this.state.value}
               onChange={this.handleUserInputText}
               fullWidth
+              dir={shouldTypeRTL(this.props?.model?.target_language_code) ? "rtl" : 'ltr'}
               multiline
               disabled={this.state.isCardBusy}
               variant="outlined"

@@ -477,6 +477,7 @@ class UserDetails extends React.Component {
         options: {
           filter: false,
           sort: false,
+          viewColumns: false,
           // display: "exclude"
         }
       },
@@ -486,6 +487,7 @@ class UserDetails extends React.Component {
         options: {
           filter: false,
           sort: true,
+          viewColumns: false,
         }
       },
       {
@@ -494,6 +496,7 @@ class UserDetails extends React.Component {
         options: {
           filter: false,
           sort: true,
+          viewColumns: false,
           // display: "exclude"
         }
       },
@@ -503,6 +506,7 @@ class UserDetails extends React.Component {
         options: {
           filter: false,
           sort: true,
+          viewColumns: false,
         }
       },
 
@@ -512,6 +516,7 @@ class UserDetails extends React.Component {
         options: {
           filter: false,
           sort: false,
+          viewColumns: false,
         }
       },
       {
