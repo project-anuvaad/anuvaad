@@ -5,7 +5,9 @@ export default function (state = {}, action) {
         
         case C.GET_ALL_SUPPORTED_LANG_LIST:
 
-            return action.payload?.data?.orgs;
+            return action.payload?.data?.orgs?.sort(function(a,b){
+                return a.code.localeCompare(b.code);
+            });
 
         default:
             return state;
