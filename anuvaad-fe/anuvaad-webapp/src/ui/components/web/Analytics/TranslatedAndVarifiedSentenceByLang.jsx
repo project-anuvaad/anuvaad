@@ -42,7 +42,7 @@ function TranslatedAndVarifiedSentenceByLang(props) {
     const [data, setData] = useState([]);
 
     useEffect(() => {
-        console.log("sourceData ------- ", sourceData);
+        // console.log("sourceData ------- ", sourceData);
         if (sourceData && sourceData?.language_counts && sourceData?.total_documents > 0) {
             sourceData.language_counts.sort((a, b) => b.doc_sent_count - a.doc_sent_count);
             setData(sourceData?.language_counts);
@@ -205,7 +205,7 @@ function TranslatedAndVarifiedSentenceByLang(props) {
                                 }}
                             >
                                 {allOrganization && allOrganization.length > 0 && allOrganization.map((el, i) => {
-                                    return <MenuItem value={el.code}>{el.code}</MenuItem>
+                                    return <MenuItem selected={el.code == selectedOrg} value={el.code}>{el.code}</MenuItem>
                                 })}
                             </Select>
                         </FormControl>
