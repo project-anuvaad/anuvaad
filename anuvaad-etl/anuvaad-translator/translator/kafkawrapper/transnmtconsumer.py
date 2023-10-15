@@ -2,6 +2,7 @@ import json
 import logging
 import random
 import string
+import os
 
 from kafka import KafkaConsumer, TopicPartition
 from service.translatorservice import TranslatorService
@@ -14,6 +15,7 @@ from configs.translatorconfig import anu_translator_consumer_grp
 from configs.translatorconfig import kafka_bootstrap_server_host
 from configs.translatorconfig import translator_nmt_cons_no_of_partitions
 from configs.translatorconfig import anu_nmt_output_topic
+from anuvaad_auditor.loghandler import log_exception, log_error, log_info
 
 log = logging.getLogger('file')
 
@@ -58,6 +60,11 @@ def consume_nmt():
     try:
         utils = TranslatorUtils()
         topics = utils.get_topics_from_models()
+        log_info(f"TOPICS CREATED AFTER RECEIVING MODEL INFO [BEFORE ENVIRONMENT VARIABLE REPLACEMENT] :: {topics}",None)
+        for i in range(0,len(topics)):
+            topics[i] = os.environ.get(topics[i],"aaib-nmt-translate-output")
+        log_info(f"TOPICS CREATED AFTER RECEIVING MODEL INFO [AFTER ENVIRONMENT VARIABLE REPLACEMENT] :: {topics}",None)
+        
         #topics = [] #for local debug only
         topics.append(anu_nmt_output_topic)
         consumer = instantiate(topics)
