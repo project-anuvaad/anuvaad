@@ -238,3 +238,21 @@ def org_level_csv_user(file_save, file1, file2):
         dict_writer.writeheader()
         for data in output:
             dict_writer.writerow(data)
+
+def get_asr_service_code(language):
+    asr_service = {
+        "bn": "ai4bharat/conformer-multilingual-indo_aryan-gpu--t4",
+        "en": "ai4bharat/whisper-medium-en--gpu--t4",
+        "gu": "ai4bharat/conformer-multilingual-indo_aryan-gpu--t4",
+        "hi": "ai4bharat/conformer-hi-gpu--t4",
+        "kn": "ai4bharat/conformer-multilingual-dravidian-gpu--t4",
+        "ml": "ai4bharat/conformer-multilingual-dravidian-gpu--t4",
+        "mr": "ai4bharat/conformer-multilingual-indo_aryan-gpu--t4",
+        "or": "ai4bharat/conformer-multilingual-indo_aryan-gpu--t4",
+        "pa": "ai4bharat/conformer-multilingual-indo_aryan-gpu--t4",
+        "sa": "ai4bharat/conformer-multilingual-indo_aryan-gpu--t4",
+        "ta": "ai4bharat/conformer-multilingual-dravidian-gpu--t4",
+        "te": "ai4bharat/conformer-multilingual-dravidian-gpu--t4",
+        "ur": "ai4bharat/conformer-multilingual-indo_aryan-gpu--t4"
+    }
+    return asr_service[language]

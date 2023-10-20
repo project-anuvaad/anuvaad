@@ -16,6 +16,7 @@ from utilities import (
     write_to_csv_user,
     generate_email_notification,
     send_email,
+    get_asr_service_code
 )
 from services import (
     copy_cron_csv,
@@ -449,5 +450,49 @@ def transliterate():
         log_exception("Error in transliteration: {}".format(e), MODULE_CONTEXT, e)
         status = Status.SYSTEM_ERR.value
         status["message"] = "Unable to perform transliteration at this point of time. " + str(e)
+        out = CustomResponse(status, None)
+        return out.getres()
+
+@app.route(config.API_URL_PREFIX + "/asr", methods=["POST"])
+def asr():
+    if request.method != "POST":
+        return None
+    try:
+        json_input = request.get_json()
+        url = config.ASR_URL+"?serviceId="+get_asr_service_code(json_input["sourceLanguage"])
+        payload = {
+                "audio": [
+                    {
+                    "audioContent": json_input["audioContent"]
+                    }
+                ],
+                "config": {
+                    "audioFormat": "wav",
+                    "transcriptionFormat": {
+                    "value": "transcript"
+                    },
+                    "language": {
+                    "sourceLanguage": json_input["sourceLanguage"]
+                    }
+                },
+                "controlConfig": {
+                    "dataTracking": False
+                }
+                }
+        headers = {
+        'Authorization': config.ACCESS_TOKEN
+        }
+        response = requests.request("POST", url, headers=headers, data=payload)
+        if response.status_code >=200 and response.status_code <= 204:
+            out = CustomResponse(Status.SUCCESS.value, response.json())
+            return out.getres()
+        status = Status.SYSTEM_ERR.value
+        status["message"] = "Unable to perform ASR at this point of time."
+        out = CustomResponse(status, None)
+        return out.getres()
+    except Exception as e:
+        log_exception("Error in ASR: {}".format(e), MODULE_CONTEXT, e)
+        status = Status.SYSTEM_ERR.value
+        status["message"] = "Unable to perform ASR at this point of time. " + str(e)
         out = CustomResponse(status, None)
         return out.getres()
