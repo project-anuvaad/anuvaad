@@ -482,7 +482,7 @@ def asr():
         headers = {
         'Authorization': config.ACCESS_TOKEN
         }
-        response = requests.request("POST", url, headers=headers, data=payload)
+        response = requests.request("POST", url, headers=headers, data=json.dumps(payload))
         if response.status_code >=200 and response.status_code <= 204:
             out = CustomResponse(Status.SUCCESS.value, response.json())
             return out.getres()
