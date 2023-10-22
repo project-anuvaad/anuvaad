@@ -65,6 +65,10 @@ const DocumentCountByOrg = (props) => {
     );
   };
 
+  const renderCustomBarLabel = ({ payload, x, y, width, height, value }) => {
+    return <text x={x + width / 2} y={y} fill="#666" textAnchor="start" transform={`rotate(-45, ${x}, ${y})`}>{`${value}`}</text>;
+  }
+
   return (
     <Box className={classes.modelChartSection}>
       <Typography variant="h2" className={classes.heading}>
@@ -203,6 +207,7 @@ const DocumentCountByOrg = (props) => {
                   radius={[8, 8, 0, 0]}
                   maxBarSize={65}
                   isAnimationActive={false}
+                  label={renderCustomBarLabel}
                 >
                   <LabelList
                     formatter={(value) =>

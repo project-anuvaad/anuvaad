@@ -65,6 +65,14 @@ function TranslatedAndVarifiedSentenceByLang(props) {
         return null;
     };
 
+    const renderCustomBarLabel = ({ payload, x, y, width, height, value, index }) => {
+        return <text x={x + width / 2} y={y} fill="#666" textAnchor="start" transform={`rotate(-45, ${x}, ${y})`}>{`${getTotalValue(index)}`}</text>;
+      }
+
+    const getTotalValue = (itemIndex) => {
+        return data[itemIndex]["doc_sent_count"] + data[itemIndex]["verified_sentence"]
+    }
+
     return (
         <>
             <Box className={classes.modelChartSection}>
@@ -239,6 +247,7 @@ function TranslatedAndVarifiedSentenceByLang(props) {
                                     stackId="a"
                                     fill="rgba(35, 155, 86 )"
                                     cursor="pointer"
+                                    label={renderCustomBarLabel}
                                 />
                                 <Bar
                                     dataKey="verified_sentence"

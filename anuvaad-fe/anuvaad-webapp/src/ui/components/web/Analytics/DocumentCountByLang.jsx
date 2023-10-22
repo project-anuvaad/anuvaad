@@ -88,6 +88,10 @@ const DocumentCountByLang = (props) => {
         );
     };
 
+    const renderCustomBarLabel = ({ payload, x, y, width, height, value }) => {
+        return <text x={x + width / 2} y={y} fill="#666" textAnchor="start" transform={`rotate(-45, ${x}, ${y})`}>{`${value}`}</text>;
+      }
+
     return (
         <Box className={classes.modelChartSection}>
             <Typography variant="h2" className={classes.heading}>
@@ -257,6 +261,7 @@ const DocumentCountByLang = (props) => {
                                     cursor="pointer"
                                     radius={[8, 8, 0, 0]}
                                     maxBarSize={65}
+                                    label={renderCustomBarLabel}
                                     //   onClick={(event) => handleOnClick(page + 1, event)}
                                     isAnimationActive={false}
                                 >

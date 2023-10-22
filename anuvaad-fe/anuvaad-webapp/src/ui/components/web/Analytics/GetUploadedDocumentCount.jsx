@@ -56,7 +56,7 @@ function GetUploadedDocumentCount(props) {
             sourceData.data.sort((a, b) => b.org - a.org);
         }
         // setData(sourceData?.data);
-        console.log("sourceData ---- ", sourceData);
+        // console.log("sourceData ---- ", sourceData);
 
         let orgIds = ["ALL", ...new Set(sourceData?.data.map(el => el.org))];
         // console.log("orgIds ... ", orgIds);
@@ -83,6 +83,14 @@ function GetUploadedDocumentCount(props) {
             // format chart data when showing all organizations data combining based on source and target language
             const allTgtLangsInFilteredData = [...new Set(filteredDataByOrgAndSrcLang?.map(el => el.tgt))];
 
+            filteredDataByOrgAndSrcLang = filteredDataByOrgAndSrcLang.map(el=>{
+                // console.log("el ---- ", el);
+                return {
+                    ...el,
+                    total : el.in_progress + el.uploaded
+                }
+            })
+
             if (orgId === "ALL") {
                 const allOrgData = [];
                 allTgtLangsInFilteredData.map(lang => {
@@ -95,11 +103,14 @@ function GetUploadedDocumentCount(props) {
                     console.log(sameTgtLangArr);
 
                     allOrgData.push(sameTgtLangArr.reduce((a, b) => {
+                        let totalInprogress = a.in_progress + b.in_progress;
+                        let totalUploaded = a.uploaded + b.uploaded;
                         return {
-                            in_progress: a.in_progress + b.in_progress,
+                            in_progress: totalInprogress,
                             src: a.src,
                             tgt: a.tgt,
-                            uploaded: a.uploaded + b.uploaded
+                            uploaded: totalUploaded,
+                            total: totalInprogress + totalUploaded
                         }
                     }))
                 })
@@ -125,7 +136,7 @@ function GetUploadedDocumentCount(props) {
             const formattedDataForMetrics = filteredDataByOrgAndSrcLang;
 
             formattedDataForMetrics && formattedDataForMetrics.length > 0 && formattedDataForMetrics.sort((a, b) => (a.in_progress + a.uploaded) > (b.in_progress + b.uploaded) ? -1 : 1);
-
+            // console.log("formattedDataForMetrics --- ", formattedDataForMetrics);
             setData(formattedDataForMetrics);
         }
 
@@ -151,6 +162,14 @@ function GetUploadedDocumentCount(props) {
 
         return null;
     };
+
+    const renderCustomBarLabel = ({ payload, x, y, width, height, value, index }) => {
+        return <text x={x + width / 2} y={y} fill="#666" textAnchor="start" transform={`rotate(-45, ${x}, ${y})`}>{`${getTotalValue(index)}`}</text>;
+      }
+
+    const getTotalValue = (itemIndex) => {
+        return data[itemIndex]["in_progress"] + data[itemIndex]["uploaded"]
+    }
 
     return (
         <>
@@ -340,7 +359,7 @@ function GetUploadedDocumentCount(props) {
                                     dataKey="tgt"
                                     textAnchor={"end"}
                                     // tick={<CustomizedAxisTick />}
-                                    height={90}
+                                    height={100}
                                     interval={0}
                                     position="insideLeft"
                                     type="category"
@@ -389,6 +408,7 @@ function GetUploadedDocumentCount(props) {
                                     stackId="a"
                                     fill="rgba(35, 155, 86 )"
                                     cursor="pointer"
+                                    label={renderCustomBarLabel}
                                 />
                                 <Bar
                                     dataKey="uploaded"
@@ -396,7 +416,7 @@ function GetUploadedDocumentCount(props) {
                                     name="Documents Uploaded"
                                     stackId="a"
                                     fill="rgba(243, 156, 18 )"
-                                />
+                                />                              
                             </BarChart>
                         </ResponsiveChartContainer>
                     </Grid>
