@@ -14,7 +14,7 @@ from anuvaad_auditor.loghandler import log_exception
 from configs.translatorconfig import anu_translator_consumer_grp
 from configs.translatorconfig import kafka_bootstrap_server_host
 from configs.translatorconfig import translator_nmt_cons_no_of_partitions
-from configs.translatorconfig import anu_nmt_output_topic
+from configs.translatorconfig import anu_nmt_output_topic, anu_nmt_output_topic_2
 from anuvaad_auditor.loghandler import log_exception, log_error, log_info
 
 log = logging.getLogger('file')
@@ -67,6 +67,7 @@ def consume_nmt():
         
         #topics = [] #for local debug only
         topics.append(anu_nmt_output_topic)
+        topics.append(anu_nmt_output_topic_2)
         consumer = instantiate(topics)
         service = TranslatorService()
         rand_str = ''.join(random.choice(string.ascii_letters) for i in range(4))
