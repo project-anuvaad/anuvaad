@@ -46,6 +46,7 @@ import Loader from "../../../components/web/common/CircularLoader";
 import UpdateGranularStatus from "../../../../flux/actions/apis/document_translate/update_granular_status";
 import FetchDocument from "../../../../flux/actions/apis/view_document/fetch_document";
 import { get_document_details } from "../../../../utils/getFormattedJobData";
+import GetASR from "../../../../flux/actions/apis/document_translate/get_asr";
 const LANG_MODEL = require('../../../../utils/language.model')
 const PAGE_OPS = require("../../../../utils/page.operations");
 const BLOCK_OPS = require("../../../../utils/block.operations");
@@ -114,7 +115,7 @@ class DocumentEditor extends React.Component {
       if (model && model.hasOwnProperty('source_language_name') && model.hasOwnProperty('target_language_name')) {
         TELEMETRY.startTranslatorFlow(model.source_language_name, model.target_language_name, this.props.match.params.inputfileid, jobId);
         this.setState({ targLangCode: model.target_language_code, srcLangCode: model.source_language_code }, () => {
-          this.getTransliterationModel(this.state.targLangCode, this.state.srcLangCode);
+          // this.getTransliterationModel(this.state.targLangCode, this.state.srcLangCode);
         });
       }
     }
@@ -559,6 +560,56 @@ class DocumentEditor extends React.Component {
   }
 
   /**
+   * Fetch ASR
+   */
+
+  fetchASR = (base64_audio) => {
+    this.setState({ apiFetchStatus: true })
+    return new Promise((resolve, reject) => {
+      const apiObj = new GetASR(this.state.targLangCode, base64_audio);
+  
+      const responseObj = {
+        error: false,
+        response: null
+      }
+  
+      fetch(apiObj.apiEndPoint(), {
+        method: 'POST',
+        headers: apiObj.getHeaders().headers,
+        body: JSON.stringify(apiObj.getBody())
+      })
+      .then(async res => {
+        this.setState({ apiFetchStatus: false })
+        let response = await res.json();
+        if (response.ok) {
+          responseObj.response = response;
+          resolve(responseObj);
+        } else {
+          responseObj.error = true;
+          responseObj.response = response;
+          this.setState({
+            showStatus: true,
+            snackBarMessage: "Please Try Again...",
+            snackBarVariant: "error"
+          })
+          reject(responseObj);
+        }
+      })
+      .catch(err => {
+        responseObj.error = true;
+        responseObj.response = err;
+        this.setState({
+          apiFetchStatus: false,
+          showStatus: true,
+          snackBarMessage: "Please Try Again...",
+          snackBarVariant: "error"
+        })
+        reject(responseObj);
+      });
+    });
+  }
+
+  /**
    * workhorse functions
    */
   processStartMergeMode(pageNumber) {
@@ -902,7 +953,9 @@ class DocumentEditor extends React.Component {
               jobId={jobId}
               sentence={sentence}
               granularStatus={this.state.currentJobDetails?.currentGranularStatus.trim()}
-              onAction={this.processSentenceAction} />
+              onAction={this.processSentenceAction} 
+              fetchASR={this.fetchASR}
+              />
             </div>
           })
           )
