@@ -255,4 +255,7 @@ def get_asr_service_code(language):
         "te": "ai4bharat/conformer-multilingual-dravidian-gpu--t4",
         "ur": "ai4bharat/conformer-multilingual-indo_aryan-gpu--t4"
     }
-    return asr_service[language]
+    if language in asr_service.keys():
+        return asr_service[language]
+    else:
+        return None
