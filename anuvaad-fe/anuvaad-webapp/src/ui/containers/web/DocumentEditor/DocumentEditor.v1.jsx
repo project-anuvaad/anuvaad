@@ -87,6 +87,7 @@ class DocumentEditor extends React.Component {
       updateManualStartTime: false,
       fetchNext: true.valueOf,
       currentJobDetails: [],
+      ASR_enabled: false
     }
     this.forMergeSentences = []
   }
@@ -116,6 +117,7 @@ class DocumentEditor extends React.Component {
         TELEMETRY.startTranslatorFlow(model.source_language_name, model.target_language_name, this.props.match.params.inputfileid, jobId);
         this.setState({ targLangCode: model.target_language_code, srcLangCode: model.source_language_code }, () => {
           // this.getTransliterationModel(this.state.targLangCode, this.state.srcLangCode);
+          this.checkASR_supported();
         });
       }
     }
@@ -215,7 +217,8 @@ class DocumentEditor extends React.Component {
       if (model && model.hasOwnProperty('source_language_name') && model.hasOwnProperty('target_language_name')) {
         TELEMETRY.startTranslatorFlow(model.source_language_name, model.target_language_name, this.props.match.params.inputfileid, jobId);
         this.setState({ targLangCode: model.target_language_code, srcLangCode: model.source_language_code }, () => {
-          this.getTransliterationModel(this.state.targLangCode, this.state.srcLangCode);
+          // this.getTransliterationModel(this.state.targLangCode, this.state.srcLangCode);
+          this.checkASR_supported();
         });
       }
     }
@@ -559,6 +562,34 @@ class DocumentEditor extends React.Component {
     return model.length > 0 ? model[0] : null
   }
 
+  /**
+   * Check ASR support for this document
+   */
+
+  checkASR_supported = () => {
+    const apiObj = new GetASR(this.state.targLangCode);
+
+    fetch(`${apiObj.apiEndPoint()}?sourceLanguage=${this.state.targLangCode}`, {
+      method: 'GET',
+      headers: apiObj.getHeaders().headers,
+    })
+    .then(async res => {
+      // this.setState({ apiFetchStatus: false })
+      let response = await res.json();
+      // console.log("response --- ", response);
+      if(response.ok){
+        this.setState({ASR_enabled: true})
+      } else {
+        this.setState({ASR_enabled: false})
+      }
+    })
+    .catch(err => {
+      console.log("err --- ", err);
+      this.setState({ASR_enabled: false})
+    })
+    
+  }
+  
   /**
    * Fetch ASR
    */
@@ -955,6 +986,7 @@ class DocumentEditor extends React.Component {
               granularStatus={this.state.currentJobDetails?.currentGranularStatus.trim()}
               onAction={this.processSentenceAction} 
               fetchASR={this.fetchASR}
+              ASR_enabled={this.state.ASR_enabled}
               />
             </div>
           })
