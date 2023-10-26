@@ -76,6 +76,9 @@ const endpoints = {
 
   // transliteration suggestions
   transliteration : "/anuvaad-metrics/transliteration",
+
+  // ASR 
+  asr: "/anuvaad-metrics/asr",
 };
 
 export default endpoints;

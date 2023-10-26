@@ -60,10 +60,10 @@ class ViewDocument extends React.Component {
       filterOptionData: [
         {label: "All", value: false},
           // ["auto_translation_inprogress", "auto_translation_completed", "manual_editing_inprogress", "manual_editing_completed", "reviewer_in_progress", "manual_reediting_completed", "manual_reediting_in_progress", "reviewer_completed", "parallel_document_uploaded"] },
-        {label: "Auto Translation - In Progress", value: ["auto_translation_inprogress"] },
+        {label: "Auto Translation - In Progress", value: ["auto_translation_in_progress"] },
         {label: "Auto Translation - Completed", value: ["auto_translation_completed"] },
-        {label: "Manual Editing - In Progress", value: ["manual_editing_in_progress", "manual_reediting_in_progress"] },
-        {label: "Manual Editing - Completed", value: ["manual_editing_completed", "manual_reediting_completed"] },
+        {label: "Final Editing - In Progress", value: ["manual_editing_in_progress", "manual_reediting_in_progress"] },
+        {label: "Final Editing - Completed", value: ["manual_editing_completed", "manual_reediting_completed"] },
         {label: "Review - In Progress", value: ["reviewer_in_progress"] },
         {label: "Review - Completed", value: ["reviewer_completed", "parallel_document_uploaded"] },
       ]
@@ -238,7 +238,8 @@ class ViewDocument extends React.Component {
       false,
       false,
       false,
-      this.state.selectedGranularStatus
+      this.state.selectedGranularStatus[0] === "auto_translation_in_progress" ? false : this.state.selectedGranularStatus,
+      this.state.selectedGranularStatus[0] === "auto_translation_in_progress" ? ["INPROGRESS"] : [""],
     );
     APITransport(apiObj);
   }
@@ -583,7 +584,7 @@ class ViewDocument extends React.Component {
           filter: true,
           sort: false,
           empty: true,
-          display: false,
+          // display: false,
         },
       },
       {
@@ -599,7 +600,7 @@ class ViewDocument extends React.Component {
         label: "Time Spent",
         options: {
           sort: false,
-          display: false,
+          // display: false,
         }
       },
       {

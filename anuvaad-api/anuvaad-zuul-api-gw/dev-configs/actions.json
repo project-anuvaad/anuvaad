@@ -823,6 +823,14 @@
             "active":true,
             "whiteList":true,
             "description":"API for performing transliteration"
+        },
+        {
+            "id":"06704b9d-fee7-40f3-88df-8b5f7b9a0b4e",
+            "uri":"/anuvaad-metrics/asr",
+            "module":"ANUVAAD-METRICS",
+            "active":true,
+            "whiteList":false,
+            "description":"API for performing transliteration"
         } 
     ]
 }
