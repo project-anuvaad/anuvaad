@@ -150,7 +150,7 @@ class SentenceCard extends React.Component {
       modelId: "",
       isRecording: false,
       recordState: null,
-      base64data: ""
+      base64data: "",
     };
 
     this.textInput = React.createRef();
@@ -183,6 +183,14 @@ class SentenceCard extends React.Component {
       if (this.state.cardChecked) this.setState({ cardChecked: false });
     }
 
+  }
+
+  componentDidUpdate(prevProps, prevState){
+    // console.log("prevProps.block_highlight ---- ", prevProps.block_highlight);
+    // console.log("this.props.block_highlight ---- ", this.props.block_highlight);
+    if (prevProps.block_highlight && prevProps.block_highlight.current_sid !== this.props.block_highlight.current_sid && this.props.ASR_enabled) {
+      this.setState({recordState: null, isRecording: false})
+    }
   }
 
   shouldComponentUpdate(prevProps, nextState) {
@@ -234,52 +242,13 @@ class SentenceCard extends React.Component {
   */
 
   onStartRecordingButtonClick = async () => {
-    this.setState({ isRecording: !this.state.isRecording })
-    // navigator.mediaDevices.getUserMedia({ audio: true })
-    // .then(stream => {
-    //   this.audioStream = stream;
-    //   this.mediaRecorder = new MediaRecorder(stream);
-
-    //   this.mediaRecorder.ondataavailable = event => {
-    //     this.setState({
-    //       audioChunks: [...this.state.audioChunks, event.data],
-    //     });
-    //   };
-
-    //   this.mediaRecorder.start();
-    //   this.setState({ isRecording: true });
-    // })
-    // .catch(error => console.error('Error accessing microphone:', error));
-
-    this.setState({
-      recordState: RecordState.START
-    })
+    this.setState({ isRecording: !this.state.isRecording, recordState: RecordState.START })
   }
 
   onStopRecordingButtonClick = () => {
     this.setState({
-      recordState: RecordState.STOP
+      recordState: RecordState.STOP, isRecording: false
     })
-    // this.mediaRecorder.stop();
-    // this.audioStream.getTracks().forEach(track => track.stop());
-    // debugger
-    // // this.setState({ isRecording: false }, ()=> {
-    //   const audioBlob = new Blob(this.state.audioChunks, { type: 'audio/wav' });
-    // const reader = new FileReader();
-
-    // debugger
-
-    // reader.onload = () => {
-    //   const audioBase64 = reader.result.split(',')[1];
-    //   // fetch ASR from server
-    //   debugger
-    //   this.props.fetchASR(audioBase64);
-    //   debugger
-    // };
-
-    //   reader.readAsDataURL(audioBlob);
-    // // });
-    this.setState({ isRecording: false })
   }
 
   fetchAudioData(url) {
@@ -1084,7 +1053,7 @@ class SentenceCard extends React.Component {
                     }
                     InputProps={{
                       endAdornment:
-                        <InputAdornment position="end">
+                        this.props.ASR_enabled && <InputAdornment position="end">
                           <IconButton
                             aria-label="audio Input"
                             onClick={this.state.isRecording ? this.onStopRecordingButtonClick : this.onStartRecordingButtonClick}
@@ -1122,7 +1091,7 @@ class SentenceCard extends React.Component {
               helperText={this.props.model && this.props.model.status === "ACTIVE" && this.props.model.interactive_translation && orgID !== 'NONMT' ? "Ctrl+m to move text,Ctrl+s to save, Enable transliteration to get suggestions/disable transliteration and enter manual translation" : "Ctrl+m to move text, Ctrl+s to save, Enable transliteration to get suggestions/disable transliteration and enter manual translation"}
               InputProps={{
                 endAdornment:
-                  <InputAdornment position="end">
+                this.props.ASR_enabled && <InputAdornment position="end">
                     <IconButton
                       aria-label="audio Input"
                       onClick={this.state.isRecording ? this.onStopRecordingButtonClick : this.onStartRecordingButtonClick}
