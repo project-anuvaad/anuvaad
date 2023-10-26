@@ -14,6 +14,8 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import Collapse from "@material-ui/core/Collapse";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import MicIcon from '@material-ui/icons/Mic';
+import StopIcon from '@material-ui/icons/Stop';
 import IconButton from "@material-ui/core/IconButton";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 import copy from "copy-to-clipboard";
@@ -24,6 +26,7 @@ import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
+import AudioReactRecorder, { RecordState } from 'audio-react-recorder'
 
 import MenuItems from "./PopUp";
 import SENTENCE_ACTION from "./SentenceActions";
@@ -38,7 +41,7 @@ import DictionaryAPI from "../../../../flux/actions/apis/document_translate/word
 import AddToGlossaryModal from "./AddToGlossaryModal";
 import Modal from "@material-ui/core/Modal";
 import CreateGlossary from "../../../../flux/actions/apis/document_translate/create_glossary";
-import { Grid } from "@material-ui/core";
+import { Grid, InputAdornment } from "@material-ui/core";
 import ViewGlossary from "../../../../flux/actions/apis/user_glossary/fetch_user_glossary";
 import APITransport from "../../../../flux/actions/apitransport/apitransport";
 import SuggestGlossaryModal from "./SuggestGlossaryModal";
@@ -47,6 +50,7 @@ import endpoints from "../../../../configs/apiendpoints";
 import configs from "../../../../configs/configs";
 import { IndicTransliterate } from 'react-transliterate';
 import { shouldTypeRTL } from "../../../../utils/shouldTypeRTL";
+import GetASR from "../../../../flux/actions/apis/document_translate/get_asr";
 
 
 const TELEMETRY = require("../../../../utils/TelemetryManager");
@@ -112,6 +116,8 @@ const theme = createMuiTheme({
 class SentenceCard extends React.Component {
   constructor(props) {
     super(props);
+    this.mediaRecorder = null;
+    this.audioStream = null;
     this.state = {
       value: this.props.sentence.save ? this.props.sentence.tgt : "",
       showSuggestions: false,
@@ -141,7 +147,10 @@ class SentenceCard extends React.Component {
       openModal: false,
       openSuggestGlossaryModal: false,
       eventArray: [],
-      modelId: ""
+      modelId: "",
+      isRecording: false,
+      recordState: null,
+      base64data: "",
     };
 
     this.textInput = React.createRef();
@@ -174,6 +183,14 @@ class SentenceCard extends React.Component {
       if (this.state.cardChecked) this.setState({ cardChecked: false });
     }
 
+  }
+
+  componentDidUpdate(prevProps, prevState){
+    // console.log("prevProps.block_highlight ---- ", prevProps.block_highlight);
+    // console.log("this.props.block_highlight ---- ", this.props.block_highlight);
+    if (prevProps.block_highlight && prevProps.block_highlight.current_sid !== this.props.block_highlight.current_sid && this.props.ASR_enabled) {
+      this.setState({recordState: null, isRecording: false})
+    }
   }
 
   shouldComponentUpdate(prevProps, nextState) {
@@ -219,6 +236,66 @@ class SentenceCard extends React.Component {
     });
     return found;
   };
+
+  /**
+  * ASR Action
+  */
+
+  onStartRecordingButtonClick = async () => {
+    this.setState({ isRecording: !this.state.isRecording, recordState: RecordState.START })
+  }
+
+  onStopRecordingButtonClick = () => {
+    this.setState({
+      recordState: RecordState.STOP, isRecording: false
+    })
+  }
+
+  fetchAudioData(url) {
+    return fetch(url)
+      .then(response => response.blob())
+      .then(blob => {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result.split(',')[1]);
+          reader.onerror = reject;
+          reader.readAsDataURL(blob);
+        });
+      });
+  }
+
+  blobToBase64 = (blob) => {
+    let self = this;
+    var reader = new FileReader();
+    reader.readAsDataURL(blob.blob);
+    reader.onload = function () {
+      let base64data = reader.result.replace(/^data:.+;base64,/, '');
+      self.setState({base64data}, ()=> {
+        self.props.fetchASR(self.state.base64data)
+        .then(response=>{
+          console.log("response --- ", response);
+          self.setState({value: response.response.data.output[0].source});
+        })
+        .catch(err=>{
+          console.log("err --- ", err);
+        })
+      });
+
+    };
+  };
+
+  onStopRecordingEvent = async (audioData) => {
+    console.log('audioData', audioData)
+    this.blobToBase64(audioData);
+    // this.fetchAudioData(audioData.url)
+    //   .then(base64Audio => {
+    //     console.log("base64Audio---", base64Audio);
+    //     this.props.fetchASR(base64Audio);
+    //   })
+    //   .catch(error => console.error('Error fetching audio:', error));
+    // console.log("this.state.base64data ---", this.state.base64data);
+
+  }
 
   /**
    * user actions handlers
@@ -951,6 +1028,10 @@ class SentenceCard extends React.Component {
     return (
       <form>
         <div>
+          <div style={{ display: "none" }}>
+            <AudioReactRecorder state={this.state.recordState} onStop={this.onStopRecordingEvent} />
+          </div>
+
           {this.props?.model?.target_language_code != "en" && this.props.enableTransliteration ? (
             <IndicTransliterate
               customApiURL={`${configs.BASE_URL_AUTO + endpoints.transliteration}`}
@@ -970,6 +1051,18 @@ class SentenceCard extends React.Component {
                         ? "Ctrl+m to move text, Ctrl+s to save, Enable transliteration to get suggestions/disable transliteration and enter manual translation"
                         : "Ctrl+m to move text, Ctrl+s to save, Enable transliteration to get suggestions/disable transliteration and enter manual translation"
                     }
+                    InputProps={{
+                      endAdornment:
+                        this.props.ASR_enabled && <InputAdornment position="end">
+                          <IconButton
+                            aria-label="audio Input"
+                            onClick={this.state.isRecording ? this.onStopRecordingButtonClick : this.onStartRecordingButtonClick}
+                          // onMouseDown={handleMouseDownPassword}
+                          >
+                            {this.state.isRecording ? <StopIcon htmlColor="#FF0000" /> : <MicIcon />}
+                          </IconButton>
+                        </InputAdornment>
+                    }}
                     type="text"
                     name={this.props.sentence.s_id}
                     value={this.state.value}
@@ -996,6 +1089,18 @@ class SentenceCard extends React.Component {
               maxOptions={3}
             />) : (<TextField label="Enter translated sentence"
               helperText={this.props.model && this.props.model.status === "ACTIVE" && this.props.model.interactive_translation && orgID !== 'NONMT' ? "Ctrl+m to move text,Ctrl+s to save, Enable transliteration to get suggestions/disable transliteration and enter manual translation" : "Ctrl+m to move text, Ctrl+s to save, Enable transliteration to get suggestions/disable transliteration and enter manual translation"}
+              InputProps={{
+                endAdornment:
+                this.props.ASR_enabled && <InputAdornment position="end">
+                    <IconButton
+                      aria-label="audio Input"
+                      onClick={this.state.isRecording ? this.onStopRecordingButtonClick : this.onStartRecordingButtonClick}
+                    // onMouseDown={handleMouseDownPassword}
+                    >
+                      {this.state.isRecording ? <StopIcon htmlColor="#FF0000" /> : <MicIcon />}
+                    </IconButton>
+                  </InputAdornment>
+              }}
               type="text"
               name={this.props.sentence.s_id}
               value={this.state.value}
