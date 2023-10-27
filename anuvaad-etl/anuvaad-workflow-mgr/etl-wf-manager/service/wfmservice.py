@@ -635,21 +635,37 @@ class WFMService:
                     }
                 }
         """
-        if "record_id" not in data.keys():
-            return {"status" : "Error", "reason":"record_id missing"}
+        try:
+            if "record_id" not in data.keys():
+                return {"status" : "Error", "reason":"record_id missing"}
+            
+            data["record_id"] = data["record_id"].replace("%7C","|")
+            document = pipelineCalls.document_export(data["user_id"],data["record_id"],data["file_type"],data["metadata"])
+            if document is None:
+                return {"status":"Error","reason":"Document Export Failed"}
+            file_content = pipelineCalls.download_file(document)
+            if file_content is None:
+                return {"status":"Error","reason":"File Download Failed"}
+            
+            if not os.path.exists("upload_files"):
+                # If it doesn't exist, create it
+                os.makedirs("upload_files")
+
+            with open("./upload_files/"+data["file_name"], "wb") as file:
+                file.write(file_content)
+            
+            file_id = pipelineCalls.upload_files("./upload_files/"+data["file_name"])
+            if file_id is None:
+                return {"status":"Error","reason":"File Upload Failed"}
+
+            # Delete uploaded file
+            try:
+                os.remove("./upload_files/"+data["file_name"])
+            except Exception as e:
+                log_error(f"Exception during file deletion",app_context,e)        
+
+            response = pipelineCalls.translate(data["file_name"],file_id,data["translation_async_flow"],data["metadata"])
+            return response
+        except Exception as e:
+            log_error(f"Exception occurred {e}",e,app_context)
         
-        data["record_id"] = data["record_id"].replace("%7C","|")
-        document = pipelineCalls.document_export(data["user_id"],data["record_id"],data["file_type"],data["metadata"])
-        if document is None:
-            return {"status":"Error","reason":"Document Export Failed"}
-        file_content = pipelineCalls.download_file(document)
-        if file_content is None:
-            return {"status":"Error","reason":"File Download Failed"}
-        log_info(f"Current Path: {os.getcwd()}",app_context)
-        with open(data["file_name"], "wb") as file:
-            file.write(file_content)
-        # try:
-        #     os.remove(data["filename"])
-        # except Exception as e:
-        #     log_error(f"Exception during file deletion",app_context,e)        
-        return {"File Downloaded" : os.getcwd()}
