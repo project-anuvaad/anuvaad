@@ -37,15 +37,22 @@ class PipelineCalls:
             log_error(f"Error during file download : {traceback.format_exc()}",app_context,e)
 
 
-    def upload_files(self,filepath):
+    def upload_files(self,filepath,headers):
         # hit upload_file api and fetch file_id
+        request_headers = {
+            "x-user-id": headers["userID"],
+            "x-org-id": headers["orgID"],
+            "x-roles": headers["roles"],
+            "x-request-id": headers["requestID"],
+            "x-session-id": headers["sessionID"]
+        }
         log_info("Performing Upload File",app_context)
         try:
             uploadfiles_body = {
                 'file': open(filepath,'rb')
             }
             url = ZUUL_ROUTES_FU_URL + "anuvaad-api/file-uploader/v0/upload-file"
-            req = requests.post(timeout=120,url=url,files=uploadfiles_body)
+            req = requests.post(timeout=120,url=url,files=uploadfiles_body,headers=request_headers)
             if req.status_code >=200 and req.status_code <=204:
                 file_id = req.json()["data"]
                 return file_id

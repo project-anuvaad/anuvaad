@@ -654,7 +654,7 @@ class WFMService:
             with open("./upload_files/"+data["file_name"], "wb") as file:
                 file.write(file_content)
             
-            file_id = pipelineCalls.upload_files("./upload_files/"+data["file_name"])
+            file_id = pipelineCalls.upload_files("./upload_files/"+data["file_name"],data["metadata"])
             if file_id is None:
                 return {"status":"Error","reason":"File Upload Failed"}
 
