@@ -25,7 +25,7 @@ class PipelineCalls:
                 log_info("Document Export Response ",response.json())
                 return response.json()["translated_document"]
         except Exception as e:
-            log_error("Error during document conversion : {traceback.format_exc()}",app_context,e)
+            log_error(f"Error during document conversion : {traceback.format_exc()}",app_context,e)
 
     def download_file(self,download_path):
         log_info("Performing File Download",app_context)
@@ -35,4 +35,4 @@ class PipelineCalls:
             if response.status_code >=200 and response.status_code <=204:
                 return response.content
         except Exception as e:
-            log_error("Error during file download : {traceback.format_exc()}",app_context,e)
+            log_error(f"Error during file download : {traceback.format_exc()}",app_context,e)
