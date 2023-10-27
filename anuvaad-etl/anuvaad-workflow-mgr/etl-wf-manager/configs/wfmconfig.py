@@ -81,3 +81,7 @@ log_msg_error = " has encountered an exception, job ended."
 #Specific variables
 granularity_list = ["manualEditingStartTime","manualEditingEndTime","parallelDocumentUpload","reviewerInProgress","reviewerCompleted"]
 workflowCodesTranslation = ["DP_WFLOW_FBT","WF_A_FCBMTKTR","DP_WFLOW_FBTTR","WF_A_FTTKTR"]
+
+#Service URLs
+DOCUMENT_CONVERTER_SERVER_URL=os.environ.get("DOCUMENT_CONVERTER_SERVER_URL","http://anuvaad-etl-document-converter:5001/")
+ZUUL_ROUTES_FU_URL = os.environ.get("ZUUL_ROUTES_FU_URL","http://anuvaad-suploader:5001/")
