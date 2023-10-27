@@ -20,9 +20,9 @@ class PipelineCalls:
         try:
             url = DOCUMENT_CONVERTER_SERVER_URL + "anuvaad-etl/document-converter/v0/document-exporter"
             response = requests.request("POST", url, headers=headers, data=payload)
-            log_info(f"Document Export Response {response.status_code}")
+            log_info(f"Document Export Response {response.status_code}",app_context)
             if response.status_code >=200 and response.status_code <=204:
-                log_info("Document Export Response ",response.json())
+                log_info("Document Export Response ",response.json(),app_context)
                 return response.json()["translated_document"]
         except Exception as e:
             log_error(f"Error during document conversion : {traceback.format_exc()}",app_context,e)

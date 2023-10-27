@@ -648,4 +648,8 @@ class WFMService:
         log_info(f"Current Path: {os.getcwd()}",app_context)
         with open(data["file_name"], "wb") as file:
             file.write(file_content)
+        # try:
+        #     os.remove(data["filename"])
+        # except Exception as e:
+        #     log_error(f"Exception during file deletion",app_context,e)        
         return {"File Downloaded" : os.getcwd()}
