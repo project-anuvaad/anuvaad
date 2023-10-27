@@ -1339,6 +1339,31 @@
             "role":"REVIEWER",
             "actionID": "06704b9d-fee7-40f3-88df-8b5f7b9a0b4e",
             "active":true
+        },
+        {
+            "role":"SUPERADMIN",
+            "actionID": "f00a68bf-3983-498d-8a06-cc53089bbfb4",
+            "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "f00a68bf-3983-498d-8a06-cc53089bbfb4",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "f00a68bf-3983-498d-8a06-cc53089bbfb4",
+            "active":true
+        },
+        {
+            "role":"ANNOTATOR",
+            "actionID": "f00a68bf-3983-498d-8a06-cc53089bbfb4",
+            "active":true
+        },
+        {
+            "role":"REVIEWER",
+            "actionID": "f00a68bf-3983-498d-8a06-cc53089bbfb4",
+            "active":true
         }
     ]
 }
