@@ -14,9 +14,12 @@ class PipelineCalls:
         "user_id": user_id,
         "file_type": filetype
         })
+        headers = {
+            'Content-Type': 'application/json',
+        }
         try:
             url = DOCUMENT_CONVERTER_SERVER_URL + "anuvaad-etl/document-converter/v0/document-exporter"
-            response = requests.request("POST", url, data=payload)
+            response = requests.request("POST", url, headers=headers data=payload)
             if response.status_code >=200 and response.status_code <=204:
                 log_info("Document Export Response ",response.json())
                 return response.json()["translated_document"]
