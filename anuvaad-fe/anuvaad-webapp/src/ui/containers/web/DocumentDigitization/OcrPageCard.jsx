@@ -89,7 +89,6 @@ class OcrPageCard extends React.Component {
     }
 
     renderText = (line, region) => {
-        console.log(" line ---- ", line);
         return (
             <div
                 style={{
