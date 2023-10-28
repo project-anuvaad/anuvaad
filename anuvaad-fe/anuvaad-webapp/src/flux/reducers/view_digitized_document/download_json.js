@@ -2,6 +2,7 @@ import C from '../../actions/constants';
 
 const initial_state = {
     pages: [],
+    srcLanguage: "",
     count: 0
 }
 
@@ -11,6 +12,7 @@ const download_json = (state = initial_state, action) => {
             return {
                 ...state,
                 pages: action.payload.data.pages,
+                srcLanguage: action.payload.data.config.language,
                 count: action.payload.count
             }
 
