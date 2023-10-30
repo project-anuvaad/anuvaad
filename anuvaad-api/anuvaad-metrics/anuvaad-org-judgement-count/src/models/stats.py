@@ -133,7 +133,11 @@ class jud_stats(object):
                 [
                     {
                         "$match": 
-                                {"data_type": "text_blocks","created_on": {"$gte": from_date, "$lte": end_date}},    
+                                {
+                                    "data_type": "text_blocks",
+                                    "created_on": {"$gte": from_date, "$lte": end_date},
+                                    "active": True
+                                 },    
                     },
                     {"$unwind": "$data.tokenized_sentences"},
                     {
@@ -165,7 +169,11 @@ class jud_stats(object):
                 [
                     {
                         "$match": 
-                                {"data_type": "text_blocks","created_on": {"$gte": from_date, "$lte": end_date}},
+                                {
+                                    "data_type": "text_blocks",
+                                    "created_on": {"$gte": from_date, "$lte": end_date},
+                                    "active": True
+                                },
                     },
                     {"$unwind": "$data.tokenized_sentences"},
                     {"$match": {"data.tokenized_sentences.save": True}},
