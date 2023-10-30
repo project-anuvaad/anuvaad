@@ -77,6 +77,9 @@ def get_trans_user_data_from_db_cron():
         log_info(f"Generated alert email scheduler files not found ", MODULE_CONTEXT)
     user_docs = stats.get_all_users_active_inactive(usr_collection)
     user_df =pd.json_normalize(user_docs)
+
+    # TODO: REMOVE LATER
+    user_df.to_csv(config.DOWNLOAD_FOLDER + "/" + "user_df.csv")
     log_info(
         f"Data returned from user {config.USER_COLLECTION} collection", MODULE_CONTEXT
     )
@@ -98,6 +101,11 @@ def get_trans_user_data_from_db_cron():
         # ch_doc_df.dropna(subset=['orgID'], inplace=True)
         ch_doc_df.rename(columns = {'created_by':'userID'}, inplace = True)
         ch_doc_df.reset_index(drop=True, inplace=True)
+
+
+        # TODO: REMOVE LATER
+        ch_doc_df.to_csv(config.DOWNLOAD_FOLDER + "/" + "ch_doc_df.csv")
+
         result_ch_doc = user_df.merge(ch_doc_df,indicator=False,how="right")
         result_ch_doc.to_csv(config.DOWNLOAD_FOLDER + "/" + weekly_cron_file_name1)
 
@@ -118,9 +126,7 @@ def get_trans_user_data_from_db_cron():
     except Exception as e:
         log_exception("Error in fetching the data: {}".format(e), MODULE_CONTEXT, e)
         msg = generate_email_notification(
-            users, f"Column Names in user: {user_df.columns}, 
-                    Column Names in ch_doc: {ch_doc_df.columns}. 
-                    Could not get the data something went wrong : {traceback.format_exc()}"
+            users, f"could not get the data something went wrong : {traceback.format_exc()}"
         )
         send_email(msg)
         log_exception(
