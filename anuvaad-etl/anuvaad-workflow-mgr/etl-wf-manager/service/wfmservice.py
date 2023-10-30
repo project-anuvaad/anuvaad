@@ -391,6 +391,9 @@ class WFMService:
                             jobIDs.append(jobID)
                     if len(jobIDs) > 0:
                         criteria["jobID"] = {"$in": jobIDs}
+            if 'inputFileName' in req_criteria.keys():
+                jobName_pattern = req_criteria["inputFileName"]
+                criteria["input.jobName"] = {"$regex": jobName_pattern}
             if 'orgIDs' in req_criteria.keys():
                 if req_criteria["orgIDs"]:
                     orgIDs = []
