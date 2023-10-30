@@ -40,7 +40,7 @@ ORG_REPLACER= {
 
 METRICS_ORG_MASKING = (os.getenv('METRICS_ORG_MASKING', 'True') == 'True') # if (value is 'True' or env does not exists) then boolTrue else boolFalse
 
-EMAIL_NOTIFIER = ["rathan.muralidhar@tarento.com","apoorva.bellary@tarento.com"]
+EMAIL_NOTIFIER = ["rathan.muralidhar@tarento.com","aswin.pradeep@tarento.com"]
 
 
 USER_COLLECTION = "sample"
