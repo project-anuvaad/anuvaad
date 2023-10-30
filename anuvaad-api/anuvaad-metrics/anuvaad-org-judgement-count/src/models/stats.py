@@ -136,7 +136,6 @@ class jud_stats(object):
                                 {
                                     "data_type": "text_blocks",
                                     "created_on": {"$gte": from_date, "$lte": end_date},
-                                    "active": True
                                  },    
                     },
                     {"$unwind": "$data.tokenized_sentences"},
@@ -172,7 +171,6 @@ class jud_stats(object):
                                 {
                                     "data_type": "text_blocks",
                                     "created_on": {"$gte": from_date, "$lte": end_date},
-                                    "active": True
                                 },
                     },
                     {"$unwind": "$data.tokenized_sentences"},

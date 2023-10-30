@@ -78,8 +78,6 @@ def get_trans_user_data_from_db_cron():
     user_docs = stats.get_all_users_active_inactive(usr_collection)
     user_df =pd.json_normalize(user_docs)
 
-    # TODO: REMOVE LATER
-    user_df.to_csv(config.DOWNLOAD_FOLDER + "/" + "user_df.csv")
     log_info(
         f"Data returned from user {config.USER_COLLECTION} collection", MODULE_CONTEXT
     )
@@ -102,9 +100,6 @@ def get_trans_user_data_from_db_cron():
         ch_doc_df.rename(columns = {'created_by':'userID'}, inplace = True)
         ch_doc_df.reset_index(drop=True, inplace=True)
 
-
-        # TODO: REMOVE LATER
-        ch_doc_df.to_csv(config.DOWNLOAD_FOLDER + "/" + "ch_doc_df.csv")
 
         result_ch_doc = user_df.merge(ch_doc_df,indicator=False,how="right")
         result_ch_doc.to_csv(config.DOWNLOAD_FOLDER + "/" + weekly_cron_file_name1)
