@@ -118,7 +118,9 @@ def get_trans_user_data_from_db_cron():
     except Exception as e:
         log_exception("Error in fetching the data: {}".format(e), MODULE_CONTEXT, e)
         msg = generate_email_notification(
-            users, f"could not get the data something went wrong : {traceback.format_exc()}"
+            users, f"Column Names in user: {user_df.columns}, 
+                    Column Names in ch_doc: {ch_doc_df.columns}. 
+                    Could not get the data something went wrong : {traceback.format_exc()}"
         )
         send_email(msg)
         log_exception(
