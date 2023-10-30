@@ -4,7 +4,6 @@ from resources.db_retrival import app
 from resources.scheduler_jobs import schedule_job
 import config
 from utilities import MODULE_CONTEXT
-from resources.scheduler_jobs import get_trans_user_data_from_db_cron, get_reviewer_data
 
 if config.ENABLE_CORS:
     cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
@@ -16,7 +15,4 @@ if __name__ == "__main__":
         MODULE_CONTEXT,
     )
     # schedule_job
-    get_trans_user_data_from_db_cron()
-    get_reviewer_data(base = True)
-    get_reviewer_data(base = False)
     app.run(host=config.HOST, port=config.PORT, debug=config.DEBUG)

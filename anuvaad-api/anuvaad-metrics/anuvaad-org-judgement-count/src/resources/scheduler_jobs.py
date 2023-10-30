@@ -5,6 +5,7 @@ import config
 from datetime import datetime as dt
 from datetime import timedelta as td
 import os
+import traceback
 import pandas as pd
 from utilities import (
     write_to_csv_user,
@@ -117,7 +118,7 @@ def get_trans_user_data_from_db_cron():
     except Exception as e:
         log_exception("Error in fetching the data: {}".format(e), MODULE_CONTEXT, e)
         msg = generate_email_notification(
-            users, "could not get the data something went wrong : {}".format(e)
+            users, f"could not get the data something went wrong : {traceback.format_exc()}"
         )
         send_email(msg)
         log_exception(
@@ -175,9 +176,9 @@ def manual_start_transuserdata_scheduler():
             job.func()
 
 # static run (only once when server starts)
-# manual_start_reviewerdata_scheduler(base=True)
-# manual_start_reviewerdata_scheduler(base=False)
-# manual_start_transuserdata_scheduler()
+manual_start_reviewerdata_scheduler(base=True)
+manual_start_reviewerdata_scheduler(base=False)
+manual_start_transuserdata_scheduler()
 
 # initiate cron job
 schedule_job.start()
