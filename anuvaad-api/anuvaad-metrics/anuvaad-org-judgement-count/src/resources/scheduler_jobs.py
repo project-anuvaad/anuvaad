@@ -175,9 +175,9 @@ def manual_start_transuserdata_scheduler():
             job.func()
 
 # static run (only once when server starts)
-manual_start_reviewerdata_scheduler(base=True)
-manual_start_reviewerdata_scheduler(base=False)
-manual_start_transuserdata_scheduler()
+# manual_start_reviewerdata_scheduler(base=True)
+# manual_start_reviewerdata_scheduler(base=False)
+# manual_start_transuserdata_scheduler()
 
 # initiate cron job
 schedule_job.start()
