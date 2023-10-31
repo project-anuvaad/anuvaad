@@ -48,7 +48,7 @@ detection of language and downloads tess-best weights if not already avilable
 ```
 **Deployment**
 ## **Deployment**
-*Credentials must be added after cloning the repo*
+
 
 ```shell
 
