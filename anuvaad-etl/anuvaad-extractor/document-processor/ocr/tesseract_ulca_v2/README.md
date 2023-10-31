@@ -1,7 +1,7 @@
 
 # Anuvaad OCR
 
-Open source OCR models for Indic Languages, developed and used as part of project Anuvaad.
+Open source OCR models for Indic Languages (Printed), developed and used as part of project Anuvaad.
 Repo contains tesseract service with REST interface, which is ULCA compliant:
 
 input : image url
