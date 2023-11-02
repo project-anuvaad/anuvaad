@@ -515,6 +515,10 @@ class jud_stats(object):
                     '$in': ["DP_WFLOW_FBT", "WF_A_FCBMTKTR", "DP_WFLOW_FBTTR", "WF_A_FTTKTR"]
                 },
                 "active": True
+            },
+            {
+                "jobID":1,
+                "_id":0
             }
         )
         docs = pd.DataFrame(list(docs))
