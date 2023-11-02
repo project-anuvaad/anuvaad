@@ -96,6 +96,7 @@ def get_trans_user_data_from_db_cron():
 
         start_date = stats.get_custom_timestamp(from_date)
         last_date = stats.get_custom_timestamp(end_date)
+        log_info(f"START DATE :: {start_date} && END DATE :: {last_date}",MODULE_CONTEXT)
         wfm_docs = stats.translation_wfm_data(
             wfm_collection, start_date, last_date
         )
