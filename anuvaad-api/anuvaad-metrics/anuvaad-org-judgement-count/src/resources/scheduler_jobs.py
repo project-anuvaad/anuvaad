@@ -48,7 +48,7 @@ log_info("Mongo connected", MODULE_CONTEXT)
 
 # @.scheduled_job("interval", id="get_data_from_db", hours=6)
 @schedule_job.scheduled_job(
-    "cron", id="my_job_id1", day_of_week="mon-fri", hour="00,08,18", minute="00"
+    "cron", id="my_job_id1", day_of_week="mon-fri", hour="00,06,20", minute="00"
 )
 def get_trans_user_data_from_db_cron():
     users = config.EMAIL_NOTIFIER
@@ -124,6 +124,8 @@ def get_trans_user_data_from_db_cron():
         save_doc_df.rename(columns = {'created_by':'userID'}, inplace = True)
         save_doc_df.reset_index(drop=True, inplace=True)
         result_save_doc = user_df.merge(save_doc_df,indicator=False,how="right")
+        result_save_doc = result_save_doc.merge(wfm_docs, left_on='_id', right_on='jobID', how='inner')
+        result_save_doc = result_save_doc.dropna(subset=['orgID'])
         result_save_doc.to_csv(config.DOWNLOAD_FOLDER + "/" + weekly_cron_file_name2)
 
         result2 = result_save_doc.merge(result_ch_doc,indicator=False,how="right")
