@@ -101,9 +101,10 @@ def get_trans_user_data_from_db_cron():
             wfm_collection, start_date, last_date
         )
 
-        wfm_docs = [x for x in wfm_docs]
-        wfm_docs_df = pd.json_normalize(wfm_docs)
-        wfm_docs_df.to_csv(config.DOWNLOAD_FOLDER + "/" + "workflow_docs.csv")
+        # wfm_docs = [x for x in wfm_docs]
+        # wfm_docs_df = pd.json_normalize(wfm_docs)
+        log_info(f"WORKFLOW MANAGER SHAPE :: {wfm_docs.shape}",MODULE_CONTEXT)
+        wfm_docs.to_csv(config.DOWNLOAD_FOLDER + "/" + "workflow_docs.csv")
 
         chdoc = [x for x in ch_docs]
         ch_doc_df=pd.json_normalize(chdoc)
