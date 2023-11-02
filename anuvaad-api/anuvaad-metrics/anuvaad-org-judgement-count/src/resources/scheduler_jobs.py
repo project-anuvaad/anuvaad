@@ -115,6 +115,7 @@ def get_trans_user_data_from_db_cron():
 
         result_ch_doc = user_df.merge(ch_doc_df,indicator=False,how="right")
         result_ch_doc = result_ch_doc.merge(wfm_docs, left_on='_id', right_on='jobID', how='inner')
+        result_ch_doc = result_ch_doc.dropna(subset=['orgID'])
         result_ch_doc.to_csv(config.DOWNLOAD_FOLDER + "/" + weekly_cron_file_name1)
 
         savedoc = [x for x in saved_docs]
