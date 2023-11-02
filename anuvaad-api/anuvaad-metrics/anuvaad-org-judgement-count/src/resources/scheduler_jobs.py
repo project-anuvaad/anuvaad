@@ -94,6 +94,14 @@ def get_trans_user_data_from_db_cron():
             ch_collection, from_date, end_date
         )
 
+        wfm_docs = stats.translation_wfm_data(
+            wfm_collection, from_date, end_date
+        )
+
+        wfm_docs = [x for x in wfm_docs]
+        wfm_docs_df = pd.json_normalize(wfm_docs)
+        wfm_docs_df.to_csv(config.DOWNLOAD_FOLDER + "/" + "workflow_docs")
+
         chdoc = [x for x in ch_docs]
         ch_doc_df=pd.json_normalize(chdoc)
         # ch_doc_df.dropna(subset=['orgID'], inplace=True)
