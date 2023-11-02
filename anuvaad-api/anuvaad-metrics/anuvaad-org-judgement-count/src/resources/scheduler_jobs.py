@@ -100,7 +100,7 @@ def get_trans_user_data_from_db_cron():
 
         wfm_docs = [x for x in wfm_docs]
         wfm_docs_df = pd.json_normalize(wfm_docs)
-        wfm_docs_df.to_csv(config.DOWNLOAD_FOLDER + "/" + "workflow_docs")
+        wfm_docs_df.to_csv(config.DOWNLOAD_FOLDER + "/" + "workflow_docs.csv")
 
         chdoc = [x for x in ch_docs]
         ch_doc_df=pd.json_normalize(chdoc)
