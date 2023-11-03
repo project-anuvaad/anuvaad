@@ -643,6 +643,7 @@ class WFMService:
                 return {"status" : "Error", "reason":"record_id missing"}
             
             data["record_id"] = data["record_id"].replace("%7C","|")
+            data["file_type"] = "pdf"
             document = pipelineCalls.document_export(data["user_id"],data["record_id"],data["file_type"],data["metadata"])
             if document is None:
                 return {"status":"Error","reason":"Document Export Failed"}
