@@ -657,7 +657,7 @@ export default function TopHeader(props) {
                             }}
                             title={"Help"}
                             className={popOverIconButton}
-                            onClick={(e) => window.open("https://www.youtube.com/@projectanuvaad4271/playlists")}
+                            onClick={(e) => window.open("https://www.youtube.com/playlist?list=PLoPdnDzN1GJHJIS0p3jewAOJgEreRU7MS")}
                         >
                             <HelpIcon fontSize="large" />
                         </IconButton>
