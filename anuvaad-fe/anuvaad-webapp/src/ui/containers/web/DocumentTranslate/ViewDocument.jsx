@@ -239,7 +239,7 @@ class ViewDocument extends React.Component {
       false,
       false,
       this.state.selectedGranularStatus[0] === "auto_translation_in_progress" ? false : this.state.selectedGranularStatus,
-      this.state.selectedGranularStatus[0] === "auto_translation_in_progress" ? ["INPROGRESS"] : [""],
+      this.state.selectedGranularStatus[0] === "auto_translation_in_progress" ? ["INPROGRESS"] : this.state.selectedGranularStatus[0] === "auto_translation_completed" ? ["COMPLETED"]: [""]
     );
     APITransport(apiObj);
   }
