@@ -409,7 +409,13 @@ class WFMService:
                         if currentStat:
                             currentStatus.append(currentStat)
                     if len(currentStatus) > 0:
-                        criteria["granularity.currentStatus"] = {"$in": currentStatus}
+                        if "auto_translation_completed" in currentStatus:
+                            criteria["$or"] = [
+                                {"granularity.currentStatus": {"$in": currentStatus}},
+                                {"granularity.currentStatus": {"$exists": False}}
+                            ]
+                        else:
+                            criteria["granularity.currentStatus"] = {"$in": currentStatus}
             if 'filterByStartTime' in req_criteria.keys():
                 if 'startTimeStamp' in req_criteria['filterByStartTime'].keys() and 'endTimeStamp' in req_criteria['filterByStartTime'].keys():
                             criteria["startTime"] = { "$gte": req_criteria['filterByStartTime']['startTimeStamp'], "$lte": req_criteria['filterByStartTime']['endTimeStamp']}
@@ -641,10 +647,11 @@ class WFMService:
         try:
             if "record_id" not in data.keys():
                 return {"status" : "Error", "reason":"record_id missing"}
-            
-            data["record_id"] = data["record_id"].replace("%7C","|")
-            data["file_type"] = "pdf"
-            data["file_name"] = data["file_name"].replace(data["file_name"].split(".")[-1],"pdf")
+            if data["file_type"] in ["jpg","bmp","png","svg","jpeg"]:
+                data["record_id"] = data["record_id"].replace("%7C","|")
+                data["file_type"] = "pdf"
+                data["file_name"] = data["file_name"].replace(data["file_name"].split(".")[-1],"pdf")
+
             document = pipelineCalls.document_export(data["user_id"],data["record_id"],data["file_type"],data["metadata"])
             if document is None:
                 return {"status":"Error","reason":"Document Export Failed"}
