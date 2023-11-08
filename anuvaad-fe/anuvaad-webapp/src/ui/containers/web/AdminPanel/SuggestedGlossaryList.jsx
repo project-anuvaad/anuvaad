@@ -400,7 +400,7 @@ class SuggestedGlossaryList extends React.Component {
         return (
           <CustomTableFooter
             renderCondition={totalPageCount > 0}
-            countLabel={"Total Documents"}
+            countLabel={"Total Suggestions"}
             totalCount={this.props.suggestedGlossaryData.count}
             pageInputRef={this.pageInputRef}
             inputValue={this.state.inputPageNumber}
