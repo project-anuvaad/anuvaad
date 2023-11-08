@@ -133,7 +133,10 @@ class jud_stats(object):
                 [
                     {
                         "$match": 
-                                {"data_type": "text_blocks","created_on": {"$gte": from_date, "$lte": end_date}},    
+                                {
+                                    "data_type": "text_blocks",
+                                    "created_on": {"$gte": from_date, "$lte": end_date},
+                                 },    
                     },
                     {"$unwind": "$data.tokenized_sentences"},
                     {
@@ -165,7 +168,10 @@ class jud_stats(object):
                 [
                     {
                         "$match": 
-                                {"data_type": "text_blocks","created_on": {"$gte": from_date, "$lte": end_date}},
+                                {
+                                    "data_type": "text_blocks",
+                                    "created_on": {"$gte": from_date, "$lte": end_date},
+                                },
                     },
                     {"$unwind": "$data.tokenized_sentences"},
                     {"$match": {"data.tokenized_sentences.save": True}},
@@ -498,6 +504,33 @@ class jud_stats(object):
             keyss,
         )
 
+    def translation_wfm_data(self, wfm_collection, fromdate, todate):
+        docs = wfm_collection.find(
+            {
+                "startTime": {
+                    "$gte": fromdate, 
+                    "$lte": todate
+                },
+                "workflowCode": {
+                    '$in': ["DP_WFLOW_FBT", "WF_A_FCBMTKTR", "DP_WFLOW_FBTTR", "WF_A_FTTKTR"]
+                },
+                "active": True
+            },
+            {
+                "jobID":1,
+                "_id":0
+            }
+        )
+        docs = pd.DataFrame(list(docs))
+        # docs = pd.concat([docs,pd.json_normalize(docs['_id'])],axis=1)
+        # del docs['_id']
+        # docs = docs.dropna(subset=['org'])
+        # for x_col in ['org','src','tgt']:
+        #     docs[x_col] = docs[x_col].str.strip()
+        # print(docs.to_string())
+        return docs
+
+
     def get_reviewer_data_from_wfm(self, wfm_collection, fromdate, todate):
         docs = wfm_collection.aggregate(
             [
@@ -510,6 +543,7 @@ class jud_stats(object):
                         "workflowCode": {
                             '$in': ["DP_WFLOW_FBT", "WF_A_FCBMTKTR", "DP_WFLOW_FBTTR", "WF_A_FTTKTR"]
                         },
+                        "active": True,
                     },
                 },
                 {

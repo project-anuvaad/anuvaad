@@ -289,6 +289,14 @@
             "description":"API to fetch content from CH"
         },
         {
+            "id":"a45dbb7a-f9a1-4c26-b008-09979ef24b38",
+            "uri":"/anuvaad/content-handler/v1/fetch-content",
+            "module":"CONTENT-HANDLER",
+            "active":true,
+            "whiteList":false,
+            "description":"API to fetch content from CH (efficient compared to v0)"
+        },
+        {
             "id":"9cb0222b-a4c1-41da-baa3-67fb84924ada",
             "uri":"/anuvaad/content-handler/v0/save-content-sentence",
             "module":"CONTENT-HANDLER",
@@ -807,6 +815,22 @@
             "active":true,
             "whiteList":true,
             "description":"API for fetching no. of active users"
-        }                        
+        },
+        {
+            "id":"d47e0b94-41f1-409b-b307-8228ec5cc2f8",
+            "uri":"/anuvaad-metrics/transliteration",
+            "module":"ANUVAAD-METRICS",
+            "active":true,
+            "whiteList":true,
+            "description":"API for performing transliteration"
+        },
+        {
+            "id":"06704b9d-fee7-40f3-88df-8b5f7b9a0b4e",
+            "uri":"/anuvaad-metrics/asr",
+            "module":"ANUVAAD-METRICS",
+            "active":true,
+            "whiteList":false,
+            "description":"API for performing transliteration"
+        } 
     ]
 }
