@@ -130,6 +130,7 @@ class ViewDocument extends React.Component {
   componentWillUnmount() {
     ClearContent();
     clearInterval(this.timerId);
+    clearJobEntry();
     TELEMETRY.pageLoadCompleted("view-document");
   }
 
