@@ -130,6 +130,7 @@ class ViewDocument extends React.Component {
   componentWillUnmount() {
     ClearContent();
     clearInterval(this.timerId);
+    clearJobEntry();
     TELEMETRY.pageLoadCompleted("view-document");
   }
 
@@ -227,6 +228,8 @@ class ViewDocument extends React.Component {
     searchNextPage = false,
     updateExisting = false
   ) {
+    this.setState({ currentPageIndex: 0 })
+    this.tableRef.current.changePage(Number(this.state.currentPageIndex - 0))
     const { APITransport } = this.props;
     const apiObj = new FetchDocument(
       0,
@@ -239,7 +242,7 @@ class ViewDocument extends React.Component {
       false,
       false,
       this.state.selectedGranularStatus[0] === "auto_translation_in_progress" ? false : this.state.selectedGranularStatus,
-      this.state.selectedGranularStatus[0] === "auto_translation_in_progress" ? ["INPROGRESS"] : [""],
+      this.state.selectedGranularStatus[0] === "auto_translation_in_progress" ? ["INPROGRESS"] : this.state.selectedGranularStatus[0] === "auto_translation_completed" ? ["COMPLETED"]: [""]
     );
     APITransport(apiObj);
   }

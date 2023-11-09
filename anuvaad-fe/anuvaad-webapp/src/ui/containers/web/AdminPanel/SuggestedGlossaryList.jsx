@@ -25,6 +25,7 @@ import DataTable from "../../../components/web/common/DataTable";
 import ConfirmBox from "../../../components/web/common/ConfirmBox";
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from "@material-ui/core";
 import { IndicTransliterate } from "@ai4bharat/indic-transliterate";
+import { CustomTableFooter } from "../../../components/web/common/CustomTableFooter";
 
 var delete_glossary = require("../../../../utils/deleteSuggestions.operation");
 
@@ -45,6 +46,8 @@ class SuggestedGlossaryList extends React.Component {
     super(props);
     this.orgID = this.props.match.params.orgId;
     this.userID = JSON.parse(localStorage.getItem("userProfile")).userID;
+    this.tableRef = React.createRef();
+    this.pageInputRef = React.createRef();
     this.state = {
       loading: false,
       open: false,
@@ -57,7 +60,10 @@ class SuggestedGlossaryList extends React.Component {
       openSingleSuggestionDeleteConfirmBox: false,
       singleDeletionArr: [],
       updateObj: [],
-      showUpdateModal: false
+      showUpdateModal: false,
+      currentPageIndex: 0,
+      isInputActive: false,
+      inputPageNumber: 1,
     }
   }
 
@@ -184,6 +190,23 @@ class SuggestedGlossaryList extends React.Component {
     
   }
 
+    onChangePageMAnually = () => {
+    this.tableRef.current.changePage(Number(this.state.inputPageNumber) - 1);
+    this.setState({ currentPageIndex: this.state.inputPageNumber - 1 })
+  }
+
+  handleInputPageChange = (event, totalPageCount) => {
+    if (event.target.value <= totalPageCount) {
+      this.setState({ inputPageNumber: event.target.value })
+    } else if (event.target.value > totalPageCount) {
+      this.setState({ inputPageNumber: totalPageCount })
+    } else if (event.target.value == 0) {
+      this.setState({ inputPageNumber: 1 })
+    } else if (event.target.value < 0) {
+      this.setState({ inputPageNumber: 1 })
+    }
+  }
+  
   render() {
     const columns = [
       {
@@ -362,6 +385,47 @@ class SuggestedGlossaryList extends React.Component {
       },
       onRowsDelete: () => {
         this.deleteMultipleRows()
+      },
+      page: this.state.currentPageIndex,
+      customFooter: (
+        count,
+        page,
+        rowsPerPage,
+        changeRowsPerPage,
+        changePage
+      ) => {
+        const startIndex = page * rowsPerPage;
+        const endIndex = (page + 1) * rowsPerPage;
+        const totalPageCount = Math.ceil(this.props.suggestedGlossaryData.count / 10);
+        return (
+          <CustomTableFooter
+            renderCondition={totalPageCount > 0}
+            countLabel={"Total Suggestions"}
+            totalCount={this.props.suggestedGlossaryData.count}
+            pageInputRef={this.pageInputRef}
+            inputValue={this.state.inputPageNumber}
+            onInputFocus={()=>this.setState({ isInputActive: true })}
+            onInputBlur={()=>this.setState({ isInputActive: false })}
+            handleInputChange={this.handleInputPageChange}
+            totalPageCount={totalPageCount}
+            onGoToPageClick={this.onChangePageMAnually}
+            onBackArrowClick={() => {
+              this.setState({ currentPageIndex: this.state.currentPageIndex - 1 })
+              this.tableRef.current.changePage(Number(this.state.currentPageIndex - 1))
+            }
+            }
+            onRightArrowClick={() => {
+              this.setState({ currentPageIndex: this.state.currentPageIndex + 1 })
+              this.tableRef.current.changePage(Number(this.state.currentPageIndex + 1))
+            }
+            }
+            backArrowTabIndex={this.state.currentPageIndex - 1}
+            backArrowDisable={this.state.currentPageIndex == 0}
+            rightArrowTabIndex={this.state.currentPageIndex + 1}
+            rightArrowDisable={this.state.currentPageIndex == (totalPageCount-1)}
+            pageTextInfo={`Page ${parseInt(this.state.currentPageIndex + 1)} of ${parseInt(totalPageCount)}`}
+          />
+        );
       }
     };
 
@@ -379,6 +443,7 @@ class SuggestedGlossaryList extends React.Component {
                 columns={columns}
                 options={options}
                 data={this.props.suggestedGlossaryData.result}
+                innerRef={this.tableRef}
               />
               {this.renderSingleGlossaryConfirmBox()}
             </MuiThemeProvider>
