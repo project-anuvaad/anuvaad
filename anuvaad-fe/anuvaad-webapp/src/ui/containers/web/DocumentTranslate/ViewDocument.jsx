@@ -228,6 +228,8 @@ class ViewDocument extends React.Component {
     searchNextPage = false,
     updateExisting = false
   ) {
+    this.setState({ currentPageIndex: 0 })
+    this.tableRef.current.changePage(Number(this.state.currentPageIndex - 0))
     const { APITransport } = this.props;
     const apiObj = new FetchDocument(
       0,
