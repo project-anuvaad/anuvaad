@@ -647,10 +647,10 @@ class WFMService:
         try:
             if "record_id" not in data.keys():
                 return {"status" : "Error", "reason":"record_id missing"}
-            if data["file_type"] in ["jpg","bmp","png","svg","jpeg"]:
-                data["record_id"] = data["record_id"].replace("%7C","|")
-                data["file_type"] = "pdf"
-                data["file_name"] = data["file_name"].replace(data["file_name"].split(".")[-1],"pdf")
+            
+            data["record_id"] = data["record_id"].replace("%7C","|")
+            data["file_type"] = "pdf"
+            data["file_name"] = data["file_name"].replace(data["file_name"].split(".")[-1],"pdf")
 
             document = pipelineCalls.document_export(data["user_id"],data["record_id"],data["file_type"],data["metadata"])
             if document is None:
@@ -665,7 +665,9 @@ class WFMService:
 
             with open("./upload_files/"+data["file_name"], "wb") as file:
                 file.write(file_content)
-            
+
+            log_info(f"Input {data}",app_context)
+
             file_id = pipelineCalls.upload_files("./upload_files/"+data["file_name"],data["metadata"])
             if file_id is None:
                 return {"status":"Error","reason":"File Upload Failed"}
