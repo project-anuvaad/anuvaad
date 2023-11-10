@@ -211,7 +211,7 @@ export default function UploadProcessModal(props) {
     const [activeStep, setActiveStep] = React.useState(1);
     const [steps, setSteps] = useState([]);
 
-    const { progressData, fileName, onCopyClick, onUploadOtherDoc, goToDashboardLink, uploadOtherDocLink } = props;
+    const { progressData, fileName, onCopyClick, onUploadOtherDoc, goToDashboardLink, uploadOtherDocLink, digitizeDocScreen } = props;
 
     const handleNext = () => {
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -318,17 +318,17 @@ export default function UploadProcessModal(props) {
                             color='primary'
                             variant='contained'
                             onClick={() => window.open(goToDashboardLink)}
-                        >Go to dashboard</Button>
+                        >Go to {digitizeDocScreen ? "translation" : ""} dashboard</Button>
                         <Button
                             color='primary'
                             variant='contained'
                             style={{ marginLeft: 5 }}
                             onClick={() => {
-                                progressData.status === "INPROGRESS" ?
+                                progressData.status === "INPROGRESS" && !digitizeDocScreen ?
                                     window.open(uploadOtherDocLink) :
                                     onUploadOtherDoc()
                             }}
-                        >Upload another document</Button>
+                        >{digitizeDocScreen ? "Close" : "Upload another document"}</Button>
                     </div>
                 </Stepper>
 

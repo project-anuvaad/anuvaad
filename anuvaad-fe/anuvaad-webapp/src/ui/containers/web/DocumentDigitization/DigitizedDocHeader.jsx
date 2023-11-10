@@ -34,6 +34,7 @@ import reset_updated_word from '../../../../flux/actions/apis/view_digitized_doc
 
 import DownloadDOCX from "../../../../flux/actions/apis/document_translate/download_docx";
 import { translate } from "../../../../../src/assets/localisation";
+import { Divider, Grid, Radio } from "@material-ui/core";
 
 const StyledMenu = withStyles({
     paper: {
@@ -51,6 +52,9 @@ const StyledMenu = withStyles({
             vertical: 'top',
             horizontal: 'center',
         }}
+        MenuListProps={{
+            style:{paddingTop:0, paddingBottom:0}
+        }}
         {...props}
     />
 ));
@@ -60,12 +64,14 @@ class DigitizedDocHeader extends React.Component {
         super(props);
         this.state = {
             anchorEl: null,
+            translateAnchorEl: null,
             showStatus: false,
             message: null,
             timeOut: 3000,
             variant: "info",
             dialogMessage: null,
             showImage: false,
+            selectedTgtLanguage: ""
         };
     }
 
@@ -84,6 +90,26 @@ class DigitizedDocHeader extends React.Component {
     handleClose = () => {
         this.setState({ anchorEl: null });
     };
+
+    handleTranslateMenu = event => {
+        this.setState({ translateAnchorEl: event.currentTarget });
+    };
+
+    handleCloseTranslateMenu = () => {
+        this.setState({ translateAnchorEl: null });
+    };
+
+    onSelectTargetLang = (val) => {
+        this.setState({selectedTgtLanguage: val})
+    }
+
+    onTranslateDocumentClick = () => {
+        if(this.state.selectedTgtLanguage){
+            this.handleCloseTranslateMenu();
+            this.props.onTranslateDocumentClick(this.state.selectedTgtLanguage);
+        }
+    }
+
 
     renderProgressInformation = () => {
         return (
@@ -176,8 +202,9 @@ class DigitizedDocHeader extends React.Component {
     };
 
     renderOptions() {
-        const { anchorEl } = this.state;
+        const { anchorEl, translateAnchorEl } = this.state;
         const openEl = Boolean(anchorEl);
+        const openTranslateEl = Boolean(translateAnchorEl);
         let { jobId, filename } = this.props.match.params
         let recordId = `${jobId}|${filename}`
         let userID = JSON.parse(localStorage.getItem("userProfile")).userID
@@ -197,6 +224,54 @@ class DigitizedDocHeader extends React.Component {
                 }}>
                     {this.props.edit_status ? "End Editing" : "Start Editing"}
                 </Button> */}
+
+                <Button variant="outlined" color="primary" style={{ marginLeft: "10px" }} onClick={this.handleTranslateMenu.bind(this)}>
+                    Translate Document
+                    <DownIcon />
+                </Button>
+
+                <StyledMenu
+                    id="menu-appbar"
+                    anchorEl={translateAnchorEl}
+                    open={openTranslateEl}
+                    onClose={this.handleCloseTranslateMenu.bind(this)}
+                >
+                    <div>
+                        <div
+                            style={{ position: 'sticky', top: '0px', width: "100%", backgroundColor: "#f2f2f2", zIndex: "999",}}
+                        >
+                            <Typography variant="subtitle2" style={{padding: 5}} >Select Target Language</Typography> 
+                        </div>
+                        {this.props.allTargetLanguages?.length > 0 && this.props.allTargetLanguages?.map((el, i) => {
+                            return <MenuItem
+                                key={i}
+                                style={{ 
+                                    borderTop: "1px solid #D6D6D6", fontFamily: "Roboto", fontSize: "0.875rem", fontWeight: "400",
+                                }}
+                                onClick={() => {
+                                    this.onSelectTargetLang(el);
+                                }}> <Radio color="primary" checked={this.state.selectedTgtLanguage.language_name === el.language_name} /> {el.language_name}</MenuItem>
+                        })}
+                        <Divider />
+                        <div style={{ position: 'sticky', bottom: '0px', width: "100%", display: "flex", justifyContent: "space-around", backgroundColor: "#f2f2f2", padding: 5 }}>
+                            <Button variant="contained"
+                                color="primary"
+                            onClick={this.handleCloseTranslateMenu.bind(this)}
+                            >
+                                Cancel
+                            </Button>
+                            <Button variant="contained"
+                                color="primary"
+                                disabled={!this.state.selectedTgtLanguage}
+                                onClick={() => this.onTranslateDocumentClick()}
+                            >
+                                Translate
+                            </Button>
+                            {/* Add more buttons as needed */}
+                        </div>
+                    </div>
+
+                </StyledMenu>
 
                 <Button variant="outlined" color="primary" style={{ marginLeft: "10px" }} onClick={this.handleMenu.bind(this)}>
                     Download
@@ -257,17 +332,17 @@ class DigitizedDocHeader extends React.Component {
                     backgroundColor: "#f0f0f0"
                 }}
             >
-                <Typography 
-                    color="inherit" 
+                <Typography
+                    color="inherit"
                     // className={classes.flex} 
-                    style={{ 
-                            overflow: "hidden",
-                            maxWidth: "30%", 
-                            textOverflow: "ellipsis",
-                            fontSize: "1rem",
-                            fontFamily: "Roboto",
-                            fontWeight: "700",
-                        }}
+                    style={{
+                        overflow: "hidden",
+                        maxWidth: "30%",
+                        textOverflow: "ellipsis",
+                        fontSize: "1rem",
+                        fontFamily: "Roboto",
+                        fontWeight: "700",
+                    }}
                 >
                     <IconButton
                         onClick={() => {
