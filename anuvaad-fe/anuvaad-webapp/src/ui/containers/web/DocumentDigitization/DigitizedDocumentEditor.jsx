@@ -29,18 +29,25 @@ import { contentUpdateStarted, clearFetchContent } from '../../../../flux/action
 import { update_sentences, update_blocks } from '../../../../flux/actions/apis/document_translate/update_page_content';
 import { editorModeClear, editorModeNormal, editorModeMerge } from '../../../../flux/actions/editor/document_editor_mode';
 import { clearHighlighBlock } from '../../../../flux/actions/users/translator_actions';
-import { Button } from "@material-ui/core";
+import { Button, Dialog, Divider, IconButton, MenuItem, Select, Typography } from "@material-ui/core";
 import ReactToPrint from 'react-to-print';
 import DownloadJSON from '../../../../flux/actions/apis/download/download_json';
 import Loader from "../../../components/web/common/CircularLoader";
 import DownloadDigitizedDoc from "./DownloadDigitizedDoc";
 import DownloadFile from '../../../../flux/actions/apis/view_digitized_document/download_digitized_doc';
 import Download from "../../../../flux/actions/apis/download/download_zip_file";
+import FetchModel from "../../../../flux/actions/apis/common/fetchmodel";
+import FetchDocument from "../../../../flux/actions/apis/view_document/fetch_document";
+import TranslateDigitizedDocument from "../../../../flux/actions/apis/view_digitized_document/translate_digitized_document";
+import Axios from "axios";
+import UploadProcessModal from "../DocumentUpload/UploadProcessModal";
 
 const PAGE_OPS = require("../../../../utils/page.operations");
 const BLOCK_OPS = require("../../../../utils/block.operations");
 const TELEMETRY = require('../../../../utils/TelemetryManager');
 const OCR_PAGES = require('../../../../utils/OcrPages.operations');
+const LANG_MODEL = require("../../../../utils/language.model");
+
 var jp = require('jsonpath')
 
 class DocumentEditor extends React.Component {
@@ -69,6 +76,14 @@ class DocumentEditor extends React.Component {
 
             fetchNext: true.valueOf,
             OCRdata: [],
+
+            showTranslationModal: false,
+            allLanguageModels: [],
+            allTargetLanguages: [],
+
+            translateDocumentData: null,
+            documentState: "",
+            showProcessModal: false
         }
         this.forMergeSentences = []
     }
@@ -83,13 +98,14 @@ class DocumentEditor extends React.Component {
      */
     componentDidMount() {
         TELEMETRY.pageLoadCompleted('digitized-document-editor')
-        this.makeAPICallDownloadJSON()
+        this.makeAPICallDownloadJSON();
     }
 
     componentDidUpdate(prevProps, prevState) {
         if ((prevProps.download_json.pages === undefined || prevProps.download_json.pages !== undefined) &&
             prevProps.download_json.pages !== this.props.download_json.pages) {
             this.setState({ apiFetchStatus: false })
+            this.fetchModelsAPICall();
         }
         if (prevProps.sentence_highlight !== this.props.sentence_highlight) {
             this.handleSourceScroll(this.props.sentence_highlight.sentence_id)
@@ -143,6 +159,60 @@ class DocumentEditor extends React.Component {
             }
         }
 
+        if (prevState.translateDocumentData !== this.state.translateDocumentData) {
+            // call bulk with setinterval and clear interval on doucment translation complete
+            this.setState({ showProcessModal: true });
+            this.fetchDocumentTranslationProcess([this.state.translateDocumentData?.jobID])
+
+            setInterval(() => {
+                if (this.state.documentState.status === "INPROGRESS" || this.state.documentState.status === "STARTED") {
+                    this.fetchDocumentTranslationProcess([this.state.translateDocumentData?.jobID]);
+                } else {
+                    return
+                }
+            }, 15000);
+        }
+    }
+
+    fetchDocumentTranslationProcess(jobIds) {
+        let apiObj = new FetchDocument(
+            0,
+            0,
+            jobIds,
+            false,
+            false,
+            false
+        );
+
+        Axios.post(apiObj?.endpoint, apiObj?.getBody(), { headers: apiObj?.getHeaders().headers })
+            .then(res => {
+                // console.log("res -------- ", res);
+                this.setState({ documentState: res?.data?.jobs[0] })
+            }).catch(err => {
+                // console.log("err -------- ", err);
+            })
+    }
+
+    // fetch Models API Call
+    fetchModelsAPICall = () => {
+        const apiModel = new FetchModel();
+
+        fetch(apiModel.apiEndPoint(), {
+            method: "POST",
+            body: JSON.stringify(apiModel.getBody()),
+            headers: apiModel.getHeaders().headers,
+        }).then(async res => {
+            let response = await res.json();
+            // console.log("response ---", response);
+            if (response?.status?.ok) {
+                this.setState({ allLanguageModels: response.data })
+
+                const languages = LANG_MODEL.get_counterpart_languages(response.data, this.props.download_json.srcLanguage, true);
+                this.setState({ allTargetLanguages: languages });
+            }
+        }).catch(err => {
+            console.log(err)
+        })
     }
 
     fetchPages(page_no, index) {
@@ -747,7 +817,7 @@ class DocumentEditor extends React.Component {
                     onClick={this.processZoomIn}
                     disabled={this.state.zoomInDisabled} >
                     +
-          </Button>
+                </Button>
                 <input
                     style={{
                         backgroundColor: 'white',
@@ -767,7 +837,7 @@ class DocumentEditor extends React.Component {
                     disabled={this.state.zoomOutDisabled}
                 >
                     -
-          </Button>
+                </Button>
             </div >);
     }
     handleBgImage = () => {
@@ -775,47 +845,47 @@ class DocumentEditor extends React.Component {
 
     downloadFile = (recordId, userId, type) => {
         let apiObj = new DownloadFile(recordId, userId, type);
-        fetch(apiObj.apiEndPoint(),{
-            method:'post',
-            headers:apiObj.getHeaders().headers,
-            body:JSON.stringify(apiObj.getBody())
+        fetch(apiObj.apiEndPoint(), {
+            method: 'post',
+            headers: apiObj.getHeaders().headers,
+            body: JSON.stringify(apiObj.getBody())
         })
-        .then(async response => {
-            const rsp_data = await response.json();
-            if (!response.ok) {
-                this.setState({ showStatus: false, message: null, dialogMessage: "Unable to download file" })
-                return Promise.reject('');
-            } else {
-                let fileName = encodeURI(rsp_data && rsp_data.translated_document ? rsp_data.translated_document : "")
-                if (fileName) {
-                    let obj = new Download(fileName)
-                    const apiReq1 = fetch(obj.apiEndPoint(), {
-                        method: 'get', dialogMessage: "Unable to download file", headers: obj.getHeaders().headers
-                    }).then(async response => {
-                        if (!response.ok) {
-                            this.setState({ dialogMessage: "Unable to download file", showStatus: false, message: null })
-                            // console.log('api failed')
-                        } else {
-                            const buffer = new Uint8Array(await response.arrayBuffer());
-                            let res = Buffer.from(buffer).toString('base64');
-                            let downloadFileName = this.props.match.params.og_fname;
-                            downloadFileName = downloadFileName.slice(0, downloadFileName.lastIndexOf("."))+"_digitized"+fileName.slice(fileName.lastIndexOf("."), fileName.length);
-                            this.downloadBlob(res, downloadFileName);
-                        }
-
-                    }).catch((error) => {
-                        this.setState({ dialogMessage: "Unable to download file" })
-                        // console.log('api failed because of server or network', error)
-                    });
-
+            .then(async response => {
+                const rsp_data = await response.json();
+                if (!response.ok) {
+                    this.setState({ showStatus: false, message: null, dialogMessage: "Unable to download file" })
+                    return Promise.reject('');
                 } else {
-                    this.setState({ dialogMessage: "Unable to download file", showStatus: false, message: null })
+                    let fileName = encodeURI(rsp_data && rsp_data.translated_document ? rsp_data.translated_document : "")
+                    if (fileName) {
+                        let obj = new Download(fileName)
+                        const apiReq1 = fetch(obj.apiEndPoint(), {
+                            method: 'get', dialogMessage: "Unable to download file", headers: obj.getHeaders().headers
+                        }).then(async response => {
+                            if (!response.ok) {
+                                this.setState({ dialogMessage: "Unable to download file", showStatus: false, message: null })
+                                // console.log('api failed')
+                            } else {
+                                const buffer = new Uint8Array(await response.arrayBuffer());
+                                let res = Buffer.from(buffer).toString('base64');
+                                let downloadFileName = this.props.match.params.og_fname;
+                                downloadFileName = downloadFileName.slice(0, downloadFileName.lastIndexOf(".")) + "_digitized" + fileName.slice(fileName.lastIndexOf("."), fileName.length);
+                                this.downloadBlob(res, downloadFileName);
+                            }
+
+                        }).catch((error) => {
+                            this.setState({ dialogMessage: "Unable to download file" })
+                            // console.log('api failed because of server or network', error)
+                        });
+
+                    } else {
+                        this.setState({ dialogMessage: "Unable to download file", showStatus: false, message: null })
+                    }
                 }
-            }
-        }).catch((error) => {
-            this.setState({ showStatus: false, message: null, dialogMessage: "Unable to download file" })
-            // console.log('api failed because of server or network', error)
-        });
+            }).catch((error) => {
+                this.setState({ showStatus: false, message: null, dialogMessage: "Unable to download file" })
+                // console.log('api failed because of server or network', error)
+            });
     }
 
     downloadBlob = (res, fileName) => {
@@ -834,9 +904,60 @@ class DocumentEditor extends React.Component {
                 // console.log("Unable to download file")
             });
     }
+
+    // Digitize to Translate Document
+    onTranslateDocumentClick = (selectedTgtLanguage) => {
+        if (selectedTgtLanguage) {
+            this.setState({apiFetchStatus: true});
+            const userModel = JSON.parse(localStorage.getItem("userProfile"));
+            const selectedModel = LANG_MODEL.get_model_details(
+                this.state.allLanguageModels,
+                this.props.download_json.srcLanguage,
+                selectedTgtLanguage.language_code,
+                userModel.models
+            );
+
+            const { jobId, filename, inputfileid } = this.props.match.params
+            const recordId = `${jobId}|${filename}`
+            const userData = JSON.parse(localStorage.getItem("userProfile"))
+            const path = this.props.match.params.og_fname.split(".");
+            const fileType = path[path.length - 1];
+            const digitalDoc = fileType === "docx" || fileType === "pptx" ? true : false;
+
+            const wf_code = !digitalDoc ? "WF_A_FCBMTKTR" : "WF_A_FTTKTR";
+
+            const apiObj = new TranslateDigitizedDocument(recordId, userData?.userID, fileType, this.props.match.params.og_fname, wf_code, inputfileid, filename, selectedModel, this.props.download_json.srcLanguage);
+
+            fetch(apiObj.apiEndPoint(), {
+                method: "POST",
+                body: JSON.stringify(apiObj.getBody()),
+                headers: apiObj.getHeaders().headers
+            })
+                .then(async res => {
+                    let response = await res.json();
+                    if (response?.response?.state === "INITIATED") {
+                        // show process modal and call bulk
+                        this.setState({ translateDocumentData: response?.response, apiFetchStatus: false })
+                    } else {
+                        // throw error message
+                        this.setState({apiFetchStatus: false, showStatus: true, snackBarVariant: "error", snackBarMessage: response.response.reason});
+                    }
+                }).catch(err => {
+                    // console.log("err --- ", err);
+                    // throw error message
+                    this.setState({apiFetchStatus: false, showStatus: true, snackBarVariant: "error", snackBarMessage: "Something went wrong..."})
+                })
+
+        }
+    }
+
+    onUploadOtherDoc(){
+        this.setState({showProcessModal: false, documentState: ""});
+      }
+
     render() {
         return (
-            <div style={{ marginTop : 5 }}>
+            <div style={{ marginTop: 5 }}>
                 {/* <h1>hello</h1> */}
                 <div style={{ height: "50px", marginBottom: "13px" }}>
                     <InteractiveDocToolBar
@@ -844,10 +965,13 @@ class DocumentEditor extends React.Component {
                         onAction={this.handleDocumentView}
                         onShowPreview={this.showPreview}
                         handleBgImage={this.handleBgImage}
-                        downloadFile={this.downloadFile} />
+                        downloadFile={this.downloadFile}
+                        allTargetLanguages={this.state.allTargetLanguages}
+                        onTranslateDocumentClick={this.onTranslateDocumentClick}
+                    />
                 </div>
 
-                { !this.state.preview ?
+                {!this.state.preview ?
                     <>
                         <div style={{ height: window.innerHeight - 141, maxHeight: window.innerHeight - 141, overflow: "hidden", padding: "0px 24px 0px 24px", display: "flex", flexDirection: "row" }}>
                             {this.renderDocumentPages()}
@@ -877,7 +1001,19 @@ class DocumentEditor extends React.Component {
                 {this.state.apiInProgress ? this.renderProgressInformation() : <div />}
                 {this.state.showStatus ? this.renderStatusInformation() : <div />}
                 {this.state.apiFetchStatus && <Spinner />}
-                { !this.state.download && this.state.preview && <Loader value={this.state.loaderValue}></Loader>}
+                {!this.state.download && this.state.preview && <Loader value={this.state.loaderValue}></Loader>}
+
+                {this.state.documentState && this.state.showProcessModal &&
+                    <UploadProcessModal
+                        progressData={this.state.documentState}
+                        onCopyClick={() => null}
+                        onUploadOtherDoc={() => this.onUploadOtherDoc()}
+                        goToDashboardLink={`${process.env.PUBLIC_URL}/view-document`}
+                        uploadOtherDocLink={`${process.env.PUBLIC_URL}/document-upload`}
+                        fileName={this.props.match.params.og_fname}
+                        digitizeDocScreen={true}
+                    />
+                }
             </div>
         )
     }
