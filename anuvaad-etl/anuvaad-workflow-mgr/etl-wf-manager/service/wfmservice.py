@@ -671,10 +671,10 @@ class WFMService:
                 return {"status":"Error","reason":"File Upload Failed"}
 
             # Delete uploaded file
-            # try:
-            #     os.remove("./upload_files/"+data["file_name"])
-            # except Exception as e:
-            #     log_error(f"Exception during file deletion",app_context,e)        
+            try:
+                os.remove("./upload_files/"+data["file_name"])
+            except Exception as e:
+                log_error(f"Exception during file deletion",app_context,e)        
 
             response = pipelineCalls.translate(data["file_name"],file_id,data["translation_async_flow"],data["metadata"])
             return response
