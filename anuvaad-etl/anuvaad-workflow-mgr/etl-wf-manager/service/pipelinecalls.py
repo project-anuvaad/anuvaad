@@ -76,7 +76,7 @@ class PipelineCalls:
         payload["files"][0]["type"] = file_id.split(".")[-1]
 
         payload["workflowCode"] = "WF_A_FCBMTKTR"
-        payload["fles"][0]["interactive_translation"] = True
+        payload["files"][0]["interactive_translation"] = True
         # Perform translation
         log_info(f"Performing Translation {file_id}",app_context)
         log_info(f"Translation Payload {payload}",app_context)
