@@ -203,6 +203,19 @@ def active_docs():
         log_exception("Something went wrong: " + str(e), None, e)
         return {"status": "FAILED", "message": "Something went wrong"}, 400
 
+@wfmapp.route(context_path + '/v1/translate_pipeline', methods=["POST"])
+def translate_pipeline():
+    try:
+        service = WFMService()
+        data = add_headers(request.get_json(), request)
+        response = service.digitization_translation_pipeline(data)
+        if not response:
+            return {"response": response}, 400
+        return {"response": response}, 200
+    except Exception as e:
+        log_exception("Something went wrong: " + str(e), None, e)
+        return {"status": "FAILED", "message": "Something went wrong"}, 400
+
 # Fetches required headers from the request and adds it to the body.
 def add_headers(data, api_request):
     headers = {
