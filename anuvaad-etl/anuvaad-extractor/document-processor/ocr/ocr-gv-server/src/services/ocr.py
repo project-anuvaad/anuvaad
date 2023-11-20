@@ -2,6 +2,7 @@ import hashlib
 import uuid, os, io
 import config
 import sys
+import concurrent.futures
 import numpy as np
 from google.cloud import vision
 from src.services.segment import horzontal_merging, break_block
@@ -309,16 +310,12 @@ def segment_regions(file,words, lines,regions,page_c_words,path,file_properties,
     if "mask_image" in file['config']["OCR"].keys() and file['config']["OCR"]["mask_image"]=="False":
         save_path = "None"
     else:
-        start_time = time.time()
         image   = cv2.imread(path)
         image = mask_image_craft(image, v_list, idx, file_properties, width, height)
         extension = path.split('.')[-1]
         save_path = path.split('.')[0]+"_bgimages."+extension
         # image[:] = 255
         cv2.imwrite(save_path,image)
-        end_time = time.time()
-        execution_time = end_time - start_time
-        print(f"Mask Image Logic Execution Time: {execution_time:.2f} seconds")
     if "top_correction" in file['config']["OCR"].keys() and file['config']["OCR"]["top_correction"]=="True":
         v_list = coord_alignment(v_list,False)
         v_list = verify__table_structure(v_list)
@@ -413,45 +410,25 @@ def identify_background_color(region, method='average'):
 
     return background_color
 
-def mask_image_craft(image, page_regions,page_index,file_properties,image_width,image_height,margin= 0, fill=255 ):
+def mask_image_craft(image, page_regions, page_index, file_properties, image_width, image_height, margin=0, fill=255):
     try:
-        #path = config.BASE_DIR+path
-        for region_idx, page_region in enumerate(page_regions):
+        def process_region(region):
+            # Process each region in a separate function
+            y_margin, x_margin = 0, 0  # Set your margins here
+            flag, row_top, row_bottom, row_left, row_right = end_point_correction(region, y_margin, x_margin, image_height, image_width)
             
-            if page_region is not None and 'class' in page_region.keys():
-                region_class = page_region['class']
+            if flag:
+                region_image = image[row_top:row_bottom, row_left:row_right]
+                fill = identify_background_color(region_image, method='kmeans')
+                region_image[:] = fill
                 
-                if region_class not in ["IMAGE","OTHER","SEPARATOR"]:
-                    if region_class =='TABLE':
-                        y_margin=0; x_margin=0
-                    else:
-                        y_margin=0; x_margin=0
-                    region_lines = file_properties.get_region_lines(page_index,region_idx,page_region)
-                    
-                    if region_lines!=None:
-                        
-                        for line_index, line in enumerate(region_lines):
-                            if line is not None:
-                                region_words = file_properties.get_region_words(page_index,region_idx,line_index,line)
-                                if region_words!=None:
-                                    if config.IS_DYNAMIC and region_class!="TABLE":
-                                        region_words = coord_adjustment(image, region_words)
-                                    for word_index,region in enumerate(region_words):
-                                        if region!=None:
-                                            if region_class =='TABLE':
-                                                image = mask_table_region(image,region,image_height,image_width,y_margin,x_margin)
-                                            else:
-                                                flag,row_top, row_bottom,row_left,row_right = end_point_correction(region, y_margin,x_margin,image_height,image_width)
-                                                if flag:
-                                                    if len(image.shape) == 2 :
-                                                        fill = identify_background_color(image[row_top  : row_bottom  , row_left : row_right ], method='kmeans')
-                                                        image[row_top  : row_bottom  , row_left : row_right ] = fill
-                                                    if len(image.shape) == 3 :
-                                                        fill = identify_background_color(image[row_top  : row_bottom  , row_left : row_right ], method='kmeans')
-                                                        image[row_top : row_bottom , row_left : row_right ,:] = fill
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            # Process regions in parallel
+            executor.map(process_region, page_regions)
+        
         image = remove_noise(image)
         return image
-    except Exception as e :
+    except Exception as e:
         print('Service Tesseract Error in masking out image {}'.format(e))
         return image
 
