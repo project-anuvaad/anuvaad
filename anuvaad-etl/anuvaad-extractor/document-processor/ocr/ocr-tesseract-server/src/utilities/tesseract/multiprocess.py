@@ -3,6 +3,8 @@ import copy
 import time
 import multiprocessing
 import cv2
+import uuid
+import os
 import copy
 from multiprocessing import Queue
 from src.utilities.tesseract.helper import tess_eval,add_lines_to_tess_queue
@@ -13,6 +15,9 @@ from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
 from src.utilities.region_operations import collate_regions
 import src.utilities.app_context as app_context
+from transformers import TrOCRProcessor, VisionEncoderDecoderModel
+import requests
+
 
 tessract_queue = Queue()
 file_writer_queue = Queue()
@@ -97,7 +102,14 @@ def table_ocr(page_regions, region, lang, img, mode_height, rgn_idx, lang_detect
                     adjusted_box,c_x,c_y = adjust_crop_coord(tmp_line[0],"CELL",int(left),int(tmp_line[0]['boundingBox']['vertices'][1]['x']))
                     image_crop = crop_region(adjusted_box,img)
                     if image_crop is not None and image_crop.shape[1] >3 and image_crop.shape[0] > 3:
-                        words  = get_tess_text(image_crop,lang,mode_height,left,top,"LINE",c_x,c_y,lang_detected)
+                        if config.HANDWRITTEN_OCR:
+                            processor = TrOCRProcessor.from_pretrained("microsoft/trocr-base-handwritten")
+                            model = VisionEncoderDecoderModel.from_pretrained("microsoft/trocr-base-handwritten")
+                            pixel_values = processor(image_crop, return_tensors="pt").pixel_values
+                            generated_ids = model.generate(pixel_values)
+                            words = processor.batch_decode(generated_ids, skip_special_tokens=True)[0]       
+                        else:
+                            words  = get_tess_text(image_crop,lang,mode_height,left,top,"LINE",c_x,c_y,lang_detected)
                         cell_words.extend(words)
             page_regions[rgn_idx]['regions'][cell_idx]['regions'] = cell_words
         else:
@@ -131,7 +143,10 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
     try:
         img = cv2.imread(image_path)
         mode_height = get_mode_height(page_regions)
-        lang_detected = page_lang_detection(image_path,lang)
+        if not config.HANDWRITTEN_OCR:
+            lang_detected = page_lang_detection(image_path,lang)
+        else:
+            lang_detected = config.LANG_MAPPING['en'][0]
         #lang_detected = config.LANG_MAPPING[lang][0]
 
         if len(page_regions) > 0:
@@ -159,10 +174,36 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
                                 left = vertices[0]['x'];  top = vertices[0]['y']
                                 adjusted_box,c_x,c_y = adjust_crop_coord(tmp_line[0],line['class'],int(region['boundingBox']['vertices'][0]['x']),int(region['boundingBox']['vertices'][1]['x']))
                                 image_crop = crop_region(adjusted_box,img)
+                                # # Create a new folder
+                                # new_folder_path = 'crops'
+                                # os.makedirs(new_folder_path, exist_ok=True)
+                                # # Save the image in the new folder
+                                # unique_id = str(uuid.uuid4())[:8] 
+                                # image_path = os.path.join(new_folder_path, f'{unique_id}.jpg')
+                                # cv2.imwrite(image_path, image_crop)
                                 if image_crop is not None and image_crop.shape[1] >3 and image_crop.shape[0] > 3:
+                                    if config.HANDWRITTEN_OCR:
+                                        processor = TrOCRProcessor.from_pretrained("microsoft/trocr-base-handwritten")
+                                        model = VisionEncoderDecoderModel.from_pretrained("microsoft/trocr-base-handwritten")
+                                        pixel_values = processor(image_crop, return_tensors="pt").pixel_values
+                                        generated_ids = model.generate(pixel_values)
+                                        trocr_text = processor.batch_decode(generated_ids, skip_special_tokens=True)[0]       
+
                                     words  = get_tess_text(image_crop,lang,mode_height,left,top,line['class'],c_x,c_y,lang_detected)
                                     h_lines = check_horizontal_merging(words,line['class'],mode_height,vertices,line)
                                     updated_lines.extend(h_lines)
+
+                                    # Split the text variable by space
+                                    split_text = trocr_text.split()
+
+                                    # Replace the values of ['text'] in the JSON data sequentially
+                                    index = 0
+                                    for entry in updated_lines:
+                                        for region in entry['regions']:
+                                            # Use the words sequentially, and loop back to the beginning if needed
+                                            region['text'] = split_text[index % len(split_text)]
+                                            index += 1
+
                         page_regions[rgn_idx]['regions'] = copy.deepcopy(updated_lines)
                                 #page_regions[rgn_idx]['regions'][line_idx]['regions'] = words
 
