@@ -839,14 +839,6 @@
             "active":true,
             "whiteList":false,
             "description":"API to initiate SYNC workflows"
-        },
-        {
-            "id":"ca162a54-0f53-429c-88e8-bb67a22adda9",
-            "uri":"/aai4b-nmt-inference/v3/fetch-digitization-models",
-            "module":"AIB-NMT",
-            "active":true,
-            "whiteList":true,
-            "description":"API for AIB NMT fetch models POST"
         }
     ]
 }
