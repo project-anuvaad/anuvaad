@@ -17,6 +17,7 @@ from src.utilities.region_operations import collate_regions
 import src.utilities.app_context as app_context
 from transformers import TrOCRProcessor, VisionEncoderDecoderModel
 import requests
+import concurrent.futures
 
 
 tessract_queue = Queue()
@@ -158,8 +159,8 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
                             page_regions, region, lang, img, mode_height, rgn_idx, lang_detected)
                         
                     else:
-                        updated_lines = []
-                        for line_idx, line in enumerate(region['regions']):
+                        def process_line(line, lang, img, mode_height, rgn_idx, line_idx, lang_detected):
+                            updated_lines = []
                             tmp_line = [line]
                             if config.IS_DYNAMIC and 'class' in line.keys():
                                 tmp_line = coord_adjustment(
@@ -188,7 +189,6 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
                                         pixel_values = processor(image_crop, return_tensors="pt").pixel_values
                                         generated_ids = model.generate(pixel_values)
                                         trocr_text = processor.batch_decode(generated_ids, skip_special_tokens=True)[0]       
-
                                     words  = get_tess_text(image_crop,lang,mode_height,left,top,line['class'],c_x,c_y,lang_detected)
                                     h_lines = check_horizontal_merging(words,line['class'],mode_height,vertices,line)
                                     updated_lines.extend(h_lines)
@@ -204,7 +204,17 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
                                             region['text'] = split_text[index % len(split_text)]
                                             index += 1
 
-                        page_regions[rgn_idx]['regions'] = copy.deepcopy(updated_lines)
+                            # Use ProcessPoolExecutor for parallel execution
+                            with concurrent.futures.ProcessPoolExecutor() as executor:
+                                futures = []
+
+                                for line_idx, line in enumerate(region['regions']):
+                                    futures.append(executor.submit(process_line, line, lang, img, mode_height, rgn_idx, line_idx, lang_detected))
+
+                                # Wait for all futures to complete
+                                concurrent.futures.wait(futures)
+                            
+                            page_regions[rgn_idx]['regions'] = copy.deepcopy(updated_lines)
                                 #page_regions[rgn_idx]['regions'][line_idx]['regions'] = words
 
             if config.MULTIPROCESS:
