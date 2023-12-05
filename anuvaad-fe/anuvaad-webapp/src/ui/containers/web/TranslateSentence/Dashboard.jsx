@@ -20,8 +20,9 @@ import { translate } from "../../../../assets/localisation";
 import DashboardStyles from "../../../styles/web/DashboardStyles";
 import InstantTranslateAPI from "../../../../flux/actions/apis/translate_sentence/instant_translate";
 
-import { IndicTransliterate } from "@ai4bharat/indic-transliterate";
-import "@ai4bharat/indic-transliterate/dist/index.css";
+import { IndicTransliterate } from 'react-transliterate';
+import configs from "../../../../configs/configs";
+import endpoints from "../../../../configs/apiendpoints";
 
 const { v4 } = require('uuid');
 const LANG_MODEL = require('../../../../utils/language.model')
@@ -311,16 +312,16 @@ class Dashboard extends React.Component {
             {this.renderTargetLanguagesItems()}
 
             <Grid item xs={12} sm={12} lg={12} xl={12} className={classes.grid} style={{ paddingTop: "20px" }}>
-              {this.state.source_language_code && this.state.source_language_code !== "en" ? <IndicTransliterate
-                renderComponent={(props) => this.renderCustomTextArea(classes.transliterateTextArea, props)
-                }
+              {this.state.source_language_code && this.state.source_language_code !== "en" ? 
+              <IndicTransliterate 
+                renderComponent={(props) => this.renderCustomTextArea(classes.transliterateTextArea, props)}
+                customApiURL={`${configs.BASE_URL_AUTO + endpoints.transliteration}`}
                 value={this.state.text}
                 onChangeText={(text) => {
                   this.setState({ text: text })
                 }}
                 lang={this.state.source_language_code}
               /> : this.renderCustomTextArea(classes.transliterateTextArea)}
-
             </Grid>
 
             <Grid item xs={12} sm={12} lg={12} xl={12} className={classes.grid} style={{ display: "flex", flexDirection: "row" }}>

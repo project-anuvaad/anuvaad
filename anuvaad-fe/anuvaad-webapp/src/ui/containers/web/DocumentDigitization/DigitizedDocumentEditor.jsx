@@ -36,6 +36,11 @@ import Loader from "../../../components/web/common/CircularLoader";
 import DownloadDigitizedDoc from "./DownloadDigitizedDoc";
 import DownloadFile from '../../../../flux/actions/apis/view_digitized_document/download_digitized_doc';
 import Download from "../../../../flux/actions/apis/download/download_zip_file";
+import DownloadDOCX from "../../../../flux/actions/apis/document_translate/download_docx";
+
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+import mammoth from 'mammoth';
 
 const PAGE_OPS = require("../../../../utils/page.operations");
 const BLOCK_OPS = require("../../../../utils/block.operations");
@@ -69,6 +74,9 @@ class DocumentEditor extends React.Component {
 
             fetchNext: true.valueOf,
             OCRdata: [],
+
+            showWordDocumentEditor: true,
+            wordDocumentFileContent: "",
         }
         this.forMergeSentences = []
     }
@@ -83,7 +91,8 @@ class DocumentEditor extends React.Component {
      */
     componentDidMount() {
         TELEMETRY.pageLoadCompleted('digitized-document-editor')
-        this.makeAPICallDownloadJSON()
+        this.makeAPICallDownloadJSON();
+        this.getWordDocumentContentForEditor();
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -143,7 +152,70 @@ class DocumentEditor extends React.Component {
             }
         }
 
+        if(prevState.showWordDocumentEditor !== this.state.showWordDocumentEditor && this.state.showWordDocumentEditor){
+            // call download docx service to get content for showing in editor
+            this.getWordDocumentContentForEditor()
+        }
+
     }
+
+    getWordDocumentContentForEditor(){
+        let fname = this.props.match.params.filename.replace(".json", ".docx");
+        let jobId = encodeURI(this.props.match.params.jobId);
+        let jobName = this.props.match.params.filename;
+        let og_fname = this.props.match.params.og_fname;
+        let downloadedFileName = og_fname.slice(0, og_fname.lastIndexOf("."));
+        // jobName = jobName.substr(0, jobName.lastIndexOf("."));
+        const apiObj = new DownloadDOCX(jobId, fname, jobName, 'ocr');
+        fetch(apiObj.apiEndPoint(), {
+            method: "post",
+            headers: apiObj.getHeaders().headers,
+            body: JSON.stringify(apiObj.getBody()),
+        })
+        .then(response => response.blob())
+        .then( async (blob) => {
+            // this.convertDocxToPlainText(blob);
+            const htmlResult = await mammoth.convertToHtml({ arrayBuffer: await this.convertBlobToArrayBuffer(blob) , transformDocument: mammoth.transforms.paragraph});
+            console.log("await this.convertBlobToArrayBuffer(blob) --- ", await this.convertBlobToArrayBuffer(blob));
+            console.log("htmlResult --- ", htmlResult);
+          this.setState({ wordDocumentFileContent: htmlResult.value });
+        }).catch(error=>{
+            console.error('Error fetching file blob:', error);
+            this.setState({showStatus: true, snackBarVariant: "error", snackBarMessage: "Failed to fetch file content."})
+        });
+    }
+
+    // convertDocxToPlainText = (docxBlob) => {
+    //     const reader = new FileReader();
+    //     reader.onload = async () => {
+    //       const arrayBuffer = reader.result;
+    //     //   const text = await this.readDocxContent(arrayBuffer);
+    //     const htmlResult = await mammoth.extractRawText({ arrayBuffer: await this.convertBlobToArrayBuffer(docxBlob) });
+    //       this.setState({ wordDocumentFileContent: htmlResult.value });
+    //     };
+    //     reader.readAsArrayBuffer(docxBlob);
+    //   };
+
+      convertBlobToArrayBuffer = (blob) => {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = reject;
+          reader.readAsArrayBuffer(blob);
+        });
+      };
+    
+    //   readDocxContent = (arrayBuffer) => {
+    //     return new Promise((resolve, reject) => {
+    //       mammoth.extractRawText({ arrayBuffer: arrayBuffer })
+    //         .then((result) => {
+    //           resolve(result.value);
+    //         })
+    //         .catch((error) => {
+    //           reject(error);
+    //         });
+    //     });
+    //   };
 
     fetchPages(page_no, index) {
         let endIndex = page_no + (this.state.pagesPerCall - 1)
@@ -667,6 +739,33 @@ class DocumentEditor extends React.Component {
             )
         }
     }
+
+    renderSentenceCards = () => {
+        let page = this.getPages();
+        if (!page) {
+            return (
+                <div></div>
+            )
+        } else {
+            console.log("page --- ", page);
+            return <div></div>
+        }
+    }
+
+    renderWordDocumentEditor = () => {
+        return(
+            <Grid item xs={12} sm={6} lg={6} xl={6} style={{ marginRight: "5px" }}>
+                <Paper style={{ height: window.innerHeight - 200, maxHeight: window.innerHeight - 200, overflow: 'auto' }}>
+                    <ReactQuill 
+                        value={this.state.wordDocumentFileContent} 
+                        theme="snow"
+                        // onChange={this.handleChange} 
+                    />
+                </Paper>
+            </Grid>
+        )
+    }
+
     processZoomIn = () => {
         if (this.state.zoomPercent < 140) {
             if (this.state.zoomPercent + 10 === 140) {
@@ -850,7 +949,9 @@ class DocumentEditor extends React.Component {
                 { !this.state.preview ?
                     <>
                         <div style={{ height: window.innerHeight - 141, maxHeight: window.innerHeight - 141, overflow: "hidden", padding: "0px 24px 0px 24px", display: "flex", flexDirection: "row" }}>
-                            {this.renderDocumentPages()}
+                            
+                            {this.state.showWordDocumentEditor ? this.renderSentenceCards() : this.renderDocumentPages()}
+                         
                             {this.renderPDFDocument()}
                         </div>
                         <div style={{ height: "65px", marginTop: "13px", bottom: "0px", position: "absolute", width: "100%" }}>
