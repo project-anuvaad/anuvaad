@@ -73,6 +73,9 @@ const UserManagement = (props) => {
                         Indic languages.
                     </Typography>
                 </Hidden>
+                <Typography style={{position: 'absolute', bottom: "0.5rem", margin: "20px 0px 50px 39px"}}>
+                Powered by EkStep Foundation
+                </Typography>
             </Grid>
         );
     };
