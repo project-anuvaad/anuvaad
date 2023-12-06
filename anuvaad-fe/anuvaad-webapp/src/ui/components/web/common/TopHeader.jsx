@@ -45,7 +45,9 @@ const useStyles = makeStyles((theme) => ({
     logo: {
         // height: "2rem",
         width: "4.5rem",
-        cursor: "pointer"
+        cursor: "pointer",
+        marginBottom: "-1rem",
+        marginTop: "-0.4rem"
     },
     // ".MuiButton-label":{
     //     letterSpacing: "0.5px"
@@ -459,7 +461,7 @@ export default function TopHeader(props) {
     };
 
     const renderAnuvaadLogo = () => {
-        return <img
+        return<div style={{textAlign: "-webkit-center", paddingBottom: "0.1rem"}}><div><img
             src={headerLogoImg}
             className={logo}
             ref={logoRef}
@@ -475,7 +477,11 @@ export default function TopHeader(props) {
                     return
                 }
             })}
-        />
+        /></div>
+        <Typography variant="caption" style={{color: "#000000", fontWeight: "bold"}}>
+                Powered by EkStep Foundation
+                </Typography>
+        </div> 
     };
 
     const getMenuButtons = () => {

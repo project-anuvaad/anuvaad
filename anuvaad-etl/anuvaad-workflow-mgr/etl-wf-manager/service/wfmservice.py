@@ -10,6 +10,7 @@ from configs.wfmconfig import anu_etl_wfm_core_topic, log_msg_start, log_msg_end
 from anuvaad_auditor.errorhandler import post_error_wf, post_error, log_exception
 from anuvaad_auditor.loghandler import log_info, log_error
 from repository.redisrepo import REDISRepository
+from service.pipelinecalls import PipelineCalls
 from configs.wfmconfig import app_context, workflowCodesTranslation
 import datetime 
 
@@ -19,6 +20,7 @@ wfmrepo = WFMRepository()
 wfmutils = WFMUtils()
 validator = WFMValidator()
 redisRepo = REDISRepository()
+pipelineCalls = PipelineCalls()
 
 class WFMService:
     def __init__(self):
@@ -389,6 +391,9 @@ class WFMService:
                             jobIDs.append(jobID)
                     if len(jobIDs) > 0:
                         criteria["jobID"] = {"$in": jobIDs}
+            if 'inputFileName' in req_criteria.keys():
+                jobName_pattern = req_criteria["inputFileName"]
+                criteria["input.jobName"] = {"$regex": jobName_pattern}
             if 'orgIDs' in req_criteria.keys():
                 if req_criteria["orgIDs"]:
                     orgIDs = []
@@ -404,7 +409,13 @@ class WFMService:
                         if currentStat:
                             currentStatus.append(currentStat)
                     if len(currentStatus) > 0:
-                        criteria["granularity.currentStatus"] = {"$in": currentStatus}
+                        if "auto_translation_completed" in currentStatus:
+                            criteria["$or"] = [
+                                {"granularity.currentStatus": {"$in": currentStatus}},
+                                {"granularity.currentStatus": {"$exists": False}}
+                            ]
+                        else:
+                            criteria["granularity.currentStatus"] = {"$in": currentStatus}
             if 'filterByStartTime' in req_criteria.keys():
                 if 'startTimeStamp' in req_criteria['filterByStartTime'].keys() and 'endTimeStamp' in req_criteria['filterByStartTime'].keys():
                             criteria["startTime"] = { "$gte": req_criteria['filterByStartTime']['startTimeStamp'], "$lte": req_criteria['filterByStartTime']['endTimeStamp']}
@@ -582,3 +593,91 @@ class WFMService:
             return response
         except Exception as e:
             log_exception("Active Job Status Retrieval: {wf_async_input['jobID']} " + str(e), None, e)
+
+    def digitization_translation_pipeline(self,data):
+        """
+                {
+                    "record_id": "A_FWLBOD20TESOT-hnHgN-1693227866067%7C0-16932280318450673.json",
+                    "user_id": "d225fb2cd78a45078518356548f396ff1686290705872",
+                    "file_type": "pdf",
+                    "file_name": "name.pdf"
+                    "translation_async_flow" : {
+                        "workflowCode": "WF_A_FCBMTKTR",
+                        "jobName": "1958_1_1150_1155_updated.pdf",
+                        "jobDescription": "",
+                        "files": [
+                            {
+                                "path": "01c440b8-8aac-4352-9b44-c3fbf1ddca6e.pdf",
+                                "type": "pdf",
+                                "locale": "en",
+                                "model": {
+                                    "uuid": "687baea0-4512-4fb9-9264-5c7b368afc59",
+                                    "is_primary": true,
+                                    "model_id": 103,
+                                    "model_name": "English-Hindi IndicTrans Model-1",
+                                    "source_language_code": "en",
+                                    "source_language_name": "English",
+                                    "target_language_code": "hi",
+                                    "target_language_name": "Hindi",
+                                    "description": "AAI4B en-hi model-1(indictrans/fairseq)",
+                                    "status": "ACTIVE",
+                                    "connection_details": {
+                                        "kafka": {
+                                            "input_topic": "KAFKA_AAI4B_NMT_TRANSLATION_INPUT_TOPIC",
+                                            "output_topic": "KAFKA_AAI4B_NMT_TRANSLATION_OUTPUT_TOPIC"
+                                        },
+                                        "translation": {
+                                            "api_endpoint": "AAIB_NMT_TRANSLATE_ENDPOINT",
+                                            "host": "AAI4B_NMT_HOST"
+                                        },
+                                        "interactive": {
+                                            "api_endpoint": "AAIB_NMT_IT_ENDPOINT",
+                                            "host": "AAI4B_NMT_HOST"
+                                        }
+                                    },
+                                    "interactive_translation": true
+                                },
+                                "context": "JUDICIARY",
+                                "modifiedSentences": "a"
+                            }
+                        ]
+                    }
+                }
+        """
+        try:
+            if "record_id" not in data.keys():
+                return {"status" : "Error", "reason":"record_id missing"}
+            if data["file_type"] in ["jpg","bmp","png","svg","jpeg"]:
+                data["record_id"] = data["record_id"].replace("%7C","|")
+                data["file_type"] = "pdf"
+                data["file_name"] = data["file_name"].replace(data["file_name"].split(".")[-1],"pdf")
+
+            document = pipelineCalls.document_export(data["user_id"],data["record_id"],data["file_type"],data["metadata"])
+            if document is None:
+                return {"status":"Error","reason":"Document Export Failed"}
+            file_content = pipelineCalls.download_file(document)
+            if file_content is None:
+                return {"status":"Error","reason":"File Download Failed"}
+            
+            if not os.path.exists("upload_files"):
+                # If it doesn't exist, create it
+                os.makedirs("upload_files")
+
+            with open("./upload_files/"+data["file_name"], "wb") as file:
+                file.write(file_content)
+            
+            file_id = pipelineCalls.upload_files("./upload_files/"+data["file_name"],data["metadata"])
+            if file_id is None:
+                return {"status":"Error","reason":"File Upload Failed"}
+
+            # Delete uploaded file
+            try:
+                os.remove("./upload_files/"+data["file_name"])
+            except Exception as e:
+                log_error(f"Exception during file deletion",app_context,e)        
+
+            response = pipelineCalls.translate(data["file_name"],file_id,data["translation_async_flow"],data["metadata"])
+            return response
+        except Exception as e:
+            log_error(f"Exception occurred {e}",e,app_context)
+        
