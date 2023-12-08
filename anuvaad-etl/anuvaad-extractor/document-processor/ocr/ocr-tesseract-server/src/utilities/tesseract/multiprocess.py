@@ -141,7 +141,7 @@ def check_horizontal_merging(words,cls_name,mode_height,vertices,line):
         line['regions'] = copy.deepcopy(words)
         return [line]
     
-def process_line(line, lang, img, mode_height, rgn_idx, line_idx, lang_detected, image_path, updated_lines, total_lines, region):
+def process_line(line, lang, img, mode_height, rgn_idx, line_idx, lang_detected, image_path, result_queue, total_lines, region):
     tmp_line = [line]
     if config.IS_DYNAMIC and 'class' in line.keys():
         tmp_line = coord_adjustment(
@@ -172,18 +172,18 @@ def process_line(line, lang, img, mode_height, rgn_idx, line_idx, lang_detected,
                 trocr_text = processor.batch_decode(generated_ids, skip_special_tokens=True)[0]       
             words  = get_tess_text(image_crop,lang,mode_height,left,top,line['class'],c_x,c_y,lang_detected)
             h_lines = check_horizontal_merging(words,line['class'],mode_height,vertices,line)
-            updated_lines.extend(h_lines)
 
             # Split the text variable by space
             split_text = trocr_text.split()
 
             # Replace the values of ['text'] in the JSON data sequentially
             index = 0
-            for entry in updated_lines:
+            for entry in h_lines:
                 for region in entry['regions']:
                     # Use the words sequentially, and loop back to the beginning if needed
                     region['text'] = split_text[index % len(split_text)]
                     index += 1
+            return line_idx, h_lines
 
 
 def multi_processing_tesseract(page_regions, image_path, lang, width, height):
@@ -207,20 +207,24 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
                     else:
                         # Create a manager to share the updated_lines list among processes
                         manager = Manager()
-                        updated_lines = manager.list()
+                        result_queue = manager.Queue()
 
                         # Use ProcessPoolExecutor for parallel execution
                         with concurrent.futures.ProcessPoolExecutor() as executor:
                             futures = []
 
                             for line_idx, line in enumerate(region['regions']):
-                                futures.append(executor.submit(process_line, line, lang, img, mode_height, rgn_idx, line_idx, lang_detected, image_path, updated_lines, total_lines, region))
+                                futures.append(executor.submit(process_line, line, lang, img, mode_height, rgn_idx, line_idx, lang_detected, image_path, result_queue, total_lines, region))
 
                             # Wait for all futures to complete
+                            concurrent.futures.wait(futures)
+                       # Collect and sort the results based on line index
+                            collected_results = [None] * len(region['regions'])
                             for future in concurrent.futures.as_completed(futures):
-                                future.result()
+                                line_idx, result = future.result()
+                                collected_results[line_idx] = result
                         
-                page_regions[rgn_idx]['regions'] = list(updated_lines)
+                page_regions[rgn_idx]['regions'] = collected_results
                             #page_regions[rgn_idx]['regions'][line_idx]['regions'] = words
 
             if config.MULTIPROCESS:
