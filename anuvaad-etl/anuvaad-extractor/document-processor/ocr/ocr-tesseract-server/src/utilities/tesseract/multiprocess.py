@@ -17,8 +17,6 @@ from src.utilities.region_operations import collate_regions
 import src.utilities.app_context as app_context
 from transformers import TrOCRProcessor, VisionEncoderDecoderModel
 import requests
-import concurrent.futures
-from multiprocessing import Manager
 
 
 tessract_queue = Queue()
@@ -140,60 +138,17 @@ def check_horizontal_merging(words,cls_name,mode_height,vertices,line):
     else:
         line['regions'] = copy.deepcopy(words)
         return [line]
-    
-def process_line(line, lang, img, mode_height, rgn_idx, line_idx, lang_detected, image_path, result_queue, total_lines, region):
-    tmp_line = [line]
-    if config.IS_DYNAMIC and 'class' in line.keys():
-        tmp_line = coord_adjustment(
-            image_path, tmp_line)
-    if len(tmp_line) > 0:
-        total_lines += 1
-    if config.MULTIPROCESS:
-        add_lines_to_tess_queue(tmp_line, tessract_queue, lang, img, mode_height, rgn_idx, line_idx, line['class'], int(
-            region['boundingBox']['vertices'][0]['x']), int(region['boundingBox']['vertices'][1]['x']), lang_detected)
-    if config.MULTIPROCESS == False and line is not None and len(tmp_line) > 0:
-        vertices = tmp_line[0]['boundingBox']['vertices']
-        left = vertices[0]['x'];  top = vertices[0]['y']
-        adjusted_box,c_x,c_y = adjust_crop_coord(tmp_line[0],line['class'],int(region['boundingBox']['vertices'][0]['x']),int(region['boundingBox']['vertices'][1]['x']))
-        image_crop = crop_region(adjusted_box,img)
-        # # Create a new folder
-        # new_folder_path = 'crops'
-        # os.makedirs(new_folder_path, exist_ok=True)
-        # # Save the image in the new folder
-        # unique_id = str(uuid.uuid4())[:8] 
-        # image_path = os.path.join(new_folder_path, f'{unique_id}.jpg')
-        # cv2.imwrite(image_path, image_crop)
-        if image_crop is not None and image_crop.shape[1] >3 and image_crop.shape[0] > 3:
-            if config.HANDWRITTEN_OCR:
-                processor = TrOCRProcessor.from_pretrained("microsoft/trocr-base-handwritten")
-                model = VisionEncoderDecoderModel.from_pretrained("microsoft/trocr-base-handwritten")
-                pixel_values = processor(image_crop, return_tensors="pt").pixel_values
-                generated_ids = model.generate(pixel_values)
-                trocr_text = processor.batch_decode(generated_ids, skip_special_tokens=True)[0]       
-            words  = get_tess_text(image_crop,lang,mode_height,left,top,line['class'],c_x,c_y,lang_detected)
-            h_lines = check_horizontal_merging(words,line['class'],mode_height,vertices,line)
-
-            # Split the text variable by space
-            split_text = trocr_text.split()
-
-            # Replace the values of ['text'] in the JSON data sequentially
-            index = 0
-            for entry in h_lines:
-                for region in entry['regions']:
-                    # Use the words sequentially, and loop back to the beginning if needed
-                    region['text'] = split_text[index % len(split_text)]
-                    index += 1
-            return line_idx, h_lines
-
 
 def multi_processing_tesseract(page_regions, image_path, lang, width, height):
     try:
         img = cv2.imread(image_path)
         mode_height = get_mode_height(page_regions)
-        if not config.HANDWRITTEN_OCR:
-            lang_detected = page_lang_detection(image_path,lang)
-        else:
+        if config.HANDWRITTEN_OCR and lang == 'en':
             lang_detected = config.LANG_MAPPING['en'][0]
+            processor = TrOCRProcessor.from_pretrained("microsoft/trocr-base-handwritten")
+            model = VisionEncoderDecoderModel.from_pretrained("microsoft/trocr-base-handwritten")
+        else:
+            lang_detected = page_lang_detection(image_path,lang)
         #lang_detected = config.LANG_MAPPING[lang][0]
 
         if len(page_regions) > 0:
@@ -202,30 +157,53 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
                 if region != None and 'regions' in region.keys():
                     if region['class'] == "TABLE":
                         page_regions = table_ocr(
-                            page_regions, region, lang, img, mode_height, rgn_idx, lang_detected)
-                        
+                            page_regions, region, lang, img, mode_height, rgn_idx, lang_detected)                      
                     else:
-                        # Create a manager to share the updated_lines list among processes
-                        manager = Manager()
-                        result_queue = manager.Queue()
+                        updated_lines = []
+                        for line_idx, line in enumerate(region['regions']):
+                            tmp_line = [line]
+                            if config.IS_DYNAMIC and 'class' in line.keys():
+                                tmp_line = coord_adjustment(
+                                    image_path, tmp_line)
+                            if len(tmp_line) > 0:
+                                total_lines += 1
+                            if config.MULTIPROCESS:
+                                add_lines_to_tess_queue(tmp_line, tessract_queue, lang, img, mode_height, rgn_idx, line_idx, line['class'], int(
+                                    region['boundingBox']['vertices'][0]['x']), int(region['boundingBox']['vertices'][1]['x']), lang_detected)
+                            if config.MULTIPROCESS == False and line is not None and len(tmp_line) > 0:
+                                vertices = tmp_line[0]['boundingBox']['vertices']
+                                left = vertices[0]['x'];  top = vertices[0]['y']
+                                adjusted_box,c_x,c_y = adjust_crop_coord(tmp_line[0],line['class'],int(region['boundingBox']['vertices'][0]['x']),int(region['boundingBox']['vertices'][1]['x']))
+                                image_crop = crop_region(adjusted_box,img)
+                                # # Create a new folder
+                                # new_folder_path = 'crops'
+                                # os.makedirs(new_folder_path, exist_ok=True)
+                                # # Save the image in the new folder
+                                # unique_id = str(uuid.uuid4())[:8] 
+                                # image_path = os.path.join(new_folder_path, f'{unique_id}.jpg')
+                                # cv2.imwrite(image_path, image_crop)
+                                if image_crop is not None and image_crop.shape[1] >3 and image_crop.shape[0] > 3:
+                                    if config.HANDWRITTEN_OCR: 
+                                        pixel_values = processor(image_crop, return_tensors="pt").pixel_values
+                                        generated_ids = model.generate(pixel_values)
+                                        trocr_text = processor.batch_decode(generated_ids, skip_special_tokens=True)[0]
+                                    words  = get_tess_text(image_crop,lang,mode_height,left,top,line['class'],c_x,c_y,lang_detected)
+                                    h_lines = check_horizontal_merging(words,line['class'],mode_height,vertices,line)
+                                    updated_lines.extend(h_lines)
 
-                        # Use ProcessPoolExecutor for parallel execution
-                        with concurrent.futures.ProcessPoolExecutor() as executor:
-                            futures = []
+                                    # Split the text variable by space
+                                    split_text = trocr_text.split()
 
-                            for line_idx, line in enumerate(region['regions']):
-                                futures.append(executor.submit(process_line, line, lang, img, mode_height, rgn_idx, line_idx, lang_detected, image_path, result_queue, total_lines, region))
+                                    # Replace the values of ['text'] in the JSON data sequentially
+                                    index = 0
+                                    for entry in updated_lines:
+                                        for region in entry['regions']:
+                                            # Use the words sequentially, and loop back to the beginning if needed
+                                            region['text'] = split_text[index % len(split_text)]
+                                            index += 1
 
-                            # Wait for all futures to complete
-                            concurrent.futures.wait(futures)
-                       # Collect and sort the results based on line index
-                            collected_results = [None] * len(region['regions'])
-                            for future in concurrent.futures.as_completed(futures):
-                                line_idx, result = future.result()
-                                collected_results[line_idx] = result
-                        
-                page_regions[rgn_idx]['regions'] = collected_results
-                            #page_regions[rgn_idx]['regions'][line_idx]['regions'] = words
+                        page_regions[rgn_idx]['regions'] = copy.deepcopy(updated_lines)
+                                #page_regions[rgn_idx]['regions'][line_idx]['regions'] = words
 
             if config.MULTIPROCESS:
                 while file_writer_queue.qsize() < total_lines:
