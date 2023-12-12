@@ -143,7 +143,9 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
     try:
         img = cv2.imread(image_path)
         mode_height = get_mode_height(page_regions)
+        initialize_ocr_models = False  # Flag variable
         if config.HANDWRITTEN_OCR and lang == 'en':
+            initialize_ocr_models = True
             lang_detected = config.LANG_MAPPING['en'][0]
             processor = TrOCRProcessor.from_pretrained("microsoft/trocr-base-handwritten")
             model = VisionEncoderDecoderModel.from_pretrained("microsoft/trocr-base-handwritten")
@@ -183,7 +185,7 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
                                 # image_path = os.path.join(new_folder_path, f'{unique_id}.jpg')
                                 # cv2.imwrite(image_path, image_crop)
                                 if image_crop is not None and image_crop.shape[1] >3 and image_crop.shape[0] > 3:
-                                    if config.HANDWRITTEN_OCR: 
+                                    if initialize_ocr_models: 
                                         pixel_values = processor(image_crop, return_tensors="pt").pixel_values
                                         generated_ids = model.generate(pixel_values)
                                         trocr_text = processor.batch_decode(generated_ids, skip_special_tokens=True)[0]
