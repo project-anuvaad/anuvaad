@@ -9,26 +9,26 @@ curl -L -o /usr/share/tesseract-ocr/4.00/tessdata/Tamil.traineddata https://gith
 curl -L -o /usr/share/tesseract-ocr/4.00/tessdata/Telugu.traineddata https://github.com/tesseract-ocr/tessdata_best/blob/main/script/Telugu.traineddata?raw=true
 curl -L -o /usr/share/tesseract-ocr/4.00/tessdata/Bengali.traineddata https://github.com/tesseract-ocr/tessdata_best/blob/main/script/Bengali.traineddata?raw=true
 
-tam_modelpath='/usr/share/tesseract-ocr/4.00/tessdata/anuvaad_tam.traineddata'
-url_tam='https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvaad_tam.traineddata?AWSAccessKeyId=AKIAXX2AMEIRJY2GNYVZ&Signature=X6%2BwKdeOyOUFlOFs%2B7eRmzhziZ0%3D&Expires=1693557258'
+tam_modelpath="/usr/share/tesseract-ocr/4.00/tessdata/anuvaad_tam.traineddata"
+url_tam="https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvaad_tam.traineddata?AWSAccessKeyId=${AWSACCESSKEYID_VALUE}&Signature=g9dkSw6f5uFQ3YAhK2VsuWqEn9E%3D&Expires=1702454086"
 
-hin_modelpath='/usr/share/tesseract-ocr/4.00/tessdata/anuvaad_hin.traineddata'
-url_hin='https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvaad_hin.traineddata?AWSAccessKeyId=AKIAXX2AMEIRJY2GNYVZ&Signature=2l%2F0OwWQrD%2FIvogfijATPufjMLA%3D&Expires=1693557740'
+hin_modelpath="/usr/share/tesseract-ocr/4.00/tessdata/anuvaad_hin.traineddata"
+url_hin="https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvaad_hin.traineddata?AWSAccessKeyId=${AWSACCESSKEYID_VALUE}&Signature=%2BlmA7lZYPHHJA1TRYD20tawzrVM%3D&Expires=1702454120"
 
-kan_modelpath='/usr/share/tesseract-ocr/4.00/tessdata/anuvaad_kan.traineddata'
-url_kan='https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvaad_kan.traineddata?AWSAccessKeyId=AKIAXX2AMEIRJY2GNYVZ&Signature=gDiNsqrV0n2%2BWZSMwesyqkLOYZ8%3D&Expires=1694149503'
+kan_modelpath="/usr/share/tesseract-ocr/4.00/tessdata/anuvaad_kan.traineddata"
+url_kan="https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvaad_kan.traineddata?AWSAccessKeyId=${AWSACCESSKEYID_VALUE}&Signature=sKWhdkS1Ddd037%2FeK2IfgsDJSl8%3D&Expires=1702454148"
 
-ben_modelpath='/usr/share/tesseract-ocr/4.00/tessdata/anuvaad_ben.traineddata'
-url_ben='https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvaad_ben.traineddata?AWSAccessKeyId=AKIAXX2AMEIRJY2GNYVZ&Signature=ku%2FdynTtJVvaf55dwYC%2FMt3pKqo%3D&Expires=1698743313'
+ben_modelpath="/usr/share/tesseract-ocr/4.00/tessdata/anuvaad_ben.traineddata"
+url_ben="https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvaad_ben.traineddata?AWSAccessKeyId=${AWSACCESSKEYID_VALUE}&Signature=MXYh1ywXM43cPtoHhAeM4LfSXiQ%3D&Expires=1702454172"
 
-mal_modelpath='/usr/share/tesseract-ocr/4.00/tessdata/anuvaad_mal.traineddata'
-url_mal='https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvaad_mal.traineddata?AWSAccessKeyId=AKIAXX2AMEIRJY2GNYVZ&Signature=hX%2Bo%2BTTvwoN7IBcX%2FIgFTwMHoGs%3D&Expires=1698743610'
+mal_modelpath="/usr/share/tesseract-ocr/4.00/tessdata/anuvaad_mal.traineddata"
+url_mal="https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvaad_mal.traineddata?AWSAccessKeyId=${AWSACCESSKEYID_VALUE}&Signature=jiNEPQzfpx6gOVIWBezZrYGqCH8%3D&Expires=1702454197"
 
-mar_modelpath='/usr/share/tesseract-ocr/4.00/tessdata/anuvaad_mar.traineddata'
-url_mar='https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvaad_mar.traineddata?AWSAccessKeyId=AKIAXX2AMEIRJY2GNYVZ&Signature=aTu5Ps9hL90clfPMZIVOEPx5%2Fl0%3D&Expires=1698743699'
+mar_modelpath="/usr/share/tesseract-ocr/4.00/tessdata/anuvaad_mar.traineddata"
+url_mar="https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvaad_mar.traineddata?AWSAccessKeyId=${AWSACCESSKEYID_VALUE}&Signature=%2BAPtcF%2FE0ftX%2BOvgJH%2BRD%2BcV7tU%3D&Expires=1702454214"
 
-ori_modelpath='/usr/share/tesseract-ocr/4.00/tessdata/anuvaad_ori.traineddata'
-url_ori='https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvaad_ori.traineddata?AWSAccessKeyId=AKIAXX2AMEIRJY2GNYVZ&Signature=5aqEjjOryEhE4ElV2i8oHgVY%2F7I%3D&Expires=1698743792'
+ori_modelpath="/usr/share/tesseract-ocr/4.00/tessdata/anuvaad_ori.traineddata"
+url_ori="https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvaad_ori.traineddata?AWSAccessKeyId=${AWSACCESSKEYID_VALUE}&Signature=e%2BZ2y%2BS15yZuYFiqqGTIcnNzBM8%3D&Expires=1702454243"
 
 #rm $tam_modelpath
 if ! [ -f $tam_modelpath ]; then

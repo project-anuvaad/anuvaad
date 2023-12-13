@@ -19,8 +19,8 @@ curl -L -o /usr/share/tesseract-ocr/4.00/tessdata/sin.traineddata https://github
 
 modelpath='./src/utilities/primalaynet/model_final.pth'
 #aws s3 presign s3://anuvaad-pubnet-weights/model_final.pth --expires-in 60480000
-#url='https://anuvaad-pubnet-weights.s3.amazonaws.com/model_final.pth?AWSAccessKeyId=AKIAUAXLRTC3KS46AZTB&Signature=tkvJtYR4bYKrkyRUX1RPC%2B1Et7s%3D&Expires=1672216087'
-url='https://anuvaad-pubnet-weights.s3.amazonaws.com/judgement_prima_table_layout_modelv3.pth?AWSAccessKeyId=AKIAXX2AMEIRJY2GNYVZ&Signature=AbS%2FW5plPO%2FhyRoEehIuJ0LsR8I%3D&Expires=1694493778'
+#url="https://anuvaad-pubnet-weights.s3.amazonaws.com/model_final.pth?AWSAccessKeyId=${AWSACCESSKEYID_VALUE}&Signature=XiPuWyMyAxa%2FS0kw6YALYEOultk%3D&Expires=1702453720"
+url="https://anuvaad-pubnet-weights.s3.amazonaws.com/judgement_prima_table_layout_modelv3.pth?AWSAccessKeyId=${AWSACCESSKEYID_VALUE}&Signature=D%2FnfAsEBtwV971OQp8MXG%2FvKNc0%3D&Expires=1702453852"
 
 if ! [ -f $modelpath ]; then
   echo Downloading PRIMA weights
@@ -29,3 +29,4 @@ fi
 
 
 python app.py
+
