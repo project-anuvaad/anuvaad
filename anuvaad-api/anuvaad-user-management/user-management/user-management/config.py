@@ -23,6 +23,7 @@ ACTIVE_USERS_EXP_TIME   = int(os.environ.get('ACTIVE_USERS_EXP_TIME', 5 * 60 )) 
 #mongodb-configs
 MONGO_DB_SCHEMA                 =   os.environ.get('MONGO_DB_IDENTIFIER', 'usermanagement')
 USR_MONGO_COLLECTION            =   os.environ.get('UMS_USR_COLLECTION', 'sample')
+VERIFY_USERS                    =   os.environ.get('VERIFY-USER', 'verify-user')
 MFA_MONGO_COLLECTION            =   os.environ.get('UMS_MFA_COLLECTION', 'mfa')
 USR_TOKEN_MONGO_COLLECTION      =   os.environ.get('UMS_USR_TOKEN_COLLECTION', 'usertokens')
 USR_TEMP_TOKEN_MONGO_COLLECTION =   os.environ.get('UMS_USR_TEMP_TOKEN_COLLECTION', 'usertemptoken')
@@ -71,10 +72,12 @@ MAIL_SETTINGS = {
     "MAIL_PASSWORD": os.environ.get("SMTP_PASSWORD", "*******************"),
     "MAIL_SENDER_NAME": os.environ.get("SMTP_SENDERNAME", "Anuvaad Support"),
     "MAIL_SENDER": os.environ.get("SUPPORT_EMAIL", "anuvaad.support@tarento.com"),
+    "USER_VERIFICATION_ADMIN_EMAIL" : os.environ.get("USER_VERIFICATION_ADMIN_EMAIL", "siddanth.shaiva@gmail.com")#JB's Email.
 }
 
 #React-app base url
 BASE_URL                =   os.environ.get('REACT_APP_BASE_URL','https://developers.anuvaad.org/')
+EMAIL_GET_URL_NOTIFICATION = os.environ.get('NOTIFICATION_URL', 'http://127.0.0.1:5001/anuvaad/user-mgmt/v1/users/validated-and-onboard')
 
 # MFA configs
 MFA_ENABLED = bool(os.environ.get("MFA_ENABLED",False))

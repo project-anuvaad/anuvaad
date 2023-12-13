@@ -7,8 +7,9 @@ from flask import request, jsonify
 from anuvaad_auditor.errorhandler import post_error
 import config
 import re
-
+from config import MAIL_SETTINGS
 userRepo    =   UserManagementRepositories()
+admin_email = MAIL_SETTINGS['USER_VERIFICATION_ADMIN_EMAIL']
 
 class CreateUsers(Resource):
 
@@ -168,6 +169,59 @@ class SearchRoles(Resource):
             log_exception("Exception while searching user records: " +
                           str(e), MODULE_CONTEXT, e)
             return post_error("Exception occurred", "Exception while performing user search::{}".format(str(e)), None), 400
+
+
+class validateSignUp(Resource):
+    def post(self):
+        body = request.get_json()
+        if 'fullName' not in body or not body['fullName']:
+            return post_error("Data Missing", "fullName not found", None), 400
+        if 'email' not in body or not body['email']:
+            return post_error("Data Missing", "email not found", None), 400
+        if 'orgID' not in body or not body['orgID']:
+            return post_error("Data Missing", "organisationID not found", None), 400
+        if 'averageDocTranslationsPerDay' not in body or not body['orgID']:
+            return post_error("Data Missing", "average Document Translations PerDay/ not found", None), 400
+        
+        userName,email,orgID,averageDocTranslationsPerDay  = body['fullName'], body['email'], body['orgID'], body['averageDocTranslationsPerDay']
+        usr_details = userRepo.validate_user_for_docs(userName, email)
+        if not usr_details:#add user to collections, create token and generate timeStamp.
+            token_and_epoch_gen = userRepo.token_generation_and_timestamp()
+            log_info(f' and someshit {token_and_epoch_gen}', MODULE_CONTEXT)
+            adduser = userRepo.add_usr_details(userName, email, orgID,token_and_epoch_gen, averageDocTranslationsPerDay)
+            log_info(f"user added {adduser}", MODULE_CONTEXT)
+            if adduser == "SUCCESS":
+                #return 
+                token = token_and_epoch_gen[0]
+                log_info(f"{token}somethinf somthing soimthiung",MODULE_CONTEXT)
+                userRepo.send_mail_to_admin(email,userName, orgID, averageDocTranslationsPerDay,admin_email, token)
+                res = CustomResponse(Status.SUCCESS_USER_RESPONSE_PAGE.value, adduser)
+                return res.getresjson(), 200
+
+
+        #check if email exists
+        #users = body['users']
+
+
+class validateAndOnboard(Resource):
+    def get(self):
+        token = request.args.get('token')
+        email = request.args.get('email')
+        log_info(f"get request {token}",MODULE_CONTEXT)
+        validate = userRepo.validate_and_onboard_user(token, email)
+        if validate:
+            remove_validated_user_doc = userRepo.rmv_validated_user_from_db(token, email)
+            data,pwd = userRepo.prepare_ob_req(validate )
+            onboard = userRepo.onboard_users(data) 
+            user_mail = userRepo.send_mail_to_verified_user(validate['email'],pwd)
+
+        #log_info(f"cvalisfda {validate}", MODULE_CONTEXT)
+        
+
+
+
+
+
 
 
 class Health(Resource):
