@@ -30,33 +30,36 @@ url_mar="https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvaad_mar.traineddata
 ori_modelpath="/usr/share/tesseract-ocr/4.00/tessdata/anuvaad_ori.traineddata"
 url_ori="https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvaad_ori.traineddata?AWSAccessKeyId=${AWSACCESSKEYID_VALUE}&Signature=e%2BZ2y%2BS15yZuYFiqqGTIcnNzBM8%3D&Expires=1702454243"
 
-#rm $tam_modelpath
+rm $tam_modelpath
 if ! [ -f $tam_modelpath ]; then
   curl -o $tam_modelpath $url_tam
   echo downloading tamil weight file
 fi
-
+rm $hin_modelpath
 if ! [ -f $hin_modelpath ]; then
   curl -o $hin_modelpath $url_hin
   echo downloading hindi weight file
 fi
-
+rm $kan_modelpath
 if ! [ -f $kan_modelpath ]; then
   curl -o $kan_modelpath $url_kan
   echo downloading kannada weight file
 fi
+rm $ben_modelpath
 if ! [ -f $ben_modelpath ]; then
   curl -o $ben_modelpath $url_ben
   echo downloading bengali weight file
 fi
+rm $mal_modelpath
 if ! [ -f $mal_modelpath ]; then
   curl -o $mal_modelpath $url_mal
   echo downloading malyalam weight file
-fi
+rm $mar_modelpath
 if ! [ -f $mar_modelpath ]; then
   curl -o $mar_modelpath $url_mar
   echo downloading marathi weight file
 fi
+rm $ori_modelpath
 if ! [ -f $ori_modelpath ]; then
   curl -o $ori_modelpath $url_ori
   echo downloading oriya weight file
