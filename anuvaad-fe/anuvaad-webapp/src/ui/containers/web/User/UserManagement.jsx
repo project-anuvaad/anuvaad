@@ -39,7 +39,7 @@ const UserManagement = (props) => {
                 <Hidden only="xs">
                     <Grid item xs={10} sm={10} md={10} lg={10} xl={10}>
                         <img
-                            src={Anuvaanlogo}
+                            src={"/favicon.png"}
                             alt="logo"
                             style={{
                                 width: "85px",
@@ -59,7 +59,7 @@ const UserManagement = (props) => {
                             fontFamily: '"Rowdies", cursive,"Roboto" ,sans-serif',
                         }}
                     >
-                        Anuvaad
+                        SUVAS
                     </Typography>
                 </Grid>
                 <Hidden only="xs">
@@ -68,7 +68,7 @@ const UserManagement = (props) => {
                         className={classes.body}
                         style={{ margin: "20px 0px 50px 39px" }}
                     >
-                        Anuvaad is an open source platform to perform Document Translation
+                        SUVAS is a platform to perform Document Translation
                         and Digitization at scale with editing capabilities for various
                         Indic languages.
                     </Typography>

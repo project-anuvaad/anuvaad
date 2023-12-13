@@ -14,6 +14,7 @@ RUN pip install torch==2.0.1+cpu torchvision==0.15.2+cpu torchaudio==2.0.2 -f ht
 RUN pip install omegaconf==2.1
 RUN pip cache purge
 RUN apt install -y curl
+
 COPY start.sh /usr/bin/start.sh
 RUN chmod +x /usr/bin/start.sh
 ENTRYPOINT ["/bin/bash","/usr/bin/start.sh"]

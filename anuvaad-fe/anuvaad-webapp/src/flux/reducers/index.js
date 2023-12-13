@@ -71,7 +71,8 @@ import getViewOptions from './editor/getViewOptions';
 import getTranslatedAndVerifiedSetenceCount from './analytics/getTranslatedAndVerifiedSetenceCount';
 import getCountByLang from './analytics/getCountByLang';
 import getDocumentCountPerOrg from './analytics/getDocumentCountPerOrg'
-import getAnuvaadSupportedLanguages from './analytics/getSupportedLangList'
+import getAnuvaadSupportedLanguages from './analytics/getSupportedLangList';
+import getOrgList from './analytics/getOrgList';
 import getTransliterationModelID from './document_translate/fetchTransliterationModel';
 import getUploadedDocumentCount from './analytics/getUploadedDocumentCount';
 
@@ -150,5 +151,6 @@ export default {
     getDocumentCountPerOrg,
     getAnuvaadSupportedLanguages,
     getTransliterationModelID,
-    getUploadedDocumentCount
+    getUploadedDocumentCount,
+    getOrgList
 };

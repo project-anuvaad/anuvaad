@@ -2,6 +2,7 @@
 import logging
 import time
 import requests 
+import traceback
 
 from flask import Flask, jsonify, request
 from logging.config import dictConfig
@@ -116,12 +117,14 @@ def search_all_jobs():
                 for i in range(0,len(response["jobs"])):
                     response["jobs"][i]["metadata"]["userName"] = userDictionary[response["jobs"][i]["metadata"]["userID"]]
             except Exception as e:
+                log_exception(f"Exception :: {traceback.format_exc}",None,e)
                 log_exception("UMS Call Exception: " + str(e), None, e)
         if response:
             return jsonify(response), 200
         else:
             return jsonify({[]}), 400
     except Exception as e:
+        log_exception(f"Exception :: {traceback.format_exc}",None,e)
         log_exception("Something went wrong: " + str(e), None, e)
         return {"status": "FAILED", "message": "Something went wrong"}, 400
 
@@ -154,7 +157,7 @@ def set_granularity():
         error = validator.validate_granularity(req_criteria)
         if error is not None:
             return error, 400        
-        #data = add_headers(req_criteria, request)
+        # data = add_headers(req_criteria, request)
         # if "userIDs" in req_criteria.keys():
         #     if not req_criteria["userIDs"]:
         #         req_criteria["userIDs"] = [request.headers["x-user-id"]]

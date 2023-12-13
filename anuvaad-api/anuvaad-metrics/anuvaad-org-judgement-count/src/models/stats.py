@@ -275,6 +275,9 @@ class jud_stats(object):
         file_name1 = config.WEEKLY_CRON_FILE_NAME1
         file_name2 = config.WEEKLY_CRON_FILE_NAME2
         stats_file_copy = config.STATS_FILE
+        file_name1 = config.WEEKLY_CRON_FILE_NAME1
+        file_name2 = config.WEEKLY_CRON_FILE_NAME2
+        stats_file_copy = config.STATS_FILE
         # file_name2 = "/home/sriharimn/Downloads/language_wise_JUD_STATS2.csv"
         # file_name1 = "/home/sriharimn/Downloads/language_wise_JUD_STATS1.csv"
         file_name1 = os.path.join(config.DOWNLOAD_FOLDER, file_name1)
@@ -307,10 +310,10 @@ class jud_stats(object):
             result = result.sort_values(by=["orgID"], ascending=True)
             result['saved_sent_count'].fillna(0, inplace=True)
             result['saved_sent_count'] = result['saved_sent_count'].astype(int)
-#             mask = result["orgID"].isin(
-#                 ["ANUVAAD", "TARENTO_TESTORG", "NONMT", "ECOMMITTEE "]
-#             )
-#             result = result[~mask]
+            mask = result["orgID"].isin(
+                ["ANUVAAD", "TARENTO_TESTORG", "NONMT", "ECOMMITTEE "]
+            )
+            result = result[~mask]
         return result, True
 
     def doc_count(self, result):

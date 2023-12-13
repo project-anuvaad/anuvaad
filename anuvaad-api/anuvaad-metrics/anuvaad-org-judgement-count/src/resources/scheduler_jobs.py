@@ -148,7 +148,7 @@ def get_trans_user_data_from_db_cron():
         return
 
 @schedule_job.scheduled_job(
-    "cron", id="reviewer_data_job_1", day_of_week="mon-fri", hour="08,18", minute="00"
+    "cron", id="reviewer_data_job_1", day_of_week="mon-fri", hour="06,20", minute="15"
 )
 def get_reviewer_data(base=False):
     try:

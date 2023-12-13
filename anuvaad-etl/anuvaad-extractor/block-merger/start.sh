@@ -22,7 +22,7 @@ modelpath='./src/utilities/primalaynet/model_final.pth'
 #url='https://anuvaad-pubnet-weights.s3.amazonaws.com/model_final.pth?AWSAccessKeyId=AKIAUAXLRTC3KS46AZTB&Signature=tkvJtYR4bYKrkyRUX1RPC%2B1Et7s%3D&Expires=1672216087'
 # aws s3 presign s3://anuvaad-pubnet-weights/judgement_prima_table_layout_modelv3.pth --expires-in 60480000
 url='https://anuvaad-pubnet-weights.s3.amazonaws.com/judgement_prima_table_layout_modelv3.pth'
-
+# rm $modelpath
 if ! [ -f $modelpath ]; then
   echo Downloading PRIMA weights
   curl -o $modelpath $url

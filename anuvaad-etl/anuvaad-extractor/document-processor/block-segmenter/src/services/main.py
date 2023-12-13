@@ -16,13 +16,16 @@ def segment_regions(words, lines,regions):
 
     v_list, n_text_regions = region_unifier.region_unifier(words,lines,regions)
     p_list = []
-    for v_block in v_list:
-        if  v_block['children'] != None and  len(v_block['children']) > 1 :
-            #p_list+= break_block(v_block)
-            p_list +=[v_block]
-        else :
-            p_list +=  [v_block]
-    p_list += n_text_regions
+    try:
+        for v_block in v_list:
+            if  v_block['children'] != None and  len(v_block['children']) > 1 :
+                p_list+= break_block(v_block)
+                p_list +=[v_block]
+            else :
+                p_list +=  [v_block]
+        p_list += n_text_regions
+    except Exception as e:
+        log_exception("Error occured during block segmentation ",  app_context.application_context, e)
     return p_list
 
 
@@ -39,13 +42,13 @@ def get_segmented_regions(app_context,base_dir) :
             start_time = time.time()
             for page_index in range(page_counts):
                 print('processing for page   :  ', page_index)
-                # page_lines   =  file_properties.get_lines(page_index)
-                # page_regions =  file_properties.get_regions(page_index)
-                # page_words   =  file_properties.get_words(page_index)
-                #font_meta    = font_properties(file_properties.get_page(page_index))
-                font_meta  = []
+                page_lines   =  file_properties.get_lines(page_index)
+                page_regions =  file_properties.get_regions(page_index)
+                page_words   =  file_properties.get_words(page_index)
+                font_meta    = font_properties(file_properties.get_page(page_index))
+                # font_meta  = []
                 #page_regions =  region_unifier.region_unifier(page_lines,page_regions)
-                #file_properties.set_regions(page_index, segment_regions(page_words,page_lines,page_regions))
+                file_properties.set_regions(page_index, segment_regions(page_words,page_lines,page_regions))
                 file_properties.set_font_properties(page_index,font_meta)
 
             output.append(file_properties.get_file())
