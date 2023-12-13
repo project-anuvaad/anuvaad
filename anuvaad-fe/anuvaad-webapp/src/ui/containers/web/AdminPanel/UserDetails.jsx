@@ -456,7 +456,7 @@ class UserDetails extends React.Component {
     // this.makeAPICallJobsBulkSearch(0, (Number(this.state.inputPageNumber)-1)*10, false, false, true)
     this.tableRef.current.changePage(Number(this.state.inputPageNumber) - 1);
     this.setState({ currentPageIndex: this.state.inputPageNumber - 1 }, () => {
-      this.makeAPICallDocumentsTranslationProgress();
+      // this.makeAPICallDocumentsTranslationProgress();
     });
   }
 
