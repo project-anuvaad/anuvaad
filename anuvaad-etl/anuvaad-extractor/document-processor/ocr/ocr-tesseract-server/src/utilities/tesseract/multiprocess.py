@@ -194,15 +194,16 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
                                     updated_lines.extend(h_lines)
 
                                     # Split the text variable by space
-                                    split_text = trocr_text.split()
+                                    if initialize_ocr_models:
+                                        split_text = trocr_text.split()
 
-                                    # Replace the values of ['text'] in the JSON data sequentially
-                                    index = 0
-                                    for entry in updated_lines:
-                                        for region in entry['regions']:
-                                            # Use the words sequentially, and loop back to the beginning if needed
-                                            region['text'] = split_text[index % len(split_text)]
-                                            index += 1
+                                        # Replace the values of ['text'] in the JSON data sequentially
+                                        index = 0
+                                        for entry in updated_lines:
+                                            for region in entry['regions']:
+                                                # Use the words sequentially, and loop back to the beginning if needed
+                                                region['text'] = split_text[index % len(split_text)]
+                                                index += 1
 
                         page_regions[rgn_idx]['regions'] = copy.deepcopy(updated_lines)
                                 #page_regions[rgn_idx]['regions'][line_idx]['regions'] = words
