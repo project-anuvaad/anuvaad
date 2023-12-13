@@ -543,6 +543,7 @@ class SentenceCard extends React.Component {
           <Typography
             variant="subtitle1"
             gutterBottom
+            style={{textAlign: shouldTypeRTL(this.props?.model?.source_language_code) ? "right" : "left" }}
             onMouseUp={(event) => {
               if (enableEditingSentence) {
                 this.getSelectionText(event);
@@ -559,6 +560,7 @@ class SentenceCard extends React.Component {
         <Typography
           variant="subtitle1"
           gutterBottom
+          style={{textAlign: shouldTypeRTL(this.props?.model?.source_language_code) ? "right" : "left" }}
           onMouseUp={(event) => {
             if (enableEditingSentence) {
               this.getSelectionText(event);
@@ -585,7 +587,7 @@ class SentenceCard extends React.Component {
       );
       return (
         <div>
-          <Typography variant="subtitle1" gutterBottom>
+          <Typography variant="subtitle1" gutterBottom style={{textAlign: shouldTypeRTL(this.props?.model?.target_language_code) ? "right" : "left" }}>
             {modified_tgt}
           </Typography>
         </div>
@@ -594,7 +596,7 @@ class SentenceCard extends React.Component {
     return (
       <div>
         <Divider />
-        <Typography variant="subtitle1" gutterBottom>
+        <Typography variant="subtitle1" gutterBottom style={{textAlign: shouldTypeRTL(this.props?.model?.target_language_code) ? "right" : "left" }}>
           {this.props.sentence.s0_tgt}
           <br />
         </Typography>
@@ -606,7 +608,7 @@ class SentenceCard extends React.Component {
     return (
       <div>
         <Divider />
-        <Typography variant="subtitle1" gutterBottom>
+        <Typography variant="subtitle1" gutterBottom style={{textAlign: shouldTypeRTL(this.props?.model?.target_language_code) ? "right" : "left" }}>
           {this.props.sentence.tgt}
           <br />
         </Typography>
