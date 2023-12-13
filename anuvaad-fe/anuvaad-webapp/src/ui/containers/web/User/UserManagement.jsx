@@ -10,6 +10,7 @@ import Login from "./Login";
 import UpdatePassword from "./UpdatePassword";
 import SetPassword from './SetPassword';
 import Activate from './Activate';
+import RequestAccessSignup from './RequestAccessSignup';
 
 const UserManagement = (props) => {
     const { classes } = props;
@@ -19,6 +20,8 @@ const UserManagement = (props) => {
         switch (param && param.page) {
             case "signup":
                 return <SignUp />;
+            case "request-signup":
+                return <RequestAccessSignup />;
             case "login":
                 return <Login location={props.location} />;
             case "forget-password":
