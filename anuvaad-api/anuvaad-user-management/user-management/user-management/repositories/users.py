@@ -25,8 +25,8 @@ class UserManagementRepositories:
         if result is not None:
             return result
 
-    def validate_user_for_docs(self,Name,email):
-        result = userModel.validate_usr_for_doc_translate(Name, email)
+    def validate_user_for_docs(self,email):
+        result = userModel.validate_usr_for_doc_translate( email)
         if result :
             return result
         return None
@@ -69,7 +69,7 @@ class UserManagementRepositories:
         if result is not None:
             return result
     
-    def prepare_ob_req(self, validate):
+    def prepare_onboarding_user_req(self, validate):
         if "documentsPerDay" in validate.keys() and "_id" in validate.keys():
             del validate["documentsPerDay"]
             del validate["_id"]

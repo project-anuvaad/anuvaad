@@ -164,9 +164,9 @@ class UserManagementModel(object):
             log_exception("db connection exception ",  MODULE_CONTEXT, e)
             return post_error("Database connection exception", "An error occurred while connecting to the database:{}".format(str(e)), None)
 
-    def validate_usr_for_doc_translate(self, name, email):
+    def validate_usr_for_doc_translate(self, email):
         collections = get_db()[USR_MONGO_COLLECTION]
-        result_usr = collections.find_one({"email": email, "userName":name})
+        result_usr = collections.find_one({"email": email})
         if result_usr:
             return result_usr
         return None

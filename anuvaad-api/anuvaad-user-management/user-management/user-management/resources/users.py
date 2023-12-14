@@ -184,12 +184,10 @@ class validateSignUp(Resource):
             return post_error("Data Missing", "average Document Translations PerDay/ not found", None), 400
         
         userName,email,orgID,averageDocTranslationsPerDay  = body['fullName'], body['email'], body['orgID'], body['averageDocTranslationsPerDay']
-        usr_details = userRepo.validate_user_for_docs(userName, email)
+        usr_details = userRepo.validate_user_for_docs(email)
         if not usr_details:#add user to collections, create token and generate timeStamp.
             token_and_epoch_gen = userRepo.token_generation_and_timestamp()
-            log_info(f' and someshit {token_and_epoch_gen}', MODULE_CONTEXT)
             adduser = userRepo.add_usr_details(userName, email, orgID,token_and_epoch_gen, averageDocTranslationsPerDay)
-            log_info(f"user added {adduser}", MODULE_CONTEXT)
             if adduser == "SUCCESS":
                 #return 
                 token = token_and_epoch_gen[0]
@@ -211,7 +209,7 @@ class validateAndOnboard(Resource):
         validate = userRepo.validate_and_onboard_user(token, email)
         if validate:
             remove_validated_user_doc = userRepo.rmv_validated_user_from_db(token, email)
-            data,pwd = userRepo.prepare_ob_req(validate )
+            data,pwd = userRepo.prepare_onboarding_user_req(validate )
             onboard = userRepo.onboard_users(data) 
             user_mail = userRepo.send_mail_to_verified_user(validate['email'],pwd)
 
