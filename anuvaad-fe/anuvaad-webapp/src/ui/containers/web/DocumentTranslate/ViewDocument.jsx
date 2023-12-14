@@ -26,6 +26,7 @@ import FetchDocument from "../../../../flux/actions/apis/view_document/fetch_doc
 import MarkInactive from "../../../../flux/actions/apis/view_document/markinactive";
 import JobStatus from "../../../../flux/actions/apis/view_document/translation.progress";
 import { clearJobEntry } from "../../../../flux/actions/users/async_job_management";
+import clearStatus from '../../../../flux/actions/apis/admin/clear_job_status';
 import DownloadFile from "../../../../flux/actions/apis/download/download_file";
 import fetchpageno from '../../../../flux/actions/apis/view_document/fetch_page_no';
 import DataTable from "../../../components/web/common/DataTable";
@@ -130,7 +131,8 @@ class ViewDocument extends React.Component {
   componentWillUnmount() {
     ClearContent();
     clearInterval(this.timerId);
-    clearJobEntry();
+    this.props.clearJobEntry();
+    this.props.clearStatus();
     TELEMETRY.pageLoadCompleted("view-document");
   }
 
@@ -932,6 +934,7 @@ const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
       clearJobEntry,
+      clearStatus,
       APITransport,
       CreateCorpus: APITransport,
       fetchpageno

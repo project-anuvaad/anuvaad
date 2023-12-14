@@ -73,10 +73,14 @@ class PipelineCalls:
     
         payload["jobName"] = file_name
         payload["files"][0]["path"] = file_id
-        payload["files"][0]["type"] = file_id.split()[-1]
+        payload["files"][0]["type"] = file_id.split(".")[-1]
 
+        payload["workflowCode"] = "WF_A_FCBMTKTR"
+        payload["files"][0]["interactive_translation"] = True
         # Perform translation
         log_info(f"Performing Translation {file_id}",app_context)
+        log_info(f"Translation Payload {payload}",app_context)
+
         asyncwf_body = payload
         try:
             url = ZUUL_ROUTES_WFM_URL+"anuvaad-etl/wf-manager/v1/workflow/async/initiate"

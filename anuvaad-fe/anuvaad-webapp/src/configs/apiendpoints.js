@@ -77,6 +77,9 @@ const endpoints = {
   // transliteration suggestions
   transliteration : "/anuvaad-metrics/transliteration",
 
+  // Translate Digitized Document
+  translate_digitized_document: "/anuvaad-etl/wf-manager/v1/translate_pipeline",
+
   // ASR 
   asr: "/anuvaad-metrics/asr",
 };

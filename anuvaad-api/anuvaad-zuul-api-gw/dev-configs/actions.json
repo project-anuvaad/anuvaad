@@ -831,6 +831,14 @@
             "active":true,
             "whiteList":false,
             "description":"API for performing transliteration"
-        } 
+        },
+        {
+            "id":"f00a68bf-3983-498d-8a06-cc53089bbfb4",
+            "uri":"/anuvaad-etl/wf-manager/v1/translate_pipeline",
+            "module":"WORKFLOW-MANAGER",
+            "active":true,
+            "whiteList":false,
+            "description":"API to initiate SYNC workflows"
+        }
     ]
 }

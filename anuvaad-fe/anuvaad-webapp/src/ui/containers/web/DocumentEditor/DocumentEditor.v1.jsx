@@ -1033,7 +1033,7 @@ class DocumentEditor extends React.Component {
   }
   render() {
     return (
-      <div style={{ marginTop: 5 }}>
+      <div style={{ marginTop: 8 }}>
         <div style={{ height: "50px", marginBottom: "13px" }}> <InteractiveDocToolBar downloadFinalDocs={this.state.downloadFinalDocs} enableTransliteration={this.enableTransliteration} docView={this.state.docView} onAction={this.handleDocumentView} onShowPreview={this.showPreview} preview={this.state.preview} /></div>
 
         {!this.state.preview ?
