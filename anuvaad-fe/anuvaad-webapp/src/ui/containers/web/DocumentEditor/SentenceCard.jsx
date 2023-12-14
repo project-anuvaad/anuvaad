@@ -1044,7 +1044,8 @@ class SentenceCard extends React.Component {
                 return (
                   <TextField
                     {...props}
-                    label="Enter translated sentence"
+                    label={!shouldTypeRTL(this.props?.model?.target_language_code) && "Enter translated sentence"}
+            placeholder={shouldTypeRTL(this.props?.model?.target_language_code) && "Enter translated sentence"}
                     helperText={
                       this.props.model &&
                         this.props.model.status === "ACTIVE" &&
@@ -1089,7 +1090,8 @@ class SentenceCard extends React.Component {
               }}
               lang={this.props?.model?.target_language_code}
               maxOptions={3}
-            />) : (<TextField label="Enter translated sentence"
+            />) : (<TextField label={!shouldTypeRTL(this.props?.model?.target_language_code) && "Enter translated sentence"}
+            placeholder={shouldTypeRTL(this.props?.model?.target_language_code) && "Enter translated sentence"}
               helperText={this.props.model && this.props.model.status === "ACTIVE" && this.props.model.interactive_translation && orgID !== 'NONMT' ? "Ctrl+m to move text,Ctrl+s to save, Enable transliteration to get suggestions/disable transliteration and enter manual translation" : "Ctrl+m to move text, Ctrl+s to save, Enable transliteration to get suggestions/disable transliteration and enter manual translation"}
               InputProps={{
                 endAdornment:
