@@ -44,10 +44,10 @@ const useStyles = makeStyles((theme) => ({
     },
     logo: {
         // height: "2rem",
-        width: "4.5rem",
+        width: "5.5rem",
         cursor: "pointer",
-        marginBottom: "-1rem",
-        marginTop: "-0.4rem"
+        // marginBottom: "-1rem",
+        // marginTop: "-0.4rem"
     },
     // ".MuiButton-label":{
     //     letterSpacing: "0.5px"
