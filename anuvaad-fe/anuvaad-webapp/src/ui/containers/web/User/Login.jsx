@@ -28,6 +28,12 @@ import Anuvaanlogo from "../../../../assets/Anuvaanlogo.png";
 import UpdatePassword from "./UpdatePassword";
 import SignUp from "./SignUp";
 import CircularProgressWithLabel from "../../../components/web/common/CircularLoader";
+import EnterOTPModal from "./EnterOTPModal";
+import RegisterMFAModal from "./RegisterMFAModal";
+import RegisterMFA from "../../../../flux/actions/apis/user/MFA_register";
+import VerifyMFA from "../../../../flux/actions/apis/user/MFA_verify";
+import OneTimeEmailUpdateModal from "./OneTimeEmailUpdateModal";
+import UpdateEmail from "../../../../flux/actions/apis/user/update_email";
 
 class Login extends React.Component {
   constructor(props) {
@@ -44,6 +50,20 @@ class Login extends React.Component {
       currentFocusedComponent: "Login",
       reloadPage: false,
       inputFocused: false,
+      showOTPDialog: false,
+      showMFAMethodSelectionModal: false,
+      sessionId: "",
+      registerSuccessMessage: false,
+      verifySuccessMessage: false,
+      otpModalTitle: "",
+      hideResendOTPButton: false,
+      currentEmail: "",
+      showOneTimeUpdateEmailIdModal: false,
+      oneTimeUpdateEmailIdSuccessMessage: false,
+      ResendWithUseHOTP: false,
+      ResendOtpButtonClicked: false,
+      ResendButtonTitle: "Resend OTP",
+      showTimer:false,
     };
   }
 
@@ -58,12 +78,12 @@ class Login extends React.Component {
 
   componentDidMount() {
     localStorage.removeItem("token");
-    window.addEventListener("keypress", (key) => {
-      if (key.code === "Enter" && this.state.inputFocused) {
-        this.setState({inputFocused: false});
-        this.processLoginButtonPressed();
-      }
-    });
+    // window.addEventListener("keypress", (key) => {
+    //   if (key.code === "Enter" && this.state.inputFocused) {
+    //     this.setState({ inputFocused: false });
+    //     this.processLoginButtonPressed();
+    //   }
+    // });
 
     // TELEMETRY.pageLoadCompleted('login')
   }
@@ -77,14 +97,33 @@ class Login extends React.Component {
     this.setState({ [prop]: event.target.value });
   };
 
+  handleCloseOTPModal = () => {
+    this.setState({ showOTPDialog: false });
+    setTimeout(() => {
+      this.setState({ verifySuccessMessage: "" })
+    }, 4000);
+  }
+
+  handleCloseMFASelectionModal = () => {
+    this.setState({ showMFAMethodSelectionModal: false });
+    setTimeout(() => {
+      this.setState({ registerSuccessMessage: false })
+    }, 4000);
+  }
+
   /**
    * user input handlers
    * captures form submit request
    */
-  processLoginButtonPressed = () => {
-    const { email, password } = this.state;
-    this.setState({ error: false, loading: true });
-    const apiObj = new LoginAPI(email, password);
+
+  processLoginButtonPressed = (resendOTPClicked=false, e) => {
+
+    e.preventDefault();
+    
+    const { email, password ,ResendWithUseHOTP} = this.state;
+    this.setState({ error: false, loading: true, ResendOtpButtonClicked: resendOTPClicked });
+    const apiObj = new LoginAPI(email, password, resendOTPClicked && ResendWithUseHOTP);
+
     const apiReq = fetch(apiObj.apiEndPoint(), {
       method: "post",
       body: JSON.stringify(apiObj.getBody()),
@@ -92,12 +131,36 @@ class Login extends React.Component {
     })
       .then(async (response) => {
         const rsp_data = await response.json();
+      
         if (!response.ok) {
           return Promise.reject(rsp_data.message);
         } else {
           let resData = rsp_data && rsp_data.data;
-          localStorage.setItem("token", resData.token);
-          this.fetchUserProfileDetails(resData.token);
+          this.setState({showTimer : true})
+          setTimeout(() => {
+            this.setState({showTimer : false})
+          }, 600*1000);
+         
+          // this.setState({showOneTimeUpdateEmailIdModal: true});
+          if (resData.session_id) {
+            if(!resData.email.updated_status){
+              this.setState({showOneTimeUpdateEmailIdModal: true, currentEmail: resData.email.registered_email, oneTimeUpdateEmailIdSuccessMessage: false});
+            } 
+            else if (resData.mfa_required && !resData.mfa_registration) {
+              this.setState({ showMFAMethodSelectionModal: true, sessionId: resData.session_id });
+            } else if (resData.mfa_required && resData.mfa_registration) {
+              this.setState({ 
+                showOTPDialog: true, 
+                sessionId: resData.session_id, 
+                otpModalTitle: resData.mfa_message,
+                ResendWithUseHOTP: resData.mfa_type === "TOTP" ? true : false,
+                ResendButtonTitle: resData.mfa_type === "TOTP" ? "Send OTP to Email" : "Resend OTP"
+              });
+            }
+          } else if (resData.token){
+              localStorage.setItem("token", resData.token);
+              this.fetchUserProfileDetails(resData.token);    
+          }
           this.setState({ error: false, loading: false });
         }
       })
@@ -105,6 +168,93 @@ class Login extends React.Component {
         this.setState({ error: true, loading: false, errMessage: error });
       });
   };
+
+  onRegisterMFAClick = (selectedMethod) => {
+    const { email, sessionId } = this.state;
+    this.setState({ error: false, loading: true });
+    // call mfa register API here
+    const apiObj = new RegisterMFA(email, sessionId, selectedMethod);
+
+    fetch(apiObj.apiEndPoint(), {
+      method: "POST",
+      headers: apiObj.getHeaders().headers,
+      body: JSON.stringify(apiObj.getBody())
+    })
+      .then(async (response) => {
+        const rsp_data = await response.json();
+        if (!rsp_data.ok) {
+          this.setState({ error: true, loading: false, errMessage: rsp_data.message, showMFAMethodSelectionModal: false });
+        } else {
+          this.setState({ error: false, loading: false, registerSuccessMessage: true });
+          setTimeout(() => {
+            this.handleCloseMFASelectionModal()
+          }, 3000);
+        }
+      })
+      .catch(err => {
+        this.setState({ error: true, loading: false, errMessage: "Unable to register for MFA!" });
+      })
+  }
+
+  onSubmitOTP = (otp, clearOTPInput) => {
+    const { email, sessionId } = this.state;
+    this.setState({ error: false, loading: true });
+    // call mfa register API here
+    const apiObj = new VerifyMFA(email, sessionId, otp, this.state.ResendWithUseHOTP && this.state.ResendOtpButtonClicked);
+
+    fetch(apiObj.apiEndPoint(), {
+      method: "POST",
+      headers: apiObj.getHeaders().headers,
+      body: JSON.stringify(apiObj.getBody())
+    })
+      .then(async (response) => {
+        const rsp_data = await response.json();
+        console.log("rsp_data --- ", rsp_data);
+        if (!rsp_data.ok) {
+          this.setState({ error: true, loading: false, errMessage: rsp_data.message });
+          clearOTPInput();
+        } else {
+          this.setState({ error: false, loading: false, verifySuccessMessage: true });
+          localStorage.setItem("token", rsp_data.data.token);
+          this.fetchUserProfileDetails(rsp_data.data.token);
+        }
+      })
+      .catch(err => {
+        this.setState({ error: true, loading: false, errMessage: "Unable to Verify OTP!" });
+        clearOTPInput();
+      })
+  }
+
+  OnUpdateEmailIdClick = (new_email) => {
+    this.handleClose();
+    const {email, password} = this.state;
+    const apiObj = new UpdateEmail(email, password, new_email);
+    fetch(apiObj.apiEndPoint(), {
+      method: "POST",
+      headers: apiObj.getHeaders().headers,
+      body: JSON.stringify(apiObj.getBody())
+    })
+    .then( async (response)=>{
+      const rsp_data = await response.json();
+      console.log("rsp_data --- ", rsp_data);
+      if(rsp_data.ok){
+        this.setState({oneTimeUpdateEmailIdSuccessMessage: true});
+        setTimeout(() => {
+          this.setState({showOneTimeUpdateEmailIdModal: false, oneTimeUpdateEmailIdSuccessMessage: false})
+        }, 4000);
+      } else {
+        this.setState({ error: true, loading: false, errMessage: rsp_data?.message, showOneTimeUpdateEmailIdModal: false, oneTimeUpdateEmailIdSuccessMessage: false });
+      }
+    })
+    .catch(err => {
+      this.setState({ error: true, loading: false, errMessage: "Unable To Update Email!" });
+    })
+  }
+
+  onResendOTPClick = (e) => {
+    this.processLoginButtonPressed(true, e);
+
+  }
 
   handleRoles = (value) => {
     let result = [];
@@ -135,66 +285,18 @@ class Login extends React.Component {
             history.replace(`${process.env.PUBLIC_URL}/user-details`);
           } else if (roles.includes("ADMIN")) {
             history.replace(`${process.env.PUBLIC_URL}/user-details`);
-          } else if(roles.includes("REVIEWER")) { 
+          } else if (roles.includes("REVIEWER")) {
             history.replace(`${process.env.PUBLIC_URL}/review-documents`);
           } else if (roles.includes("TRANSLATOR")) {
             history.replace(`${process.env.PUBLIC_URL}/intro`);
-            // history.replace(`${process.env.PUBLIC_URL}/view-document`);
           } else {
             history.replace(`${process.env.PUBLIC_URL}/intro`);
-            // history.replace(`${process.env.PUBLIC_URL}/view-document`);
           }
         }
       })
       .catch((error) => {
         console.log("api failed because of server or network");
       });
-  };
-
-  renderLeftPanel = () => {
-    const { classes } = this.props;
-
-    return (
-      <Grid container>
-        <Hidden only="xs">
-          <Grid item xs={10} sm={10} md={10} lg={10} xl={10}>
-            <img
-              src={Anuvaanlogo}
-              alt="logo"
-              style={{
-                width: "85px",
-                margin: "10% 0px 0% 35px",
-                borderRadius: "50%",
-              }}
-            />{" "}
-          </Grid>{" "}
-        </Hidden>
-
-        <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
-          <Typography
-            variant={"h2"}
-            className={classes.title}
-            style={{
-              margin: "10% 294px 10% 39px",
-              fontFamily: '"Rowdies", cursive,"Roboto" ,sans-serif',
-            }}
-          >
-            Anuvaad
-          </Typography>
-        </Grid>
-        <Hidden only="xs">
-          <Typography
-            variant={"body1"}
-            className={classes.body}
-            style={{ margin: "20px 0px 50px 39px" }}
-          >
-            Anuvaad is an open source platform to perform Document Translation
-            and Digitization at scale with editing capabilities for various
-            Indic languages.
-          </Typography>
-        </Hidden>
-      </Grid>
-    );
   };
 
   handleClickShowPassword = () => {
@@ -205,6 +307,12 @@ class Login extends React.Component {
     event.preventDefault();
   };
 
+  handleClose = () => {
+    this.setState({error: false, errMessage: ""})
+  }
+
+  
+
   TextFields = () => {
     return (
       <Grid container spacing={2} style={{ marginTop: "2px" }}>
@@ -212,8 +320,8 @@ class Login extends React.Component {
           <OutlinedTextField
             fullWidth
             name="email"
-            onFocus={()=>this.setState({inputFocused: true})} 
-            onBlur={()=>this.setState({inputFocused: false})}
+            onFocus={() => this.setState({ inputFocused: true })}
+            onBlur={() => this.setState({ inputFocused: false })}
             onChange={(event) => this.setState({ email: event.target.value.trim() })}
             value={this.state.email}
             placeholder="Enter your Email ID*"
@@ -226,8 +334,8 @@ class Login extends React.Component {
           <OutlinedTextField
             fullWidth
             name="password"
-            onFocus={()=>this.setState({inputFocused: true})} 
-            onBlur={()=>this.setState({inputFocused: false})}
+            onFocus={() => this.setState({ inputFocused: true })}
+            onBlur={() => this.setState({ inputFocused: false })}
             type={this.state.showPassword ? "text" : "password"}
             onChange={(event) =>
               this.setState({ password: event.target.value.trim() })
@@ -299,7 +407,8 @@ class Login extends React.Component {
           <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
             <Button
               fullWidth
-              onClick={this.processLoginButtonPressed.bind(this)}
+              type="submit"
+              onClick={(e)=>this.processLoginButtonPressed(false, e)}
               label={"Login"}
               className={classes.loginBtn}
             />
@@ -310,53 +419,9 @@ class Login extends React.Component {
   };
 
   renderLoginForm = () => {
-    return <form autoComplete="off" style={{marginLeft: "15rem"}}>{this.renderCardContent()}</form>
+    return <form autoComplete="off" style={{ marginLeft: "15rem" }} onSubmit={(e)=>this.processLoginButtonPressed(false, e)}>{this.renderCardContent()}</form>
   }
 
-  renderSignupForm = () => {
-    return <div style={{ width: '100%' }}>
-      <SignUp
-        navigateToLoginPress={() => {
-          //  this.handleChangeFocusedComponent('Login')
-          history.push(`${process.env.PUBLIC_URL}/user/login`);
-        }
-
-        } />
-    </div>
-  }
-
-  renderForgetPasswordForm = () => {
-    return <div style={{ width: '100%' }}>
-      <UpdatePassword navigateToLoginPress={() => {
-        //  this.handleChangeFocusedComponent('Login')
-        history.push(`${process.env.PUBLIC_URL}/user/login`);
-      }
-
-      } />
-    </div>
-
-  }
-
-  renderPage = () => {
-    switch (this.currentPage) {
-      case "login":
-        return this.renderLoginForm();
-
-      case "signup":
-        return this.renderSignupForm();
-
-      case "forget-password":
-        return this.renderForgetPasswordForm();
-
-      default:
-        return this.renderLoginForm();
-    }
-  }
-
-  handleChangeFocusedComponent = (value) => {
-    this.setState({ currentFocusedComponent: value });
-
-  }
 
   render() {
     const { classes } = this.props;
@@ -364,22 +429,8 @@ class Login extends React.Component {
       <MuiThemeProvider theme={ThemeDefault}>
         <Grid container>
           {this.state.loading && <CircularProgressWithLabel value={100} />}
-          {/* <Grid
-            item
-            xs={12}
-            sm={4}
-            md={3}
-            lg={3}
-            color={"primary"}
-            className={classes.appInfo}
-          >
-            {this.renderLeftPanel()}
-          </Grid> */}
           <Grid item xs={12} sm={9} md={9} lg={9} className={classes.parent}>
-            {/* {this.renderPage()} */}
             {this.renderLoginForm()}
-            {/* {this.state.currentFocusedComponent === "Signup" && this.renderSignupForm()}
-            {this.state.currentFocusedComponent === "ForgetPassword" && this.renderForgetPasswordForm()} */}
           </Grid>
         </Grid>
 
@@ -393,6 +444,28 @@ class Login extends React.Component {
             message={this.state.errMessage}
           />
         )}
+        <EnterOTPModal open={this.state.showOTPDialog}
+          handleClose={() => this.handleCloseOTPModal()}
+          onResend={(e) => this.onResendOTPClick(e)}
+          OTPModalTitle={this.state.otpModalTitle}
+          onSubmit={(OTP, clearOTPInput) => this.onSubmitOTP(OTP, clearOTPInput)}
+          verifySuccessMessage={this.state.verifySuccessMessage}
+          hideResendOTPButton={this.state.hideResendOTPButton}
+          showTimer={this.state.showTimer}
+          ResendButtonTitle={this.state.ResendButtonTitle}
+        />
+        <RegisterMFAModal
+          open={this.state.showMFAMethodSelectionModal}
+          handleClose={this.handleCloseMFASelectionModal}
+          onRegisterMFAClick={(selectedMethod) => { this.onRegisterMFAClick(selectedMethod) }}
+          registerSuccessMessage={this.state.registerSuccessMessage}
+        />
+        <OneTimeEmailUpdateModal
+          open={this.state.showOneTimeUpdateEmailIdModal}
+          currentEmail={this.state.currentEmail}
+          onUpdateEmailId={this.OnUpdateEmailIdClick}
+          oneTimeUpdateEmailIdSuccessMessage={this.state.oneTimeUpdateEmailIdSuccessMessage}
+        />
       </MuiThemeProvider>
     );
   }

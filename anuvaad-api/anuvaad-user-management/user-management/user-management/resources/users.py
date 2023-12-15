@@ -6,6 +6,7 @@ from anuvaad_auditor.loghandler import log_info, log_exception
 from flask import request, jsonify
 from anuvaad_auditor.errorhandler import post_error
 import config
+import re
 
 userRepo    =   UserManagementRepositories()
 
@@ -173,5 +174,60 @@ class Health(Resource):
     def get(self):
         response = {"code": "200", "status": "ACTIVE"}
         return jsonify(response)
+    
+
+class UpdateEmail(Resource):
+    def post(self):
+        try:
+            body = request.get_json()
+            if 'new_email' not in body or not body['new_email']:
+                return post_error("Data Missing", "new_email not found", None), 400
+            if 'userName' not in body or not body['userName']:
+                return post_error("Data Missing", "userName not found", None), 400
+            if 'password' not in body or not body['password']:
+                return post_error("Data Missing", "password not found", None), 400
+
+            log_info("Request for change of email received", MODULE_CONTEXT)
+            new_email, username, password = body['new_email'], body['userName'], body['password']
+            
+            # check for username, password
+            result = UserUtils.validate_user_login_input(username, password)
+            if result is not None:
+                log_info("credentials check failed for {}".format(username),MODULE_CONTEXT)
+                return result, 400
+            
+            # validate if email is correct
+            validity = UserUtils.validate_email(new_email)
+            if not validity:
+                log_info("new_email is not valid email",MODULE_CONTEXT)
+                return post_error("Invalid Email", "provided email is an invalid email", None), 400
+            
+            # discard emails with suvas.com/suvas.in providers
+            suvas_regex = "([a-zA-Z0-9_.+-]+@suvas\.(com|in))"
+            if re.match(suvas_regex,new_email):
+                log_info(f"suvas.com/suvas.in found in {new_email=}",MODULE_CONTEXT)
+                return post_error("Unsupported Email", "The email you entered can't receive OTPs at the moment. Kindly enter your email id which can receive OTP for future logins.", None), 400
+            
+            # change email
+            result = userRepo.change_email(username,new_email)
+            if 'errorID' in result.keys():
+                return result, 400
+            log_info("Request for email status successfull", MODULE_CONTEXT)
+            res = CustomResponse(Status.SUCCESS_CHANGE_EMAIL.value, result)
+            return res.getresjson(), 200
+        except Exception as e:
+            log_exception("Exception while getting status for email_change: " +
+                          str(e), MODULE_CONTEXT, e)
+            return post_error("Exception occurred", "Exception while getting email_change status::{}".format(str(e)), None), 400
 
 
+class ActiveUsers(Resource):
+    def get(self):
+        try:
+            result = userRepo.get_active_users()
+            log_info(f"active-users api successfull with data = {result}", MODULE_CONTEXT)
+            res = CustomResponse(Status.SUCCESS_ACTIVE_USERS.value, result)
+            return res.getresjson(), 200
+        except Exception as e:
+            log_exception(f"Exception while fetching active-users:{str(e)}", MODULE_CONTEXT, e)
+            return post_error("Exception occurred", f"Exception while fetching active-users::{str(e)}", None), 400

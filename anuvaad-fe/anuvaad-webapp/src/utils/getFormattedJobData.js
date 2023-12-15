@@ -26,6 +26,11 @@ export function get_document_details(input) {
       document["bleu_score"] = "...";
       document["spent_time"] = "...";
       document["workflowCode"] = job["workflowCode"];
+      document["user_id"] = job["metadata"]["userID"];
+
+      if(job["metadata"]["userName"]){
+        document["userName"] = job["metadata"]["userName"];
+      }
   
       // Granular status start
   
@@ -99,7 +104,9 @@ export function get_document_details(input) {
           };
           granularStatusArr.push(granularStatusObj);
         }
-  
+
+        document["isDocumentCameForCorrection"] = job["granularity"]["currentStatus"] === "manual_reediting_in_progress" ? true : false
+
       }
   
       document["granularStatus"] = granularStatusArr;

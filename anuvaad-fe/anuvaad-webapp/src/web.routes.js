@@ -173,7 +173,7 @@ class AppRoutes extends React.Component {
 
             <PrivateRoute
               path={`${process.env.PUBLIC_URL}/interactive-document/:jobid/:inputfileid/:modelId/:filename/:workflow/:source_language_code/:target_language_code`}
-              userRoles={["TRANSLATOR", "ANNOTATOR"]}
+              userRoles={["TRANSLATOR", "ANNOTATOR", "SUPERADMIN"]}
               component={DocumentEditorV1}
               title="Translate file"
               authenticate={this.authenticateUser}
@@ -321,7 +321,7 @@ class AppRoutes extends React.Component {
               path={`${process.env.PUBLIC_URL}/user-details`}
               dontShowLoader
               title={"User Details"}
-              userRoles={["ADMIN", "SUPERADMIN", "REVIEWER"]}
+              userRoles={["ADMIN", "SUPERADMIN"]}
               component={UserDetails}
               authenticate={this.authenticateUser}
               currentMenu="user-details"

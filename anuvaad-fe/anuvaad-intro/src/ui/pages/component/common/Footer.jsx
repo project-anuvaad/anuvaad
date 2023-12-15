@@ -95,6 +95,7 @@ function Footer() {
           xl={7}
           className={classes.footerGrid}
         >
+          <Typography variant="caption">Powered by EkStep Foundation</Typography>
           </Grid>
         
         <Grid

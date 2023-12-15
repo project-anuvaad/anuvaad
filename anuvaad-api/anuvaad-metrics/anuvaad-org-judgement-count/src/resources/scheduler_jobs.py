@@ -2,8 +2,10 @@ from models import jud_stats
 from utilities import MODULE_CONTEXT
 from anuvaad_auditor.loghandler import log_info, log_exception
 import config
-import datetime
+from datetime import datetime as dt
+from datetime import timedelta as td
 import os
+import traceback
 import pandas as pd
 from utilities import (
     write_to_csv_user,
@@ -29,6 +31,7 @@ schedule_job = BackgroundScheduler(timezone="Asia/Kolkata")
 
 stats = jud_stats()
 usr_collection, ch_collection = stats.mongo_connection()
+wfm_collection = stats.mongo_wfm_connection()
 log_info("Mongo connected", MODULE_CONTEXT)
 
 # class IST(datetime.tzinfo):
@@ -45,7 +48,7 @@ log_info("Mongo connected", MODULE_CONTEXT)
 
 # @.scheduled_job("interval", id="get_data_from_db", hours=6)
 @schedule_job.scheduled_job(
-    "cron", id="my_job_id1", day_of_week="mon-fri", hour="00,06,12,18", minute="00"
+    "cron", id="my_job_id1", day_of_week="mon-fri", hour="06,20", minute="00"
 )
 def get_trans_user_data_from_db_cron():
     users = config.EMAIL_NOTIFIER
@@ -74,6 +77,7 @@ def get_trans_user_data_from_db_cron():
         log_info(f"Generated alert email scheduler files not found ", MODULE_CONTEXT)
     user_docs = stats.get_all_users_active_inactive(usr_collection)
     user_df =pd.json_normalize(user_docs)
+
     log_info(
         f"Data returned from user {config.USER_COLLECTION} collection", MODULE_CONTEXT
     )
@@ -90,12 +94,28 @@ def get_trans_user_data_from_db_cron():
             ch_collection, from_date, end_date
         )
 
+        start_date = stats.get_custom_timestamp(from_date)
+        last_date = stats.get_custom_timestamp(end_date)
+        log_info(f"START DATE :: {start_date} && END DATE :: {last_date}",MODULE_CONTEXT)
+        wfm_docs = stats.translation_wfm_data(
+            wfm_collection, start_date, last_date
+        )
+
+        # wfm_docs = [x for x in wfm_docs]
+        # wfm_docs_df = pd.json_normalize(wfm_docs)
+        log_info(f"WORKFLOW MANAGER SHAPE :: {wfm_docs.shape}",MODULE_CONTEXT)
+        wfm_docs.to_csv(config.DOWNLOAD_FOLDER + "/" + "workflow_docs.csv")
+
         chdoc = [x for x in ch_docs]
         ch_doc_df=pd.json_normalize(chdoc)
         # ch_doc_df.dropna(subset=['orgID'], inplace=True)
         ch_doc_df.rename(columns = {'created_by':'userID'}, inplace = True)
         ch_doc_df.reset_index(drop=True, inplace=True)
+
+
         result_ch_doc = user_df.merge(ch_doc_df,indicator=False,how="right")
+        result_ch_doc = result_ch_doc.merge(wfm_docs, left_on='_id', right_on='jobID', how='inner')
+        result_ch_doc = result_ch_doc.dropna(subset=['orgID'])
         result_ch_doc.to_csv(config.DOWNLOAD_FOLDER + "/" + weekly_cron_file_name1)
 
         savedoc = [x for x in saved_docs]
@@ -104,6 +124,8 @@ def get_trans_user_data_from_db_cron():
         save_doc_df.rename(columns = {'created_by':'userID'}, inplace = True)
         save_doc_df.reset_index(drop=True, inplace=True)
         result_save_doc = user_df.merge(save_doc_df,indicator=False,how="right")
+        result_save_doc = result_save_doc.merge(wfm_docs, left_on='_id', right_on='jobID', how='inner')
+        result_save_doc = result_save_doc.dropna(subset=['orgID'])
         result_save_doc.to_csv(config.DOWNLOAD_FOLDER + "/" + weekly_cron_file_name2)
 
         result2 = result_save_doc.merge(result_ch_doc,indicator=False,how="right")
@@ -115,7 +137,7 @@ def get_trans_user_data_from_db_cron():
     except Exception as e:
         log_exception("Error in fetching the data: {}".format(e), MODULE_CONTEXT, e)
         msg = generate_email_notification(
-            users, "could not get the data something went wrong : {}".format(e)
+            users, f"could not get the data something went wrong : {traceback.format_exc()}"
         )
         send_email(msg)
         log_exception(
@@ -124,6 +146,58 @@ def get_trans_user_data_from_db_cron():
             e,
         )
         return
-    
 
+@schedule_job.scheduled_job(
+    "cron", id="reviewer_data_job_1", day_of_week="mon-fri", hour="08,18", minute="00"
+)
+def get_reviewer_data(base=False):
+    try:
+        log_info("cron for reviewer data collection started", MODULE_CONTEXT)
+        if base:
+            # reviewer-data-base-file
+            start_date = dt(*config.REVIEWER_DATA_BASE_SDATE)
+            end_date = dt(*config.REVIEWER_DATA_BASE_EDATE)
+            cur_file = config.DOWNLOAD_FOLDER + "/" + config.REVIEWER_DATA_BASEFILE
+            log_info(f"opted reviewer-data-updation(base) : s_date={start_date}|e_date={end_date}", MODULE_CONTEXT)
+        else:
+            # reviewer-data-cron-file
+            start_date = dt(*config.REVIEWER_DATA_BASE_EDATE) + td(days=1)
+            end_date = dt.now()
+            cur_file = config.DOWNLOAD_FOLDER + "/" + config.REVIEWER_DATA_CRONFILE
+            log_info(f"opted reviewer-data-updation(cron) : s_date={start_date}|e_date={end_date}", MODULE_CONTEXT)
+        start_date = stats.get_custom_timestamp(start_date)
+        end_date = stats.get_custom_timestamp(end_date)
+        # get data
+        data = stats.get_reviewer_data_from_wfm(wfm_collection, start_date, end_date)
+        log_info(f"fetch for reviewer-data complete", MODULE_CONTEXT)
+        # delete existing file
+        if os.path.exists(cur_file):
+            os.remove(cur_file)
+            log_info(f"deleted file : {cur_file}", MODULE_CONTEXT)
+        # save data
+        data.to_csv(cur_file, index=False)
+        log_info(f"cron for reviewer-data ended with save-file : {cur_file}", MODULE_CONTEXT)
+    except Exception as e:
+        log_exception("Error in reviewer-data-cron : {}".format(e), MODULE_CONTEXT, e)
+        msg = generate_email_notification(config.EMAIL_NOTIFIER, f"could not get the reviewer-data something went wrong : {e}")
+        send_email(msg)
+        log_exception(f"Generated alert email in exception reviewer-data-cron job : {str(e)}", MODULE_CONTEXT, e,)
+    return None
+
+def manual_start_reviewerdata_scheduler(base):
+    for job in schedule_job.get_jobs():
+        if job.id == "reviewer_data_job_1":
+            job.func(base=base)
+
+def manual_start_transuserdata_scheduler():
+    for job in schedule_job.get_jobs():
+        if job.id == "my_job_id1":
+            job.func()
+
+# static run (only once when server starts)
+manual_start_reviewerdata_scheduler(base=True)
+manual_start_reviewerdata_scheduler(base=False)
+manual_start_transuserdata_scheduler()
+
+# initiate cron job
 schedule_job.start()

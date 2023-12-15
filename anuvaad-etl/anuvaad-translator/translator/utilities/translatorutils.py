@@ -3,13 +3,17 @@ import logging
 import os
 import re
 import time
+import zlib
 
 import requests
+import hashlib
 from configs.translatorconfig import download_folder, nmt_fetch_models_url, tmx_disable_roles, utm_disable_roles
 from anuvaad_auditor.loghandler import log_exception, log_error, log_info
+from tmx.tmxrepo import TMXRepository
 
 log = logging.getLogger('file')
 
+tmxRepo = TMXRepository()
 
 class TranslatorUtils:
     def __init__(self):
@@ -108,3 +112,44 @@ class TranslatorUtils:
         return pattern.sub(lambda x: replacement_dict[x.group(0)], sentence)
 
 
+    def get_sentences_from_store(self,keys,translate_wf_input):
+            data_keys=[]
+            for key in keys:
+                if "userID" not in key or not key["userID"] or "src" not in key or not key["src"] or "locale" not in key or not key["locale"]:
+                    return None
+                log_info("Fetching sentences from redis store for userID:{} | src:{}".format(key["userID"],key["src"]), translate_wf_input)
+                sentence_hash= key["userID"] + "___" + key["src"]+ "___"+key["locale"]
+                sent_key =hashlib.sha256(sentence_hash.encode('utf_16')).hexdigest()
+                data_keys.append(sent_key)
+            try:
+                result=self.get_sentence_by_keys(data_keys,translate_wf_input)
+                return result
+            except Exception as e:
+                log_exception("Exception while fetching sentences from redis store: " + str(e), translate_wf_input, e)
+                return None
+        
+    def get_sentence_by_keys(self,keys,translate_wf_input):
+        try:
+            client = tmxRepo.get_utm_redis_instance()
+            result = []
+            for key in keys:
+                sent_obj={}
+                val=client.lrange(key, 0, -1)
+                #hash_values = client.hget("UTM",key)
+                if val != None and len(val) > 0:
+                    log_info(f"VAL VALUE :: {val}",translate_wf_input)
+                    val = zlib.decompress(val[0]).decode()
+                    # val=client.lrange(key, 0, -1)
+                    sent_obj["key"]=key
+                    sent_obj["value"]=[val]
+                    result.append(sent_obj)
+                    return result
+            return result
+                # else:
+                #     sent_obj["key"]=key
+                #     sent_obj["value"]=[]
+                #     result.append(sent_obj)
+                #     return result
+        except Exception as e:
+            log_exception("Exception in fetching sentences from redis store  | Cause: " + str(e), translate_wf_input, e)
+            return None

@@ -16,6 +16,7 @@ from utilities import (
     write_to_csv_user,
     generate_email_notification,
     send_email,
+    get_asr_service_code
 )
 from services import (
     copy_cron_csv,
@@ -23,6 +24,7 @@ from services import (
 )
 import uuid
 import requests
+from .scheduler_jobs import manual_start_reviewerdata_scheduler
 
 # from flask_mail import Mail, Message
 # from flask import render_template
@@ -360,3 +362,158 @@ def dropdown_lang():
         data = json.load(f)
     out = CustomResponse(Status.SUCCESS.value, data)
     return out.getres()
+
+
+@app.route(config.API_URL_PREFIX + "/anuvaad-data/v1/upload_doc_count", methods=["GET"])
+def fetch_reviewer_data():
+    # get data from reviewer-data files
+    r_base_file = f'{config.DOWNLOAD_FOLDER}/{config.REVIEWER_DATA_BASEFILE}'
+    r_cron_file = f'{config.DOWNLOAD_FOLDER}/{config.REVIEWER_DATA_CRONFILE}'
+    df = pd.DataFrame()
+    for r_file in [r_base_file,r_cron_file]:
+        try:
+            df1 = pd.read_csv(r_file)
+        except FileNotFoundError: 
+            df1 = pd.DataFrame()
+        # merge diff files data
+        df = pd.concat([df,df1],axis=0,ignore_index=True)
+    # aggreagate data
+    if len(df) > 0 :
+        # pre filters
+        df = df.dropna(subset=['org'])
+        # mask unknown org
+        if config.METRICS_ORG_MASKING:
+            df = df[~df['org'].isin(config.MASK_ORGS)]
+        # replace some orgs
+        df['org'] = df['org'].replace(config.ORG_REPLACER)
+        # apply filter to src,tgt langs
+        for x_col in ['tgt','src']:
+            # remove alpha from lang string
+            df[x_col] = df[x_col].replace({'\(Alpha\)':""},regex=True)
+            # strip lang string
+            df[x_col] = df[x_col].str.strip()
+            # remove not supported rows 
+            df = df[~df[x_col].str.contains('Not Supported')]
+        # aggregate data
+        df = df.groupby(['org', 'src', 'tgt']).apply(lambda x : pd.Series({'count':x.groupby('status').sum().to_dict()['count']}))
+        df = pd.concat([df.reset_index(),pd.json_normalize(df['count'])],axis=1)
+        del df['count']
+        mapper = {'in_progress': "int", 'uploaded': "int"}
+        renamer = {'count.in_progress': "in_progress", 'count.uploaded': "uploaded"}
+        df = df.rename(columns=renamer)
+        # create default columns with 0 if not preset - start 
+        # (if no uploaded / inprogress doc then this logic is required)
+        for x_col in list(mapper.keys()): 
+            if x_col not in df.columns:
+                df[x_col] = 0 
+        # create default columns with 0 if not preset - end
+        df[list(mapper.keys())] = df[list(mapper.keys())].fillna(0)
+        df = df.astype(mapper)
+    df = {
+        'total_uploaded': int(df['uploaded'].sum()),
+        'total_inprogress': int(df['in_progress'].sum()),
+        'total_orgs': len(df['org'].unique()),
+        'data': df.reset_index(drop=True).to_dict('record'),
+    }
+    out = CustomResponse(Status.SUCCESS.value, df)
+    return out.getres()
+
+
+@app.route(config.API_URL_PREFIX + "/anuvaad-data/v1/upload_doc_count", methods=["POST"])
+def update_reviewer_data():
+    if request.method != "POST":
+        return None
+    body = request.get_json()
+    base = bool(body.get('base',False))
+    manual_start_reviewerdata_scheduler(base)
+    out = CustomResponse(Status.SUCCESS.value, f"updated reviewer data for base={base}")
+    return out.getres()
+
+@app.route(config.API_URL_PREFIX + "/transliteration", methods=["POST"])
+def transliterate():
+    if request.method != "POST":
+        return None
+    try:
+        payload = json.dumps(request.get_json())
+        headers = {
+        'Authorization': config.ACCESS_TOKEN
+        }
+        response = requests.request("POST", config.TRANSLITERATION_URL, headers=headers, data=payload)
+        if response.status_code >=200 and response.status_code <= 204:
+            out = CustomResponse(Status.SUCCESS.value, response.json())
+            return out.getres()
+        status = Status.SYSTEM_ERR.value
+        status["message"] = "Unable to perform transliteration at this point of time."
+        out = CustomResponse(status, None)
+        return out.getres()
+    except Exception as e:
+        log_exception("Error in transliteration: {}".format(e), MODULE_CONTEXT, e)
+        status = Status.SYSTEM_ERR.value
+        status["message"] = "Unable to perform transliteration at this point of time. " + str(e)
+        out = CustomResponse(status, None)
+        return out.getres()
+
+@app.route(config.API_URL_PREFIX + "/asr", methods=["POST","GET"])
+def asr():
+    if request.method == "GET":
+        sourceLanguage = request.args.get('sourceLanguage')
+        sourceLanguage = get_asr_service_code(sourceLanguage)
+        if sourceLanguage is None:
+            status = Status.SUCCESS.value
+            status["message"] = "The language selected is not supported."
+            status["ok"] = False
+            out = CustomResponse(status, None)
+            return out.getres()
+        else:
+            status = Status.SUCCESS.value
+            status["ok"] = True
+            status["message"] = "The language selected is supported."
+            out = CustomResponse(status, None)
+            return out.getres()
+    if request.method == "POST":
+        try:
+            json_input = request.get_json()
+            sourceLanguage = get_asr_service_code(json_input["sourceLanguage"])
+            if sourceLanguage is None:
+                status = Status.SUCCESS.value
+                status["message"] = "The language selected is not supported."
+                status["ok"] = False
+                out = CustomResponse(status, None)
+                return out.getres()
+            url = config.ASR_URL+"?serviceId="+get_asr_service_code(json_input["sourceLanguage"])
+            payload = {
+                    "audio": [
+                        {
+                        "audioContent": json_input["audioContent"]
+                        }
+                    ],
+                    "config": {
+                        "audioFormat": "wav",
+                        "transcriptionFormat": {
+                        "value": "transcript"
+                        },
+                        "language": {
+                        "sourceLanguage": json_input["sourceLanguage"]
+                        }
+                    },
+                    "controlConfig": {
+                        "dataTracking": False
+                    }
+                    }
+            headers = {
+            'Authorization': config.ACCESS_TOKEN
+            }
+            response = requests.request("POST", url, headers=headers, data=json.dumps(payload))
+            if response.status_code >=200 and response.status_code <= 204:
+                out = CustomResponse(Status.SUCCESS.value, response.json())
+                return out.getres()
+            status = Status.SYSTEM_ERR.value
+            status["message"] = "Unable to perform ASR at this point of time."
+            out = CustomResponse(status, None)
+            return out.getres()
+        except Exception as e:
+            log_exception("Error in ASR: {}".format(e), MODULE_CONTEXT, e)
+            status = Status.SYSTEM_ERR.value
+            status["message"] = "Unable to perform ASR at this point of time. " + str(e)
+            out = CustomResponse(status, None)
+            return out.getres()

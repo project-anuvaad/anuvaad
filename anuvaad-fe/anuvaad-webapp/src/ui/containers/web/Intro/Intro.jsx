@@ -68,7 +68,7 @@ const Intro = (props) => {
                                 className={classes.introPageLinkCard}
                             >
                                 <DescriptionIcon fontSize='large' style={{ fontSize: "10rem" }} htmlColor='rgb(44, 39, 153)' />
-                                <div><Typography variant='subtitle1'>Digitize Document</Typography></div>
+                                <div><Typography variant='h5'>Digitize Document</Typography></div>
                                 <Typography variant='caption'>Digitize Document helps to convert scanned documents into digital format. This process recognizes text in scanned (non hand-written) documents and converts it into searchable text.</Typography>
                             </div>
                         </Link>
@@ -81,7 +81,7 @@ const Intro = (props) => {
                             <div
                                 className={classes.introPageLinkCard}                        >
                                 <TranslateIcon fontSize='large' style={{ fontSize: "10rem" }} htmlColor='rgb(44, 39, 153)' />
-                                <div><Typography variant='subtitle1'>Translate Document</Typography></div>
+                                <div><Typography variant='h5'>Translate Document</Typography></div>
                                 <Typography variant='caption'>Translate Document helps to convert documents from one language to another. Currently, English-Indic and Indic-English translations are supported.</Typography>
                             </div>
                         </Link>
@@ -95,7 +95,7 @@ const Intro = (props) => {
                                 className={classes.introPageLinkCard}
                             >
                                 <SubjectIcon fontSize='large' style={{ fontSize: "10rem" }} htmlColor='rgb(44, 39, 153)' />
-                                <div><Typography variant='subtitle1'>Translate Sentence</Typography></div>
+                                <div><Typography variant='h5'>Translate Sentence</Typography></div>
                                 <Typography variant='caption'>Translate Sentence helps to convert sentences from one language to another.</Typography>
                             </div>
                         </Link>

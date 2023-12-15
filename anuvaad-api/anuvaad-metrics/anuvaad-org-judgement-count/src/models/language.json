@@ -64,6 +64,71 @@
       "code": "or",
       "label": "Odia",
       "active": true
+    },
+    {
+      "code": "brx",
+      "label": "Bodo",
+      "active": true
+    },
+    {
+      "code": "doi",
+      "label": "Odia",
+      "active": true
+    },
+    {
+      "code": "gom",
+      "label": "Konkani",
+      "active": true
+    },
+    {
+      "code": "ks",
+      "label": "Kashmiri",
+      "active": true
+    },
+    {
+      "code": "ks_Deva",
+      "label": "Kashmiri(Devanagari)",
+      "active": true
+    },
+    {
+      "code": "mai",
+      "label": "Maithili",
+      "active": true
+    },
+    {
+      "code": "mni",
+      "label": "Manipuri",
+      "active": true
+    },
+    {
+      "code": "mni_Beng",
+      "label": "Manipuri(Bengali)",
+      "active": true
+    },
+    {
+      "code": "sa",
+      "label": "Sanskrit",
+      "active": true
+    },
+    {
+      "code": "sat",
+      "label": "Santali",
+      "active": true
+    },
+    {
+      "code": "sd",
+      "label": "Sindhi",
+      "active": true
+    },
+    {
+      "code": "sd_Deva",
+      "label": "Sindhi(Devanagari)",
+      "active": true
+    },
+    {
+      "code": "ur",
+      "label": "Urdu",
+      "active": true
     }
   ],
   "orgs": [
@@ -74,7 +139,7 @@
       "code": "IITB"
     },
     {
-      "code": "CHATTISGARH"
+      "code": "CHHATTISGARH"
     },
     {
       "code": "NEPAL"

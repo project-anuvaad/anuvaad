@@ -711,6 +711,14 @@
             "active": true,
             "whiteList": false,
             "description": "API to update NMT models"
-        }
+        },
+        {
+            "id":"d47e0b94-41f1-409b-b307-8228ec5cc2f8",
+            "uri":"/anuvaad-metrics/transliteration",
+            "module":"ANUVAAD-METRICS",
+            "active":true,
+            "whiteList":true,
+            "description":"API for performing transliteration"
+        } 
     ]
 }

@@ -1,6 +1,7 @@
 import React from "react";
 import "../../../styles/web/InteractivePreview.css";
 import { Document, Page } from "react-pdf/dist/entry.webpack";
+import '../../../styles/web/PDFRenderer.css';
 
 import DownloadFile from "../../../../flux/actions/apis/download/download_file"
 
@@ -30,7 +31,9 @@ class PDFRenderer extends React.Component {
   componentDidMount() {
     this.setState({ msg: "Loading..." })
     let user_profile = JSON.parse(localStorage.getItem('userProfile'));
-    let obj = new DownloadFile(this.props.filename, user_profile.userID)
+    let userId = user_profile.roles[0].roleCode === "SUPERADMIN" ? this.props.userId : user_profile.userID;
+
+    let obj = new DownloadFile(this.props.filename, userId);
 
     const apiReq1 = fetch(obj.apiEndPoint(), {
       method: 'get',
@@ -62,7 +65,7 @@ class PDFRenderer extends React.Component {
   renderPDF = (url, pageNo) => {
     return (
       <div style={{ maxHeight: "88vh", overflowY: "auto", display: "flex", flexDirection: "row", justifyContent: "center" }} id="pdfDocument">
-        <Document loading={""} noData = {this.state.msg} file={this.state.url} onLoadSuccess={this.onDocumentLoadSuccess} style={{ align: "center", display: "flex", flexDirection: "row", justifyContent: "center" }}>
+        <Document loading={""} renderMode={"custom"} noData = {this.state.msg} file={this.state.url} onLoadSuccess={this.onDocumentLoadSuccess} style={{ align: "center", display: "flex", flexDirection: "row", justifyContent: "center" }}>
           {/* {
                 Array.from(
                   new Array(this.state.numPages),
@@ -74,7 +77,7 @@ class PDFRenderer extends React.Component {
                   ),
                 )
               } */}
-          <Page scale={this.state.pageScaleWidth} pageNumber={Number(pageNo)} onLoadSuccess={this.onPageLoad} />
+          <Page scale={this.state.pageScaleWidth} pageNumber={Number(pageNo)} onLoadSuccess={this.onPageLoad}  />
         </Document>
       </div>
     )

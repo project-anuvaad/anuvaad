@@ -26,7 +26,22 @@ DAILY_CRON_FILE_NAME2 = "language_wise_JUD_STATS2_daily.csv"
 STATS_FILE = "jud_stats.csv"
 STATS_FILE_COPY = "jud_stats_copy.csv"
 
-EMAIL_NOTIFIER = ["srihari.nagaraj@tarento.com","apoorva.bellary@tarento.com"]
+REVIEWER_DATA_BASEFILE =  "reviewer_data_base.csv"
+REVIEWER_DATA_CRONFILE =  "reviewer_data_cron.csv"
+REVIEWER_DATA_BASE_SDATE =  [2000,1,1]
+REVIEWER_DATA_BASE_EDATE =  [2023,4,30]
+
+MASK_ORGS = ["ANUVAAD", "TARENTO_TESTORG", "NONMT", "ECOMMITTEE ", 
+             "SC_TC", "SUVAS", "ULCA_ANUVAAD", "ECOMMITTEE", "IITB", "ASSAM"]
+ORG_REPLACER= {
+    'NEPAL':'SIKKIM',
+    'SIMLA':'SHIMLA',
+    'CHATTISGARH':'CHHATTISGARH',
+}
+
+METRICS_ORG_MASKING = (os.getenv('METRICS_ORG_MASKING', 'True') == 'True') # if (value is 'True' or env does not exists) then boolTrue else boolFalse
+
+EMAIL_NOTIFIER = ["rathan.muralidhar@tarento.com","aswin.pradeep@tarento.com"]
 
 
 USER_COLLECTION = "sample"
@@ -65,27 +80,35 @@ LANG_MAPPING = {
     "ml": "Malayalam",
     "ma": "Marathi",
     "pa": "Punjabi",
-    "kok": "Konkani",
+    "kok": "Konkani(MH)",
     "sa": "Sanskrit",
-    "sd": "Sindhi",
+    "sd": "Sindhi(Arab)",
     "ur": "Urdu",
     "ne": "Nepali",
     "brx": "bodo",
     "doi": "Dogri",
     "sat": "Santali",
-    "mni": "Manipuri",
+    "mni": "Manipuri(Mtei)",
     "lus": "Lushai",
     "kha": "Khasi",
-    "ks": "Kashmiri",
+    "ks": "Kashmiri(Arab)",
     "mai": "Maithili",
     "pnr": "Panim",
     "grt": "Garo",
     "si": "Sinhalese",
     "njz": "Nishi",
     "as": "Assamese",
+    'gom': "Konkani", 
+    'ks_Deva': "Kashmiri(Devanagari)", 
+    'mni_Beng': "Manipuri(Bengali)",
+    'sd_Deva': "Sindhi(Devanagari)",
 }
 
 jud = os.environ.get('ANUVAAD_JUD_METRICS','https://developers.anuvaad.org')
+
+TRANSLITERATION_URL = os.environ.get('TRANSLITERATION_URL','https://api.dhruva.ai4bharat.org/services/inference/transliteration')
+ASR_URL = os.environ.get('ASR_URL',"https://api.dhruva.ai4bharat.org/services/inference/asr")
+ACCESS_TOKEN = os.environ.get('DHRUVA_ACCESS_TOKEN',"None")
 
 backup_file_1 = "d735bdc62fa94076bb5adf_USER_WISE_JUD_STATS1.csv"
 backup_file_2 = "d735bdc62fa94076bb5adf_USER_WISE_JUD_STATS2.csv"

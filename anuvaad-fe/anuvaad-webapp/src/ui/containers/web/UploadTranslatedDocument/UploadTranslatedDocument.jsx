@@ -147,8 +147,8 @@ class UploadTranslatedDocument extends Component {
             
             let uploadFileName = uploadJobName?.substr(0, uploadJobName?.lastIndexOf("."));
             let selectedFileName = selectedJobName?.substr(0, selectedJobName?.lastIndexOf("."))
-            if (selectedFileName + "_translated" !== uploadFileName) {
-                alert(`Translated file name should be "${selectedFileName}_translated". Please rename the file and try again.`)
+            if (selectedFileName + "_translated_" + this.state.selectedJob?.target_language_code !== uploadFileName) {
+                alert(`Translated file name should be "${selectedFileName}_translated_${this.state.selectedJob?.target_language_code}". Please rename the file and try again.`)
             } else {
                 this.setState({ showCompleteConfirmBox: true })
             }
@@ -297,7 +297,30 @@ class UploadTranslatedDocument extends Component {
                         }}
                         renderInput={(params) => <TextField {...params} placeholder="Select Source Document" variant="outlined" />}
                     />
+                    <Typography variant="caption" style={{fontWeight: "bold", color: "rgb(0 0 0 / 52%)"}}>Note: Documents translated within the last 30 days are shown here.</Typography>
                 </Grid>
+
+                {this.state.files[0]?.name && <><Grid item xs={12} sm={12} lg={12} xl={12} style={{ marginTop: "3%" }}>
+                    <Typography
+                        style={{
+                            fontSize: "0.9rem",
+                            fontWeight: "600",
+                            fontFamily: "Roboto",
+                            marginBottom: 2
+                        }}
+                    >
+                        Upload file name
+                    </Typography>
+                </Grid>
+
+                <Grid item xs={12} sm={12} lg={12} xl={12}>
+                    <TextField
+                        value={this.state.files[0]?.name}
+                        disabled
+                        fullWidth
+                        variant="outlined"
+                    />
+                </Grid></>}
             </Grid>
         );
     };
@@ -378,12 +401,6 @@ class UploadTranslatedDocument extends Component {
                             <Grid item xs={12} sm={6} lg={6} xl={6}>
                                 {this.renderSourceDocumentItems()}
                             </Grid>
-                            <Grid item xs={12} sm={6} lg={6} xl={6}>
-                                {this.state.files[0]?.name &&
-                                    <Typography variant="subtitle2">Upload file name - {this.state.files[0]?.name}</Typography>
-                                }
-                            </Grid>
-                            {/* this.state.files[0]?.name */}
                             <Grid
                                 item
                                 xs={12}

@@ -5,6 +5,7 @@ import os
 import pandas as pd
 from anuvaad_auditor.loghandler import log_info, log_exception
 from anuvaad_auditor.errorhandler import post_error
+from datetime import datetime as dt
 
 from utilities import MODULE_CONTEXT
 
@@ -17,6 +18,9 @@ class jud_stats(object):
             config.FILE_CONTENT_COLLECTION
         ]
         return usr_collection, ch_collection
+
+    def mongo_wfm_connection(self):
+        return connectmongo()[config.WFM_DB][config.WFM_COLLECTION]
 
     def fetch_data_machine_trans_tokenised(
         self, ch_collection, user, from_date, end_date
@@ -129,7 +133,10 @@ class jud_stats(object):
                 [
                     {
                         "$match": 
-                                {"data_type": "text_blocks","created_on": {"$gte": from_date, "$lte": end_date}},    
+                                {
+                                    "data_type": "text_blocks",
+                                    "created_on": {"$gte": from_date, "$lte": end_date},
+                                 },    
                     },
                     {"$unwind": "$data.tokenized_sentences"},
                     {
@@ -161,7 +168,10 @@ class jud_stats(object):
                 [
                     {
                         "$match": 
-                                {"data_type": "text_blocks","created_on": {"$gte": from_date, "$lte": end_date}},
+                                {
+                                    "data_type": "text_blocks",
+                                    "created_on": {"$gte": from_date, "$lte": end_date},
+                                },
                     },
                     {"$unwind": "$data.tokenized_sentences"},
                     {"$match": {"data.tokenized_sentences.save": True}},
@@ -256,15 +266,15 @@ class jud_stats(object):
 
     def get_time_frame_for_analytics(self):
         from_date = datetime.strptime("2000-01-01", "%Y-%m-%d")
-        now = datetime.now()
-        date_time = now.strftime("%Y-%m-%d")
-        end_date = datetime.strptime(str(date_time), "%Y-%m-%d")
+        end_date = datetime.now()
+        # date_time = now.strftime("%Y-%m-%d")
+        # end_date = datetime.strptime(str(date_time), "%Y-%m-%d")
         return from_date, end_date
 
     def file_validation(self):
-        file_name1 = config.DAILY_CRON_FILE_NAME1
-        file_name2 = config.DAILY_CRON_FILE_NAME2
-        stats_file_copy = config.STATS_FILE_COPY
+        file_name1 = config.WEEKLY_CRON_FILE_NAME1
+        file_name2 = config.WEEKLY_CRON_FILE_NAME2
+        stats_file_copy = config.STATS_FILE
         # file_name2 = "/home/sriharimn/Downloads/language_wise_JUD_STATS2.csv"
         # file_name1 = "/home/sriharimn/Downloads/language_wise_JUD_STATS1.csv"
         file_name1 = os.path.join(config.DOWNLOAD_FOLDER, file_name1)
@@ -276,11 +286,13 @@ class jud_stats(object):
             df = pd.read_csv(stats)
             df.dropna(subset=['orgID'], inplace=True)
             # result = df1.merge(df, indicator=True, how="right")
+            df['orgID'] = df['orgID'].replace(config.ORG_REPLACER)
             result = df.sort_values(by=["orgID"], ascending=True)
-#             mask = result["orgID"].isin(
-#                 ["ANUVAAD", "TARENTO_TESTORG", "NONMT", "ECOMMITTEE "]
-#             )
-#             result = result[~mask]
+            if config.METRICS_ORG_MASKING:
+                mask = result["orgID"].isin(
+                    config.MASK_ORGS
+                )
+                result = result[~mask]
         else:
             df = pd.read_csv(file_name1)
             df1 = pd.read_csv(file_name2)
@@ -291,8 +303,10 @@ class jud_stats(object):
             df1.dropna(how="all", axis=1, inplace=True)
             df1.dropna(subset=['orgID'], inplace=True)
             df.dropna(subset=['orgID'], inplace=True)
-            result = df1.merge(df, indicator=True, how="right")
-            result = df.sort_values(by=["orgID"], ascending=True)
+            result = pd.merge(df, df1[['_id', 'saved_sent_count']], on='_id', how='left')
+            result = result.sort_values(by=["orgID"], ascending=True)
+            result['saved_sent_count'].fillna(0, inplace=True)
+            result['saved_sent_count'] = result['saved_sent_count'].astype(int)
 #             mask = result["orgID"].isin(
 #                 ["ANUVAAD", "TARENTO_TESTORG", "NONMT", "ECOMMITTEE "]
 #             )
@@ -443,6 +457,9 @@ class jud_stats(object):
             for i, j in enumerate(keyss):
                 if keyss[i]["tgt_lang"] in config.LANG_MAPPING.keys():
                     keyss[i]["tgt_label"] = config.LANG_MAPPING[keyss[i]["tgt_lang"]]
+                else:
+                    keyss[i]["tgt_label"] = keyss[i]["tgt_lang"]
+                    keyss[i]["error"] = 'language_code missing from config'
             total_docs = sum(c["total_doc"] for c in keyss)
             total_documemt_sentence_count = sum(c["doc_sent_count"] for c in keyss)
             total_verified_sentence_count = sum(c["verified_sentence"] for c in keyss)
@@ -474,6 +491,9 @@ class jud_stats(object):
 
             if keyss[i]["tgt_lang"] in config.LANG_MAPPING.keys():
                 keyss[i]["tgt_label"] = config.LANG_MAPPING[keyss[i]["tgt_lang"]]
+            else:
+                keyss[i]["tgt_label"] = keyss[i]["tgt_lang"]
+                keyss[i]["error"] = 'language_code missing from config'
         total_docs = sum(c["total_doc"] for c in keyss)
         total_documemt_sentence_count = sum(c["doc_sent_count"] for c in keyss)
         total_verified_sentence_count = sum(c["verified_sentence"] for c in keyss)
@@ -483,3 +503,72 @@ class jud_stats(object):
             total_verified_sentence_count,
             keyss,
         )
+
+    def translation_wfm_data(self, wfm_collection, fromdate, todate):
+        docs = wfm_collection.find(
+            {
+                "startTime": {
+                    "$gte": fromdate, 
+                    "$lte": todate
+                },
+                "workflowCode": {
+                    '$in': ["DP_WFLOW_FBT", "WF_A_FCBMTKTR", "DP_WFLOW_FBTTR", "WF_A_FTTKTR"]
+                },
+                "active": True
+            },
+            {
+                "jobID":1,
+                "_id":0
+            }
+        )
+        docs = pd.DataFrame(list(docs))
+        # docs = pd.concat([docs,pd.json_normalize(docs['_id'])],axis=1)
+        # del docs['_id']
+        # docs = docs.dropna(subset=['org'])
+        # for x_col in ['org','src','tgt']:
+        #     docs[x_col] = docs[x_col].str.strip()
+        # print(docs.to_string())
+        return docs
+
+
+    def get_reviewer_data_from_wfm(self, wfm_collection, fromdate, todate):
+        docs = wfm_collection.aggregate(
+            [
+                {
+                    "$match": {
+                        "startTime": {
+                            "$gte": fromdate, 
+                            "$lte": todate,  
+                        },
+                        "workflowCode": {
+                            '$in': ["DP_WFLOW_FBT", "WF_A_FCBMTKTR", "DP_WFLOW_FBTTR", "WF_A_FTTKTR"]
+                        },
+                        "active": True,
+                    },
+                },
+                {
+                    "$group": {
+                        "_id": {
+                            'org': "$metadata.orgID",
+                            'status': {
+                                "$cond": [{"$eq": ["$granularity.currentStatus", "parallel_document_uploaded"]}, "uploaded", "in_progress"]
+                            },
+                            "src": {'$first': "$input.files.model.source_language_name"},
+                            "tgt": {'$first': "$input.files.model.target_language_name"},
+                        },
+                        "count": {"$sum": 1}
+                    }},
+            ]
+        )
+        docs = pd.DataFrame(list(docs))
+        docs = pd.concat([docs,pd.json_normalize(docs['_id'])],axis=1)
+        del docs['_id']
+        docs = docs.dropna(subset=['org'])
+        for x_col in ['org','src','tgt']:
+            docs[x_col] = docs[x_col].str.strip()
+        # print(docs.to_string())
+        return docs
+
+    def get_custom_timestamp(self,dt_obj: dt):
+        return dt_obj.timestamp()*1000
+

@@ -173,6 +173,7 @@ class UserEventView extends React.Component {
         options: {
           filter: false,
           sort: false,
+          viewColumns: false,
         },
       },
       {
@@ -181,6 +182,7 @@ class UserEventView extends React.Component {
         options: {
           filter: false,
           sort: false,
+          viewColumns: false,
         },
       },
       {
@@ -189,6 +191,7 @@ class UserEventView extends React.Component {
         options: {
           filter: false,
           sort: false,
+          viewColumns: false,
         },
       },
       {

@@ -134,6 +134,9 @@ export default function DrawerAppBar(props) {
           </Button>
         </Grid>
       </Grid>
+      <Grid sx={{position: "absolute", bottom: 50, width: "100%"}}>      
+        <Typography variant="caption" sx={{fontWeight: "bold", color: "#000000"}}>Powered by EkStep Foundation</Typography>
+      </Grid>
     </Box>
   );
 
@@ -147,7 +150,8 @@ export default function DrawerAppBar(props) {
         component="nav"
         sx={{
           background: "white",
-          height: "80px",
+          minHeight: "80px",
+          maxHeight: "100px",
           padding: "15x 0px 0px 50px",
         }}
       >
@@ -260,8 +264,9 @@ export default function DrawerAppBar(props) {
               mr: 3,
             }}
           >
-            <Link to={`/`}>
+            <Link to={`/`} style={{display: "flex", flexDirection: "column", alignItems: "center"}}>
               <img src={Anuvaanlogo} style={{ maxWidth: "83px" }} alt="logo" />
+              <Typography variant="caption" sx={{fontWeight: "bold", color: "#000000", marginTop: -1.5}}>Powered by EkStep Foundation</Typography>
             </Link>
           </Grid>
         </Toolbar>

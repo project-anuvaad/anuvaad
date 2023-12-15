@@ -73,7 +73,7 @@ class StartDigitizationUpload extends React.Component {
             message: "File uplaoded successfully",
             variant: "success",
             showComponent: false,
-            workflow: localStorage.getItem("roles") === "TRANSLATOR" ? "WF_A_FCWDLDBSOD15GVOTK" : "",
+            workflow: localStorage.getItem("roles") === "TRANSLATOR" ? "WF_A_FCWDLDBSOD20TESOTK" : "",
             worflow_codes: [{
                 code: 'WF_A_FCOD10GVOTK',
                 version: '1.0'
@@ -135,7 +135,7 @@ class StartDigitizationUpload extends React.Component {
             this.fetchDocumentDigitizeProcess([this.props.workflowStatus.jobID]);
 
             setInterval(() => {
-                if (this.state.documentState.status === "INPROGRESS") {
+                if (this.state.documentState.status === "INPROGRESS" || this.state.documentState.status === "STARTED") {
                     this.fetchDocumentDigitizeProcess([this.props.workflowStatus.jobID]);
                 } else {
                     return
@@ -271,7 +271,7 @@ class StartDigitizationUpload extends React.Component {
                             <MenuItem
                                 id={lang.language_name}
                                 key={lang.language_code}
-                                style={{ fontSize: "16px", fontFamily: "Roboto" }}
+                                style={{ fontSize: "16px", fontFamily: "Roboto", color: lang.language_name.includes('Alpha') ? "rgba(0,0,0,0.5)" : '#000000' }}
                                 value={lang.language_code + ''}
                             >{lang.language_name}</MenuItem>)
                     }

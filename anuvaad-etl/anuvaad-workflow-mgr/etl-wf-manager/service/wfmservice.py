@@ -9,14 +9,18 @@ from validator.wfmvalidator import WFMValidator
 from configs.wfmconfig import anu_etl_wfm_core_topic, log_msg_start, log_msg_end, module_wfm_name, page_default_limit, anu_etl_notifier_input_topic, total_no_of_partitions
 from anuvaad_auditor.errorhandler import post_error_wf, post_error, log_exception
 from anuvaad_auditor.loghandler import log_info, log_error
-from configs.wfmconfig import app_context
+from repository.redisrepo import REDISRepository
+from service.pipelinecalls import PipelineCalls
+from configs.wfmconfig import app_context, workflowCodesTranslation
+import datetime 
 
 log = logging.getLogger('file')
 producer = Producer()
 wfmrepo = WFMRepository()
 wfmutils = WFMUtils()
 validator = WFMValidator()
-
+redisRepo = REDISRepository()
+pipelineCalls = PipelineCalls()
 
 class WFMService:
     def __init__(self):
@@ -40,6 +44,7 @@ class WFMService:
         log_info("Initiating ASYNC job..", wf_async_input)
         client_output = self.get_wf_details_async(wf_async_input, None, False, None)
         self.update_job_details(client_output, True)
+        self.update_active_doc_count(wf_async_input,False)
         prod_res = producer.push_to_queue(client_output, anu_etl_wfm_core_topic, total_no_of_partitions)
         if prod_res:
             client_output = self.get_wf_details_async(wf_async_input, None, False, prod_res)
@@ -271,6 +276,9 @@ class WFMService:
                     partitions = os.environ.get(configs_global['numPartitions'],str(total_no_of_partitions))
                     log_info(f"Partitions: {partitions}",None)
                     if next_step_input is None or topic == "NA":
+                        log_error(f"NEXT STEP INPUT :: {next_step_input}",task_output, None)
+                        log_error(f"TOPIC :: {topic}",task_output, None)
+                        log_error(f"NEXT TOOL :: {next_tool}",task_output, None)
                         log_error("The workflow contains incompatible steps in sequence. Please check the wf config.",
                                   task_output, None)
                         post_error_wf("INCOMPATIBLE_TOOL_SEQUENCE",
@@ -282,11 +290,15 @@ class WFMService:
                     log_info(next_tool["name"] + log_msg_start + " jobID: " + task_output["jobID"], task_output)
                 else:
                     log_info("Job COMPLETED: " + task_output["jobID"], task_output)
+                    #Add code here
+                    self.update_active_doc_count(task_output,True)
                     client_output = self.get_wf_details_async(None, task_output, True, None)
+                    log.info("JOB COMPLETED Client Output Data: ",client_output)
                     self.update_job_details(client_output, False)
             else:  # Safety else block, in case module fails to push data to error topic
                 log_error("Job FAILED: " + task_output["jobID"], task_output, None)
                 client_output = self.get_wf_details_async(None, task_output, False, task_output["error"])
+                self.update_active_doc_count(task_output,True)
                 self.update_job_details(client_output, False)
             #self.push_to_notifier(task_output)
         except Exception as e:
@@ -350,6 +362,10 @@ class WFMService:
                 wf_details["taskDetails"] = task_details
             client_output = wf_details
             if isfinal:
+                client_output["granularity"] = {}
+                if "workflowCode" in client_output.keys():
+                    if client_output["workflowCode"] in workflowCodesTranslation:
+                        client_output["granularity"]["currentStatus"] = "auto_translation_completed"
                 client_output["status"] = "COMPLETED"
                 client_output["endTime"] = eval(str(time.time()).replace('.', '')[0:13])
             else:
@@ -362,17 +378,44 @@ class WFMService:
         return client_output
 
     # Method to search jobs on multiple criteria.
-    def get_job_details_bulk(self, req_criteria, skip_pagination):
+    def get_job_details_bulk(self, req_criteria, skip_pagination, isReviewer=False):
         try:
-            criteria = {"metadata.userID": {"$in": req_criteria["userIDs"]}}
+            criteria = {}
+            if isReviewer == False:
+                criteria = {"metadata.userID": {"$in": req_criteria["userIDs"]}}
             if 'jobIDs' in req_criteria.keys():
                 if req_criteria["jobIDs"]:
                     jobIDs = []
                     for jobID in req_criteria["jobIDs"]:
                         if jobID:
                             jobIDs.append(jobID)
-                        if len(jobIDs) > 0:
-                            criteria["jobID"] = {"$in": jobIDs}
+                    if len(jobIDs) > 0:
+                        criteria["jobID"] = {"$in": jobIDs}
+            if 'inputFileName' in req_criteria.keys():
+                jobName_pattern = req_criteria["inputFileName"]
+                criteria["input.jobName"] = {"$regex": jobName_pattern}
+            if 'orgIDs' in req_criteria.keys():
+                if req_criteria["orgIDs"]:
+                    orgIDs = []
+                    for orgID in req_criteria["orgIDs"]:
+                        if orgID:
+                            orgIDs.append(orgID)
+                    if len(orgIDs) > 0:
+                        criteria["metadata.orgID"] = {"$in": orgIDs}
+            if 'currentStatus' in req_criteria.keys():
+                if req_criteria["currentStatus"]:
+                    currentStatus = []
+                    for currentStat in req_criteria["currentStatus"]:
+                        if currentStat:
+                            currentStatus.append(currentStat)
+                    if len(currentStatus) > 0:
+                        if "auto_translation_completed" in currentStatus:
+                            criteria["$or"] = [
+                                {"granularity.currentStatus": {"$in": currentStatus}},
+                                {"granularity.currentStatus": {"$exists": False}}
+                            ]
+                        else:
+                            criteria["granularity.currentStatus"] = {"$in": currentStatus}
             if 'filterByStartTime' in req_criteria.keys():
                 if 'startTimeStamp' in req_criteria['filterByStartTime'].keys() and 'endTimeStamp' in req_criteria['filterByStartTime'].keys():
                             criteria["startTime"] = { "$gte": req_criteria['filterByStartTime']['startTimeStamp'], "$lte": req_criteria['filterByStartTime']['endTimeStamp']}
@@ -387,7 +430,7 @@ class WFMService:
             if 'statuses' in req_criteria.keys():
                 if req_criteria["statuses"]:
                     statuses = []
-                    for status in statuses:
+                    for status in req_criteria["statuses"]:
                         if status:
                             statuses.append(status)
                         if len(statuses) > 0:
@@ -417,26 +460,79 @@ class WFMService:
     def set_granularity(self,data):
         try: 
             job_details = wfmutils.get_job_details(data["jobID"])
-            log_info("Job Details"+str(job_details),app_context)
             job_details = job_details[0]
             for each_granularity in data['granularity']:
                 if 'granularity' not in job_details.keys():
                     job_details['granularity'] = {}
                 if each_granularity not in job_details['granularity'].keys():
-                    job_details['granularity'][each_granularity] = eval(str(time.time()).replace('.', '')[0:13]) 
+                    job_details['granularity'][each_granularity] = eval(str(time.time()).replace('.', '')[0:13])
+                    #Manual Editing Start Time
                     if each_granularity == 'manualEditingStartTime':
                         job_details['granularity']['manualEditingStatus'] = "IN PROGRESS"
+                        job_details['granularity']['currentStatus'] = "manual_editing_in_progress"
+                    #Manual Editing End Time
                     elif each_granularity == 'manualEditingEndTime':
                         if 'manualEditingStartTime' not in job_details['granularity'].keys():
                             return {"status": "FAILED","message":"Setting editing end time failed"}
-                        job_details['granularity']['manualEditingStatus'] = "COMPLETED"                    
+                        job_details['granularity']['manualEditingStatus'] = "COMPLETED"     
+                        if job_details['granularity']['currentStatus'] == "manual_reediting_in_progress":
+                                job_details['granularity']['currentStatus'] = "manual_reediting_completed"
+                        job_details['granularity']['currentStatus'] = "manual_editing_completed"
+                        #Calculate manual editing time  
+                        if "manualEditingDuration" not in job_details['granularity']:
+                            dt1 = datetime.datetime.fromtimestamp(job_details['granularity']['manualEditingStartTime']/1000) # 1973-11-29 22:33:09
+                            dt2 = datetime.datetime.fromtimestamp(job_details['granularity']['manualEditingEndTime']/1000) # 1977-06-07 23:44:50
+                            difference = dt2-dt1
+                            job_details['granularity']['manualEditingDuration'] = difference.seconds
+                        else:
+                            dt1 = datetime.datetime.fromtimestamp(job_details['granularity']['manualEditingStartTime']/1000) # 1973-11-29 22:33:09
+                            dt2 = datetime.datetime.fromtimestamp(job_details['granularity']['manualEditingEndTime']/1000) # 1977-06-07 23:44:50
+                            difference = dt2-dt1
+                            job_details['granularity']['manualEditingDuration'] = job_details['granularity']['manualEditingDuration']+difference.seconds
+                    #Reviewer In Progress
+                    elif each_granularity == "reviewerInProgress":
+                        if job_details['granularity']['manualEditingStatus'] == "COMPLETED":
+                            job_details['granularity']['reviewerInProgress'] = True
+                            job_details['granularity']['reviewerStatus'] = "In Progress"
+                            job_details['granularity']['currentStatus'] = "reviewer_in_progress"
+                        else:
+                            return {'status': 'FAILED','message':'Cannot start reviewing if manual editing is not completed'}
+                    #Reviewer Completed
+                    elif each_granularity == "reviewerCompleted":
+                        if 'reviewerInProgress' in job_details['granularity'] and job_details['granularity']['reviewerInProgress'] == True:
+                            job_details['granularity']['reviewerInProgress'] = False
+                            job_details['granularity']['reviewerCompleted'] = True
+                            job_details['granularity']['reviewerStatus'] = "Completed"
+                            job_details['granularity']['currentStatus'] = "reviewer_completed"
+                            #job_details['granularity']['parallelDocumentUploadStatus'] = "COMPLETED"     
+                        else:
+                            return {'status': 'FAILED','message':'Cannot end reviewer status now since it is not started'}                        
+                    #Parallel Document Upload          
                     elif each_granularity == "parallelDocumentUpload":
                         job_details['granularity']['parallelDocumentUploadStatus'] = "COMPLETED"     
+                        job_details['granularity']['currentStatus'] = "parallel_document_uploaded"
                         if 'manualEditingStartTime' in job_details['granularity'].keys():
                             if 'manualEditingEndTime' not in job_details['granularity'].keys():
                                 job_details['granularity']['manualEditingStatus'] = "COMPLETED"                    
                                 job_details['granularity']['manualEditingEndTime'] = eval(str(time.time()).replace('.', '')[0:13]) 
                     self.update_job_details(job_details, False)
+                elif each_granularity == 'manualEditingStartTime' and 'reviewerInProgress' in job_details['granularity'].keys() and job_details['granularity']['reviewerInProgress'] == True:
+                    job_details['granularity']['reviewerInProgress'] = False
+                    del job_details['granularity']['reviewerStatus']
+                    job_details['granularity'][each_granularity] = eval(str(time.time()).replace('.', '')[0:13])
+                    job_details['granularity']['manualEditingStatus'] = "IN PROGRESS"
+                    job_details['granularity']['currentStatus'] = "manual_reediting_in_progress"
+                    del job_details['granularity']['manualEditingEndTime']
+                    self.update_job_details(job_details, False)
+                elif each_granularity == "reviewerInProgress":
+                    if job_details['granularity']['manualEditingStatus'] == "COMPLETED":
+                        job_details['granularity']['reviewerInProgress'] = True
+                        job_details['granularity']['reviewerStatus'] = "In Progress"
+                        job_details['granularity']['currentStatus'] = "reviewer_in_progress"
+                        self.update_job_details(job_details, False)
+                    else:
+                        return {'status': 'FAILED','message':'Cannot start reviewing if manual editing is not completed'}
+
                 else:
                     return {"status": "SUCCESS","message":"Granularity already exists"}
             return {"status": "SUCCESS","message":"Granularity set successfully"}
@@ -465,3 +561,123 @@ class WFMService:
             log_info("Job FAILED: " + error["jobID"], error)
         except Exception as e:
             log_exception("Failed to update tool error: " + str(e), error, e)
+
+    def update_active_doc_count(self,wf_async_input,is_job_completed):
+        try:
+            if is_job_completed == False:
+                task = None
+                translation_workflows = ['WF_A_FCBMTKTR','WF_A_FTTKTR','WF_A_FTIOTKTR']
+                digitization_workflows = ['WF_A_OD10GV','WF_A_OD15GV','WF_A_OD20TES','WF_A_FCOD10GV','WF_A_OD10GVOTK','WF_A_FCOD10GVOTK','WF_A_WDOD15GV','WF_A_WDOD15GVOTK','WF_A_FCWDLDBSOTES','WF_A_FCWDLDBSOD15GV','WF_A_FCWDLDOD15GVOTK','WF_A_FCWDLDBSOD15GVOTK','WF_A_FCWDLDBSOD15GVOTK_S','WF_A_FCWDLDBSOD20TESOTK']
+                if wf_async_input['workflowCode'] in translation_workflows:
+                    task = "translation"
+                elif wf_async_input['workflowCode'] in digitization_workflows:
+                    task = "digitization"
+                if task is not None:
+                    input_data = {}
+                    input_data['jobID'] = wf_async_input["jobID"]
+                    input_data['workflowCode'] = wf_async_input['workflowCode']
+                    input_data["task"] = task
+                    input_data['userID'] = wf_async_input["metadata"]['userID']
+                    input_data['startTime'] = wf_async_input["metadata"]['receivedAt']
+                    redisRepo.upsert(wf_async_input["jobID"],input_data)
+                log_info(f"Active Job Status updated to started: {wf_async_input['jobID']}", wf_async_input)
+            else:
+                redisRepo.delete([wf_async_input["jobID"]])
+                log_info(f"Active Job Status updated to completed: {wf_async_input['jobID']}", wf_async_input)
+        except Exception as e:
+            log_exception("Active Job Status updated failed: {wf_async_input['jobID']} " + str(e), None, e)
+
+    def get_active_doc_count(self):
+        try:
+            response = redisRepo.get_active_count()
+            return response
+        except Exception as e:
+            log_exception("Active Job Status Retrieval: {wf_async_input['jobID']} " + str(e), None, e)
+
+    def digitization_translation_pipeline(self,data):
+        """
+                {
+                    "record_id": "A_FWLBOD20TESOT-hnHgN-1693227866067%7C0-16932280318450673.json",
+                    "user_id": "d225fb2cd78a45078518356548f396ff1686290705872",
+                    "file_type": "pdf",
+                    "file_name": "name.pdf"
+                    "translation_async_flow" : {
+                        "workflowCode": "WF_A_FCBMTKTR",
+                        "jobName": "1958_1_1150_1155_updated.pdf",
+                        "jobDescription": "",
+                        "files": [
+                            {
+                                "path": "01c440b8-8aac-4352-9b44-c3fbf1ddca6e.pdf",
+                                "type": "pdf",
+                                "locale": "en",
+                                "model": {
+                                    "uuid": "687baea0-4512-4fb9-9264-5c7b368afc59",
+                                    "is_primary": true,
+                                    "model_id": 103,
+                                    "model_name": "English-Hindi IndicTrans Model-1",
+                                    "source_language_code": "en",
+                                    "source_language_name": "English",
+                                    "target_language_code": "hi",
+                                    "target_language_name": "Hindi",
+                                    "description": "AAI4B en-hi model-1(indictrans/fairseq)",
+                                    "status": "ACTIVE",
+                                    "connection_details": {
+                                        "kafka": {
+                                            "input_topic": "KAFKA_AAI4B_NMT_TRANSLATION_INPUT_TOPIC",
+                                            "output_topic": "KAFKA_AAI4B_NMT_TRANSLATION_OUTPUT_TOPIC"
+                                        },
+                                        "translation": {
+                                            "api_endpoint": "AAIB_NMT_TRANSLATE_ENDPOINT",
+                                            "host": "AAI4B_NMT_HOST"
+                                        },
+                                        "interactive": {
+                                            "api_endpoint": "AAIB_NMT_IT_ENDPOINT",
+                                            "host": "AAI4B_NMT_HOST"
+                                        }
+                                    },
+                                    "interactive_translation": true
+                                },
+                                "context": "JUDICIARY",
+                                "modifiedSentences": "a"
+                            }
+                        ]
+                    }
+                }
+        """
+        try:
+            if "record_id" not in data.keys():
+                return {"status" : "Error", "reason":"record_id missing"}
+            if data["file_type"] in ["jpg","bmp","png","svg","jpeg"]:
+                data["record_id"] = data["record_id"].replace("%7C","|")
+                data["file_type"] = "pdf"
+                data["file_name"] = data["file_name"].replace(data["file_name"].split(".")[-1],"pdf")
+
+            document = pipelineCalls.document_export(data["user_id"],data["record_id"],data["file_type"],data["metadata"])
+            if document is None:
+                return {"status":"Error","reason":"Document Export Failed"}
+            file_content = pipelineCalls.download_file(document)
+            if file_content is None:
+                return {"status":"Error","reason":"File Download Failed"}
+            
+            if not os.path.exists("upload_files"):
+                # If it doesn't exist, create it
+                os.makedirs("upload_files")
+
+            with open("./upload_files/"+data["file_name"], "wb") as file:
+                file.write(file_content)
+            
+            file_id = pipelineCalls.upload_files("./upload_files/"+data["file_name"],data["metadata"])
+            if file_id is None:
+                return {"status":"Error","reason":"File Upload Failed"}
+
+            # Delete uploaded file
+            try:
+                os.remove("./upload_files/"+data["file_name"])
+            except Exception as e:
+                log_error(f"Exception during file deletion",app_context,e)        
+
+            response = pipelineCalls.translate(data["file_name"],file_id,data["translation_async_flow"],data["metadata"])
+            return response
+        except Exception as e:
+            log_error(f"Exception occurred {e}",e,app_context)
+        

@@ -41,7 +41,7 @@ const ShowCorrectedImage = ({ path, edit_status, set_crop_size, crop, copylocati
 
     useEffect(() => {
         if (!info.url) makeDownloadImageAPI()
-    })
+    }, [])
 
 
     const setImageInfo = (cropData) => {

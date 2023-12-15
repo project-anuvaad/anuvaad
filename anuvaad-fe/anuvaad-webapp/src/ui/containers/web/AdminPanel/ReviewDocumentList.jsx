@@ -45,7 +45,7 @@ class ReviewDocumentList extends React.Component {
             variant: "info",
             filterOptionData: [
                 {
-                    label: "Pending/In-Progress",
+                    label: "Reviewer Pending/In-Progress",
                     value: ["manual_editing_completed", "reviewer_in_progress", "manual_reediting_completed"],
                     tableTitle: "Document Review Pending/In-Progress"
                 },
@@ -55,9 +55,14 @@ class ReviewDocumentList extends React.Component {
                     tableTitle: "Document Sent For Correction"
                 },
                 {
-                    label: "Completed",
-                    value: ["reviewer_completed"],
-                    tableTitle: "Review Completed"
+                    label: "Review Completed / Document Uploaded",
+                    value: ["reviewer_completed", "parallel_document_uploaded"],
+                    tableTitle: "Review Completed / Document Uploaded"
+                },
+                {
+                    label: "All",
+                    value: ["manual_editing_completed", "reviewer_in_progress", "manual_reediting_completed", "manual_reediting_in_progress", "reviewer_completed", "parallel_document_uploaded"],
+                    tableTitle: "All Documents"
                 }
             ],
             selectedFilter: 0,
@@ -126,6 +131,8 @@ class ReviewDocumentList extends React.Component {
     componentDidUpdate(prevProps, prevState) {
         // console.log("prevState ----- ", prevState.selectedFilter);
         if (prevState.selectedFilter !== this.state.selectedFilter) {
+            this.setState({ currentPageIndex: 0});
+            this.tableRef.current.changePage(Number(0));
             this.makeAPICallJobsBulkSearch(
                 this.state.offset,
                 this.state.limit,
@@ -504,10 +511,21 @@ class ReviewDocumentList extends React.Component {
         const columns = [
             {
                 name: "filename",
-                label: "Filename",
+                label: "File Name",
                 options: {
                     filter: false,
                     sort: false,
+                    viewColumns: false,
+                    // display: "excluded",
+                },
+            },
+            {
+                name: "userName",
+                label: "User Name",
+                options: {
+                    filter: false,
+                    sort: false,
+                    viewColumns: false,
                     // display: "excluded",
                 },
             },
@@ -531,6 +549,7 @@ class ReviewDocumentList extends React.Component {
                 options: {
                     filter: false,
                     sort: false,
+                    viewColumns: false,
                 },
             },
             {
@@ -539,6 +558,7 @@ class ReviewDocumentList extends React.Component {
                 options: {
                     filter: false,
                     sort: false,
+                    viewColumns: false,
                 },
             },
             {
@@ -606,8 +626,8 @@ class ReviewDocumentList extends React.Component {
                                 <div>
                                     {tableMeta.rowData[5] === "COMPLETED" &&
                                         this.getDateTimeDifference(
-                                            tableMeta.rowData[10],
-                                            tableMeta.rowData[12]
+                                            tableMeta.rowData[11],
+                                            tableMeta.rowData[13]
                                         )}
                                 </div>
                             );
@@ -626,7 +646,7 @@ class ReviewDocumentList extends React.Component {
                         if (tableMeta.rowData) {
                             return (
                                 <div>
-                                    {this.getDateTimeFromTimestamp(tableMeta.rowData[12])}
+                                    {this.getDateTimeFromTimestamp(tableMeta.rowData[13])}
                                 </div>
                             );
                         }
@@ -645,7 +665,7 @@ class ReviewDocumentList extends React.Component {
                         if (tableMeta.rowData) {
                             return (
                                 <div>
-                                    {this.processDocumentView(tableMeta.rowData[1], tableMeta.rowData[0], tableMeta.rowData[5], tableMeta.rowData[6])}
+                                    {this.processDocumentView(tableMeta.rowData[2], tableMeta.rowData[0], tableMeta.rowData[6], tableMeta.rowData[7])}
                                     {/* {this.processDocumentDownload(tableMeta.rowData[1])} */}
                                     {/* {this.processEventView(tableMeta.rowData[1], tableMeta.rowData[5], tableMeta.rowData[6])} */}
                                 </div>
@@ -660,7 +680,7 @@ class ReviewDocumentList extends React.Component {
             textLabels: {
                 body: {
                     noMatch:
-                        this.props.job_details.state,
+                        this.props.apistatus.loading ? "Loading..." : this.props.job_details.state,
                 },
                 toolbar: {
                     search: translate("graderReport.page.muiTable.search"),
@@ -734,7 +754,7 @@ class ReviewDocumentList extends React.Component {
                         backArrowTabIndex={this.state.currentPageIndex - 1}
                         backArrowDisable={this.state.currentPageIndex == 0}
                         rightArrowTabIndex={this.state.currentPageIndex + 1}
-                        rightArrowDisable={this.state.currentPageIndex == totalPageCount}
+                        rightArrowDisable={this.state.currentPageIndex == (totalPageCount-1)}
                         pageTextInfo={`Page ${parseInt(this.state.currentPageIndex + 1)} of ${parseInt(totalPageCount)}`}
                     />
                 );
@@ -763,7 +783,7 @@ class ReviewDocumentList extends React.Component {
                                 style={{ width: 300, fontSize: "1rem" }}
                                 onChange={(e) => {
                                     // console.log("e.target.value   ", e.target.value);
-                                    this.setState({ selectedFilter: e.target.value })
+                                    this.setState({ selectedFilter: e.target.value });
                                 }}
                             >
                                 {

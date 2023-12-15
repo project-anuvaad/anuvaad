@@ -427,6 +427,7 @@ class ViewDocumentDigitization extends React.Component {
                 options: {
                     filter: false,
                     sort: false,
+                    viewColumns: false,
                     setCellProps: () => ({
                         style: {
                             wordBreak: "break-word",
@@ -453,6 +454,7 @@ class ViewDocumentDigitization extends React.Component {
                 name: "source_language_code",
                 label: translate("common.page.label.source"),
                 options: {
+                    viewColumns: false,
                     filter: false,
                     sort: false,
                 },
@@ -461,6 +463,7 @@ class ViewDocumentDigitization extends React.Component {
                 name: "target_language_code",
                 label: translate("common.page.label.target"),
                 options: {
+                    viewColumns: false,
                     filter: false,
                     sort: false,
                     display: "excluded",
@@ -470,6 +473,7 @@ class ViewDocumentDigitization extends React.Component {
                 name: "status",
                 label: translate("common.page.table.status"),
                 options: {
+                    viewColumns: false,
                     filter: true,
                     sort: false,
                     empty: true,
@@ -653,17 +657,15 @@ class ViewDocumentDigitization extends React.Component {
             },
             rowsPerPageOptions: [10],
 
-            // onTableChange: (action, tableState) => {
-            //     switch (action) {
-            //         case "changePage":
-            //             this.processTableClickedNextOrPrevious(
-            //                 tableState.page,
-            //                 tableState.sortOrder
-            //             );
-            //             break;
-            //         default:
-            //     }
-            // },
+            onTableChange: (action, tableState) => {
+                switch (action) {
+                  case "search":
+                    this.tableRef.current.changePage(0);
+                    this.setState({ currentPageIndex: 0 });
+                    break;
+                  default:
+                }
+              },
             count: this.props.digitizeddocument.count,
             filterType: "checkbox",
             download: this.getJobsSortedByTimestamp()?.length > 0 ? true : false,
@@ -711,7 +713,7 @@ class ViewDocumentDigitization extends React.Component {
                         backArrowTabIndex={this.state.currentPageIndex - 1}
                         backArrowDisable={this.state.currentPageIndex == 0}
                         rightArrowTabIndex={this.state.currentPageIndex + 1}
-                        rightArrowDisable={this.state.currentPageIndex == totalPageCount}
+                        rightArrowDisable={this.state.currentPageIndex == (totalPageCount-1)}
                         pageTextInfo={`Page ${parseInt(this.state.currentPageIndex + 1)} of ${parseInt(totalPageCount)}`}
                     />
                 );

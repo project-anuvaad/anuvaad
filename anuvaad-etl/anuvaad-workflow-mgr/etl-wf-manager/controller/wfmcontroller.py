@@ -1,13 +1,14 @@
 #!/bin/python
 import logging
 import time
+import requests 
 
 from flask import Flask, jsonify, request
 from logging.config import dictConfig
 from service.wfmservice import WFMService
 from validator.wfmvalidator import WFMValidator
-from configs.wfmconfig import context_path
-from configs.wfmconfig import module_wfm_name
+from configs.wfmconfig import context_path, app_context
+from configs.wfmconfig import module_wfm_name, anuvaad_ums_host
 from anuvaad_auditor.loghandler import log_exception, log_info
 
 wfmapp = Flask(__name__)
@@ -85,7 +86,37 @@ def search_all_jobs():
                 req_criteria["userIDs"] = [request.headers["x-user-id"]]
         else:
             req_criteria["userIDs"] = [request.headers["x-user-id"]]
-        response = service.get_job_details_bulk(req_criteria, False)
+        if "orgIDs" in req_criteria.keys():
+            if not req_criteria["orgIDs"]:
+                req_criteria["orgIDs"] = [request.headers["x-org-id"]]
+        else:
+            req_criteria["orgIDs"] = [request.headers["x-org-id"]]
+        if "isReviewer" in req_criteria.keys():
+            response = service.get_job_details_bulk(req_criteria, False, req_criteria['isReviewer'])
+        else:
+            response = service.get_job_details_bulk(req_criteria, False)
+        if "isReviewer" in req_criteria.keys():
+            try:
+                userSet = set()
+                userDictionary = {}
+                #log_info(f"BULK Response {response}",app_context)
+                if 'jobs' in response.keys():
+                    for each_response in response["jobs"]:
+                        userSet.add(each_response["metadata"]["userID"])
+                userIds = list(userSet)    
+                ums_url = anuvaad_ums_host + "anuvaad/user-mgmt/v1/users/search"
+                ums_input = {"userIDs":userIds}
+                ums_response = requests.post(ums_url,json=ums_input)
+                #log_info(f"UMS_Response :: {ums_response.status_code} :: {ums_response.json()}",app_context)
+                if ums_response.status_code >=200 and ums_response.status_code<=204:
+                    ums_resp = ums_response.json()
+                    if "data" in ums_resp.keys():
+                        for each_ums_response in ums_resp["data"]:
+                            userDictionary[each_ums_response['userID']] = each_ums_response['name']
+                for i in range(0,len(response["jobs"])):
+                    response["jobs"][i]["metadata"]["userName"] = userDictionary[response["jobs"][i]["metadata"]["userID"]]
+            except Exception as e:
+                log_exception("UMS Call Exception: " + str(e), None, e)
         if response:
             return jsonify(response), 200
         else:
@@ -123,12 +154,17 @@ def set_granularity():
         error = validator.validate_granularity(req_criteria)
         if error is not None:
             return error, 400        
-        # data = add_headers(req_criteria, request)
+        #data = add_headers(req_criteria, request)
         # if "userIDs" in req_criteria.keys():
         #     if not req_criteria["userIDs"]:
         #         req_criteria["userIDs"] = [request.headers["x-user-id"]]
         # else:
         #     req_criteria["userIDs"] = [request.headers["x-user-id"]]
+        # if "orgIds" in req_criteria.keys():
+        #     if not req_criteria["orgIds"]:
+        #         req_criteria["orgIds"] = [request.headers["x-org-id"]]
+        # else:
+        #     req_criteria["orgIds"] = [request.headers["x-org-id"]]
         response = service.set_granularity(req_criteria)
         if response:
             return jsonify(response), 200
@@ -152,6 +188,33 @@ def health():
     response = {"code": "200", "status": "ACTIVE"}
     return jsonify(response), 200
 
+@wfmapp.route(context_path + '/v1/active-docs', methods=["GET"])
+def active_docs():
+    try:
+        service = WFMService()
+        response = service.get_active_doc_count()
+        log_info("RESPONSE FROM ACTIVE DOCS IN REDIS :: ",app_context)
+        if isinstance(response,list):
+            response = {"code": "200", "data": response, "count":len(response)}
+            return jsonify(response), 200
+        else:
+            return {"status": "FAILED", "message": "Something went wrong"}, 400
+    except Exception as e:
+        log_exception("Something went wrong: " + str(e), None, e)
+        return {"status": "FAILED", "message": "Something went wrong"}, 400
+
+@wfmapp.route(context_path + '/v1/translate_pipeline', methods=["POST"])
+def translate_pipeline():
+    try:
+        service = WFMService()
+        data = add_headers(request.get_json(), request)
+        response = service.digitization_translation_pipeline(data)
+        if not response:
+            return {"response": response}, 400
+        return {"response": response}, 200
+    except Exception as e:
+        log_exception("Something went wrong: " + str(e), None, e)
+        return {"status": "FAILED", "message": "Something went wrong"}, 400
 
 # Fetches required headers from the request and adds it to the body.
 def add_headers(data, api_request):
