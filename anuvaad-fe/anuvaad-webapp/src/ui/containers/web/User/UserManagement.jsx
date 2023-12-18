@@ -17,8 +17,8 @@ const UserManagement = (props) => {
     const param = useParams();
     const renderPage = () => {
         switch (param && param.page) {
-            case "signup":
-                return <SignUp />;
+            // case "signup":
+            //     return <SignUp />;
             case "login":
                 return <Login location={props.location} />;
             case "forget-password":
