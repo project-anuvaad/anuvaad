@@ -174,14 +174,13 @@ class SearchRoles(Resource):
 class validateSignUp(Resource):
     def post(self):
         body = request.get_json()
-        if 'fullName' not in body or not body['fullName']:
-            return post_error("Data Missing", "fullName not found", None), 400
-        if 'email' not in body or not body['email']:
-            return post_error("Data Missing", "email not found", None), 400
-        if 'orgID' not in body or not body['orgID']:
-            return post_error("Data Missing", "organisationID not found", None), 400
-        if 'averageDocTranslationsPerDay' not in body or not body['orgID']:
-            return post_error("Data Missing", "average Document Translations PerDay/ not found", None), 400
+        #log_info(f"{token}somethinf somthing soimthiung",MODULE_CONTEXT)
+        req_params = ['fullName','email','orgID','averageDocTranslationsPerDay']
+        if isinstance(body,dict):
+            for param in body.keys():
+                if param not in req_params:
+                    return post_error("Data Missing", "Please enter following details. 'fullName','email','orgID','averageDocTranslationsPerDay'", None), 400
+
         
         userName,email,orgID,averageDocTranslationsPerDay  = body['fullName'], body['email'], body['orgID'], body['averageDocTranslationsPerDay']
         usr_details = userRepo.validate_user_for_docs(email)
@@ -208,10 +207,11 @@ class validateAndOnboard(Resource):
         log_info(f"get request {token}",MODULE_CONTEXT)
         validate = userRepo.validate_and_onboard_user(token, email)
         if validate:
-            remove_validated_user_doc = userRepo.rmv_validated_user_from_db(token, email)
+            userRepo.rmv_validated_user_from_db(token, email)
             data,pwd = userRepo.prepare_onboarding_user_req(validate )
-            onboard = userRepo.onboard_users(data) 
-            user_mail = userRepo.send_mail_to_verified_user(validate['email'],pwd)
+            userRepo.onboard_users(data) 
+            userRepo.send_mail_to_verified_user(validate['email'],pwd)
+            return "Successful, you can now use Anuvaad"
 
         #log_info(f"cvalisfda {validate}", MODULE_CONTEXT)
         
