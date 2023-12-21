@@ -173,7 +173,7 @@
             "uri":"/anuvaad/user-mgmt/v1/org/search",
             "module":"USER-MANAGEMENT-SYSTEM",
             "active":true,
-            "whiteList":false,
+            "whiteList":true,
             "description":"API for searching orgs"
         },
         {
