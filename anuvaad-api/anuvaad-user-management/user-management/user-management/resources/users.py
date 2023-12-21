@@ -190,10 +190,10 @@ class validateSignUp(Resource):
             if adduser == "SUCCESS":
                 #return 
                 token = token_and_epoch_gen[0]
-                log_info(f"{token}somethinf somthing soimthiung",MODULE_CONTEXT)
                 userRepo.send_mail_to_admin(email,userName, orgID, averageDocTranslationsPerDay,admin_email, token)
                 res = CustomResponse(Status.SUCCESS_USER_RESPONSE_PAGE.value, adduser)
                 return res.getresjson(), 200
+        return post_error("Existing user","User already exists, please login.", None), 400
 
 
         #check if email exists
