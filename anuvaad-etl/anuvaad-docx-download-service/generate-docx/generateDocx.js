@@ -25,7 +25,7 @@ const generateDocx = (jobName,fname, height, width) => {
     })
 
     let sourceJson = fs.readFileSync('./upload/source.json', { encoding: 'utf-8' })
-    let parsedSource = JSON.parse(sourceJson)
+    let parsedSource = JSON.parse(sourceJson);
 
     parsedSource.forEach((tokens, i) => {
         const is_bold = (tokens.attrib !== null && tokens.attrib.indexOf('BOLD') !== -1) ? true : false;
@@ -34,9 +34,10 @@ const generateDocx = (jobName,fname, height, width) => {
         const { font_color, font_size, text_left, font_family } = tokens
         let pObj = docx.createP();
         if (!is_table && !is_image) {
-            tokens.tokenized_sentences && tokens.tokenized_sentences.forEach(token => {
+            tokens.tokenized_sentences && tokens.tokenized_sentences.forEach((token, tokenIndex) => {
                 if (token.tgt != null) {
-                    pObj.addText(token.tgt, {
+                    let tokenText = tokenIndex > 0 ? ` ${token.tgt}` : `${token.tgt}`
+                    pObj.addText(tokenText, {
                         font_size: font_size,
                         color: font_color,
                         font_face: font_family,

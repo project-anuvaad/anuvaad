@@ -2,7 +2,7 @@ const refactorSourceJSON = (sourceJson) => {
     let index = -1
     let refactoredOutput = []
     sourceJson.forEach((src, i) => {
-        src.text_blocks && src.text_blocks.forEach(val => {
+        src?.text_blocks && src?.text_blocks?.forEach(val => {
             if ((val.attrib !== null && val.attrib.indexOf('TABLE') === -1) || val.attrib === null) {
                 index = -1
                 refactoredOutput.push(val)
@@ -15,7 +15,7 @@ const refactorSourceJSON = (sourceJson) => {
                 }
             }
         })
-        src.images.forEach(image => {
+        src?.images?.forEach(image => {
             if (image.attrib === 'IMAGE')
                 refactoredOutput.push(image)
         })
