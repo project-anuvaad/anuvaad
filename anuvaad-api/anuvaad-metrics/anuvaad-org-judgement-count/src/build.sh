@@ -12,5 +12,5 @@ echo $commit_id> commit_id.txt
 #     -Dsonar.sonar.projectVersion=1.0 \
 #     -Dsonar.sonar.sourceEncoding=UTF-8
 docker build -t anuvaadio/$image_name:$commit_id .
-docker login -u $dockerhub_user -p $dockerhub_pass
-docker push anuvaadio/$image_name:$commit_id
+#docker login -u $dockerhub_user -p $dockerhub_pass
+#docker push anuvaadio/$image_name:$commit_id
