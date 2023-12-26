@@ -106,9 +106,11 @@ LANG_MAPPING = {
 
 jud = os.environ.get('ANUVAAD_JUD_METRICS','https://developers.anuvaad.org')
 
-TRANSLITERATION_URL = os.environ.get('TRANSLITERATION_URL','https://api.dhruva.ai4bharat.org/services/inference/transliteration')
-ASR_URL = os.environ.get('ASR_URL',"https://api.dhruva.ai4bharat.org/services/inference/asr")
+TRANSLITERATION_URL = os.environ.get('TRANSLITERATION_URL','https://api.dhruva.ekstep.ai/services/inference/transliteration?serviceId=ai4bharat/indicxlit--gpu-t4')
+ASR_URL = os.environ.get('ASR_URL',"https://api.dhruva.ekstep.ai/services/inference/asr")
 ACCESS_TOKEN = os.environ.get('DHRUVA_ACCESS_TOKEN',"None")
 
 backup_file_1 = "d735bdc62fa94076bb5adf_USER_WISE_JUD_STATS1.csv"
 backup_file_2 = "d735bdc62fa94076bb5adf_USER_WISE_JUD_STATS2.csv"
+
+SKIP_EMAIL_LIST = []
