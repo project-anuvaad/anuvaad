@@ -1,5 +1,5 @@
 #!groovy
-node('server_build_slave') {
+node('anuvvad-dev-swarm') {
 
 try {
 
