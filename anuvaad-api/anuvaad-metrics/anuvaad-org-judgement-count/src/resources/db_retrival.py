@@ -505,7 +505,10 @@ def asr():
                 headers = {
                 'Authorization': config.ACCESS_TOKEN
                 }
+                log_info(f"ASR Request :: {payload}",MODULE_CONTEXT)
+                log_info(f"ASR Headers :: {headers}",MODULE_CONTEXT)
                 response = requests.request("POST", url, headers=headers, data=json.dumps(payload))
+                log_info(f"ASR Response Status Code :: {response.status_code}",MODULE_CONTEXT)
                 if response.status_code >=200 and response.status_code <= 204:
                     out = CustomResponse(Status.SUCCESS.value, response.json())
                     return out.getres()
