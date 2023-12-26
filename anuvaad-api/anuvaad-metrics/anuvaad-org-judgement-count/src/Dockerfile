@@ -1,4 +1,4 @@
-FROM python:3.7
+FROM python:3.7-slim
 #RUN rm -vf /var/lib/apt/lists/*
 RUN apt update
 COPY / /app
