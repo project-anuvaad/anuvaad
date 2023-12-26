@@ -1,5 +1,6 @@
 FROM python:3.7-slim
-RUN apt-get update
+#RUN rm -vf /var/lib/apt/lists/*
+RUN apt update
 COPY / /app
 WORKDIR /app
 RUN pip3 install --upgrade pip

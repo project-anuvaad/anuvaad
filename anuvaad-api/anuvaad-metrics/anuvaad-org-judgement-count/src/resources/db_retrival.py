@@ -10,6 +10,8 @@ from utilities import MODULE_CONTEXT
 from anuvaad_auditor.loghandler import log_info, log_exception
 import config
 import os
+import traceback
+
 from utilities import (
     write_to_csv,
     org_level_csv,
@@ -455,65 +457,69 @@ def transliterate():
 
 @app.route(config.API_URL_PREFIX + "/asr", methods=["POST","GET"])
 def asr():
-    if request.method == "GET":
-        sourceLanguage = request.args.get('sourceLanguage')
-        sourceLanguage = get_asr_service_code(sourceLanguage)
-        if sourceLanguage is None:
-            status = Status.SUCCESS.value
-            status["message"] = "The language selected is not supported."
-            status["ok"] = False
-            out = CustomResponse(status, None)
-            return out.getres()
-        else:
-            status = Status.SUCCESS.value
-            status["ok"] = True
-            status["message"] = "The language selected is supported."
-            out = CustomResponse(status, None)
-            return out.getres()
-    if request.method == "POST":
-        try:
-            json_input = request.get_json()
-            sourceLanguage = get_asr_service_code(json_input["sourceLanguage"])
+    try:
+        if request.method == "GET":
+            sourceLanguage = request.args.get('sourceLanguage')
+            sourceLanguage = get_asr_service_code(sourceLanguage)
             if sourceLanguage is None:
                 status = Status.SUCCESS.value
                 status["message"] = "The language selected is not supported."
                 status["ok"] = False
                 out = CustomResponse(status, None)
                 return out.getres()
-            url = config.ASR_URL+"?serviceId="+get_asr_service_code(json_input["sourceLanguage"])
-            payload = {
-                    "audio": [
-                        {
-                        "audioContent": json_input["audioContent"]
-                        }
-                    ],
-                    "config": {
-                        "audioFormat": "wav",
-                        "transcriptionFormat": {
-                        "value": "transcript"
-                        },
-                        "language": {
-                        "sourceLanguage": json_input["sourceLanguage"]
-                        }
-                    },
-                    "controlConfig": {
-                        "dataTracking": False
-                    }
-                    }
-            headers = {
-            'Authorization': config.ACCESS_TOKEN
-            }
-            response = requests.request("POST", url, headers=headers, data=json.dumps(payload))
-            if response.status_code >=200 and response.status_code <= 204:
-                out = CustomResponse(Status.SUCCESS.value, response.json())
+            else:
+                status = Status.SUCCESS.value
+                status["ok"] = True
+                status["message"] = "The language selected is supported."
+                out = CustomResponse(status, None)
                 return out.getres()
-            status = Status.SYSTEM_ERR.value
-            status["message"] = "Unable to perform ASR at this point of time."
-            out = CustomResponse(status, None)
-            return out.getres()
-        except Exception as e:
-            log_exception("Error in ASR: {}".format(e), MODULE_CONTEXT, e)
-            status = Status.SYSTEM_ERR.value
-            status["message"] = "Unable to perform ASR at this point of time. " + str(e)
-            out = CustomResponse(status, None)
-            return out.getres()
+        if request.method == "POST":
+                json_input = request.get_json()
+                sourceLanguage = get_asr_service_code(json_input["sourceLanguage"])
+                if sourceLanguage is None:
+                    status = Status.SUCCESS.value
+                    status["message"] = "The language selected is not supported."
+                    status["ok"] = False
+                    out = CustomResponse(status, None)
+                    return out.getres()
+                url = config.ASR_URL+"?serviceId="+get_asr_service_code(json_input["sourceLanguage"])
+                payload = {
+                        "audio": [
+                            {
+                            "audioContent": json_input["audioContent"]
+                            }
+                        ],
+                        "config": {
+                            "audioFormat": "wav",
+                            "transcriptionFormat": {
+                            "value": "transcript"
+                            },
+                            "language": {
+                            "sourceLanguage": json_input["sourceLanguage"]
+                            }
+                        },
+                        "controlConfig": {
+                            "dataTracking": False
+                        }
+                        }
+                headers = {
+                'Authorization': config.ACCESS_TOKEN
+                }
+                # log_info(f"ASR Request :: {payload}",MODULE_CONTEXT)
+                # log_info(f"ASR Headers :: {headers}",MODULE_CONTEXT)
+                # log_info(f"ASR URL :: {url}",MODULE_CONTEXT)
+                response = requests.request("POST", url, headers=headers, data=json.dumps(payload))
+                # log_info(f"ASR Response Status Code :: {response.status_code}",MODULE_CONTEXT)
+                if response.status_code >=200 and response.status_code <= 204:
+                    out = CustomResponse(Status.SUCCESS.value, response.json())
+                    return out.getres()
+                status = Status.SYSTEM_ERR.value
+                status["message"] = "Unable to perform ASR at this point of time."
+                out = CustomResponse(status, None)
+                return out.getres()
+    except Exception as e:
+        log_exception(f"Error in ASR: {traceback.format_exc()}", MODULE_CONTEXT, e)
+        status = Status.SYSTEM_ERR.value
+        status["message"] = "Unable to perform ASR at this point of time. " + str(e)
+        out = CustomResponse(status, None)
+        return out.getres()
