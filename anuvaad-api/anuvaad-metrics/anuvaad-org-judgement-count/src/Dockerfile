@@ -1,4 +1,4 @@
-FROM python:3.7
+FROM python:3.7-bullseye
 RUN apt-get clean
 RUN mv /var/lib/apt/lists /var/lib/apt/lists.old
 RUN mkdir -p lists/partial
