@@ -1,5 +1,5 @@
 FROM python:3.7-slim
-RUN sudo apt-get clean
+RUN apt-get clean
 RUN cd /var/lib/apt
 RUN mv lists lists.old
 RUN mkdir -p lists/partial
