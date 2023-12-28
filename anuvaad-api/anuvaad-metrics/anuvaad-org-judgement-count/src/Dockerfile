@@ -1,4 +1,9 @@
 FROM python:3.7-slim
+RUN sudo apt-get clean
+RUN cd /var/lib/apt
+RUN mv lists lists.old
+RUN mkdir -p lists/partial
+RUN apt-get clean
 #RUN rm -vf /var/lib/apt/lists/*
 RUN apt-get update
 RUN apt-get install -y libopenblas-dev
