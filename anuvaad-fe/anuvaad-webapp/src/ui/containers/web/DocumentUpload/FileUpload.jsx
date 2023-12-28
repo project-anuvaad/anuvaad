@@ -27,9 +27,9 @@ import DocumentUpload from "../../../../flux/actions/apis/document_upload/docume
 import { createJobEntry } from "../../../../flux/actions/users/async_job_management";
 import FetchDocument from "../../../../flux/actions/apis/view_document/fetch_document";
 import Dialog from "@material-ui/core/Dialog";
-import { Container } from "@material-ui/core";
 import UploadProcessModal from "./UploadProcessModal";
 import Axios from "axios";
+import { Container, Tooltip } from "@material-ui/core";
 
 const TELEMETRY = require("../../../../utils/TelemetryManager");
 const LANG_MODEL = require("../../../../utils/language.model");
@@ -86,7 +86,8 @@ class PdfUpload extends Component {
       formatWarning: false,
       variant: "success",
       documentState: "",
-      showProcessModal: false
+      showProcessModal: false,
+      isTargetAlpha: false,
     };
   }
 
@@ -336,7 +337,7 @@ class PdfUpload extends Component {
         this.state.model,
         "",
         "",
-        this.state.workspaceName
+        this.state.workspaceName,
       );
       APITransport(apiObj);
     }
@@ -412,7 +413,10 @@ class PdfUpload extends Component {
   };
 
   processTargetLanguageSelected = (event) => {
-    this.setState({ target_language_code: event.target.value });
+    // console.log("event.target ---- " , event)
+    let langName = this.state.target_languages.filter(val => val.language_code === event.target.value)[0]?.language_name;
+    // console.log("langName", langName);
+    this.setState({ target_language_code: event.target.value, isTargetAlpha: langName.includes('Alpha')});
   };
 
   readFileDataAsBinary(file) {
@@ -515,7 +519,6 @@ class PdfUpload extends Component {
 
   renderTargetLanguagesItems = () => {
     const { classes } = this.props;
-
     return (
       <Grid item xs={12} sm={12} lg={12} xl={12}>
         <Grid item xs={12} sm={12} lg={12} xl={12}>
@@ -542,7 +545,7 @@ class PdfUpload extends Component {
             style={{
               width: "100%",
               float: "right",
-              marginBottom: "27px",
+              marginBottom: this.state.isTargetAlpha && this.state.target_language_code === "mni" ? "inherit" : "27px",
             }}
             input={<OutlinedInput name="target" id="target" />}
             className={classes.Select}
@@ -554,7 +557,8 @@ class PdfUpload extends Component {
                 style={{ fontSize: "16px", fontFamily: "Roboto", color: lang.language_name.includes('Alpha') ? "rgba(0,0,0,0.5)" : '#000000' }}
                 value={lang.language_code + ""}
               >
-                {lang.language_name}
+                <div>{lang.language_name}</div>
+                
               </MenuItem>
             ))}
           </Select>
@@ -625,6 +629,26 @@ class PdfUpload extends Component {
 
                 {this.renderTargetLanguagesItems()}
 
+                
+                  <Grid item xs={12} sm={12} lg={12} xl={12} style={{marginBottom: "22px"}}>
+                      {this.state.isTargetAlpha && this.state.target_language_code === "mni" && <Typography 
+                      style={{
+                        fontSize: "0.71rem",
+                        fontWeight: "600",
+                        fontFamily: "Roboto",
+                        marginBottom: 2
+                      }}
+                    >
+                      To view Manipuri - Meetei text in browser, download the font from&nbsp;<Tooltip title="Click here to download supported font.">
+                        <a href="https://fonts.google.com/noto/specimen/Noto+Sans+Meetei+Mayek" target="blank">here</a>
+                      </Tooltip>
+                      <br />
+                      Extract the file and open NotoSansMeeteiMayek-VariableFont_wght.ttf.
+                      <br />
+                      Click Install and restart the browser.
+                    </Typography>}
+                  </Grid>
+                
                 <Grid item xs={12} sm={12} lg={12} xl={12}>
                   <Grid item xs={12} sm={12} lg={12} xl={12}>
                     <Typography
@@ -719,6 +743,16 @@ class PdfUpload extends Component {
             fileName={this.state.files[0].name}
           />
         }
+        <div
+          style={{
+            position: "absolute",
+            bottom: 20,
+            right: 5,
+            color: "red"
+          }}
+        >
+        * Languages marked with (Alpha) are currently in development. Translation maybe inaccurate.
+        </div>
       </div>
     );
   }

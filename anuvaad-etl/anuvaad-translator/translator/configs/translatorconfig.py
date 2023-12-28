@@ -85,13 +85,14 @@ if isinstance(is_attention_based_alignment_enabled, str):
 #nmt-machine-topics
 anu_nmt_input_topic = os.environ.get('KAFKA_NMT_TRANSLATION_INPUT_TOPIC', 'anuvaad-nmt-translate')
 anu_nmt_output_topic = os.environ.get('KAFKA_NMT_TRANSLATION_OUTPUT_TOPIC', 'anuvaad-nmt-translate-processed')
-
+anu_nmt_output_topic_2 = os.environ.get('KAFKA_AAI4B_NMT_TRANSLATION_OUTPUT_TOPIC','aaib-nmt-translate-output')
 
 #kafka-configs
 anu_translator_input_topic = os.environ.get('KAFKA_ANUVAAD_DP_TRANSLATOR_INPUT_TOPIC', 'anuvaad-dp-tools-translator-input-v3')
 anu_translator_output_topic = os.environ.get('KAFKA_ANUVAAD_DP_TRANSLATOR_OUTPUT_TOPIC', 'anuvaad-dp-tools-translator-output-v3')
 anu_translator_nonmt_topic = os.environ.get('KAFKA_ANUVAAD_TRANSLATOR_NONMT_TOPIC', 'anuvaad-translator-no-nmt-v1')
 anu_translator_consumer_grp = os.environ.get('KAFKA_ANUVAAD_ETL_TRANSLATOR_CONSUMER_GRP', 'anuvaad-etl-translator-consumer-group')
+
 translator_cons_no_of_partitions = 1
 translator_nmt_cons_no_of_partitions = 1
 total_no_of_partitions = 6

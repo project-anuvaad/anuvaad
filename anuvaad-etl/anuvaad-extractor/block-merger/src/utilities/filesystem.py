@@ -30,12 +30,14 @@ def extract_image_paths_from_pdf(filepath, workspace_output_dir):
         function extracts image per page of the given PDF file.
         return list of path of extracted images 
     '''
+    log_info('start image dir :', app_context.application_context)
     working_dir     = os.path.join(workspace_output_dir, 'images')
     image_filename  = os.path.splitext(os.path.basename(filepath))[0]
     
     
     create_directory(working_dir)
     paths           = pdf2image.convert_from_path(filepath, dpi=300, output_file=image_filename, output_folder=working_dir, fmt='jpg', paths_only=True)
+    log_info('end image dir :', app_context.application_context)
     return paths
 
 def remove_extra_images(xml_file):
@@ -90,6 +92,7 @@ def extract_xml_path_from_digital_pdf(filepath, workspace_output_dir):
     os.system(cmd)
     
     xml_files      = read_directory_files(working_dir, pattern='*.xml')
+    log_info('pdf to html xml file read   :', app_context.application_context)
 
     remove_extra_images(xml_files[0])
     return xml_files[0]
@@ -111,5 +114,5 @@ def extract_html_bg_image_paths_from_digital_pdf(filepath, workspace_output_dir)
     os.system(cmd)
 
     bg_img_files    = read_directory_files(working_dir, pattern='*.png')
-
+    log_info('bg images  end :', app_context.application_context)
     return bg_img_files

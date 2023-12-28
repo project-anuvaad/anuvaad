@@ -171,9 +171,9 @@ class TranslatorService:
                         "target_language_code" : file["model"]["target_language_code"]}
             #log_info("NMT INPUT DATA"+str(nmt_in)+"TO TOPIC:"+str(topic),translate_wf_input)
             if nonmt_user:
-                producer.produce(nmt_in, anu_translator_nonmt_topic, partition)
+                producer.produce(nmt_in, anu_translator_nonmt_topic, partition, translate_wf_input)
             else:
-                producer.produce(nmt_in, topic, partition)
+                producer.produce(nmt_in, topic, partition, translate_wf_input)
             log_info("B_ID: " + batch_id + " | SENTENCES: " + str(len(batch)) +
                      " | COMPUTED: " + str(bw_data[batch_id]["computed"]) + " | TMX: " + str(
                 bw_data[batch_id]["tmx_count"]), translate_wf_input)

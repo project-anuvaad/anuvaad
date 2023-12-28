@@ -24,7 +24,7 @@ import HelpIcon from '@material-ui/icons/Help';
 import PublishIcon from '@material-ui/icons/Publish';
 import React, { useState, useEffect, useRef } from "react";
 import { Link as RouterLink, NavLink } from "react-router-dom";
-import AnuvaadLogo from "../../../../assets/HeaderTransparentLogo.png";
+import AnuvaadLogo from "../../../../assets/suvas-logo.png";
 import configs from "../../../../configs/configs";
 import headerMenuConfig from "../../../../configs/headerMenuConfig";
 import history from "../../../../web.history";
@@ -44,10 +44,10 @@ const useStyles = makeStyles((theme) => ({
     },
     logo: {
         // height: "2rem",
-        width: "4.5rem",
+        width: "5.5rem",
         cursor: "pointer",
-        marginBottom: "-1rem",
-        marginTop: "-0.4rem"
+        // marginBottom: "-1rem",
+        // marginTop: "-0.4rem"
     },
     // ".MuiButton-label":{
     //     letterSpacing: "0.5px"
