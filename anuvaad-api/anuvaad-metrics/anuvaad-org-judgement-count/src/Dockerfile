@@ -1,4 +1,5 @@
 FROM python:3.7-slim
+#RUN rm -vf /var/lib/apt/lists/*
 RUN apt-get update
 COPY / /app
 WORKDIR /app
