@@ -1,5 +1,5 @@
 from models import UserManagementModel
-from config import MAIL_SETTINGS, EMAIL_GET_URL_NOTIFICATION
+from config import MAIL_SETTINGS, BASE_URL
 from utilities import UserUtils, MODULE_CONTEXT
 from anuvaad_auditor.loghandler import log_info, log_exception
 from utilities.email_notification import send_email,generate_email_notification
@@ -46,7 +46,7 @@ class UserManagementRepositories:
         return None
     
     def send_mail_to_admin(self, email, name, orgId, averageDocTranslate, admin_email, token):
-        url_to_admin = f'{EMAIL_GET_URL_NOTIFICATION}?token={token}&email={email}'
+        url_to_admin = f'{BASE_URL}{token}/{email}'
         filename = "./templates/user_signup_request_template.html"
         message = generate_email_notification(MAIL_SETTINGS['USER_VERIFICATION_ADMIN_EMAIL'])
         message['Subject'] = f"Someone wants to use Anuvaad."

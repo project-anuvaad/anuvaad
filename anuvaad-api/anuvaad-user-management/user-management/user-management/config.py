@@ -77,7 +77,7 @@ MAIL_SETTINGS = {
 
 #React-app base url
 BASE_URL                =   os.environ.get('REACT_APP_BASE_URL','https://developers.anuvaad.org/')
-EMAIL_GET_URL_NOTIFICATION = os.environ.get('NOTIFICATION_ENDPOINT', 'http://127.0.0.1:5001/anuvaad/user-mgmt/v1/users/validated-and-onboard')
+EMAIL_GET_URL_NOTIFICATION = os.environ.get('NOTIFICATION_ENDPOINT', 'anuvaad/user-mgmt/v1/users/validated-and-onboard')
 
 # MFA configs
 MFA_ENABLED = bool(os.environ.get("MFA_ENABLED",False))
