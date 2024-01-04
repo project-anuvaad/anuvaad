@@ -842,7 +842,7 @@
         },
         {
             "id":"2e9fdbef-77cf-4837-8566-479e4be23f3b",
-            "uri":"/anuvaad/user-mgmt/v1/users/validate-signUp",
+            "uri":"/anuvaad/user-mgmt/v1/users/validate-signup",
             "module":"USER-MANAGEMENT-SYSTEM",
             "active":true,
             "whiteList":true,
