@@ -13,7 +13,7 @@ const endpoints = {
   workflowAsync: "/anuvaad-etl/wf-manager/v1/workflow/async/initiate",
   workflowSync: "/anuvaad-etl/wf-manager/v1/workflow/sync/initiate",
   signup: "/anuvaad/user-mgmt/v1/users/create",
-  requestSignUp: "/anuvaad/user-mgmt/v1/users/validate-signUp",
+  requestSignUp: "/anuvaad/user-mgmt/v1/users/validate-signup",
   login: "/anuvaad/user-mgmt/v1/users/login",
   logout: "/anuvaad/user-mgmt/v1/users/logout",
   setpassword: "/anuvaad/user-mgmt/v1/users/reset-password",
