@@ -3,8 +3,13 @@ from db import get_db, get_active_users_redis
 from utilities import UserUtils, OrgUtils
 from anuvaad_auditor.loghandler import log_info, log_exception
 from anuvaad_auditor.errorhandler import post_error
-from config import USR_MONGO_COLLECTION,ONE_ROLE_PER_ORG_LIST
+from config import USR_MONGO_COLLECTION,ONE_ROLE_PER_ORG_LIST, MAIL_SETTINGS, VERIFY_USERS
 import time
+import uuid
+import smtplib
+from email.mime.text import MIMEText
+admin_email = MAIL_SETTINGS['USER_VERIFICATION_ADMIN_EMAIL']
+
 
 class UserManagementModel(object):
 
@@ -158,6 +163,58 @@ class UserManagementModel(object):
         except Exception as e:
             log_exception("db connection exception ",  MODULE_CONTEXT, e)
             return post_error("Database connection exception", "An error occurred while connecting to the database:{}".format(str(e)), None)
+
+    def validate_usr_for_doc_translate(self, email):
+        collections = get_db()[USR_MONGO_COLLECTION]
+        result_usr = collections.find_one({"email": email})
+        if result_usr:
+            return result_usr
+        return None
+
+    def add_user_to_collection(self, name, email, orgID,token_and_epoch_gen, avgDocTranslate):#,timestamp, token):
+        collections = get_db()[VERIFY_USERS]
+        insert_user = collections.insert_one({"email":email, "userName":email,"name" : name, "orgID":orgID,"token": token_and_epoch_gen[0],"timeStamp":token_and_epoch_gen[1] ,"documentsPerDay":avgDocTranslate})#, "timeStamp":timestamp,"token":token})
+        inserted = insert_user.inserted_id
+        if inserted:
+            return "SUCCESS"
+        return None
+    
+    def generate_token_for_user_response_page(self):
+        #epoch_time = int(time.time())
+        return (str(uuid.uuid4().int)[:10], int(time.time()))
+
+    def send_mail(self, message):
+        email = MIMEText(message)
+        smtp_server = smtplib.SMTP('smtp.gmail.com', 587)
+        smtp_server.starttls()
+        smtp_server.login(MAIL_SETTINGS['MAIL_SENDER'], MAIL_SETTINGS['MAIL_PASSWORD'])
+        kk = smtp_server.sendmail(MAIL_SETTINGS['MAIL_SENDER'], MAIL_SETTINGS['USER_VERIFICATION_ADMIN_EMAIL'], email.as_string())
+        smtp_server.quit()
+        return "SUCCESS"
+
+    def val_onb_user(self,token, email):
+        collections = get_db()[VERIFY_USERS]
+        founder = collections.find_one({"email":email,"token":token})
+        if isinstance(founder, dict):
+            return founder
+        return None
+
+    def remove_user_data(self,token, email):
+        collections = get_db()[VERIFY_USERS]
+        removed_ = collections.delete_one({"token":token, "email":email})
+        return removed_
+
+
+
+
+    def send__usr_verified_mail(self,userEmail, message):
+        email = MIMEText(message)
+        smtp_server = smtplib.SMTP('smtp.gmail.com', 587)
+        smtp_server.starttls()
+        smtp_server.login(MAIL_SETTINGS['MAIL_SENDER'], MAIL_SETTINGS['MAIL_PASSWORD'])
+        smtp_server.sendmail(MAIL_SETTINGS['MAIL_SENDER'], userEmail, email.as_string())
+        smtp_server.quit()
+        return "SUCCESS"
 
     def onboard_users(self,users):
         records = []

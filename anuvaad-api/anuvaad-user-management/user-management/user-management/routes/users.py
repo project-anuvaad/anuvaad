@@ -1,7 +1,7 @@
 from flask import Blueprint
 from flask_restful import Api
 from resources import CreateUsers, UpdateUsers, SearchUsers,OnboardUsers, Health, ActivateDeactivateUser, UpdateEmail, ActiveUsers
-from resources import UserLogin, UserLogout, AuthTokenSearch, ForgotPassword, ResetPassword , VerifyUser, SearchRoles
+from resources import UserLogin, UserLogout, AuthTokenSearch, ForgotPassword, ResetPassword , VerifyUser, SearchRoles, validateSignUp,validateAndOnboard
 
 
 USER_MANAGEMENT_BLUEPRINT = Blueprint("user-management", __name__)
@@ -49,6 +49,14 @@ Api(USER_MANAGEMENT_BLUEPRINT).add_resource(
 Api(USER_MANAGEMENT_BLUEPRINT).add_resource(
     OnboardUsers,"/v1/users/onboard-users"
 )
+
+Api(USER_MANAGEMENT_BLUEPRINT).add_resource(
+    validateSignUp,"/v1/users/validate-signUp"
+)
+Api(USER_MANAGEMENT_BLUEPRINT).add_resource(
+    validateAndOnboard,"/v1/users/validated-and-onboard"
+)
+
 
 Api(USER_MANAGEMENT_BLUEPRINT).add_resource(
     SearchRoles,"/v1/users/get-roles"
