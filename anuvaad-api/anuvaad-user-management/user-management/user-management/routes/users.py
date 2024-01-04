@@ -51,7 +51,7 @@ Api(USER_MANAGEMENT_BLUEPRINT).add_resource(
 )
 
 Api(USER_MANAGEMENT_BLUEPRINT).add_resource(
-    validateSignUp,"/v1/users/validate-signUp"
+    validateSignUp,"/v1/users/validate-signup"
 )
 Api(USER_MANAGEMENT_BLUEPRINT).add_resource(
     validateAndOnboard,"/v1/users/validated-and-onboard"
