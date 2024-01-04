@@ -78,7 +78,7 @@ MAIL_SETTINGS = {
 #React-app base url
 BASE_URL                =   os.environ.get('REACT_APP_BASE_URL','https://developers.anuvaad.org/')
 EMAIL_GET_URL_NOTIFICATION = os.environ.get('NOTIFICATION_ENDPOINT', 'anuvaad/user-mgmt/v1/users/validated-and-onboard')
-
+POST_URL_SUF            =   os.environ.get('POST_URL_SUF', 'user/verify-signup-request/')
 # MFA configs
 MFA_ENABLED = bool(os.environ.get("MFA_ENABLED",False))
 MFA_SUPPORTED_TYPES = ['TOTP','HOTP']
