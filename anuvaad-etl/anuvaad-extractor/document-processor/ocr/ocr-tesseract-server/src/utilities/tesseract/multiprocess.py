@@ -209,6 +209,16 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
 
                                                 # Use the words sequentially, and loop back to the beginning if needed
                                                 region['text'] = split_text[index]
+                                                # Skip regions with no boundingBox or with fewer than 2 vertices
+                                                if 'boundingBox' not in region or 'vertices' not in region['boundingBox'] or len(region['boundingBox']['vertices']) < 2:
+                                                    continue
+
+                                                # Get the Y-coordinate of the first vertex
+                                                first_vertex_y = region['boundingBox']['vertices'][0]['y']
+
+                                                # Update the Y-coordinate of all vertices to be the same as the first vertex
+                                                for vertex in region['boundingBox']['vertices']:
+                                                    vertex['y'] = first_vertex_y
                                                 index += 1
 
                         page_regions[rgn_idx]['regions'] = copy.deepcopy(updated_lines)
