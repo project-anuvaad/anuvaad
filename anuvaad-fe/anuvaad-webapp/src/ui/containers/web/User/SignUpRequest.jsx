@@ -213,7 +213,7 @@ class SignUpRequest extends React.Component {
 
 
                 <hr className={classes.hrTag} />
-                <Typography align='center' className={classes.typographyFooter}>{translate('signUp.page.label.enterDetailsToReceiveRequestConfirmation')}<br />{translate('signUp.page.label.clickToActivateAccount')}</Typography>
+                <Typography align='center' className={classes.typographyFooter}>{translate('signUp.page.label.enterDetailsToReceiveRequestConfirmation')}</Typography>
                 {/* </Grid> */}
                 <div className={classes.buttonsDiv} />
                 {this.state.openSnackBar &&
