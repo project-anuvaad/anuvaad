@@ -34,7 +34,7 @@
 # RUN chmod +x /usr/bin/start.sh
 # CMD ["/usr/bin/start.sh"]
 
-FROM python:3.8-slim
+FROM python:3.8-bullseye
 COPY / /app
 WORKDIR /app
 RUN pip install -r requirements.txt  \ 
