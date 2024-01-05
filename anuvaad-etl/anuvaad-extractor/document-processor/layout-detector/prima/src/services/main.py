@@ -48,6 +48,7 @@ def get_layout(app_context) :
                 regions     = primalaynet.predict_primanet(page_path, line_coords)
                 #regions += cell_regions
                 file['pages'][idx]["regions"]=regions
+                file['pages'][idx]["words"] = page_words
             file['file'] = file_new['file']
             file['config'] = file_new['config']
             output.append(file)
