@@ -384,12 +384,12 @@ class Login extends React.Component {
               id="newaccount"
               onClick={() => {
                 // this.handleChangeFocusedComponent("Signup")
-                history.push(`${process.env.PUBLIC_URL}/user/signup`);
+                history.push(`${process.env.PUBLIC_URL}/user/request-signup`);
               }}
               href="#"
               className={classes.forgotPassLink}
             >
-              {/* Sign Up */}
+              Request Signup
             </Link>
 
             <Link
