@@ -190,6 +190,15 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
                                         generated_ids = model.generate(pixel_values)
                                         trocr_text = processor.batch_decode(generated_ids, skip_special_tokens=True)[0]
                                     words  = get_tess_text(image_crop,lang,mode_height,left,top,line['class'],c_x,c_y,lang_detected)
+                                    # Align words within a line based on their Y-coordinates
+                                    if len(words) > 1:
+                                        # Get the Y-coordinate of the first word
+                                        first_word_y = words[0]['boundingBox']['vertices'][0]['y']
+
+                                        # Update the Y-coordinate of all words to be the same as the first word
+                                        for word in words:
+                                            for vertex in word['boundingBox']['vertices']:
+                                                vertex['y'] = first_word_y
                                     h_lines = check_horizontal_merging(words,line['class'],mode_height,vertices,line)
                                     updated_lines.extend(h_lines)
 
