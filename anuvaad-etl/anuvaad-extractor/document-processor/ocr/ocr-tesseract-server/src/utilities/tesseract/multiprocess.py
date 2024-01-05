@@ -193,16 +193,18 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
                                     # Align words within a line based on their Y-coordinates
                                     if len(words) > 1:
                                         # Get the Y-coordinate of the first word
-                                        first_word_y = words[0]['boundingBox']['vertices'][0]['y']
+                                        first_word_y  = words[0]['boundingBox']['vertices'][0]['y']
+                                        first_word_y1 = words[0]['boundingBox']['vertices'][2]['y']
+                                        first_word_x  = words[0]['boundingBox']['vertices'][0]['x']
 
                                         # Update the Y-coordinate of all words to be the same as the first word
                                         for word in words:
                                             word['boundingBox']['vertices'][0]['y'] = first_word_y
                                             word['boundingBox']['vertices'][1]['y'] = first_word_y
-
+                                            word['boundingBox']['vertices'][0]['x'] = first_word_x
                                             # Update the Y-coordinate of the last two vertices to be the same as the first word
-                                            word['boundingBox']['vertices'][2]['y'] = first_word_y + (word['boundingBox']['vertices'][2]['y'] - word['boundingBox']['vertices'][0]['y'])
-                                            word['boundingBox']['vertices'][3]['y'] = first_word_y + (word['boundingBox']['vertices'][3]['y'] - word['boundingBox']['vertices'][1]['y'])
+                                            word['boundingBox']['vertices'][2]['y'] = first_word_y1
+                                            word['boundingBox']['vertices'][3]['y'] = first_word_y1
                                     h_lines = check_horizontal_merging(words,line['class'],mode_height,vertices,line)
                                     updated_lines.extend(h_lines)
 
