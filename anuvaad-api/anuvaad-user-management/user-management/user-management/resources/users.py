@@ -7,8 +7,9 @@ from flask import request, jsonify
 from anuvaad_auditor.errorhandler import post_error
 import config
 import re
-
+from config import MAIL_SETTINGS
 userRepo    =   UserManagementRepositories()
+admin_email = MAIL_SETTINGS['USER_VERIFICATION_ADMIN_EMAIL']
 
 class CreateUsers(Resource):
 
@@ -168,6 +169,57 @@ class SearchRoles(Resource):
             log_exception("Exception while searching user records: " +
                           str(e), MODULE_CONTEXT, e)
             return post_error("Exception occurred", "Exception while performing user search::{}".format(str(e)), None), 400
+
+
+class validateSignUp(Resource):
+    def post(self):
+        body = request.get_json()
+        #log_info(f"{token}somethinf somthing soimthiung",MODULE_CONTEXT)
+        req_params = ['fullName','email','orgID','averageDocTranslationsPerDay']
+        if isinstance(body,dict):
+            for param in body.keys():
+                if param not in req_params:
+                    return post_error("Data Missing", "Please enter following details. 'fullName','email','orgID','averageDocTranslationsPerDay'", None), 400
+
+        
+        userName,email,orgID,averageDocTranslationsPerDay  = body['fullName'], body['email'], body['orgID'], body['averageDocTranslationsPerDay']
+        usr_details = userRepo.validate_user_for_docs(email)
+        if not usr_details:#add user to collections, create token and generate timeStamp.
+            token_and_epoch_gen = userRepo.token_generation_and_timestamp()
+            adduser = userRepo.add_usr_details(userName, email, orgID,token_and_epoch_gen, averageDocTranslationsPerDay)
+            if adduser == "SUCCESS":
+                #return 
+                token = token_and_epoch_gen[0]
+                userRepo.send_mail_to_admin(email,userName, orgID, averageDocTranslationsPerDay,admin_email, token)
+                res = CustomResponse(Status.SUCCESS_USER_RESPONSE_PAGE.value, adduser)
+                return res.getresjson(), 200
+        return post_error("Existing user","User already exists, please login.", None), 400
+
+
+        #check if email exists
+        #users = body['users']
+
+
+class validateAndOnboard(Resource):
+    def get(self):
+        token = request.args.get('token')
+        email = request.args.get('email')
+        log_info(f"get request {token}",MODULE_CONTEXT)
+        validate = userRepo.validate_and_onboard_user(token, email)
+        if validate:
+            userRepo.rmv_validated_user_from_db(token, email)
+            data,pwd = userRepo.prepare_onboarding_user_req(validate )
+            userRepo.onboard_users(data) 
+            userRepo.send_mail_to_verified_user(validate['email'],pwd)
+            return "Successful, you can now use Anuvaad"
+
+        #log_info(f"cvalisfda {validate}", MODULE_CONTEXT)
+        
+
+
+
+
+
 
 
 class Health(Resource):
