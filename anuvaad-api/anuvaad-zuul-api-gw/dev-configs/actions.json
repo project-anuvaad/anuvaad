@@ -173,7 +173,7 @@
             "uri":"/anuvaad/user-mgmt/v1/org/search",
             "module":"USER-MANAGEMENT-SYSTEM",
             "active":true,
-            "whiteList":false,
+            "whiteList":true,
             "description":"API for searching orgs"
         },
         {
@@ -839,6 +839,22 @@
             "active":true,
             "whiteList":false,
             "description":"API to initiate SYNC workflows"
+        },
+        {
+            "id":"2e9fdbef-77cf-4837-8566-479e4be23f3b",
+            "uri":"/anuvaad/user-mgmt/v1/users/validate-signup",
+            "module":"USER-MANAGEMENT-SYSTEM",
+            "active":true,
+            "whiteList":true,
+            "description":"API to request for signup in the system"
+        },
+        {
+            "id":"f730a362-0f75-4a08-b6ee-a74a89126565",
+            "uri":"/anuvaad/user-mgmt/v1/users/validated-and-onboard",
+            "module":"USER-MANAGEMENT-SYSTEM",
+            "active":true,
+            "whiteList":true,
+            "description":"API to validate a requested signup in the system"
         }
     ]
 }
