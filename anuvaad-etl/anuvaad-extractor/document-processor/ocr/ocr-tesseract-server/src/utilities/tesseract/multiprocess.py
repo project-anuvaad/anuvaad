@@ -17,6 +17,7 @@ from src.utilities.region_operations import collate_regions
 import src.utilities.app_context as app_context
 from transformers import TrOCRProcessor, VisionEncoderDecoderModel
 import requests
+from collections import Counter
 
 
 tessract_queue = Queue()
@@ -192,23 +193,24 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
                                     words  = get_tess_text(image_crop,lang,mode_height,left,top,line['class'],c_x,c_y,lang_detected)
                                     # Align words within a line based on their Y-coordinates
                                     if len(words) > 1:
-                                        # Calculate the average Y-values for the first two vertices in the line
-                                        total_y_first_two = sum([word['boundingBox']['vertices'][0]['y'] + word['boundingBox']['vertices'][1]['y'] for word in words])
-                                        average_y_first_two = total_y_first_two / (2 * len(words))
-                                        # Align the first two vertices in each word to have the same average Y-coordinate
+                                        # Extract the Y-values for the first two vertices and the last two vertices separately
+                                        y_values_first_two = [word['boundingBox']['vertices'][0]['y'] + word['boundingBox']['vertices'][1]['y'] for word in words]
+                                        y_values_last_two = [word['boundingBox']['vertices'][2]['y'] + word['boundingBox']['vertices'][3]['y'] for word in words]
+
+                                        # Find the most common Y-values for the first two vertices and the last two vertices
+                                        most_common_y_first_two = Counter(y_values_first_two).most_common(1)[0][0]
+                                        most_common_y_last_two = Counter(y_values_last_two).most_common(1)[0][0]
+
+                                        # Align the first two vertices in each word to have the same most common Y-coordinate
                                         for word in words:
-                                            word['boundingBox']['vertices'][0]['y'] = average_y_first_two
-                                            word['boundingBox']['vertices'][1]['y'] = average_y_first_two
+                                            word['boundingBox']['vertices'][0]['y'] = most_common_y_first_two
+                                            word['boundingBox']['vertices'][1]['y'] = most_common_y_first_two
 
-                                        # Calculate the average Y-values for the last two vertices in the line
-                                        total_y_last_two = sum([word['boundingBox']['vertices'][2]['y'] + word['boundingBox']['vertices'][3]['y'] for word in words])
-                                        average_y_last_two = total_y_last_two / (2 * len(words))
-
-
-                                        # Align the last two vertices in each word to have the same average Y-coordinate
+                                        # Align the last two vertices in each word to have the same most common Y-coordinate
                                         for word in words:
-                                            word['boundingBox']['vertices'][2]['y'] = average_y_last_two
-                                            word['boundingBox']['vertices'][3]['y'] = average_y_last_two
+                                            word['boundingBox']['vertices'][2]['y'] = most_common_y_last_two
+                                            word['boundingBox']['vertices'][3]['y'] = most_common_y_last_two
+
                                     h_lines = check_horizontal_merging(words,line['class'],mode_height,vertices,line)
                                     updated_lines.extend(h_lines)
 
