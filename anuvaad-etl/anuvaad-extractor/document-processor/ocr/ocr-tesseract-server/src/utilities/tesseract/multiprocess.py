@@ -196,53 +196,63 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
                                     h_lines = check_horizontal_merging(words,line['class'],mode_height,vertices,line)
                                     updated_lines.extend(h_lines)
 
-                                    # Split the text variable by space
-                                    if initialize_ocr_models:
-                                        split_text = trocr_text.split()
+                                    # # Split the text variable by space
+                                    # if initialize_ocr_models:
+                                    #     split_text = trocr_text.split()
                                         
-                                        # Replace the values of ['text'] in the JSON data sequentially
-                                        index = 0
-                                        for index, entry in enumerate(updated_lines):
-                                            entries = entry.get('regions', [])
-                                            # if first_vertex_y is None:
-                                            if index < len(entries):
-                                                dynamic_first_vertex_y = entry['regions'][index]['boundingBox']['vertices'][0]['y']
-                                            # first_vertex_y = dynamic_first_vertex_y
-                                            for region in entry['regions']:
-                                                # # Check if index is greater than or equal to len(split_text)
-                                                # if index >= len(split_text):
-                                                #     # If so, remove the current region and break out of the loop
-                                                #     entry['regions'].remove(region)
-                                                #     break
+                                    #     # Replace the values of ['text'] in the JSON data sequentially
+                                    #     index = 0
+                                    #     for index, entry in enumerate(updated_lines):
+                                    #         entries = entry.get('regions', [])
+                                    #         # if first_vertex_y is None:
+                                    #         if index < len(entries):
+                                    #             dynamic_first_vertex_y = entry['regions'][index]['boundingBox']['vertices'][0]['y']
+                                    #         # first_vertex_y = dynamic_first_vertex_y
+                                    #         for region in entry['regions']:
+                                    #             # # Check if index is greater than or equal to len(split_text)
+                                    #             # if index >= len(split_text):
+                                    #             #     # If so, remove the current region and break out of the loop
+                                    #             #     entry['regions'].remove(region)
+                                    #             #     break
 
-                                                # Use the words sequentially, and loop back to the beginning if needed
-                                                region['text'] = split_text[index % len(split_text)]
-                                                # Skip regions with no boundingBox or with fewer than 2 vertices
-                                                # if 'boundingBox' not in region or 'vertices' not in region['boundingBox'] or len(region['boundingBox']['vertices']) < 2:
-                                                    # continue
+                                    #             # Use the words sequentially, and loop back to the beginning if needed
+                                    #             region['text'] = split_text[index % len(split_text)]
+                                    #             # Skip regions with no boundingBox or with fewer than 2 vertices
+                                    #             # if 'boundingBox' not in region or 'vertices' not in region['boundingBox'] or len(region['boundingBox']['vertices']) < 2:
+                                    #                 # continue
 
-                                                # Update the Y-coordinate of all vertices to be the same as the first vertex
-                                                for vertex in region['boundingBox']['vertices']:
-                                                    #Check the difference between already stored and dynamic first_vertex_y
-                                                    if first_vertex_y is not None and abs(dynamic_first_vertex_y - first_vertex_y) < 100:
-                                                        vertex['y'] = first_vertex_y
-                                                    else:
-                                                        # Assign the dynamic value if the difference is greater than or equal to 100
-                                                        vertex['y'] = dynamic_first_vertex_y
-                                                for vertex in entry['boundingBox']['vertices']:
-                                                    #Check the difference between already stored and dynamic first_vertex_y
-                                                    if first_vertex_y is not None and abs(dynamic_first_vertex_y - first_vertex_y) < 100:
-                                                        vertex['y'] = first_vertex_y
-                                                    else:
-                                                        # Assign the dynamic value if the difference is greater than or equal to 100
-                                                        vertex['y'] = dynamic_first_vertex_y
-                                                        # Update the already stored first_vertex_y if the dynamic value is assigned
-                                                        first_vertex_y  = dynamic_first_vertex_y
-                                                index += 1
+                                    #             # Update the Y-coordinate of all vertices to be the same as the first vertex
+                                    #             for vertex in region['boundingBox']['vertices']:
+                                    #                 #Check the difference between already stored and dynamic first_vertex_y
+                                    #                 if first_vertex_y is not None and abs(dynamic_first_vertex_y - first_vertex_y) < 100:
+                                    #                     vertex['y'] = first_vertex_y
+                                    #                 else:
+                                    #                     # Assign the dynamic value if the difference is greater than or equal to 100
+                                    #                     vertex['y'] = dynamic_first_vertex_y
+                                    #             for vertex in entry['boundingBox']['vertices']:
+                                    #                 #Check the difference between already stored and dynamic first_vertex_y
+                                    #                 if first_vertex_y is not None and abs(dynamic_first_vertex_y - first_vertex_y) < 100:
+                                    #                     vertex['y'] = first_vertex_y
+                                    #                 else:
+                                    #                     # Assign the dynamic value if the difference is greater than or equal to 100
+                                    #                     vertex['y'] = dynamic_first_vertex_y
+                                    #                     # Update the already stored first_vertex_y if the dynamic value is assigned
+                                    #                     first_vertex_y  = dynamic_first_vertex_y
+                                    #             index += 1
+                                    # Split the text variable by space
+                                    split_text = trocr_text.split()
+
+                                    # Replace the values of ['text'] in the JSON data sequentially
+                                    index = 0
+                                    for entry in updated_lines:
+                                        for region in entry['regions']:
+                                            # Use the words sequentially, and loop back to the beginning if needed
+                                            region['text'] = split_text[index % len(split_text)]
+                                            index += 1
                                         # Update the already stored first_vertex_y if the dynamic value is assigned
                                         # first_vertex_y  = dynamic_first_vertex_y
-                            page_regions[rgn_idx]['regions'] = copy.deepcopy(updated_lines)
-                            #page_regions[rgn_idx]['regions'][line_idx]['regions'] = words
+                        page_regions[rgn_idx]['regions'] = copy.deepcopy(updated_lines)
+                        #page_regions[rgn_idx]['regions'][line_idx]['regions'] = words
 
             if config.MULTIPROCESS:
                 while file_writer_queue.qsize() < total_lines:
