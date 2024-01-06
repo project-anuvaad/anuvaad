@@ -17,6 +17,7 @@ from src.utilities.region_operations import collate_regions
 import src.utilities.app_context as app_context
 from transformers import TrOCRProcessor, VisionEncoderDecoderModel
 import requests
+from collections import Counter
 
 
 tessract_queue = Queue()
@@ -155,6 +156,7 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
 
         if len(page_regions) > 0:
             total_lines = 0
+            first_vertex_y = None
             for rgn_idx, region in enumerate(page_regions):
                 if region != None and 'regions' in region.keys():
                     if region['class'] == "TABLE":
@@ -162,6 +164,7 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
                             page_regions, region, lang, img, mode_height, rgn_idx, lang_detected)                      
                     else:
                         updated_lines = []
+                        # first_vertex_y = None
                         for line_idx, line in enumerate(region['regions']):
                             tmp_line = [line]
                             if config.IS_DYNAMIC and 'class' in line.keys():
@@ -194,16 +197,50 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
                                     updated_lines.extend(h_lines)
 
                                     # Split the text variable by space
-                                    split_text = trocr_text.split()
+                                    if initialize_ocr_models:
+                                        split_text = trocr_text.split()
+                                        
+                                        # Replace the values of ['text'] in the JSON data sequentially
+                                        index = 0
+                                        for idx, entry in enumerate(updated_lines):
+                                            entries = entry.get('regions', [])
+                                            # if first_vertex_y is None:
+                                            if idx < len(entries):
+                                                dynamic_first_vertex_y = entry['regions'][idx]['boundingBox']['vertices'][0]['y']
+                                            # first_vertex_y = dynamic_first_vertex_y
+                                            for region in entry['regions']:
+                                                # Check if index is greater than or equal to len(split_text)
+                                                if index >= len(split_text):
+                                                    # If so, remove the current region and break out of the loop
+                                                    entry['regions'].remove(region)
+                                                    break
 
-                                    # Replace the values of ['text'] in the JSON data sequentially
-                                    index = 0
-                                    for entry in updated_lines:
-                                        for region in entry['regions']:
-                                            # Use the words sequentially, and loop back to the beginning if needed
-                                            region['text'] = split_text[index % len(split_text)]
-                                            index += 1
+                                                # Use the words sequentially, and loop back to the beginning if needed
+                                                region['text'] = split_text[index]
+                                                # Skip regions with no boundingBox or with fewer than 2 vertices
+                                                if 'boundingBox' not in region or 'vertices' not in region['boundingBox'] or len(region['boundingBox']['vertices']) < 2:
+                                                    continue
 
+                                                # Update the Y-coordinate of all vertices to be the same as the first vertex
+                                                for vertex in region['boundingBox']['vertices']:
+                                                    #Check the difference between already stored and dynamic first_vertex_y
+                                                    if first_vertex_y is not None and abs(dynamic_first_vertex_y - first_vertex_y) < 100:
+                                                        vertex['y'] = first_vertex_y
+                                                    else:
+                                                        # Assign the dynamic value if the difference is greater than or equal to 100
+                                                        vertex['y'] = dynamic_first_vertex_y
+                                                for vertex in entry['boundingBox']['vertices']:
+                                                    #Check the difference between already stored and dynamic first_vertex_y
+                                                    if first_vertex_y is not None and abs(dynamic_first_vertex_y - first_vertex_y) < 100:
+                                                        vertex['y'] = first_vertex_y
+                                                    else:
+                                                        # Assign the dynamic value if the difference is greater than or equal to 100
+                                                        vertex['y'] = dynamic_first_vertex_y
+                                                        # Update the already stored first_vertex_y if the dynamic value is assigned
+                                                        first_vertex_y  = dynamic_first_vertex_y
+                                                index += 1
+                                        # Update the already stored first_vertex_y if the dynamic value is assigned
+                                        # first_vertex_y  = dynamic_first_vertex_y
                                 page_regions[rgn_idx]['regions'] = copy.deepcopy(updated_lines)
                                 #page_regions[rgn_idx]['regions'][line_idx]['regions'] = words
 
