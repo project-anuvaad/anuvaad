@@ -156,7 +156,7 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
 
         if len(page_regions) > 0:
             total_lines = 0
-            # first_vertex_y = None
+            first_vertex_y = None
             for rgn_idx, region in enumerate(page_regions):
                 if region != None and 'regions' in region.keys():
                     if region['class'] == "TABLE":
@@ -164,7 +164,7 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
                             page_regions, region, lang, img, mode_height, rgn_idx, lang_detected)                      
                     else:
                         updated_lines = []
-                        first_vertex_y = None
+                        # first_vertex_y = None
                         for line_idx, line in enumerate(region['regions']):
                             tmp_line = [line]
                             if config.IS_DYNAMIC and 'class' in line.keys():
@@ -202,10 +202,10 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
                                         
                                         # Replace the values of ['text'] in the JSON data sequentially
                                         index = 0
-                                        for entry in updated_lines:
-                                            if first_vertex_y is None:
-                                                dynamic_first_vertex_y = entry['regions'][0]['boundingBox']['vertices'][0]['y']
-                                                # first_vertex_y = dynamic_first_vertex_y
+                                        for idx, entry in enumerate(updated_lines):
+                                            # if first_vertex_y is None:
+                                            dynamic_first_vertex_y = entry['regions'][idx]['boundingBox']['vertices'][0]['y']
+                                            # first_vertex_y = dynamic_first_vertex_y
                                             for region in entry['regions']:
                                                 # Check if index is greater than or equal to len(split_text)
                                                 if index >= len(split_text):
@@ -219,7 +219,6 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
                                                 if 'boundingBox' not in region or 'vertices' not in region['boundingBox'] or len(region['boundingBox']['vertices']) < 2:
                                                     continue
 
-                                                
                                                 # Update the Y-coordinate of all vertices to be the same as the first vertex
                                                 for vertex in region['boundingBox']['vertices']:
                                                     #Check the difference between already stored and dynamic first_vertex_y
@@ -235,9 +234,11 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
                                                     else:
                                                         # Assign the dynamic value if the difference is greater than or equal to 100
                                                         vertex['y'] = dynamic_first_vertex_y
+                                                        # Update the already stored first_vertex_y if the dynamic value is assigned
+                                                        first_vertex_y  = dynamic_first_vertex_y
                                                 index += 1
                                         # Update the already stored first_vertex_y if the dynamic value is assigned
-                                        first_vertex_y  = dynamic_first_vertex_y
+                                        # first_vertex_y  = dynamic_first_vertex_y
                         page_regions[rgn_idx]['regions'] = copy.deepcopy(updated_lines)
                                 #page_regions[rgn_idx]['regions'][line_idx]['regions'] = words
 
