@@ -227,6 +227,13 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
                                                     else:
                                                         # Assign the dynamic value if the difference is greater than or equal to 100
                                                         vertex['y'] = dynamic_first_vertex_y
+                                                for vertex in entry['boundingBox']['vertices']:
+                                                    #Check the difference between already stored and dynamic first_vertex_y
+                                                    if abs(dynamic_first_vertex_y - first_vertex_y) < 100:
+                                                        vertex['y'] = first_vertex_y
+                                                    else:
+                                                        # Assign the dynamic value if the difference is greater than or equal to 100
+                                                        vertex['y'] = dynamic_first_vertex_y
                                                 index += 1
                                         # Update the already stored first_vertex_y if the dynamic value is assigned
                                         first_vertex_y  = dynamic_first_vertex_y
