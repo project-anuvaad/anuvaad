@@ -156,7 +156,6 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
 
         if len(page_regions) > 0:
             total_lines = 0
-            first_vertex_y = None
             for rgn_idx, region in enumerate(page_regions):
                 if region != None and 'regions' in region.keys():
                     if region['class'] == "TABLE":
@@ -164,6 +163,7 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
                             page_regions, region, lang, img, mode_height, rgn_idx, lang_detected)                      
                     else:
                         updated_lines = []
+                        first_vertex_y = None
                         for line_idx, line in enumerate(region['regions']):
                             tmp_line = [line]
                             if config.IS_DYNAMIC and 'class' in line.keys():
