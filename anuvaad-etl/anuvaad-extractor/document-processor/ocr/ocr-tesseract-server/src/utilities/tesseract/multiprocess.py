@@ -139,7 +139,7 @@ def check_horizontal_merging(words,cls_name,mode_height,vertices,line):
         line['regions'] = copy.deepcopy(words)
         return [line]
 
-def multi_processing_tesseract(page_regions, image_path, lang, width, height, words):
+def multi_processing_tesseract(page_regions, image_path, lang, width, height):
     try:
         img = cv2.imread(image_path)
         mode_height = get_mode_height(page_regions)
