@@ -156,6 +156,7 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
 
         if len(page_regions) > 0:
             total_lines = 0
+            first_vertex_y = None
             for rgn_idx, region in enumerate(page_regions):
                 if region != None and 'regions' in region.keys():
                     if region['class'] == "TABLE":
@@ -191,26 +192,6 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
                                         generated_ids = model.generate(pixel_values)
                                         trocr_text = processor.batch_decode(generated_ids, skip_special_tokens=True)[0]
                                     words  = get_tess_text(image_crop,lang,mode_height,left,top,line['class'],c_x,c_y,lang_detected)
-                                    # Align words within a line based on their Y-coordinates
-                                    if len(words) > 1:
-                                        # Extract the Y-values for the first two vertices and the last two vertices separately
-                                        y_values_first_two = [word['boundingBox']['vertices'][0]['y'] + word['boundingBox']['vertices'][1]['y'] for word in words]
-                                        y_values_last_two = [word['boundingBox']['vertices'][2]['y'] + word['boundingBox']['vertices'][3]['y'] for word in words]
-
-                                        # Find the most common Y-values for the first two vertices and the last two vertices
-                                        most_common_y_first_two = Counter(y_values_first_two).most_common(1)[0][0]
-                                        most_common_y_last_two = Counter(y_values_last_two).most_common(1)[0][0]
-
-                                        # Align the first two vertices in each word to have the same most common Y-coordinate
-                                        for word in words:
-                                            word['boundingBox']['vertices'][0]['y'] = most_common_y_first_two
-                                            word['boundingBox']['vertices'][1]['y'] = most_common_y_first_two
-
-                                        # Align the last two vertices in each word to have the same most common Y-coordinate
-                                        for word in words:
-                                            word['boundingBox']['vertices'][2]['y'] = most_common_y_last_two
-                                            word['boundingBox']['vertices'][3]['y'] = most_common_y_last_two
-
                                     h_lines = check_horizontal_merging(words,line['class'],mode_height,vertices,line)
                                     updated_lines.extend(h_lines)
 
@@ -221,6 +202,9 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
                                         # Replace the values of ['text'] in the JSON data sequentially
                                         index = 0
                                         for entry in updated_lines:
+                                            if first_vertex_y is None:
+                                                dynamic_first_vertex_y = entry['regions'][0]['boundingBox']['vertices'][0]['y']
+                                                first_vertex_y = dynamic_first_vertex_y
                                             for region in entry['regions']:
                                                 # Check if index is greater than or equal to len(split_text)
                                                 if index >= len(split_text):
@@ -234,14 +218,18 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
                                                 if 'boundingBox' not in region or 'vertices' not in region['boundingBox'] or len(region['boundingBox']['vertices']) < 2:
                                                     continue
 
-                                                # Get the Y-coordinate of the first vertex
-                                                first_vertex_y = region['boundingBox']['vertices'][0]['y']
-
+                                                
                                                 # Update the Y-coordinate of all vertices to be the same as the first vertex
                                                 for vertex in region['boundingBox']['vertices']:
-                                                    vertex['y'] = first_vertex_y
+                                                    #Check the difference between already stored and dynamic first_vertex_y
+                                                    if abs(dynamic_first_vertex_y - first_vertex_y) < 100:
+                                                        vertex['y'] = first_vertex_y
+                                                    else:
+                                                        # Assign the dynamic value if the difference is greater than or equal to 100
+                                                        vertex['y'] = dynamic_first_vertex_y
                                                 index += 1
-
+                                        # Update the already stored first_vertex_y if the dynamic value is assigned
+                                        first_vertex_y  = dynamic_first_vertex_y
                         page_regions[rgn_idx]['regions'] = copy.deepcopy(updated_lines)
                                 #page_regions[rgn_idx]['regions'][line_idx]['regions'] = words
 
