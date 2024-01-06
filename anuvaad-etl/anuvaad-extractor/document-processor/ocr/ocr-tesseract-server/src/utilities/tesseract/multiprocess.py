@@ -203,8 +203,10 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
                                         # Replace the values of ['text'] in the JSON data sequentially
                                         index = 0
                                         for idx, entry in enumerate(updated_lines):
+                                            entries = entry.get('regions', [])
                                             # if first_vertex_y is None:
-                                            dynamic_first_vertex_y = entry['regions'][idx]['boundingBox']['vertices'][0]['y']
+                                            if idx < len(entries):
+                                                dynamic_first_vertex_y = entry['regions'][idx]['boundingBox']['vertices'][0]['y']
                                             # first_vertex_y = dynamic_first_vertex_y
                                             for region in entry['regions']:
                                                 # Check if index is greater than or equal to len(split_text)
