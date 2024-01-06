@@ -241,7 +241,7 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
                                                 index += 1
                                         # Update the already stored first_vertex_y if the dynamic value is assigned
                                         # first_vertex_y  = dynamic_first_vertex_y
-                        page_regions[rgn_idx]['regions'] = copy.deepcopy(updated_lines)
+                                page_regions[rgn_idx]['regions'] = copy.deepcopy(updated_lines)
                                 #page_regions[rgn_idx]['regions'][line_idx]['regions'] = words
 
             if config.MULTIPROCESS:
