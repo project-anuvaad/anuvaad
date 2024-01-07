@@ -210,11 +210,11 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
                                             #     dynamic_first_vertex_y = entry['regions'][idx]['boundingBox']['vertices'][0]['y']
                                             # first_vertex_y = dynamic_first_vertex_y
                                             for region in entry['regions']:
-                                                # # Check if index is greater than or equal to len(split_text)
-                                                # if index >= len(split_text):
-                                                #     # If so, remove the current region and break out of the loop
-                                                #     entry['regions'].remove(region)
-                                                #     break
+                                                # Check if index is greater than or equal to len(split_text)
+                                                if index >= len(split_text):
+                                                    # If so, remove the current region and break out of the loop
+                                                    entry['regions'].remove(region)
+                                                    break
 
                                                 # # Use the words sequentially, and loop back to the beginning if needed
                                                 region['text'] = split_text[index % len(split_text)]
