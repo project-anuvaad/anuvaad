@@ -56,7 +56,7 @@ MULTIPROCESS = False
 DOUBLE_OCR_THRESHOLD = 20
 HANDWRITTEN_OCR = True 
 # crop config
-C_X = -7
+C_X = -8
 C_Y = 0
 
 HORIZONTAL_MERGING=True

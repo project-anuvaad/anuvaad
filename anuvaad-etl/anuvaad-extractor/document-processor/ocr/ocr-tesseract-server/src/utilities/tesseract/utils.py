@@ -119,6 +119,8 @@ def crop_region(box,image):
             log_exception("Error in region   due to invalid coordinates",  app_context.application_context, e)
             return None
         if config.PERSPECTIVE_TRANSFORM:
+            box[0, 0] = 30; box[3, 0] = 30
+            box[1, 0] = image.shape[1]-10; box[2, 0] = image.shape[1]-10
             crop_image = get_crop_with_pers_transform(image, box, height=abs(box[0,1]-box[2,1]))
         else :
             crop_image = image[box[0][1] : box[2][1] ,box[0][0] : box[1][0]]

@@ -180,14 +180,15 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
                                 left = vertices[0]['x'];  top = vertices[0]['y']
                                 adjusted_box,c_x,c_y = adjust_crop_coord(tmp_line[0],line['class'],int(region['boundingBox']['vertices'][0]['x']),int(region['boundingBox']['vertices'][1]['x']))
                                 image_crop = crop_region(adjusted_box,img)
-                                # # Create a new folder
-                                # new_folder_path = 'crops'
-                                # os.makedirs(new_folder_path, exist_ok=True)
-                                # # Save the image in the new folder
-                                # unique_id = str(uuid.uuid4())[:8] 
-                                # image_path = os.path.join(new_folder_path, f'{unique_id}.jpg')
-                                # cv2.imwrite(image_path, image_crop)
+                                
                                 if image_crop is not None and image_crop.shape[1] >3 and image_crop.shape[0] > 3:
+                                    # # Create a new folder
+                                    # new_folder_path = 'crops'
+                                    # os.makedirs(new_folder_path, exist_ok=True)
+                                    # # Save the image in the new folder
+                                    # unique_id = str(uuid.uuid4())[:8] 
+                                    # image_path = os.path.join(new_folder_path, f'{unique_id}.jpg')
+                                    # cv2.imwrite(image_path, image_crop)
                                     if initialize_ocr_models: 
                                         pixel_values = processor(image_crop, return_tensors="pt").pixel_values
                                         generated_ids = model.generate(pixel_values)
