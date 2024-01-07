@@ -224,14 +224,14 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
                                                 # Update the Y-coordinate of all vertices to be the same as the first vertex
                                                 for vertex in region['boundingBox']['vertices']:
                                                     #Check the difference between already stored and dynamic first_vertex_y
-                                                    if first_vertex_y is not None and abs(dynamic_first_vertex_y - first_vertex_y) < 100:
+                                                    if first_vertex_y is not None and abs(dynamic_first_vertex_y - first_vertex_y) < 50:
                                                         vertex['y'] = first_vertex_y
                                                     else:
                                                         # Assign the dynamic value if the difference is greater than or equal to 100
                                                         vertex['y'] = dynamic_first_vertex_y
                                                 for vertex in entry['boundingBox']['vertices']:
                                                     #Check the difference between already stored and dynamic first_vertex_y
-                                                    if first_vertex_y is not None and abs(dynamic_first_vertex_y - first_vertex_y) < 100:
+                                                    if first_vertex_y is not None and abs(dynamic_first_vertex_y - first_vertex_y) < 50:
                                                         vertex['y'] = first_vertex_y
                                                     else:
                                                         # Assign the dynamic value if the difference is greater than or equal to 100
