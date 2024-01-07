@@ -223,8 +223,11 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
                                                 # if 'boundingBox' not in region or 'vertices' not in region['boundingBox'] or len(region['boundingBox']['vertices']) < 2:
                                                 #     continue
                                                 # Your existing code for updating Y-coordinates
-                                                region['boundingBox']['vertices'][0]['x'] = dynamic_first_vertex_x
-                                                region['boundingBox']['vertices'][3]['x'] = dynamic_first_vertex_x
+                                                if index == 0:
+                                                    region['boundingBox']['vertices'][0]['x'] = dynamic_first_vertex_x
+                                                    region['boundingBox']['vertices'][3]['x'] = dynamic_first_vertex_x
+                                                    entry['boundingBox']['vertices'][0]['x'] = dynamic_first_vertex_x
+                                                    entry['boundingBox']['vertices'][3]['x'] = dynamic_first_vertex_x
                                                 # # Update the Y-coordinate of all vertices to be the same as the first vertex
                                                 # for vertex in region['boundingBox']['vertices']:
                                                 #     #Check the difference between already stored and dynamic first_vertex_y
