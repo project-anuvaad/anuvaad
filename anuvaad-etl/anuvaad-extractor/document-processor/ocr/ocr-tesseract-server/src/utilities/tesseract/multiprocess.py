@@ -210,7 +210,7 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
                                             # if first_vertex_y is None:
                                             # if idx < len(entries):
                                             # first_vertex_y = dynamic_first_vertex_y
-                                            for region in entry['regions']:
+                                            for no, region in enumerate(entry['regions']):
                                                 # Check if index is greater than or equal to len(split_text)
                                                 if index >= len(split_text):
                                                     # If so, remove the current region and break out of the loop
@@ -219,12 +219,16 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
 
                                                 # # Use the words sequentially, and loop back to the beginning if needed
                                                 region['text'] = split_text[index % len(split_text)]
+                                                if no == 0:
+                                                    region['boundingBox']['vertices'][0]['x'] = dynamic_first_vertex_x
+                                                    region['boundingBox']['vertices'][3]['x'] = dynamic_first_vertex_x
                                                 # # Skip regions with no boundingBox or with fewer than 2 vertices
                                                 # if 'boundingBox' not in region or 'vertices' not in region['boundingBox'] or len(region['boundingBox']['vertices']) < 2:
                                                 #     continue
                                                 # Your existing code for updating Y-coordinates
                                                 index += 1
-                                            print('ccccccc',dynamic_first_vertex_x)
+                                            entry['boundingBox']['vertices'][0]['x'] = dynamic_first_vertex_x
+                                            entry['boundingBox']['vertices'][3]['x'] = dynamic_first_vertex_x
                                             updated_lines[idx]['boundingBox']['vertices'][0]['x'] = dynamic_first_vertex_x
                                             updated_lines[idx]['boundingBox']['vertices'][3]['x'] = dynamic_first_vertex_x
                                             # entry['boundingBox']['vertices'][0]['x'] = dynamic_first_vertex_x
