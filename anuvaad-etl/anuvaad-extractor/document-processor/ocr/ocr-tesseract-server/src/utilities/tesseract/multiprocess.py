@@ -158,6 +158,7 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
             total_lines = 0
             first_vertex_y = None
             first_vertex_x = None
+            dynamic_first_vertex_x = page_regions[0]['regions'][0]['boundingBox']['vertices'][0]['x']
             for rgn_idx, region in enumerate(page_regions):
                 if region != None and 'regions' in region.keys():
                     if region['class'] == "TABLE":
@@ -208,7 +209,6 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
                                             # entries = entry.get('regions', [])
                                             # if first_vertex_y is None:
                                             # if idx < len(entries):
-                                            dynamic_first_vertex_x = entry['regions'][idx]['boundingBox']['vertices'][0]['x']
                                             # first_vertex_y = dynamic_first_vertex_y
                                             for region in entry['regions']:
                                                 # Check if index is greater than or equal to len(split_text)
@@ -223,11 +223,12 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
                                                 # if 'boundingBox' not in region or 'vertices' not in region['boundingBox'] or len(region['boundingBox']['vertices']) < 2:
                                                 #     continue
                                                 # Your existing code for updating Y-coordinates
-                                                if index == 0:
-                                                    region['boundingBox']['vertices'][0]['x'] = dynamic_first_vertex_x
-                                                    region['boundingBox']['vertices'][3]['x'] = dynamic_first_vertex_x
-                                                    entry['boundingBox']['vertices'][0]['x'] = dynamic_first_vertex_x
-                                                    entry['boundingBox']['vertices'][3]['x'] = dynamic_first_vertex_x
+                                                index += 1
+                                            print('ccccccc',dynamic_first_vertex_x)
+                                            updated_lines[idx]['boundingBox']['vertices'][0]['x'] = dynamic_first_vertex_x
+                                            updated_lines[idx]['boundingBox']['vertices'][3]['x'] = dynamic_first_vertex_x
+                                            # entry['boundingBox']['vertices'][0]['x'] = dynamic_first_vertex_x
+                                            # entry['boundingBox']['vertices'][3]['x'] = dynamic_first_vertex_x
                                                 # # Update the Y-coordinate of all vertices to be the same as the first vertex
                                                 # for vertex in region['boundingBox']['vertices']:
                                                 #     #Check the difference between already stored and dynamic first_vertex_y
@@ -245,7 +246,7 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
                                                 #         vertex['y'] = dynamic_first_vertex_y
                                                 #         # Update the already stored first_vertex_y if the dynamic value is assigned
                                                 #         first_vertex_y  = dynamic_first_vertex_y
-                                                index += 1
+                                                
                                         # Update the already stored first_vertex_y if the dynamic value is assigned
                                         # first_vertex_y  = dynamic_first_vertex_y
                                 page_regions[rgn_idx]['regions'] = copy.deepcopy(updated_lines)
