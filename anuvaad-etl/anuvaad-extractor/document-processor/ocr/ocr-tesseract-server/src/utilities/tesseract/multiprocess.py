@@ -211,27 +211,35 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
                                             # if idx < len(entries):
                                             # first_vertex_y = dynamic_first_vertex_y
                                             no = None
-                                            for no, region in enumerate(entry['regions']):
-                                                # Check if index is greater than or equal to len(split_text)
-                                                if index >= len(split_text):
-                                                    # If so, remove the current region and break out of the loop
-                                                    entry['regions'].remove(region)
-                                                    break
+                                            if dynamic_first_vertex_x < 300 and no == 0:
+                                                for no, region in enumerate(entry['regions']):
+                                                    # Check if index is greater than or equal to len(split_text)
+                                                    if index >= len(split_text):
+                                                        # If so, remove the current region and break out of the loop
+                                                        entry['regions'].remove(region)
+                                                        break
 
-                                                # # Use the words sequentially, and loop back to the beginning if needed
-                                                region['text'] = split_text[index % len(split_text)]
-                                                if dynamic_first_vertex_x < 300 and no == 0:
+                                                    # # Use the words sequentially, and loop back to the beginning if needed
+                                                    region['text'] = split_text[index % len(split_text)]
+
                                                     region['boundingBox']['vertices'][0]['x'] = dynamic_first_vertex_x
                                                     region['boundingBox']['vertices'][3]['x'] = dynamic_first_vertex_x
-                                                    no = 1
-                                                elif dynamic_first_vertex_x >= 300:
-                                                    # Reset 'no' to 0 for the next iteration
-                                                    no = 0
-                                                # # Skip regions with no boundingBox or with fewer than 2 vertices
-                                                # if 'boundingBox' not in region or 'vertices' not in region['boundingBox'] or len(region['boundingBox']['vertices']) < 2:
-                                                #     continue
-                                                # Your existing code for updating Y-coordinates
-                                                index += 1
+                                                    # # Skip regions with no boundingBox or with fewer than 2 vertices
+                                                    # if 'boundingBox' not in region or 'vertices' not in region['boundingBox'] or len(region['boundingBox']['vertices']) < 2:
+                                                    #     continue
+                                                    # Your existing code for updating Y-coordinates
+                                                    index += 1
+                                                entry['boundingBox']['vertices'][0]['x'] = dynamic_first_vertex_x
+                                                entry['boundingBox']['vertices'][3]['x'] = dynamic_first_vertex_x
+                                                updated_lines[idx]['boundingBox']['vertices'][0]['x'] = dynamic_first_vertex_x
+                                                updated_lines[idx]['boundingBox']['vertices'][3]['x'] = dynamic_first_vertex_x
+                                                # Set 'no' to 1 to skip this condition in the next iteration
+                                                no = 1
+                                            # If dynamic_first_vertex_x is greater than or equal to 300, reset 'no' to 0 for the next iteration
+                                            elif dynamic_first_vertex_x >= 300:
+                                                no = 0
+
+                                            # If 'no' is not 0, apply the changes
                                             if no != 0:
                                                 entry['boundingBox']['vertices'][0]['x'] = dynamic_first_vertex_x
                                                 entry['boundingBox']['vertices'][3]['x'] = dynamic_first_vertex_x
