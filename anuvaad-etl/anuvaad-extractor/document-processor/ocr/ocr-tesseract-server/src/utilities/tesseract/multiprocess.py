@@ -219,11 +219,11 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
 
                                                 # # Use the words sequentially, and loop back to the beginning if needed
                                                 region['text'] = split_text[index % len(split_text)]
-                                                if dynamic_first_vertex_x < 300 and no == 0:
+                                                if dynamic_first_vertex_x < 500 and no == 0:
                                                     region['boundingBox']['vertices'][0]['x'] = dynamic_first_vertex_x
                                                     region['boundingBox']['vertices'][3]['x'] = dynamic_first_vertex_x
                                                     no = 1
-                                                elif dynamic_first_vertex_x >= 300:
+                                                elif dynamic_first_vertex_x >= 500:
                                                     # Reset 'no' to 0 for the next iteration
                                                     no = 0
                                                 # # Skip regions with no boundingBox or with fewer than 2 vertices
@@ -231,7 +231,7 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
                                                 #     continue
                                                 # Your existing code for updating Y-coordinates
                                                 index += 1
-                                            if dynamic_first_vertex_x < 300:
+                                            if dynamic_first_vertex_x < 500:
                                                 entry['boundingBox']['vertices'][0]['x'] = dynamic_first_vertex_x
                                                 entry['boundingBox']['vertices'][3]['x'] = dynamic_first_vertex_x
                                                 updated_lines[idx]['boundingBox']['vertices'][0]['x'] = dynamic_first_vertex_x
