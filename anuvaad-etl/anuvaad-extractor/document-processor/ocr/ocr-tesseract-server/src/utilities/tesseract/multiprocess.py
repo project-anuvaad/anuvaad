@@ -223,7 +223,7 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
                                                     region['boundingBox']['vertices'][0]['x'] = dynamic_first_vertex_x
                                                     region['boundingBox']['vertices'][3]['x'] = dynamic_first_vertex_x
                                                     no = 1
-                                                elif dynamic_first_vertex_x >= 500:
+                                                elif dynamic_first_vertex_x >= 300:
                                                     # Reset 'no' to 0 for the next iteration
                                                     no = 0
                                                 # # Skip regions with no boundingBox or with fewer than 2 vertices
