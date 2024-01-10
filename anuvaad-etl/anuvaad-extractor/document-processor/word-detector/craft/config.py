@@ -70,8 +70,8 @@ logging.basicConfig(
 EXRACTION_RESOLUTION = 300
 
 
-CRAFT_MODEL_PATH = './src/utilities/craft_pytorch/model/craft_mlt_25k.pth'
-CRAFT_REFINE_MODEL_PATH = './src/utilities/craft_pytorch/model/craft_refiner_CTW1500.pth'
+CRAFT_MODEL_PATH = '/home/siddanth/Desktop/craft/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/word-detector/craft/src/utilities/craft_pytorch/model/craft_mlt_25k.pth'
+CRAFT_REFINE_MODEL_PATH = '/home/siddanth/Desktop/craft/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/word-detector/craft/src/utilities/craft_pytorch/model/craft_refiner_CTW1500.pth'
 
 LANGUAGE_WORD_THRESOLDS = {
     'en': {'text_threshold': 0.1, 'low_text': 0.5, 'link_threshold': 0.35},
@@ -105,11 +105,11 @@ LANGUAGE_LINE_THRESOLDS = {
 LINE_PRIMA_SCORE_THRESH_TEST = 0.5
 
 
-LINE_LAYOUT_MODEL_PATH = "./src/utilities/primalinenet/anuvaad_line_v1.pth"
-LINE_LAYOUT_CONFIG_PATH = "./src/utilities/primalinenet/config.yaml"
+LINE_LAYOUT_MODEL_PATH = "/home/siddanth/Desktop/craft/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/word-detector/craft/src/utilities/primalinenet/anuvaad_line_v1.pth"
+LINE_LAYOUT_CONFIG_PATH = "/home/siddanth/Desktop/craft/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/word-detector/craft/src/utilities/primalinenet/config.yaml"
 ##########################################################################
 # Alignment
-EAST_MODEL = "./src/utilities/east/frozen_east_text_detection.pb"
+EAST_MODEL = "/home/siddanth/Desktop/craft/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/word-detector/craft/src/utilities/east/frozen_east_text_detection.pb"
 ANGLE_TOLLERANCE  = 0.25
 MIN_CONFIDENCE    = 0.5
 MARGIN_TOLLERANCE = 9
