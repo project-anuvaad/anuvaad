@@ -42,3 +42,4 @@ Rtree==0.9.4
 Flask_Cors==3.0.8
 Flask_RESTful==0.3.8
 scikit-image==0.18.1
+pillow==9.5.0
