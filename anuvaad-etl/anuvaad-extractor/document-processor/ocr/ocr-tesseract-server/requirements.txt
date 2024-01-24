@@ -1,7 +1,7 @@
 pandas==1.0.3
-flask==2.3.2
+flask==1.1.2
 flask-cors==3.0.8
-flask-restful==0.3.9
+flask-restful==0.3.8
 uuid==1.30
 kafka_python==2.0.1
 anuvaad-auditor==1.0.0
@@ -14,9 +14,9 @@ google-cloud==0.34.0
 google-cloud-vision==1.0.0
 googleapis-common-protos==1.52.0
 grpcio==1.32.0
-numpy==1.20.0
+numpy==1.19.2
 Shapely==1.7.1
-Rtree
+Rtree==0.9.4
 multiprocess==0.70.12.2
 pytesseract==0.3.4
 transformers

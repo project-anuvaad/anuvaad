@@ -113,25 +113,14 @@ def adjust_crop_coord(coord,cls,reg_left,reg_right):
         log_exception("Error in region   due to invalid coordinates",  app_context.application_context, coord)
         return None ,None, None
 
-def crop_region(box,image,initialize_ocr_models):
+def crop_region(box,image):
     try:
         if box is None:
-            log_exception("Error in region   due to invalid coordinates",  app_context.application_context, None)
+            log_exception("Error in region   due to invalid coordinates",  app_context.application_context, e)
             return None
-        if initialize_ocr_models:
+        if config.PERSPECTIVE_TRANSFORM:
             box[0, 0] = 50; box[3, 0] = 50
             box[1, 0] = image.shape[1]-50; box[2, 0] = image.shape[1]-50
-        if config.PERSPECTIVE_TRANSFORM:
-            # Increase only the height
-            box[0, 0] = int(box[0, 0] * 0.95)
-            box[3, 0] = int(box[3, 0] * 0.95)
-            box[1, 0] = int(box[1, 0] * 1.02)
-            box[2, 0] = int(box[2, 0] * 1.02)
-            box[0, 1] = int(box[0, 1] * 0.97)  # Top side
-            box[1, 1] = int(box[1, 1] * 0.97)  # Bottom side
-            box[2, 1] = int(box[2, 1] * 1.02)  # Top side
-            box[3, 1] = int(box[3, 1] * 1.02)  # Bottom side
-
             crop_image = get_crop_with_pers_transform(image, box, height=abs(box[0,1]-box[2,1]))
         else :
             crop_image = image[box[0][1] : box[2][1] ,box[0][0] : box[1][0]]
@@ -173,29 +162,14 @@ def get_box(bbox):
     return temp_box
 
 def get_crop_with_pers_transform(image, box, height=140):
-    # Check if the image is valid
-    if image is None or image.size == 0:
-        print("Error: Invalid or empty image.")
-        return None
-
-    # Check if the bounding box has at least 4 vertices
-    if len(box) < 4:
-        print("Error: Invalid bounding box coordinates.")
-        return None
-
-    w = max(abs(box[0, 0] - box[1, 0]), abs(box[2, 0] - box[3, 0]))
-    height = max(abs(box[0, 1] - box[3, 1]), abs(box[1, 1] - box[2, 1]))
-
-    pts1 = np.float32(box)
-    pts2 = np.float32([[0, 0], [int(w), 0], [int(w), int(height)], [0, int(height)]])
     
-    try:
-        M = cv2.getPerspectiveTransform(pts1, pts2)
-        result_img = cv2.warpPerspective(image, M, (int(w), int(height)))
-        return result_img
-    except cv2.error as e:
-        print(f"Error: {e}")
-        return None
+    w = max(abs(box[0, 0] - box[1, 0]),abs(box[2, 0] - box[3, 0]))
+    height = max(abs(box[0, 1] - box[3, 1]),abs(box[1, 1] - box[2, 1]))
+    pts1 = np.float32(box)
+    pts2 = np.float32([[0, 0], [int(w), 0],[int(w),int(height)],[0,int(height)]])
+    M = cv2.getPerspectiveTransform(pts1, pts2)
+    result_img = cv2.warpPerspective(image,M,(int(w), int(height))) #flags=cv2.INTER_NEAREST
+    return result_img
 
 
 def process_dfs(temp_df,left,top,lang,c_x,c_y):
