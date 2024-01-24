@@ -4,6 +4,7 @@ import time
 import multiprocessing
 import cv2
 import uuid
+import shutil
 import os
 import copy
 from multiprocessing import Queue
@@ -18,6 +19,7 @@ import src.utilities.app_context as app_context
 from transformers import TrOCRProcessor, VisionEncoderDecoderModel
 import requests
 from collections import Counter
+from src.utilities.indic_hw_ocr.new_infer import BaseHTR
 
 
 tessract_queue = Queue()
@@ -150,6 +152,8 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
             lang_detected = config.LANG_MAPPING['en'][0]
             processor = TrOCRProcessor.from_pretrained("microsoft/trocr-base-handwritten")
             model = VisionEncoderDecoderModel.from_pretrained("microsoft/trocr-base-handwritten")
+        elif config.HANDWRITTEN_OCR:
+            lang_detected = config.LANG_MAPPING[lang][0]
         else:
             lang_detected = page_lang_detection(image_path,lang)
         #lang_detected = config.LANG_MAPPING[lang][0]
@@ -167,6 +171,9 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
                     else:
                         updated_lines = []
                         # first_vertex_y = None
+                        # Add this code to clear the 'crops/' folder before the loop
+                        crops_folder = 'crops/'
+                        shutil.rmtree(crops_folder, ignore_errors=True)  # Remove the 'crops/' folder and its contents
                         for line_idx, line in enumerate(region['regions']):
                             tmp_line = [line]
                             if config.IS_DYNAMIC and 'class' in line.keys():
@@ -181,27 +188,43 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
                                 vertices = tmp_line[0]['boundingBox']['vertices']
                                 left = vertices[0]['x'];  top = vertices[0]['y']
                                 adjusted_box,c_x,c_y = adjust_crop_coord(tmp_line[0],line['class'],int(region['boundingBox']['vertices'][0]['x']),int(region['boundingBox']['vertices'][1]['x']))
-                                image_crop = crop_region(adjusted_box,img)
+                                image_crop = crop_region(adjusted_box,img,initialize_ocr_models)
                                 
                                 if image_crop is not None and image_crop.shape[1] >3 and image_crop.shape[0] > 3:
-                                    # # Create a new folder
-                                    # new_folder_path = 'crops'
-                                    # os.makedirs(new_folder_path, exist_ok=True)
-                                    # # Save the image in the new folder
+                                    # Create a new folder
+                                    new_folder_path = 'crops'
+                                    os.makedirs(new_folder_path, exist_ok=True)
+                                    # Save the image in the new folder
                                     # unique_id = str(uuid.uuid4())[:8] 
-                                    # image_path = os.path.join(new_folder_path, f'{unique_id}.jpg')
-                                    # cv2.imwrite(image_path, image_crop)
+                                    image_path = os.path.join(new_folder_path, f'{rgn_idx}_{line_idx}.jpg')
+                                    cv2.imwrite(image_path, image_crop)
                                     if initialize_ocr_models: 
                                         pixel_values = processor(image_crop, return_tensors="pt").pixel_values
                                         generated_ids = model.generate(pixel_values)
                                         trocr_text = processor.batch_decode(generated_ids, skip_special_tokens=True)[0]
+                                    elif config.HANDWRITTEN_OCR:
+                                        alphabet = f'{lang_detected}_lexicon.txt'
+
+                                        pretrained = f'src/utilities/indic_hw_ocr/{lang_detected}/out/crnn_results/best_cer.pth'
+                                        out_dir = f'src/utilities/indic_hw_ocr/{lang_detected}'
+                                        language = {lang_detected}
+
+                                        test_root = 'crops/'
+
+                                        decoded_preds = BaseHTR.run_handwritten_ocr(test_root, alphabet, pretrained, out_dir, language)
+                                        # print(decoded_preds)
+                                        
                                     words  = get_tess_text(image_crop,lang,mode_height,left,top,line['class'],c_x,c_y,lang_detected)
                                     h_lines = check_horizontal_merging(words,line['class'],mode_height,vertices,line)
                                     updated_lines.extend(h_lines)
 
                                     # Split the text variable by space
-                                    if initialize_ocr_models:
-                                        split_text = trocr_text.split()
+                                    if config.HANDWRITTEN_OCR:
+                                        if trocr_text is None:
+                                            result_string = ''.join(decoded_preds)
+                                            split_text = result_string.strip()
+                                            # print(split_text)
+                                        else: split_text = trocr_text.split()
                                         
                                         # Replace the values of ['text'] in the JSON data sequentially
                                         index = 0
@@ -218,7 +241,8 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
                                                     break
 
                                                 # # Use the words sequentially, and loop back to the beginning if needed
-                                                region['text'] = split_text[index % len(split_text)]
+                                                if trocr_text is not None: region['text'] = split_text[index % len(split_text)]
+                                                else: region['text'] = split_text
                                                 if no == 0:
                                                     region['boundingBox']['vertices'][0]['x'] = dynamic_first_vertex_x
                                                     region['boundingBox']['vertices'][3]['x'] = dynamic_first_vertex_x
