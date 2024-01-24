@@ -1,0 +1,9 @@
+future==0.18.2
+# scikit-image==0.19.3
+colorama==0.4.6
+lmdb==1.4.0
+# opencv-python-headless==4.7.0.68
+# torch==1.13.1
+# torchvision==0.14.1
+six==1.16.0
+matplotlib
