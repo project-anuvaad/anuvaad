@@ -34,7 +34,7 @@ ta_hw_path="./src/utilities/indic_hw_ocr/models/Tamil_indic_pretrained_best_wer.
 ta_hw="https://anuvaad-pubnet-weights.s3.amazonaws.com/tamil_indic_pretrained_best_wer.pth?AWSAccessKeyId=${AWSACCESSKEYID_VALUE}&Signature=NPUNt1GFjPm%2BrURuStze0ryrmsY%3D&Expires=1766607336"
 #rm $tam_modelpath
 
-if ! [ -f $ta_hw ]; then
+if ! [ -f $ta_hw_path ]; then
   curl -o $tam_modelpath $ta_hw
   echo downloading tamil weight file
 fi
