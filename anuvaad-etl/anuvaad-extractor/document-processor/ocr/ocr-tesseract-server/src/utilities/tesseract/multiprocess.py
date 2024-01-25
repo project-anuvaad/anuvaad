@@ -205,8 +205,8 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
                                     elif config.HANDWRITTEN_OCR:
                                         alphabet = f'{lang_detected}_lexicon.txt'
 
-                                        pretrained = f'src/utilities/indic_hw_ocr/models/{lang_detected}_indic_pretrained_best_wer.pth'
-                                        out_dir = f'src/utilities/indic_hw_ocr/{lang_detected}'
+                                        pretrained = f'./src/utilities/indic_hw_ocr/models/{lang_detected}_indic_pretrained_best_wer.pth'
+                                        out_dir = f'./src/utilities/indic_hw_ocr/{lang_detected}'
                                         language = {lang_detected}
 
                                         test_root = 'crops/'
