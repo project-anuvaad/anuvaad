@@ -35,8 +35,8 @@ ta_hw="https://anuvaad-pubnet-weights.s3.amazonaws.com/tamil_indic_pretrained_be
 #rm $tam_modelpath
 
 if ! [ -f $ta_hw_path ]; then
-  curl -o $tam_modelpath $ta_hw
-  echo downloading tamil weight file
+  curl -o $ta_hw_path $ta_hw
+  echo downloading handwritten tamil weight file
 fi
 
 if ! [ -f $tam_modelpath ]; then
