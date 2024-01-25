@@ -29,8 +29,15 @@ url_mar="https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvaad_mar.traineddata
 
 ori_modelpath="/usr/share/tesseract-ocr/4.00/tessdata/anuvaad_ori.traineddata"
 url_ori="https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvaad_ori.traineddata?AWSAccessKeyId=${AWSACCESSKEYID_VALUE}&Signature=e%2BZ2y%2BS15yZuYFiqqGTIcnNzBM8%3D&Expires=1702454243"
-
+ta_hw_path="./src/utilities/indic_hw_ocr/models/tamil_indic_pretrained_best_wer.pth"
+ta_hw="https://anuvaad-pubnet-weights.s3.amazonaws.com/tamil_indic_pretrained_best_wer.pth?AWSAccessKeyId=${AWSACCESSKEYID_VALUE}&Signature=NPUNt1GFjPm%2BrURuStze0ryrmsY%3D&Expires=1766607336"
 #rm $tam_modelpath
+
+if ! [ -f $ta_hw ]; then
+  curl -o $tam_modelpath $ta_hw
+  echo downloading tamil weight file
+fi
+
 if ! [ -f $tam_modelpath ]; then
   curl -o $tam_modelpath $url_tam
   echo downloading tamil weight file
