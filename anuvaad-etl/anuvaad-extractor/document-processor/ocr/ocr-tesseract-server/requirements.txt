@@ -21,7 +21,7 @@ multiprocess==0.70.12.2
 pytesseract==0.3.4
 transformers
 future==0.18.2
-colorama==0.4.6
+colorama
 lmdb==1.4.0
 six==1.16.0
 matplotlib
