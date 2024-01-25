@@ -162,6 +162,7 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
             total_lines = 0
             first_vertex_y = None
             first_vertex_x = None
+            trocr_text = None
             dynamic_first_vertex_x = page_regions[0]['regions'][0]['boundingBox']['vertices'][0]['x']
             for rgn_idx, region in enumerate(page_regions):
                 if region != None and 'regions' in region.keys():
