@@ -222,9 +222,7 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
                                     # Split the text variable by space
                                     if config.HANDWRITTEN_OCR:
                                         if trocr_text is None:
-                                            result_string = ''.join(decoded_preds)
-                                            split_text = result_string.strip()
-                                            # print(split_text)
+                                            split_text = ''.join(decoded_preds)   
                                         else: split_text = trocr_text.split()
                                         
                                         # Replace the values of ['text'] in the JSON data sequentially
@@ -236,11 +234,13 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
                                             # first_vertex_y = dynamic_first_vertex_y
                                             for no, region in enumerate(entry['regions']):
                                                 # Check if index is greater than or equal to len(split_text)
-                                                if index >= len(split_text):
+                                                if trocr_text is None and index > 0:
                                                     # If so, remove the current region and break out of the loop
                                                     entry['regions'].remove(region)
                                                     break
-
+                                                elif index >= len(split_text):
+                                                    entry['regions'].remove(region)
+                                                    break
                                                 # # Use the words sequentially, and loop back to the beginning if needed
                                                 if trocr_text is not None: region['text'] = split_text[index % len(split_text)]
                                                 else: region['text'] = split_text
