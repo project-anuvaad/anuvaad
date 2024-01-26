@@ -34,9 +34,17 @@ ta_hw_path="./src/utilities/indic_hw_ocr/models/Tamil_indic_pretrained_best_wer.
 ta_hw="https://anuvaad-pubnet-weights.s3.amazonaws.com/tamil_indic_pretrained_best_wer.pth?AWSAccessKeyId=${AWSACCESSKEYID_VALUE}&Signature=NPUNt1GFjPm%2BrURuStze0ryrmsY%3D&Expires=1766607336"
 #rm $tam_modelpath
 
+hi_hw_path="./src/utilities/indic_hw_ocr/models/Devanagari_indic_pretrained_best_wer.pth"
+hi_hw="https://anuvaad-pubnet-weights.s3.amazonaws.com/hindi_indic_pretrained_best_wer.pth?AWSAccessKeyId=${AWSACCESSKEYID_VALUE}&Signature=LoDo2Y9RVFWbcw0AxOoLzte6CkQ%3D&Expires=1766745792"
+
 if ! [ -f $ta_hw_path ]; then
   curl -o $ta_hw_path $ta_hw
   echo downloading handwritten tamil weight file
+fi
+
+if ! [ -f $hi_hw_path ]; then
+  curl -o $hi_hw_path $hi_hw
+  echo downloading handwritten hindi weight file
 fi
 
 if ! [ -f $tam_modelpath ]; then
