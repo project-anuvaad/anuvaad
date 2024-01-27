@@ -85,8 +85,8 @@ def table_ocr(page_regions, region, lang, img, mode_height, rgn_idx, lang_detect
 
     for cell_idx, cell in enumerate(copy.deepcopy(region['regions'])):
         page_regions[rgn_idx]['regions'][cell_idx]['regions'] = []
-        if "LINES" in cell.keys() or cell['class'] is "CELL_TEXT":
-            if cell['class'] is "CELL_TEXT":
+        if "LINES" in cell.keys() or cell['class'] == "CELL_TEXT":
+            if cell['class'] == "CELL_TEXT":
                 tmp_cell = cell
                 cell['LINES'] = [tmp_cell]
             cell_words = []
@@ -244,7 +244,7 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
                                                 # # Use the words sequentially, and loop back to the beginning if needed
                                                 if trocr_text is not None: region['text'] = split_text[index % len(split_text)]
                                                 else: region['text'] = split_text
-                                                if no == 0:
+                                                if trocr_text is not None and no == 0:
                                                     region['boundingBox']['vertices'][0]['x'] = dynamic_first_vertex_x
                                                     region['boundingBox']['vertices'][3]['x'] = dynamic_first_vertex_x
                                                 # # Skip regions with no boundingBox or with fewer than 2 vertices
