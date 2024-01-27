@@ -245,7 +245,7 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
                                                 if trocr_text is not None: region['text'] = split_text[index % len(split_text)]
                                                 else: region['text'] = split_text
                                                 if trocr_text is not None and no == 0:
-                                                    region[if trocr_text is not None'boundingBox']['vertices'][0]['x'] = dynamic_first_vertex_x
+                                                    region['boundingBox']['vertices'][0]['x'] = dynamic_first_vertex_x
                                                     region['boundingBox']['vertices'][3]['x'] = dynamic_first_vertex_x
                                                 # # Skip regions with no boundingBox or with fewer than 2 vertices
                                                 # if 'boundingBox' not in region or 'vertices' not in region['boundingBox'] or len(region['boundingBox']['vertices']) < 2:
