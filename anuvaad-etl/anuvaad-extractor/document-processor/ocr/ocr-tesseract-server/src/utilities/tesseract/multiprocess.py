@@ -241,22 +241,22 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
                                                     break
                                                 elif index >= len(split_text):
                                                     entry['regions'].remove(region)
-                                                    break
                                                 # # Use the words sequentially, and loop back to the beginning if needed
                                                 if trocr_text is not None: region['text'] = split_text[index % len(split_text)]
                                                 else: region['text'] = split_text
                                                 if trocr_text is not None and no == 0:
-                                                    region['boundingBox']['vertices'][0]['x'] = dynamic_first_vertex_x
+                                                    region[if trocr_text is not None'boundingBox']['vertices'][0]['x'] = dynamic_first_vertex_x
                                                     region['boundingBox']['vertices'][3]['x'] = dynamic_first_vertex_x
                                                 # # Skip regions with no boundingBox or with fewer than 2 vertices
                                                 # if 'boundingBox' not in region or 'vertices' not in region['boundingBox'] or len(region['boundingBox']['vertices']) < 2:
                                                 #     continue
                                                 # Your existing code for updating Y-coordinates
                                                 index += 1
-                                            entry['boundingBox']['vertices'][0]['x'] = dynamic_first_vertex_x
-                                            entry['boundingBox']['vertices'][3]['x'] = dynamic_first_vertex_x
-                                            updated_lines[idx]['boundingBox']['vertices'][0]['x'] = dynamic_first_vertex_x
-                                            updated_lines[idx]['boundingBox']['vertices'][3]['x'] = dynamic_first_vertex_x
+                                            if trocr_text is not None:
+                                                entry['boundingBox']['vertices'][0]['x'] = dynamic_first_vertex_x
+                                                entry['boundingBox']['vertices'][3]['x'] = dynamic_first_vertex_x
+                                                updated_lines[idx]['boundingBox']['vertices'][0]['x'] = dynamic_first_vertex_x
+                                                updated_lines[idx]['boundingBox']['vertices'][3]['x'] = dynamic_first_vertex_x
                                             # entry['boundingBox']['vertices'][0]['x'] = dynamic_first_vertex_x
                                             # entry['boundingBox']['vertices'][3]['x'] = dynamic_first_vertex_x
                                             # Update the Y-coordinate of all vertices to be the same as the first vertex
