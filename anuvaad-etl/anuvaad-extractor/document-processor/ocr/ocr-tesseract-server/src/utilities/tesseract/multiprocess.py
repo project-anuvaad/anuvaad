@@ -163,8 +163,8 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
             first_vertex_y = None
             first_vertex_x = None
             trocr_text = None
-            dynamic_first_vertex_x = page_regions[0]['regions'][0]['boundingBox']['vertices'][1]['x']
-            dynamic_first_vertex_y = page_regions[0]['regions'][0]['boundingBox']['vertices'][1]['y']
+            dynamic_first_vertex_x = page_regions[0]['regions'][1]['boundingBox']['vertices'][0]['x']
+            dynamic_first_vertex_y = page_regions[0]['regions'][1]['boundingBox']['vertices'][0]['y']
 
             for rgn_idx, region in enumerate(page_regions):
                 if region != None and 'regions' in region.keys():
@@ -173,7 +173,7 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
                             page_regions, region, lang, img, mode_height, rgn_idx, lang_detected)                      
                     else:
                         updated_lines = []
-                        # first_vertex_y = None
+                        first_vertex_y = None
                         # Add this code to clear the 'crops/' folder before the loop
                         crops_folder = 'crops/'
                         shutil.rmtree(crops_folder, ignore_errors=True)  # Remove the 'crops/' folder and its contents
