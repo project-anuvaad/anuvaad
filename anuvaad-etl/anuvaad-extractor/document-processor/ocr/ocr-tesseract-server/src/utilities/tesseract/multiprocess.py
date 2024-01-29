@@ -171,7 +171,7 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
                             page_regions, region, lang, img, mode_height, rgn_idx, lang_detected)                      
                     else:
                         updated_lines = []
-                        first_vertex_y = None
+                        # first_vertex_y = None
                         # Add this code to clear the 'crops/' folder before the loop
                         crops_folder = 'crops/'
                         shutil.rmtree(crops_folder, ignore_errors=True)  # Remove the 'crops/' folder and its contents
@@ -258,23 +258,23 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
                                             updated_lines[idx]['boundingBox']['vertices'][3]['x'] = dynamic_first_vertex_x
                                             # entry['boundingBox']['vertices'][0]['x'] = dynamic_first_vertex_x
                                             # entry['boundingBox']['vertices'][3]['x'] = dynamic_first_vertex_x
-                                            # Update the Y-coordinate of all vertices to be the same as the first vertex
-                                            for vertex in region['boundingBox']['vertices']:
-                                                #Check the difference between already stored and dynamic first_vertex_y
-                                                if first_vertex_y is not None and abs(dynamic_first_vertex_y - first_vertex_y) < 50:
-                                                    vertex['y'] = first_vertex_y
-                                                else:
-                                                    # Assign the dynamic value if the difference is greater than or equal to 100
-                                                    vertex['y'] = dynamic_first_vertex_y
-                                            for vertex in entry['boundingBox']['vertices']:
-                                                #Check the difference between already stored and dynamic first_vertex_y
-                                                if first_vertex_y is not None and abs(dynamic_first_vertex_y - first_vertex_y) < 50:
-                                                    vertex['y'] = first_vertex_y
-                                                else:
-                                                    # Assign the dynamic value if the difference is greater than or equal to 100
-                                                    vertex['y'] = dynamic_first_vertex_y
-                                                    # Update the already stored first_vertex_y if the dynamic value is assigned
-                                                    first_vertex_y  = dynamic_first_vertex_y
+                                            # # Update the Y-coordinate of all vertices to be the same as the first vertex
+                                            # for vertex in region['boundingBox']['vertices']:
+                                            #     #Check the difference between already stored and dynamic first_vertex_y
+                                            #     if first_vertex_y is not None and abs(dynamic_first_vertex_y - first_vertex_y) < 50:
+                                            #         vertex['y'] = first_vertex_y
+                                            #     else:
+                                            #         # Assign the dynamic value if the difference is greater than or equal to 100
+                                            #         vertex['y'] = dynamic_first_vertex_y
+                                            # for vertex in entry['boundingBox']['vertices']:
+                                            #     #Check the difference between already stored and dynamic first_vertex_y
+                                            #     if first_vertex_y is not None and abs(dynamic_first_vertex_y - first_vertex_y) < 50:
+                                            #         vertex['y'] = first_vertex_y
+                                            #     else:
+                                            #         # Assign the dynamic value if the difference is greater than or equal to 100
+                                            #         vertex['y'] = dynamic_first_vertex_y
+                                            #         # Update the already stored first_vertex_y if the dynamic value is assigned
+                                            #         first_vertex_y  = dynamic_first_vertex_y
                                                 
                                         # Update the already stored first_vertex_y if the dynamic value is assigned
                                         # first_vertex_y  = dynamic_first_vertex_y
