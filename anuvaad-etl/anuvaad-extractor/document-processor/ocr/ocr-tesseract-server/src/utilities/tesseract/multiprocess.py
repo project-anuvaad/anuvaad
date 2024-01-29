@@ -167,6 +167,7 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
             first_vertex_y = None
             first_vertex_x = None
             trocr_text = None
+            decoded_preds = None
             dynamic_first_vertex_x = page_regions[0]['regions'][0]['boundingBox']['vertices'][0]['x']
             for rgn_idx, region in enumerate(page_regions):
                 if region != None and 'regions' in region.keys():
@@ -213,8 +214,7 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
 
                                         pretrained = f'./src/utilities/indic_hw_ocr/models/{lang_detected}_indic_pretrained_best_wer.pth'
                                         out_dir = f'./src/utilities/indic_hw_ocr/{lang_detected}'
-                                        language = {lang_detected}
-                                        print(lang_detected,'ttttttttttt')
+                                        language = lang_detected
                                         test_root = './crops/'
 
                                         decoded_preds = BaseHTR.run_handwritten_ocr(test_root, alphabet, pretrained, out_dir, language)
