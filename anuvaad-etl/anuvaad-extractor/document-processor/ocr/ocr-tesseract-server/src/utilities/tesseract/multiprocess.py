@@ -225,7 +225,7 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
                                     updated_lines.extend(h_lines)
 
                                     # Split the text variable by space
-                                    if HANDWRITTEN_OCR == 'True':
+                                    if HANDWRITTEN_OCR != 'True':
                                         if trocr_text is None:
                                             split_text = ''.join(decoded_preds)   
                                         else: split_text = trocr_text.split()
