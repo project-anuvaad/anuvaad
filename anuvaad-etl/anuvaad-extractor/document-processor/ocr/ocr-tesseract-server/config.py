@@ -91,3 +91,17 @@ DETECT_LANG_MAPPING = {
     "Santali":["Santali"]
 
 }
+TESS_LANG_MAPPING = {
+    "en": ['eng'],
+    "kn": ['kan'],
+    "gu": ['guj'],
+    "or": ['ori'],
+    "hi": ['hin'],
+    "bn": ['ben'],
+    "mr": ['mar'],
+    "ta": ['tam'],
+    "te": ['tel'],
+    "ml": ['mal'],
+    "ma": ['mar'],  
+    "pa": ['pan']  
+}
