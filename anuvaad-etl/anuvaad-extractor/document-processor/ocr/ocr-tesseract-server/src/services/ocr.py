@@ -89,7 +89,8 @@ def verify__table_structure(regions):
 
 def segment_regions(lang,path,file,words, lines,regions,file_properties,idx):
     width, height = file_properties.get_pageinfo(0)
-    if config.HANDWRITTEN_OCR and lang != 'en':
+    langs = ['gu','bn']
+    if lang in langs:
         v_list, n_text_regions = region_unifier.region_unifier(idx,file,words,regions,path)
     else: v_list, n_text_regions = region_unifier.region_unifier(idx,file,lines,regions,path)
     log_info("tesseract ocr started", None)
