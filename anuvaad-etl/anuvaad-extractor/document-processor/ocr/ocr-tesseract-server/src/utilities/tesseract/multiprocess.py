@@ -241,6 +241,7 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
                                                     break
                                                 elif index >= len(split_text):
                                                     entry['regions'].remove(region)
+                                                    break
                                                 # # Use the words sequentially, and loop back to the beginning if needed
                                                 if trocr_text is not None: region['text'] = split_text[index % len(split_text)]
                                                 else: region['text'] = split_text
