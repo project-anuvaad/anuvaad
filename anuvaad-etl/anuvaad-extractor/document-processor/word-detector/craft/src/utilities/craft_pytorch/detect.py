@@ -249,7 +249,7 @@ def detect_text(images,language) :
             lang = 'hi'
             lang_p = language[index]
             langs = ['ta','hi','en']
-            if lang_p in langs:
+            if lang_p not in langs:
                 word_in_dfs = detect_text_per_file(image_set,network=False,\
                                                     text_threshold=config.LANGUAGE_WORD_THRESOLDS[lang]['text_threshold'],\
                                                     low_text_threshold= config.LANGUAGE_WORD_THRESOLDS[lang]['low_text'],link_threshold =config.LANGUAGE_WORD_THRESOLDS[lang]['link_threshold'])
