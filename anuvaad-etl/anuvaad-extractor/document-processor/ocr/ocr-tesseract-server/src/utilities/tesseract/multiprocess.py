@@ -173,10 +173,10 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
                         updated_lines = []
                         # first_vertex_y = None
                         # Add this code to clear the 'crops/' folder before the loop
-                        crops_folder = 'crops/'
+                        crops_folder = './crops/'
                         shutil.rmtree(crops_folder, ignore_errors=True)  # Remove the 'crops/' folder and its contents
                         for line_idx, line in enumerate(region['regions']):
-                            dynamic_first_vertex_y = line['boundingBox']['vertices'][0]['y']
+                            # dynamic_first_vertex_y = line['boundingBox']['vertices'][0]['y']
                             tmp_line = [line]
                             if config.IS_DYNAMIC and 'class' in line.keys():
                                 tmp_line = coord_adjustment(
@@ -194,7 +194,7 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
                                 
                                 if image_crop is not None and image_crop.shape[1] >3 and image_crop.shape[0] > 3:
                                     # Create a new folder
-                                    new_folder_path = 'crops'
+                                    new_folder_path = './crops'
                                     os.makedirs(new_folder_path, exist_ok=True)
                                     # Save the image in the new folder
                                     # unique_id = str(uuid.uuid4())[:8] 
@@ -211,7 +211,7 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
                                         out_dir = f'./src/utilities/indic_hw_ocr/{lang_detected}'
                                         language = {lang_detected}
 
-                                        test_root = 'crops/'
+                                        test_root = './crops/'
 
                                         decoded_preds = BaseHTR.run_handwritten_ocr(test_root, alphabet, pretrained, out_dir, language)
                                         # print(decoded_preds)
