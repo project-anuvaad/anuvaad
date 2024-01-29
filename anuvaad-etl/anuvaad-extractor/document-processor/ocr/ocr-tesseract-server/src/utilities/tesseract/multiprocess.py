@@ -158,7 +158,7 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
         elif config.HANDWRITTEN_OCR and lang == 'gu':
             initialize_indicocr_models = 'True'
             lang_detected = config.LANG_MAPPING['ta'][0]
-            dynamic_first_vertex_x = page_regions[0]['regions'][0]['boundingBox']['vertices'][0]['x']
+            # dynamic_first_vertex_x = page_regions[0]['regions'][0]['boundingBox']['vertices'][0]['x']
         else:
             HANDWRITTEN_OCR = 'True'
             lang_detected = page_lang_detection(image_path,lang)
