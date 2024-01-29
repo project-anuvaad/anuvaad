@@ -31,11 +31,11 @@ ori_modelpath="/usr/share/tesseract-ocr/4.00/tessdata/anuvaad_ori.traineddata"
 url_ori="https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvaad_ori.traineddata?AWSAccessKeyId=${AWSACCESSKEYID_VALUE}&Signature=e%2BZ2y%2BS15yZuYFiqqGTIcnNzBM8%3D&Expires=1702454243"
 
 ta_hw_path="./src/utilities/indic_hw_ocr/models/Tamil_indic_pretrained_best_wer.pth"
-ta_hw="https://anuvaad-pubnet-weights.s3.amazonaws.com/tamil_indic_pretrained_best_wer.pth?AWSAccessKeyId=${AWSACCESSKEYID_VALUE}&Signature=NPUNt1GFjPm%2BrURuStze0ryrmsY%3D&Expires=1766607336"
+ta_hw="https://anuvaad-pubnet-weights.s3.amazonaws.com/tamil_indic_pretrained_best_wer.pth?AWSAccessKeyId=${AWSACCESSKEYID_VALUE}&Signature=v6CxjzuQtoX271FKjWr4i8N3jDg%3D&Expires=1766987053"
 #rm $tam_modelpath
 
 hi_hw_path="./src/utilities/indic_hw_ocr/models/Devanagari_indic_pretrained_best_wer.pth"
-hi_hw="https://anuvaad-pubnet-weights.s3.amazonaws.com/hindi_indic_pretrained_best_wer.pth?AWSAccessKeyId=${AWSACCESSKEYID_VALUE}&Signature=LoDo2Y9RVFWbcw0AxOoLzte6CkQ%3D&Expires=1766745792"
+hi_hw="https://anuvaad-pubnet-weights.s3.amazonaws.com/hindi_indic_pretrained_best_wer.pth?AWSAccessKeyId=${AWSACCESSKEYID_VALUE}&Signature=YYvqhFAK6stC90anxJpybBBJv7I%3D&Expires=1766986966"
 
 if ! [ -f $ta_hw_path ]; then
   curl -o $ta_hw_path $ta_hw
