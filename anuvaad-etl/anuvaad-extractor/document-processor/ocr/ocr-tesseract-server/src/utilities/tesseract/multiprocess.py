@@ -154,9 +154,11 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
             lang_detected = config.LANG_MAPPING['en'][0]
             processor = TrOCRProcessor.from_pretrained("microsoft/trocr-base-handwritten")
             model = VisionEncoderDecoderModel.from_pretrained("microsoft/trocr-base-handwritten")
+            dynamic_first_vertex_x = page_regions[0]['regions'][0]['boundingBox']['vertices'][0]['x']
         elif config.HANDWRITTEN_OCR and lang == 'gu':
             initialize_indicocr_models = 'True'
             lang_detected = config.LANG_MAPPING['ta'][0]
+            dynamic_first_vertex_x = page_regions[0]['regions'][0]['boundingBox']['vertices'][0]['x']
         else:
             HANDWRITTEN_OCR = 'True'
             lang_detected = page_lang_detection(image_path,lang)
@@ -168,7 +170,6 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
             first_vertex_x = None
             trocr_text = None
             decoded_preds = None
-            dynamic_first_vertex_x = page_regions[0]['regions'][0]['boundingBox']['vertices'][0]['x']
             for rgn_idx, region in enumerate(page_regions):
                 if region != None and 'regions' in region.keys():
                     if region['class'] == "TABLE":
@@ -195,7 +196,7 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
                                 vertices = tmp_line[0]['boundingBox']['vertices']
                                 left = vertices[0]['x'];  top = vertices[0]['y']
                                 adjusted_box,c_x,c_y = adjust_crop_coord(tmp_line[0],line['class'],int(region['boundingBox']['vertices'][0]['x']),int(region['boundingBox']['vertices'][1]['x']))
-                                image_crop = crop_region(adjusted_box,img,initialize_ocr_models)
+                                image_crop = crop_region(adjusted_box,img,initialize_ocr_models,initialize_indicocr_models)
                                 
                                 if image_crop is not None and image_crop.shape[1] >3 and image_crop.shape[0] > 3:
                                     # Create a new folder

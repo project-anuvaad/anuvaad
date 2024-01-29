@@ -113,24 +113,25 @@ def adjust_crop_coord(coord,cls,reg_left,reg_right):
         log_exception("Error in region   due to invalid coordinates",  app_context.application_context, coord)
         return None ,None, None
 
-def crop_region(box,image,initialize_ocr_models):
+def crop_region(box,image,initialize_ocr_models,initialize_indicocr_models):
     try:
         if box is None:
             log_exception("Error in region   due to invalid coordinates",  app_context.application_context, None)
             return None
-        if initialize_ocr_models:
+        if initialize_ocr_models == 'True':
             box[0, 0] = 50; box[3, 0] = 50
             box[1, 0] = image.shape[1]-50; box[2, 0] = image.shape[1]-50
         if config.PERSPECTIVE_TRANSFORM:
             # Increase only the height
-            box[0, 0] = int(box[0, 0] * 0.95)
-            box[3, 0] = int(box[3, 0] * 0.95)
-            box[1, 0] = int(box[1, 0] * 1.02)
-            box[2, 0] = int(box[2, 0] * 1.02)
-            box[0, 1] = int(box[0, 1] * 0.97)  # Top side
-            box[1, 1] = int(box[1, 1] * 0.97)  # Bottom side
-            box[2, 1] = int(box[2, 1] * 1.02)  # Top side
-            box[3, 1] = int(box[3, 1] * 1.02)  # Bottom side
+            if initialize_indicocr_models == 'True':
+                box[0, 0] = int(box[0, 0] * 0.95)
+                box[3, 0] = int(box[3, 0] * 0.95)
+                box[1, 0] = int(box[1, 0] * 1.02)
+                box[2, 0] = int(box[2, 0] * 1.02)
+                box[0, 1] = int(box[0, 1] * 0.97)  # Top side
+                box[1, 1] = int(box[1, 1] * 0.97)  # Bottom side
+                box[2, 1] = int(box[2, 1] * 1.02)  # Top side
+                box[3, 1] = int(box[3, 1] * 1.02)  # Bottom side
 
             crop_image = get_crop_with_pers_transform(image, box, height=abs(box[0,1]-box[2,1]))
         else :
