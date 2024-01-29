@@ -147,14 +147,18 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
         img = cv2.imread(image_path)
         mode_height = get_mode_height(page_regions)
         initialize_ocr_models = False  # Flag variable
-        if config.HANDWRITTEN_OCR and lang == 'en':
-            initialize_ocr_models = True
+        initialize_indicocr_models = False
+        HANDWRITTEN_OCR = False
+        if config.HANDWRITTEN_OCR and lang == 'bn':
+            initialize_ocr_models = 'True'
             lang_detected = config.LANG_MAPPING['en'][0]
             processor = TrOCRProcessor.from_pretrained("microsoft/trocr-base-handwritten")
             model = VisionEncoderDecoderModel.from_pretrained("microsoft/trocr-base-handwritten")
-        elif config.HANDWRITTEN_OCR:
-            lang_detected = config.LANG_MAPPING[lang][0]
+        elif config.HANDWRITTEN_OCR and lang == 'gu':
+            initialize_indicocr_models = 'True'
+            lang_detected = config.LANG_MAPPING['ta'][0]
         else:
+            HANDWRITTEN_OCR = 'True'
             lang_detected = page_lang_detection(image_path,lang)
         #lang_detected = config.LANG_MAPPING[lang][0]
 
@@ -200,17 +204,17 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
                                     # unique_id = str(uuid.uuid4())[:8] 
                                     image_path = os.path.join(new_folder_path, f'{rgn_idx}_{line_idx}.jpg')
                                     cv2.imwrite(image_path, image_crop)
-                                    if initialize_ocr_models: 
+                                    if initialize_ocr_models == 'True': 
                                         pixel_values = processor(image_crop, return_tensors="pt").pixel_values
                                         generated_ids = model.generate(pixel_values)
                                         trocr_text = processor.batch_decode(generated_ids, skip_special_tokens=True)[0]
-                                    elif config.HANDWRITTEN_OCR:
+                                    elif initialize_indicocr_models == 'True':
                                         alphabet = f'{lang_detected}_lexicon.txt'
 
                                         pretrained = f'./src/utilities/indic_hw_ocr/models/{lang_detected}_indic_pretrained_best_wer.pth'
                                         out_dir = f'./src/utilities/indic_hw_ocr/{lang_detected}'
                                         language = {lang_detected}
-
+                                        print(lang_detected,'ttttttttttt')
                                         test_root = './crops/'
 
                                         decoded_preds = BaseHTR.run_handwritten_ocr(test_root, alphabet, pretrained, out_dir, language)
@@ -221,7 +225,7 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
                                     updated_lines.extend(h_lines)
 
                                     # Split the text variable by space
-                                    if config.HANDWRITTEN_OCR:
+                                    if HANDWRITTEN_OCR == 'True':
                                         if trocr_text is None:
                                             split_text = ''.join(decoded_preds)   
                                         else: split_text = trocr_text.split()
@@ -241,7 +245,6 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
                                                     break
                                                 elif index >= len(split_text):
                                                     entry['regions'].remove(region)
-                                                    break
                                                 # # Use the words sequentially, and loop back to the beginning if needed
                                                 if trocr_text is not None: region['text'] = split_text[index % len(split_text)]
                                                 else: region['text'] = split_text
