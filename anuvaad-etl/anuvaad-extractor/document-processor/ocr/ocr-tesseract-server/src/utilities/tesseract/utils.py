@@ -119,7 +119,7 @@ def crop_region(box,image,initialize_ocr_models,initialize_indicocr_models):
             log_exception("Error in region   due to invalid coordinates",  app_context.application_context, None)
             return None
         if initialize_ocr_models == 'True':
-            box[0, 0] = 70; box[3, 0] = 70
+            box[0, 0] = 60; box[3, 0] = 60
             box[1, 0] = image.shape[1]-50; box[2, 0] = image.shape[1]-50
         if config.PERSPECTIVE_TRANSFORM:
             # Increase only the height
@@ -150,6 +150,7 @@ def get_tess_text(image_crop,org_lang, median_height,left,top,cls,c_x,c_y,lang_d
     # lang_detected="Devanagari"
     tess_lang = config.TESS_LANG_MAPPING[org_lang][0]
     lang = tess_lang +'+hin' if org_lang == 'en' else lang
+    lang = tess_lang +'+Latin' if org_lang == 'bn' else lang
     height_check = median_height * 1.5
     if cls in ['CELL']:
         height_check = median_height*1.2
