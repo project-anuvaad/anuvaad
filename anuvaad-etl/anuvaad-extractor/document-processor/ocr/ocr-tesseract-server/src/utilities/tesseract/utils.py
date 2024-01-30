@@ -119,7 +119,7 @@ def crop_region(box,image,initialize_ocr_models,initialize_indicocr_models):
             log_exception("Error in region   due to invalid coordinates",  app_context.application_context, None)
             return None
         if initialize_ocr_models == 'True':
-            box[0, 0] = 50; box[3, 0] = 50
+            box[0, 0] = 70; box[3, 0] = 70
             box[1, 0] = image.shape[1]-50; box[2, 0] = image.shape[1]-50
         if config.PERSPECTIVE_TRANSFORM:
             # Increase only the height
