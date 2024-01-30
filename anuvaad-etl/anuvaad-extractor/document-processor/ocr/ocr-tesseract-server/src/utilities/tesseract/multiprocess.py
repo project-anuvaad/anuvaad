@@ -257,10 +257,11 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
                                                 #     continue
                                                 # Your existing code for updating Y-coordinates
                                                 index += 1
-                                            entry['boundingBox']['vertices'][0]['x'] = dynamic_first_vertex_x
-                                            entry['boundingBox']['vertices'][3]['x'] = dynamic_first_vertex_x
-                                            updated_lines[idx]['boundingBox']['vertices'][0]['x'] = dynamic_first_vertex_x
-                                            updated_lines[idx]['boundingBox']['vertices'][3]['x'] = dynamic_first_vertex_x
+                                            if trocr_text is not None:
+                                                entry['boundingBox']['vertices'][0]['x'] = dynamic_first_vertex_x
+                                                entry['boundingBox']['vertices'][3]['x'] = dynamic_first_vertex_x
+                                                updated_lines[idx]['boundingBox']['vertices'][0]['x'] = dynamic_first_vertex_x
+                                                updated_lines[idx]['boundingBox']['vertices'][3]['x'] = dynamic_first_vertex_x
                                             # entry['boundingBox']['vertices'][0]['x'] = dynamic_first_vertex_x
                                             # entry['boundingBox']['vertices'][3]['x'] = dynamic_first_vertex_x
                                             # # Update the Y-coordinate of all vertices to be the same as the first vertex

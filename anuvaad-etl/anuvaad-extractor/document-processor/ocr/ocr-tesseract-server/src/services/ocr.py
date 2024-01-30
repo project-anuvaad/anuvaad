@@ -5,8 +5,10 @@ from src.services.region_unifier import Region_Unifier
 from src.utilities.model_response import set_bg_image
 from src.utilities.request_parse import MapKeys,UpdateKeys
 from src.utilities.tesseract.dynamic_adjustment import coord_adjustment
+from src.services.remove_watermark import clean_image
 from src.utilities.tesseract.multiprocess import  multi_processing_tesseract
 from anuvaad_auditor.loghandler import log_info
+import concurrent.futures
 from anuvaad_auditor.loghandler import log_exception
 
 region_unifier = Region_Unifier()
@@ -16,6 +18,13 @@ update_key = UpdateKeys()
 def get_text(lang,page_c_lines,file,path,page_regions,page_c_words,font_info,file_properties,idx):
     
     #path = config.BASE_DIR+path
+    if config.WATERMARK_REMOVE:
+        img = cv2.imread(path)
+        # img[175 < img ] = 255
+        img = clean_image(img)
+        path = path.split('.jpg')[0]+"_watermark-removed.jpg"
+        cv2.imwrite(path,img)
+
     page_output,page_words,save_path = get_document_bounds(lang,path,page_c_lines,file,page_regions,page_c_words,font_info,file_properties,idx)
     return page_output,page_words,save_path
 
@@ -97,7 +106,12 @@ def segment_regions(lang,path,file,words, lines,regions,file_properties,idx):
     #if idx==2:
     v_list = multi_processing_tesseract(v_list,path,lang,width, height)
     log_info("tesseract ocr completed", None)
-    save_path = mask_image_craft(path, v_list, idx, file_properties, width, height)
+    image   = cv2.imread(path)
+    image = mask_image_craft(image, v_list, idx, file_properties, width, height)
+    extension = path.split('.')[-1]
+    save_path = path.split('.')[0]+"_bgimages."+extension
+    # image[:] = 255
+    cv2.imwrite(save_path,image)
    # save_path =None
     if "top_correction" in file['config']["OCR"].keys() and file['config']["OCR"]["top_correction"]=="True":
         v_list = verify__table_structure(v_list)
@@ -151,58 +165,60 @@ def remove_noise(img):
     except:
         return img
 
-def mask_image_craft(path, page_regions,page_index,file_properties,image_width,image_height,margin= 0 ,fill=255):
-    try:
-        image   = cv2.imread(path)
-        for region_idx, page_region in enumerate(page_regions):
-            if page_region is not None and 'class' in page_region.keys():
-                region_class = page_region['class']
-                if region_class not in ["IMAGE","OTHER","SEPARATOR"]:
-                    if region_class =='TABLE':
-                        y_margin=0; x_margin=0
-                    else:
-                        y_margin=0; x_margin=0
-                    region_lines = file_properties.get_region_lines(page_index,region_idx,page_region)
-                    if region_lines!=None:
-                        for line_index, line in enumerate(region_lines):
-                            if line is not None:
-                                region_words = file_properties.get_region_words(page_index,region_idx,line_index,line)
-                                if region_words!=None:
-                                    if config.IS_DYNAMIC and region_class!="TABLE":
-                                        region_words = coord_adjustment(path, region_words)
-                                    for word_index,region in enumerate(region_words):
-                                        if region is not None:
-                                            if region_class =='TABLE':
-                                                image = mask_table_region(image,region,image_height,image_width,y_margin,x_margin,fill)
-                                            else:
-                                                flag,row_top, row_bottom,row_left,row_right = end_point_correction(region, y_margin,x_margin,image_height,image_width)
-                                                if flag:
-                                                    if len(image.shape) == 2 :
-                                                        image[row_top  : row_bottom  , row_left : row_right ] = fill
-                                                    if len(image.shape) == 3 :
-                                                        image[row_top : row_bottom , row_left : row_right ,:] = fill
-        image = remove_noise(image)                             
-        if '.jpg' in path:
-            save_path = path.split('.jpg')[0]+"_bgimages_"+'.jpg'
-        elif '.png' in path:
-            save_path = path.split('.png')[0]+"_bgimages_"+'.png'
-        else:
-            save_path = path.split('.')[0]+"_bgimages_"+'.jpg'
+def identify_background_color(region, method='average'):
+    # Check if the region is not empty
+    if region is None or region.size == 0:
+        return None
 
-        cv2.imwrite(save_path,image)
-        return save_path
-    except Exception as e :
+    # Convert the region to three channels (RGB) if it is a single-channel image (grayscale)
+    if len(region.shape) == 2:
+        region = cv2.cvtColor(region, cv2.COLOR_GRAY2BGR)
+
+    if method == 'average':
+        # Calculate the average color of the region
+        average_color = np.mean(region, axis=(0, 1))
+        background_color = tuple(np.round(average_color).astype(int))
+    elif method == 'kmeans':
+        # Reshape the region to a 2D array of pixels
+        pixels = region.reshape((-1, 3))
+
+        # Convert to float32 for k-means clustering
+        pixels = np.float32(pixels)
+
+        # Define criteria and apply k-means
+        criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 10, 1.0)
+        k = 2  # You can adjust the number of clusters as per your requirement
+        _, labels, centers = cv2.kmeans(pixels, k, None, criteria, 10, cv2.KMEANS_RANDOM_CENTERS)
+
+        # Get the most frequent color as the background color
+        counts = np.bincount(labels.flatten())
+        background_color = tuple(np.round(centers[np.argmax(counts)]).astype(int))
+    else:
+        raise ValueError("Invalid method. Choose 'average' or 'kmeans'.")
+
+    return background_color
+
+def mask_image_craft(image, page_regions, page_index, file_properties, image_width, image_height, margin=0, fill=255):
+    try:
+        def process_region(region):
+            # Process each region in a separate function
+            y_margin, x_margin = 8, 8  # Set your margins here
+            flag, row_top, row_bottom, row_left, row_right = end_point_correction(region, y_margin, x_margin, image_height, image_width)
+            
+            if flag:
+                region_image = image[row_top:row_bottom, row_left:row_right]
+                fill = identify_background_color(region_image, method='kmeans')
+                region_image[:] = fill
+                
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            # Process regions in parallel
+            executor.map(process_region, page_regions)
+        
+        image = remove_noise(image)
+        return image
+    except Exception as e:
         print('Service Tesseract Error in masking out image {}'.format(e))
-        if '.jpg' in path:
-            save_path = path.split('.jpg')[0]+"_bgimages_"+'.jpg'
-        elif '.png' in path:
-            save_path = path.split('.png')[0]+"_bgimages_"+'.png'
-        else:
-            save_path = path.split('.')[0]+"_bgimages_"+'.jpg'
-        img = cv2.imread(path)
-        img[:] = 255
-        cv2.imwrite(save_path,img)
-        return save_path
+        return image
 
 
 def mask_image_vision(path, page_regions,page_index,file_properties,image_width,image_height,margin= 0 ,fill=255):
