@@ -105,3 +105,4 @@ TESS_LANG_MAPPING = {
     "ma": ['mar'],  
     "pa": ['pan']  
 }
+WATERMARK_REMOVE = True
