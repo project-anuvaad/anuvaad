@@ -230,8 +230,7 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
                                         if trocr_text is None:
                                             split_text = ''.join(decoded_preds)   
                                         else: 
-                                            split_text = ' '.join(word for word in split_text.split() if not word.startswith('#'))
-                                            split_text = trocr_text.split()
+                                            split_text = ' '.join(word for word in trocr_text.split() if not word.startswith('#')).split()
                                         
                                         # Replace the values of ['text'] in the JSON data sequentially
                                         index = 0
