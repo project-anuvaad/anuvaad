@@ -97,7 +97,7 @@ TESS_LANG_MAPPING = {
     "gu": ['guj'],
     "or": ['ori'],
     "hi": ['hin'],
-    "bn": ['ben'],
+    "bn": ['eng'],
     "mr": ['mar'],
     "ta": ['tam'],
     "te": ['tel'],
