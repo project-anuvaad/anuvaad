@@ -94,7 +94,7 @@ DETECT_LANG_MAPPING = {
 TESS_LANG_MAPPING = {
     "en": ['eng'],
     "kn": ['kan'],
-    "gu": ['guj'],
+    "gu": ['hin'],
     "or": ['ori'],
     "hi": ['hin'],
     "bn": ['ben'],
