@@ -11,13 +11,13 @@
 # curl -L -o /usr/share/tesseract-ocr/4.00/tessdata/Bengali.traineddata https://github.com/tesseract-ocr/tessdata_best/blob/main/script/Bengali.traineddata?raw=true
 
 tam_modelpath='/usr/share/tesseract-ocr/4.00/tessdata/anuvaad_tam.traineddata'
-url_tam='https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvaad_tam.traineddata?AWSAccessKeyId=AKIAXX2AMEIRJY2GNYVZ&Signature=X6%2BwKdeOyOUFlOFs%2B7eRmzhziZ0%3D&Expires=1693557258'
+url_tam='https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvaad_tam.traineddata'
 
 hin_modelpath='/usr/share/tesseract-ocr/4.00/tessdata/anuvaad_hin.traineddata'
-url_hin='https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvaad_hin.traineddata?AWSAccessKeyId=AKIAXX2AMEIRJY2GNYVZ&Signature=2l%2F0OwWQrD%2FIvogfijATPufjMLA%3D&Expires=1693557740'
+url_hin='https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvaad_hin.traineddata'
 
 kan_modelpath='/usr/share/tesseract-ocr/4.00/tessdata/anuvaad_kan.traineddata'
-url_kan='https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvaad_kan.traineddata?AWSAccessKeyId=AKIAXX2AMEIRJY2GNYVZ&Signature=gDiNsqrV0n2%2BWZSMwesyqkLOYZ8%3D&Expires=1694149503'
+url_kan='https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvaad_kan.traineddata'
 
 
 #rm $tam_modelpath
