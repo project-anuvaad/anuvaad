@@ -46,7 +46,8 @@ class UserManagementRepositories:
         return None
     
     def send_mail_to_admin(self, email, name, orgId, averageDocTranslate,phoneNumber, admin_email, token):
-        url_to_admin = f'{BASE_URL}{VERIFY_SIGNUP_REQUEST_ENDPOINT}{token}/{email}'
+        url_to_admin = f'{BASE_URL}{VERIFY_SIGNUP_REQUEST_ENDPOINT}/{token}/{email}'
+        log_info(f'admin url : {url_to_admin}')
         filename = "./templates/user_signup_request_template.html"
         message = generate_email_notification(MAIL_SETTINGS['USER_VERIFICATION_ADMIN_EMAIL'])
         message['Subject'] = f"Someone wants to use Anuvaad."
