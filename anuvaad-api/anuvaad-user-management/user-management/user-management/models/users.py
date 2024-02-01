@@ -171,9 +171,9 @@ class UserManagementModel(object):
             return result_usr
         return None
 
-    def add_user_to_collection(self, name, email, orgID,token_and_epoch_gen, avgDocTranslate,phoneNumber,comment):#,timestamp, token):
+    def add_user_to_collection(self, name, email, orgID,token_and_epoch_gen, avgDocTranslate):#,timestamp, token):
         collections = get_db()[VERIFY_USERS]
-        insert_user = collections.insert_one({"email":email, "userName":email,"name" : name, "orgID":orgID,"token": token_and_epoch_gen[0],"timeStamp":token_and_epoch_gen[1] ,"documentsPerDay":avgDocTranslate,"phoneNumber":phoneNumber,"comment":comment})#, "timeStamp":timestamp,"token":token})
+        insert_user = collections.insert_one({"email":email, "userName":email,"name" : name, "orgID":orgID,"token": token_and_epoch_gen[0],"timeStamp":token_and_epoch_gen[1] ,"documentsPerDay":avgDocTranslate})#, "timeStamp":timestamp,"token":token})
         inserted = insert_user.inserted_id
         if inserted:
             return "SUCCESS"

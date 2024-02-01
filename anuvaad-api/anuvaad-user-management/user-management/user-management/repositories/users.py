@@ -33,8 +33,8 @@ class UserManagementRepositories:
             return result
         return None
 
-    def add_usr_details(self, name, email, orgID,token_and_epoch_gen, averageDocTranslate,phoneNumber,comment):
-        result = userModel.add_user_to_collection(name, email, orgID,token_and_epoch_gen, averageDocTranslate,phoneNumber,comment)#, timestamp, token)
+    def add_usr_details(self, name, email, orgID,token_and_epoch_gen, averageDocTranslate):
+        result = userModel.add_user_to_collection(name, email, orgID,token_and_epoch_gen, averageDocTranslate)#, timestamp, token)
         if result:
             return "SUCCESS"
         return None
@@ -45,7 +45,7 @@ class UserManagementRepositories:
             return token_and_epoch
         return None
     
-    def send_mail_to_admin(self, email, name, orgId, averageDocTranslate,phoneNumber, admin_email, token):
+    def send_mail_to_admin(self, email, name, orgId, averageDocTranslate, admin_email, token):
         url_to_admin = f'{BASE_URL}{VERIFY_SIGNUP_REQUEST_ENDPOINT}/{token}/{email}'
         log_info(f'admin url : {url_to_admin}')
         filename = "./templates/user_signup_request_template.html"
@@ -56,7 +56,6 @@ class UserManagementRepositories:
         html_ = html_.replace("{{email}}", email)
         html_ = html_.replace("{{organisationID}}", orgId)
         html_ = html_.replace("{{averageDocTranslate}}", averageDocTranslate)
-        html_ = html_.replace("{{phoneNumber}}", phoneNumber)
         html_ = html_.replace("{{url_to_admin}}", url_to_admin)
         # html_ = html_.replace("{{qr_setup_key}}", qr_data['mfa_setup_key'])
         # html_ = MIMEText(html_, "html")
