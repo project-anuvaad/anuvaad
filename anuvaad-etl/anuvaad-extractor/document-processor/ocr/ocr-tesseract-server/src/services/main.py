@@ -22,7 +22,7 @@ def process_input(app_context,base_dir):
             
             page_res = text_extraction(file_properties,page_paths,file)
             output_files.append(page_res)
-            langs.append(file_properties.get_language())
+            langs.append('hi') if file_properties.get_language() == 'gu' else langs.append(file_properties.get_language())
 
         app_context.application_context["outputs"] = output_files
         end_time= time.time()-start_time
