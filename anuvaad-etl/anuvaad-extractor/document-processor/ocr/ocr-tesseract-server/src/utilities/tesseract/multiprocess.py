@@ -223,6 +223,9 @@ def multi_processing_tesseract(page_regions, image_path, lang, width, height):
                                         
                                     words  = get_tess_text(image_crop,lang,mode_height,left,top,line['class'],c_x,c_y,lang_detected)
                                     h_lines = check_horizontal_merging(words,line['class'],mode_height,vertices,line)
+                                    for item in h_lines:
+                                        if 'class' in item and item['class'] == 'TEXT':
+                                            item['class'] = 'LINE'
                                     updated_lines.extend(h_lines)
 
                                     # Split the text variable by space

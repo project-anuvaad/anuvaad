@@ -52,6 +52,7 @@ class Response(object):
                         
                         output_filename_json = file_ops.writing_json_file(i, response['rsp'], self.DOWNLOAD_FOLDER)
                         langs  = response['langs']
+                        
                         file_res = file_ops.one_filename_response(output_filename_json,langs)
                         output_file_response.append(file_res)
                         task_endtime = eval(str(time.time()).replace('.', '')[0:13])

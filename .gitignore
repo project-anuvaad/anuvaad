@@ -12,3 +12,5 @@ __pycache__/
 #__pycache__/
 anuvaad-etl/anuvaad-extractor/document-processor/ocr/ocr-tesseract-server/src/utilities/indic_hw_ocr/models/Tamil_indic_pretrained_best_wer.pth
 anuvaad-etl/anuvaad-extractor/document-processor/ocr/ocr-tesseract-server/src/utilities/indic_hw_ocr/models/Devanagari_indic_pretrained_best_wer.pth
+anuvaad-etl/anuvaad-extractor/document-processor/layout-detector/prima/src/utilities/primalaynet/model_final.pth
+anuvaad-etl/anuvaad-extractor/document-processor/layout-detector/prima/src/utilities/primalaynet/model_tablenet.pth
