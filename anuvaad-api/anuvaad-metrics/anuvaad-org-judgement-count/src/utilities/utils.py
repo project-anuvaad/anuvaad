@@ -242,7 +242,7 @@ def org_level_csv_user(file_save, file1, file2):
 def get_asr_service_code(language):
     asr_service = {
         "bn": "ai4bharat/conformer-multilingual-indo-aryan--gpu-t4",
-        "en": "ai4bharat/whisper-medium-en--gpu--t4",
+        "en": "ai4bharat/whisper--gpu-t4",
         "gu": "ai4bharat/conformer-multilingual-indo-aryan--gpu-t4",
         "hi": "ai4bharat/conformer-hi--gpu-t4",
         "kn": "ai4bharat/conformer-multilingual-dravidian--gpu-t4",

@@ -1,6 +1,11 @@
-FROM python:3.7-slim
+FROM python:3.7-bullseye
+RUN apt-get clean
+RUN mv /var/lib/apt/lists /var/lib/apt/lists.old
+RUN mkdir -p lists/partial
+RUN apt-get clean
 #RUN rm -vf /var/lib/apt/lists/*
 RUN apt-get update
+RUN apt-get install -y libopenblas-dev
 COPY / /app
 WORKDIR /app
 RUN pip3 install --upgrade pip
