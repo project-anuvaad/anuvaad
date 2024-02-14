@@ -92,7 +92,7 @@ def get_layout_proposals(pdf_data,flags) :
                         df['children']=None
                         sub_h_dfs.append(df)  
                 h_dfs.append(sub_h_dfs)
-        return h_dfs
+    return h_dfs
 
         #integrate pubnet
     #    pass
