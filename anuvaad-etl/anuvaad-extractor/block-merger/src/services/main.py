@@ -45,7 +45,6 @@ def merge_horizontally(input) :
         # Uncomment Later
         if (pdf_data['lang'] != 'en') or (flags['doc_class'] != 'class_1'):
             pdf_data['h_dfs'] = tesseract_ocr(pdf_data,flags)
-
         return [pdf_data, flags]
         #del pdf_data['in_dfs']
     except Exception as e:
@@ -57,7 +56,6 @@ def merge_horizontally(input) :
 def merge_vertically(input):
     try :
         pdf_data, flags = input
-
         v_dfs = children_functions.vertical_merging(pdf_data,flags)
         pdf_data['v_dfs'] = v_dfs
         #del pdf_data['h_dfs']

@@ -63,7 +63,7 @@ def doc_pre_processing(filename, base_dir, lang):
     return pdf_data, flags
 
 def get_layout_proposals(pdf_data,flags) :
-
+    h_dfs = []
     for indx in range(len(pdf_data["page_width"])):
         width_ratio = pdf_data['page_width'][indx] / pdf_data['pdf_image_width'][indx]
         height_ratio = pdf_data['page_height'][indx]/ pdf_data['pdf_image_height'][indx]
@@ -73,10 +73,8 @@ def get_layout_proposals(pdf_data,flags) :
             h_dfs = get_xml.get_hdfs(pdf_data['in_dfs'],  pdf_data['header_region'], pdf_data['footer_region'],width_ratio,height_ratio ,images=pdf_data['pdf_image_paths'])
             return h_dfs
         else :
-            h_dfs = []
             pdf_data['sub_in_dfs'] = []
             if flags['page_layout'] == 'double_column' :
-
                 #for page_index, pdf_image in enumerate(pdf_data['pdf_image_paths']):
                     
                     #regions = get_column(pdf_image, width_ratio)

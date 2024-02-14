@@ -188,7 +188,7 @@ def convert_to_in_df(craft_df):
 
 def detect_text(pdf_data,text_threshold=args.text_threshold,low_text_threshold= args.low_text,img_class="single_col"):
     
-    
+    in_dfs = []
     for idxx in range(len(pdf_data['page_width'])):
         image_paths = pdf_data['pdf_image_paths'][idxx]
         width_ratio = pdf_data['page_width'][idxx] / pdf_data['pdf_image_width'][idxx]
@@ -197,7 +197,6 @@ def detect_text(pdf_data,text_threshold=args.text_threshold,low_text_threshold= 
         pdf_data['width_ratio'] = width_ratio
         pdf_data['height_ratio'] = height_ratio
 
-        in_dfs = []
         number_of_pages = len(image_paths)
         if img_class == "double_col":
             number_of_pages = 1
