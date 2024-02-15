@@ -42,8 +42,9 @@ def get_text(app_context, base_dir):
     line_layout = file_properties.get_line_layout_config()
     craft_line = file_properties.get_craft_config()
     lang = file_properties.get_language()
-    langs = ['gu']
-    if line_layout is not None and line_layout == 'True' and lang not in langs:
+    # langs = ['gu']
+    # if line_layout is not None and line_layout == 'True' and lang not in langs:
+    if line_layout is not None and line_layout == 'True':
         log_info('Line detection started by prima linenet model',
                  app_context.application_context)
         lines = predict_primanet.predict_primanet(images)
