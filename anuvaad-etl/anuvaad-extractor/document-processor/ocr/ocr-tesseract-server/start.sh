@@ -16,19 +16,19 @@ hin_modelpath="/usr/share/tesseract-ocr/4.00/tessdata/anuvaad_hin.traineddata"
 url_hin="https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvaad_hin.traineddata?AWSAccessKeyId=${AWSACCESSKEYID_VALUE}&Signature=RbghEZIRd9RFE5l8DCB0che703w%3D&Expires=1766687597"
 
 kan_modelpath="/usr/share/tesseract-ocr/4.00/tessdata/anuvaad_kan.traineddata"
-url_kan="https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvaad_kan.traineddata?AWSAccessKeyId=${AWSACCESSKEYID_VALUE}&Signature=sKWhdkS1Ddd037%2FeK2IfgsDJSl8%3D&Expires=1702454148"
+url_kan="https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvaad_kan.traineddata?AWSAccessKeyId=${AWSACCESSKEYID_VALUE}&Signature=U8dfCpsDzCpzb8mSto0padd1Tdc%3D&Expires=1768473758"
 
 ben_modelpath="/usr/share/tesseract-ocr/4.00/tessdata/anuvaad_ben.traineddata"
-url_ben="https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvaad_ben.traineddata?AWSAccessKeyId=${AWSACCESSKEYID_VALUE}&Signature=MXYh1ywXM43cPtoHhAeM4LfSXiQ%3D&Expires=1702454172"
+url_ben="https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvaad_ben.traineddata?AWSAccessKeyId=${AWSACCESSKEYID_VALUE}&Signature=CMe5pWFDyVKq63nmFk91%2FvW%2BNqY%3D&Expires=1768473639"
 
 mal_modelpath="/usr/share/tesseract-ocr/4.00/tessdata/anuvaad_mal.traineddata"
-url_mal="https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvaad_mal.traineddata?AWSAccessKeyId=${AWSACCESSKEYID_VALUE}&Signature=jiNEPQzfpx6gOVIWBezZrYGqCH8%3D&Expires=1702454197"
+url_mal="https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvaad_mal.traineddata?AWSAccessKeyId=${AWSACCESSKEYID_VALUE}&Signature=%2FCWKdGK5XmGMZ16NnXNZic2hlFs%3D&Expires=1768473671"
 
 mar_modelpath="/usr/share/tesseract-ocr/4.00/tessdata/anuvaad_mar.traineddata"
-url_mar="https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvaad_mar.traineddata?AWSAccessKeyId=${AWSACCESSKEYID_VALUE}&Signature=%2BAPtcF%2FE0ftX%2BOvgJH%2BRD%2BcV7tU%3D&Expires=1702454214"
+url_mar="https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvaad_mar.traineddata?AWSAccessKeyId=${AWSACCESSKEYID_VALUE}&Signature=5fcsqBO42d%2B7jQS1ra8fbmNL%2Bws%3D&Expires=1768473699"
 
 ori_modelpath="/usr/share/tesseract-ocr/4.00/tessdata/anuvaad_ori.traineddata"
-url_ori="https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvaad_ori.traineddata?AWSAccessKeyId=${AWSACCESSKEYID_VALUE}&Signature=e%2BZ2y%2BS15yZuYFiqqGTIcnNzBM8%3D&Expires=1702454243"
+url_ori="https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvaad_ori.traineddata?AWSAccessKeyId=${AWSACCESSKEYID_VALUE}&Signature=PCRwTTSqO2QB%2FmHE8vNhAQunyLw%3D&Expires=1768473718"
 
 ta_hw_path="./src/utilities/indic_hw_ocr/models/Tamil_indic_pretrained_best_wer.pth"
 ta_hw="https://anuvaad-pubnet-weights.s3.amazonaws.com/tamil_indic_pretrained_best_wer.pth?AWSAccessKeyId=${AWSACCESSKEYID_VALUE}&Signature=v6CxjzuQtoX271FKjWr4i8N3jDg%3D&Expires=1766987053"
