@@ -15,6 +15,7 @@ from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.lib.fonts import addMapping
 from reportlab.lib.pagesizes import letter, A4
 from reportlab.pdfgen import canvas
+from reportlab.lib.utils import ImageReader
 import pdftotext
 
 doc_utils = DocumentUtilities()
@@ -85,9 +86,16 @@ class DocumentExporterRepository(object):
         w, h                      = doc_utils.get_page_dimensions(record["pages"][0])
         pagesize                  = (w/scale_factor, h/scale_factor)
         c                         = canvas.Canvas(pdf_filepath, pagesize=pagesize)
-  
+        
         for page in record["pages"]:
-
+            # Check if the page has a background image
+            for region in page.get('regions', []):
+                if region.get('class') == 'BGIMAGE':
+                    background_image_path = region.get('data')
+                    break
+            if background_image_path:
+                background_image = ImageReader(background_image_path)
+                c.drawImage(background_image, 0, 0, width=w/scale_factor, height=h/scale_factor)
             paragraphs, lines     = self.get_page_paragraphs_lines(page)
                 
             for line in lines:
