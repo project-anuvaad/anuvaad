@@ -107,20 +107,8 @@ class StartDigitizationUpload extends React.Component {
 
     componentDidUpdate(prevProps) {
         if (prevProps.fetch_models.models !== this.props.fetch_models.models) {
-            const supportedLanguages = LANG_MODEL.get_supported_languages(this.props.fetch_models.models, true);
-
-            if (supportedLanguages) {
-                supportedLanguages.map((el) => {
-                    if (el.language_code === "bn") {
-                        el.language_name = "English-Handwritten";
-                    } else if (el.language_code === "gu") {
-                        el.language_name = "Hindi-Handwritten";
-                    }
-                    return el; // Ensure to return the modified object
-                });
-            }
             this.setState({
-                source_languages: supportedLanguages,
+                source_languages: LANG_MODEL.get_supported_languages(this.props.fetch_models.models, true),
                 target_languages: LANG_MODEL.get_supported_languages(this.props.fetch_models.models, true),
                 showLoader: false
             })

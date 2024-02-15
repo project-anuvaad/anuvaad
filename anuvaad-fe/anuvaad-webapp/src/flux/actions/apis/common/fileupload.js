@@ -107,13 +107,10 @@ export default class RunExperiment extends API {
             locale: this.source,
             config: {
               OCR: {
-                craft_word: "True",
-                craft_line: "True",
-                line_layout: "True",
-                // line_layout:
-                //   this.workflow === "WF_A_FCWDLDBSOD20TESOTK"
-                //     ? "True"
-                //     : "False",
+                line_layout:
+                  this.workflow === "WF_A_FCWDLDBSOD20TESOTK"
+                    ? "True"
+                    : "False",
                 option: "HIGH_ACCURACY",
                 language: this.source,
                 source_language_name: this.source_language,
