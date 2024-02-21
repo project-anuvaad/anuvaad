@@ -33,7 +33,7 @@ const RegisterMFAModal = (props) => {
 
     const classes = useStyles();
 
-    const [selectedAuthMethod, setsSlectedAuthMethod] = useState("TOTP");
+    const [selectedAuthMethod, setsSlectedAuthMethod] = useState("HOTP");
 
     const OTPButtonData = [
         {
