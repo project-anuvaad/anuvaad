@@ -139,7 +139,7 @@ class StartDigitizationUpload extends React.Component {
                     this.fetchDocumentDigitizeProcess([this.props.workflowStatus.jobID]);
                 } else {
                     return
-                  }
+                }
             }, 15000);
         }
     }

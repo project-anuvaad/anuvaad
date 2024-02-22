@@ -25,11 +25,11 @@ export default class RunExperiment extends API {
     this.fileName = fileName;
     this.endpoint =
       workflow === "WF_A_FCBMTKTR" ||
-      workflow === "WF_A_FCOD10GVOTK" ||
-      workflow === "WF_A_FCWDLDBSOD15GVOTK" ||
-      workflow === "WF_A_FCWDLDBSOD20TESOTK" ||
-      workflow === "WF_A_AN" ||
-      workflow === "WF_A_FTTKTR"
+        workflow === "WF_A_FCOD10GVOTK" ||
+        workflow === "WF_A_FCWDLDBSOD15GVOTK" ||
+        workflow === "WF_A_FCWDLDBSOD20TESOTK" ||
+        workflow === "WF_A_AN" ||
+        workflow === "WF_A_FTTKTR"
         ? `${super.apiEndPointAuto()}${ENDPOINTS.workflowAsync}`
         : `${super.apiEndPointAuto()}${ENDPOINTS.workflowSync}`;
     this.source = source;

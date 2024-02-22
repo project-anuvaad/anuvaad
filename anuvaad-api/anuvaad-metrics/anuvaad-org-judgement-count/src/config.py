@@ -107,6 +107,7 @@ LANG_MAPPING = {
 jud = os.environ.get('ANUVAAD_JUD_METRICS','https://developers.anuvaad.org')
 
 TRANSLITERATION_URL = os.environ.get('TRANSLITERATION_URL','https://api.dhruva.ekstep.ai/services/inference/transliteration?serviceId=ai4bharat/indicxlit--gpu-t4')
+XLIT_URL = os.environ.get('XLIT_URL','https://xlit-api.ai4bharat.org/tl')
 ASR_URL = os.environ.get('ASR_URL',"https://api.dhruva.ekstep.ai/services/inference/asr")
 ACCESS_TOKEN = os.environ.get('DHRUVA_ACCESS_TOKEN',"None")
 

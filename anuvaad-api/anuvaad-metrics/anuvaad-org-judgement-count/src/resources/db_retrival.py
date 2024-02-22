@@ -436,13 +436,29 @@ def transliterate():
     if request.method != "POST":
         return None
     try:
-        payload = json.dumps(request.get_json())
-        headers = {
-        'Authorization': config.ACCESS_TOKEN
-        }
-        response = requests.request("POST", config.TRANSLITERATION_URL, headers=headers, data=payload)
+
+
+        input_data = request.get_json()
+        lang_code = input_data["config"]["language"]["targetLanguage"]
+        word = input_data["input"][0]["source"]
+        
+        url = f'{config.XLIT_URL}/{lang_code}/{word}'
+        response = requests.get(url)
+
+        if response.status_code == 200:
+            output_data = {
+                "output": [
+                    {
+                        "source": word,
+                        "target": response.json()["result"]
+                    }
+                ],
+                "config": None,
+                "taskType": "transliteration"
+            }
+
         if response.status_code >=200 and response.status_code <= 204:
-            out = CustomResponse(Status.SUCCESS.value, response.json())
+            out = CustomResponse(Status.SUCCESS.value, output_data)
             return out.getres()
         status = Status.SYSTEM_ERR.value
         status["message"] = "Unable to perform transliteration at this point of time."
