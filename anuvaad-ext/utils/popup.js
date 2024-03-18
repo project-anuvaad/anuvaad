@@ -10,6 +10,8 @@ let source = document.getElementById("source");
 let target = document.getElementById("target");
 saveObjectInSyncStorage({ translate: "Translate" });
 
+saveObjectInSyncStorage({ s0_src: "en" });
+saveObjectInSyncStorage({ s0_tgt: "hi" });
 
 window.addEventListener("load", async () => {
   translate.textContent = await getObjectFromSyncStorage("translate");

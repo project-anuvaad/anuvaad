@@ -122,7 +122,7 @@ const makeSyncInitiateCall = async () => {
     ]);
 
     const modelId = await fetchModelAPICall(sourceLang, targetLang, authToken);
-    const batchSize = 100;
+    const batchSize = 25;
 
     for (let i = 0; i < texts.length; i += batchSize) {
       const currentBatch = texts.slice(i, i + batchSize);
@@ -201,8 +201,8 @@ const fetchModelAPICall = async (source, target, authToken) => {
     });
 
     if (response.ok) {
-      const modelInfo = (await response.json()).data
-      return get_model_details(modelInfo, source, target).model_id      
+      const modelData = await response.json();
+      return get_model_details(modelData?.data, source, target).model_id      
     } else if (response.status === 401) {
       await setCryptoToken();
       await makeSyncInitiateCall();
