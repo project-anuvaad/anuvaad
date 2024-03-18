@@ -4,6 +4,7 @@ const { encodeBase64, decodeUTF8 } = require("tweetnacl-util");
 const { v4: uuidv4 } = require("uuid");
 const { default: apiEndPoints } = require("../configs/apiendpoints");
 const { HOST_NAME } = require("../configs/apigw");
+const jp = require('jsonpath')
 
 const {
   saveObjectInSyncStorage,
@@ -25,20 +26,26 @@ var texts = [];
 var textMappings = {};
 
 const getAuthToken = async (encryptedToken) => {
-  const endPoint = `${HOST_NAME}${apiEndPoints.get_token}`;
-  fetch(endPoint, {
-    method: "POST",
-    body: JSON.stringify({ id_token: encryptedToken }),
-    headers: { "Content-Type": "application/json" },
-  }).then(async (response) => {
-    let rsp_data = await response.json();
+  try {
+    const endPoint = `${HOST_NAME}${apiEndPoints.get_token}`;
+    const response = await fetch(endPoint, {
+      method: "POST",
+      body: JSON.stringify({ id_token: encryptedToken }),
+      headers: { "Content-Type": "application/json" },
+    });
+
     if (response.ok) {
-      saveObjectInSyncStorage({ token: rsp_data.data.token });
+      const { data } = await response.json();
+      saveObjectInSyncStorage({ token: data.token });
     } else {
-      // await setCryptoToken()
+      // Uncomment the line below if you want to set the crypto token on failure
+      // await setCryptoToken();
     }
-  });
+  } catch (error) {
+    console.error("Error getting auth token:", error);
+  }
 };
+
 
 const setCryptoToken = async () => {
   var payload = `${uuidv4()}::extn::${Date.now()}`;
@@ -88,97 +95,123 @@ const translateWebPage = (data) => {
     data.hasOwnProperty("output") &&
     Array.isArray(data["output"]["translations"]) &&
     data.output.translations.forEach((te) => {
-      if (te.s_id[te.s_id.length - 1] === "0") {
-        responseArray.push({
-          ...te,
-          s_id: te.s_id.replace("_SENTENCE-0", ""),
-        });
-      } else {
-        let length = responseArray.length - 1;
-        responseArray[length].tgt = responseArray[length].tgt + " " + te.tgt;
-        responseArray[length].src = responseArray[length].src + " " + te.src;
-        responseArray[length].tagged_tgt =
-          responseArray[length].tagged_tgt + " " + te.tagged_tgt;
-        responseArray[length].tagged_src =
-          responseArray[length].tagged_src + " " + te.tagged_src;
-        responseArray[length].s_id = responseArray[length].s_id.replace(
-          /[A-Z]+/g,
-          ""
-        );
-      }
-      responseArray.forEach((te) => {
+      responseArray.push({
+        s_id: te.s_id,
+        src: te.src,
+        tgt: te.tgt ? te.tgt : te.src
+      });
+    });
+
+    responseArray.forEach((te) => {
         let sid = te.s_id;
-        let elementId = textMappings[sid].element_id;
+        let elementId = textMappings[sid]?.element_id;
         let element = document.getElementById(elementId);
         let transText = te.tgt;
         let textNode = document.createTextNode(transText);
         let originalTextNode = element.childNodes[0];
         element.replaceChild(textNode, originalTextNode);
       });
-    });
 };
 
 const makeSyncInitiateCall = async () => {
-  var requestBody = {
-    paragraphs: texts,
-    workflowCode: "WF_S_STKTR",
-  };
-  var authToken = await getObjectFromSyncStorage("token");
-  requestBody.source_language_code = await getObjectFromSyncStorage("s0_src");
-  requestBody.target_language_code = await getObjectFromSyncStorage("s0_tgt");
-  requestBody.locale = await getObjectFromSyncStorage("s0_src");
-  requestBody.model_id = await fetchModelAPICall(
-    requestBody.source_language_code,
-    requestBody.target_language_code,
-    authToken
-  );
-  const endPoint = `${HOST_NAME}${apiEndPoints.sync_initiate}`;
-  fetch(endPoint, {
-    headers: {
-      "auth-token": `${authToken}`,
-      "content-type": "application/json",
-    },
-    body: `${JSON.stringify(requestBody)}`,
-    method: "POST",
-  }).then(async (response) => {
-    let data = await response.json();
-    if (response.ok) {
-      translateWebPage(data);
-      await saveObjectInSyncStorage({ translate: "Translate" });
-    } else if (response.status === 401) {
-      await setCryptoToken();
-      makeSyncInitiateCall();
-    }
-  });
-};
+  try {
+    const authToken = await getObjectFromSyncStorage("token");
+    const [sourceLang, targetLang] = await Promise.all([
+      getObjectFromSyncStorage("s0_src"),
+      getObjectFromSyncStorage("s0_tgt"),
+    ]);
 
-const fetchModelAPICall = async (source, target, authToken) => {
-  let endPoint = `${HOST_NAME}${apiEndPoints.fetch_models}`;
-  let fetchCall = fetch(endPoint, {
-    method: "get",
-    headers: {
-      "Content-Type": "application/json",
-      "auth-token": `${authToken}`,
-    },
-  });
-  let response = await fetchCall.then();
-  let rsp_data = await response.json();
-  if (response.ok) {
-    let modelInfo = rsp_data.data.filter((model) => {
-      return (
-        model.target_language_code === target &&
-        model.source_language_code === source &&
-        model.is_primary
-      );
-    });
-    if (modelInfo.length) {
-      return modelInfo[0].model_id;
+    const modelId = await fetchModelAPICall(sourceLang, targetLang, authToken);
+    const batchSize = 25;
+
+    for (let i = 0; i < texts.length; i += batchSize) {
+      const currentBatch = texts.slice(i, i + batchSize);
+
+      const requestBody = {
+        sentences: currentBatch,
+        workflowCode: "WF_S_STR",
+        source_language_code: sourceLang,
+        target_language_code: targetLang,
+        model_id: modelId,
+      };
+
+      const response = await fetch(`${HOST_NAME}${apiEndPoints.sync_initiate}`, {
+        method: "POST",
+        headers: {
+          "auth-token": authToken,
+          "content-type": "application/json",
+        },
+        body: JSON.stringify(requestBody),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        translateWebPage(data);
+      } else if (response.status === 401) {
+        await setCryptoToken();
+        await makeSyncInitiateCall();
+      } else {
+        console.error(`Fetch failed with status ${response.status}`);
+      }
     }
-  } else if (!response.ok && response.status === 401) {
-    await setCryptoToken();
-    await makeSyncInitiateCall();
+    
+    await saveObjectInSyncStorage({ translate: "Translate" });
+  } catch (error) {
+    console.error("Error during sync initiation:", error);
   }
 };
+
+
+const get_model_details = (languages, source_language_code, target_language_code, models) => {
+  let result = []
+  if (models) {
+      let condition = `$..[?(@.src_lang == '${source_language_code}'  && @.tgt_lang == '${target_language_code}')]`
+      let res = jp.query(models, condition)
+      result = res;
+  }
+  let res_data = ""
+  if (result.length > 0) {
+      let model_condition = result.length > 0 && `$..[?(@.uuid == '${result[0].uuid}'&& @.status == 'ACTIVE')]`
+      res_data = jp.query(languages, model_condition)
+      res_data = res_data[0]
+  }
+  if (!res_data) {
+      let condition = `$..[?(@.source_language_code == '${source_language_code}' && @.is_primary == true && @.target_language_code == '${target_language_code}')]`
+      let result = jp.query(languages, condition)
+      if (result.length === 1) {
+          res_data = result[0]
+      }
+  }
+  return res_data
+
+
+}
+
+
+const fetchModelAPICall = async (source, target, authToken) => {
+  try {
+    const endPoint = `${HOST_NAME}${apiEndPoints.fetch_models}`;
+    const response = await fetch(endPoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "auth-token": authToken,
+      },
+      body: JSON.stringify({}),
+    });
+
+    if (response.ok) {
+      const modelData = await response.json();
+      return get_model_details(modelData?.data, source, target).model_id      
+    } else if (response.status === 401) {
+      await setCryptoToken();
+      await makeSyncInitiateCall();
+    } else console.error(`Fetch failed with status ${response.status}`);
+  } catch (error) {
+    console.error("Error during fetch:", error);
+  }
+};
+
 
 const Translate = () => {
   markAndExtractTextElements(document.body);
