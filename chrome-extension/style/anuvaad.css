@@ -28,8 +28,8 @@ button {
     outline: none;
     border: none;
     border-radius: 2px;
-    background-color: #62D9FB;
-    color: black;
+    background-color: rgb(44, 39, 153);
+    color: #FFFFFF;
     box-shadow: 1px 1px 2px;
     font-size: medium;
     font-weight: 500;
@@ -40,5 +40,5 @@ button {
 }
 
 button:hover {
-    background-color: #0fe4f0
+    background-color: rgb(44, 39, 153)
 }

@@ -1,0 +1,1 @@
+(()=>{var e=JSON.parse(localStorage.getItem("anuvaad-dev-text-mappings"));for(var a in e){var t=e[a].element_id,r=e[a].text,d=document.getElementById(t);if(d){var n=d.parentNode,o=document.createTextNode(r);n.replaceChild(o,d)}}localStorage.removeItem("anuvaad-dev-text-mappings")})();
