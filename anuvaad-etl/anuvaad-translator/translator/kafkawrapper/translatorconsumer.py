@@ -5,6 +5,7 @@ import string
 import threading
 
 from kafka import KafkaConsumer, TopicPartition
+from kafka.admin import KafkaAdminClient, NewTopic
 from service.translatorservice import TranslatorService
 from validator.translatorvalidator import TranslatorValidator
 from anuvaad_auditor.errorhandler import post_error
@@ -31,6 +32,28 @@ def instantiate(topics):
                              value_deserializer=lambda x: handle_json(x))
     return consumer
 
+def create_topics(topic_names,consumer):
+    admin_client = KafkaAdminClient(
+                    bootstrap_servers=list(str(kafka_bootstrap_server_host).split(",")), 
+                    client_id='test'
+                )
+    existing_topic_list = consumer.topics()
+    print("EXISTING TOPICS:",list(consumer.topics()))
+    topic_list = []
+    for topic in topic_names:
+        if topic not in existing_topic_list:
+            print('Topic : {} added '.format(topic))
+            topic_list.append(NewTopic(name=topic, num_partitions=6, replication_factor=1))
+        else:
+            print('Topic : {} already exist '.format(topic))
+    try:
+        if topic_list:
+            admin_client.create_topics(new_topics=topic_list, validate_only=False)
+            print("Topic Created Successfully")
+        else:
+            print("Topic Exist")
+    except  Exception as e:
+        print(e)
 
 # For all the topics, returns a list of TopicPartition Objects
 def get_topic_paritions(topics):
@@ -47,6 +70,8 @@ def consume():
     try:
         topics = [anu_translator_input_topic, anu_translator_nonmt_topic]
         consumer = instantiate(topics)
+        consumer.subscribe(topics)
+        create_topics(topics,consumer)
         service = TranslatorService()
         validator = TranslatorValidator()
         rand_str = ''.join(random.choice(string.ascii_letters) for i in range(4))
