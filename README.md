@@ -10,9 +10,12 @@
 | Translator | [![Build Status](http://jenkins.idc.tarento.com/buildStatus/icon?job=anuvaad%2Fanuvaad-etl-translator)](http://jenkins.idc.tarento.com/job/anuvaad/job/anuvaad-etl-translator/) |
 
 
+# Anuvaad
 
+Anuvaad is an AI based open source Document Translation Platform to translate documents in Indic languages at scale. Anuvaad provides easy-to-edit capabilities on top the plug & play NMT models. Separate instances of Anuvaad are deployed to Diksha (NCERT), Supreme Court of India (SUVAS) and Supreme Court of Bangladesh (Amar Vasha).
 
-![Anuvaad Solution Diagram](https://github.com/project-anuvaad/anuvaad/blob/master/anuvaad-documentation/images/Anuvaad_Solution_Diagram.png)
+<img width="1135" alt="image" src="https://github.com/project-anuvaad/anuvaad/assets/1707796/84426483-e948-470f-b525-819fb374e77e">
+
 
 ### Components  ###
 
@@ -28,7 +31,7 @@ Layout Detector | Microservice interface for Layout detection model.
 Block Segmenter  | Handles layout detection miss-classifications , region unifying.
 Word Detector | Word detection.
 Block Merger  | An OCR system that extracts texts, images, tables, blocks etc from the input file and makes it avaible in the format which can be utilised by downstream services to perform Translation. This can also be used as an independent product that can perform OCR on files, images, ppts, etc.
-Translator  | Translator pushes sentences to [OpenNMT](https://opennmt.net/) which are translated and pushed back during the document translation flow.
+Translator  | Translator pushes sentences to IndicTrans which are translated and pushed back during the document translation flow.
 Content Handler  | Repository Microservice which maintains and manages all the translated documents
 Translation Memory X(TMX)  | System translation memory to facilitate overriding NMT translation with user preferred translation. TMX provides three levels of caching - Global , User , Organisation.
 User Translation Memory(UTM)  | System tracks and remembers individual user translations or corrected translations and applies automatically when same sentences are encountered again.
@@ -41,13 +44,13 @@ Component  | Details
 [Google Vision](https://cloud.google.com/vision)  | Used for OCR in Document Digitization v1.0 , v1.5. Replaced with custom trained Tesseract in latest versions.
 [CRAFT](https://github.com/clovaai/CRAFT-pytorch)  | Used for Line detection.
 [Tesseract](https://github.com/tesseract-ocr)  | Custom trained Tesseract used for OCR.
-[OpenNMT](https://opennmt.net/)  | Custom trained OpenNMT used for translation.
+[IndicTrans](https://github.com/AI4Bharat/indicTrans)  | Custom trained Indic NMT model used for translation.
 
 ### Technology Stack  ###
 
 Component  | Details
 ------------- | -------------
-[Apache Kafka](https://kafka.apache.org/)  | Translator and [OpenNMT](https://opennmt.net/) are integrated through Kafka messaging.
+[Apache Kafka](https://kafka.apache.org/)  | Translator and [IndicTrans](https://github.com/AI4Bharat/indicTrans) are integrated through Kafka messaging.
 [MongoDB](https://www.mongodb.com/)  | Primary data storage.
 [Redis](https://redis.io/)  | Secondary in memory storage.
 Cloud Storage  | Samba storage is used to store user input files.
