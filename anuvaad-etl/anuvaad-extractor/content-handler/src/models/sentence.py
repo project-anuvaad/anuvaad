@@ -263,8 +263,9 @@ class SentenceModel(object):
                 # hash_values = client.hget("UTM",key)
                 # if hash_values != None:
                 val=client.lrange(key, 0, -1)
-                val1 = zlib.decompress(val[0]).decode()
-                # val=client.lrange(key, 0, -1)
+                if val != None:
+                    val1 = zlib.decompress(val[0]).decode()
+                    # val=client.lrange(key, 0, -1)
                 sent_obj["key"]=key
                 sent_obj["value"]=[val1]
                 result.append(sent_obj)
