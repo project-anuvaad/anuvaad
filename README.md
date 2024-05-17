@@ -41,7 +41,6 @@ User Translation Memory(UTM)  | System tracks and remembers individual user tran
 Component  | Details
 ------------- | -------------
 [PRIMA](https://github.com/Layout-Parser/layout-model-training)  | Layout detection model.
-[Google Vision](https://cloud.google.com/vision)  | Used for OCR in Document Digitization v1.0 , v1.5. Replaced with custom trained Tesseract in latest versions.
 [CRAFT](https://github.com/clovaai/CRAFT-pytorch)  | Used for Line detection.
 [Tesseract](https://github.com/tesseract-ocr)  | Custom trained Tesseract used for OCR.
 [IndicTrans](https://github.com/AI4Bharat/indicTrans)  | Custom trained Indic NMT model used for translation.
