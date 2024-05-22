@@ -1,4 +1,4 @@
-FROM python:3.8-slim
+FROM python:3.8-bullseye
 COPY / /app
 WORKDIR /app
 RUN apt-get update
