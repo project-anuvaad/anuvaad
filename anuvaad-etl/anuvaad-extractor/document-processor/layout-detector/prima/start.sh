@@ -9,12 +9,12 @@ url_table='https://anuvaad-pubnet-weights.s3.amazonaws.com/model_tablenet_v2.pth
 #url_judgement_prima_table_layout_model_v2='https://anuvaad-pubnet-weights.s3.amazonaws.com/judgement_prima_table_layout_model_v2.pth?AWSAccessKeyId=AKIAXX2AMEIRJY2GNYVZ&Signature=wVdEhQ7wOgaK3%2B80n%2Bs1guTi3is%3D&Expires=1693558789'
 url_judgement_prima_table_layout_model_v3='https://anuvaad-pubnet-weights.s3.amazonaws.com/judgement_prima_table_layout_modelv3.pth'
 #url='https://anuvaad-pubnet-weights.s3.amazonaws.com/prima_judgement_trained_wgt.pth?AWSAccessKeyId=AKIAUAXLRTC3KS46AZTB'
-rm $tablenet
+#rm $tablenet
 #if ! [ -f $tablenet ]; then
 curl -o $tablenet $url_table
 echo downloading weight file
 #fi
-rm $modelpath
+#rm $modelpath
 #if ! [ -f $modelpath ]; then
 curl -o $modelpath $url_judgement_prima_table_layout_model_v3
 echo downloading weight file
