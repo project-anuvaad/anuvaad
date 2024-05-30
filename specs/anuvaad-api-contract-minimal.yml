@@ -1,0 +1,899 @@
+openapi: 3.0.1
+info:
+  title: Anuvaad
+  description: 'Project Anuvaad is an open-sourced project funded by EkStep foundation. Anuvaad is a productivity tool that leverages AI and machine learning technologies to accomplish end to end document translation. 
+    Project Anuvaad is REST APIs driven hence any third party system can use various functionality. One such popular functionality is sentence translation.'
+  contact:
+    name: Kumar Deepak
+    email: kumar.deepak@tarento.com
+  version: 1.0.0
+servers:
+# Added by API Auto Mocking Plugin
+- description: SwaggerHub API Auto Mocking
+  url: https://virtserver.swaggerhub.com/Anuvaad/AnuvaadApi/1.0.0
+- url: https://users-auth.anuvaad.org 
+
+paths:
+  /anuvaad/user-mgmt/v1/users/create:
+    post:
+      tags:
+      - Create Users
+      summary: REST API to register/create new users.
+      description: This API helps to create new users.
+      requestBody:
+        description: The user details to create.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserRequest'
+        required: true
+      responses:
+        200:
+          description: New users were created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        400:
+          description: On input errors causing failure in user account creation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error_user'
+        500:
+          description: On system level errors causing failure in user account creation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error_user'
+      x-codegen-request-body-name: request
+  
+  /anuvaad/user-mgmt/v1/users/auth-token-search:
+    post:
+      tags:
+      - Search User
+      summary: REST API for auth token based search .
+      description: This API helps to fetch user records using his/her auth token.
+      requestBody:
+        description: The auth token search request.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthTokenSearchRequest'
+        required: true
+      responses:
+        200:
+          description: Search is successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchUserResponse'
+        400:
+          description: On input errors causing failure in auth token search.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error_user'
+        500:
+          description: On system level errors causing failure in auth token search.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error_user'
+      x-codegen-request-body-name: request
+  /anuvaad/user-mgmt/v1/users/login:
+    post:
+      tags:
+      - Login
+      summary: REST API to login.
+      description: This API helps to login a user.
+      requestBody:
+        description: The user credentials to login.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserLoginRequest'
+        required: true
+      responses:
+        200:
+          description: Logged in successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserLoginResponse'
+        400:
+          description: On input errors causing failure in user login.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error_user'
+        500:
+          description: On system level errors causing failure in user login.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error_user'
+      x-codegen-request-body-name: request
+  
+  /anuvaad/user-mgmt/v1/users/forgot-password:
+    post:
+      tags:
+      - Forgot Password
+      summary: REST API for forgot password request.
+      description: This API helps to get a reset password link.
+      requestBody:
+        description: The forgot password request.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ForgotPasswordRequest'
+        required: true
+      responses:
+        200:
+          description: User has notfied successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        400:
+          description: On input errors causing failure in user notification.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error_user'
+        500:
+          description: On system level errors causing failure in user notification.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error_user'
+      x-codegen-request-body-name: request
+  /anuvaad/user-mgmt/v1/users/reset-password:
+    post:
+      tags:
+      - Reset Password
+      summary: REST API for resetting password.
+      description: This API helps to reset user's password.
+      requestBody:
+        description: The reset password request.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResetPasswordRequest'
+        required: true
+      responses:
+        200:
+          description: Password has resetted successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        400:
+          description: On input errors causing failure in password resetting.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error_user'
+        500:
+          description: On system level errors causing failure in password resetting.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error_user'
+      x-codegen-request-body-name: request
+      
+  /anuvaad-api/file-uploader/v0/upload-file:
+    post:
+      tags:
+      - File Handler
+      summary: REST API to upload file.
+      description: This api takes a file and uploads it to server.
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                file:
+                  type: string
+                  description: The file to upload.
+                  format: binary
+      responses:
+        200:
+          description: On successful completion of the job.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/FileUploaderResponse'
+        400:
+          description: On input errors causing a failure in the job.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error_file_uploader'
+  /anuvaad-api/file-uploader/v0/download-file:
+    get:
+      tags:
+      - File Handler
+      summary: REST API to download file (input files).
+      description: This api takes file name and user id and gives the file.
+      parameters:
+      - name: filename
+        in: query
+        description: The filename to be downloaded
+        schema:
+          type: string
+      - name: userid
+        in: query
+        description: The logged in userid
+        schema:
+          type: string
+      responses:
+        200:
+          description: On successful completion of the job.
+          content: {}
+        400:
+          description: On input errors causing a failure in the job.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error_file_uploader'
+                
+  /anuvaad-etl/wf-manager/v1/workflow/initiate:
+    post:
+      tags:
+      - Workflow Manager
+      summary: REST API to register and trigger the workflow.
+      description: This API accepts either pdf or images and initiates the workflow,
+        which runs through a pipeline. This is an async process.
+      requestBody:
+        description: Request format accepted by this API.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WFInitiateRequest'
+        required: true
+      responses:
+        202:
+          description: On successful initiation of the job.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WFInitiateResponse'
+        400:
+          description: On input errors causing a failure in the job.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error_2'
+        500:
+          description: On system level errors causing failure in the job.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error_2'
+      x-codegen-request-body-name: request
+  /anuvaad-etl/wf-manager/v1/workflow/jobs/search/bulk:
+    post:
+      tags:
+      - Workflow Manager
+      summary: REST API to search wf job status.
+      description: This API provides a facility to search wf jobs based on various
+        criteria. Result is sorted default on startTime descending.
+      requestBody:
+        description: Request format accepted by this API.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WFJobSearchRequest'
+        required: true
+      responses:
+        200:
+          description: Either an empty or a non-empty array of responses.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/WFJobSearchResponse'
+      x-codegen-request-body-name: request
+  /anuvaad-etl/wf-manager/v1/workflow/configs/search:
+    get:
+      tags:
+      - Workflow Manager
+      summary: REST API to search wf configs from the config file.
+      description: This API provides a facility to search wf configs, wf configs are those cofig whcih is able to call the particular services.
+      responses:
+        200:
+          description: Either an empty or a non-empty array of config JSONs.
+          content: {}
+      
+  /anuvaad-etl/document-converter/v0/document-converter:
+    post:
+      tags:
+      - Document Converter Translation
+      summary: API to create digitized txt & xlsx files for Translation Flow
+      description: This api takes file data as json and convert it into txt & xlsx file
+        and then save it in upload folder in server, it's an sync api. Using this
+        api can download the files using download url.
+      requestBody:
+        description: Request format accepted by this API.
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/Request_document_converter'
+        required: true
+      responses:
+        200:
+          description: On successful completion of the job.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Response_document_converter'
+        400:
+          description: On input errors causing a failure in the job.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error_document_converter'
+      x-codegen-request-body-name: request
+      
+      
+  /anuvaad-etl/document-converter/v0/document-exporter:
+    post:
+      tags:
+      - Document Converter Digitization
+      summary: API to create digitized txt & pdf files for digitization Flow
+      description: This api takes file data as json and convert it into txt & pdf file
+        and then save it in upload folder in server, it's an sync api. Using this
+        api can download the files using download url.
+      requestBody:
+        description: Request format accepted by this API.
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/Request_document_converter'
+        required: true
+      responses:
+        200:
+          description: On successful completion of the job.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Response_document_converter'
+        400:
+          description: On input errors causing a failure in the job.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error_document_converter'
+      x-codegen-request-body-name: request
+  /download/filename:
+    get:
+      tags:
+      - File Download
+      summary: end point to download input/output files stored in server
+      description: this is public endpoint to download your input/output files json,pds etc..
+      responses:
+        200:
+          description: Either an empty or a non-empty array.
+          content: {}
+      
+  
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        userID:
+          type: string
+          description: Unique 32-bit UUID per user.
+        name:
+          type: string
+          description: Name of the user.
+        userName:
+          type: string
+          description: User Name for the user as chosen by the user, unique for every
+            user.
+        password:
+          type: string
+          description: Password for the user profile as chosen by the user abiding
+            by the pwd policy defined by the system. encrypted and stored.
+        email:
+          type: string
+          description: email id of the user.
+        phoneNo:
+          type: string
+          description: mobile number of the user
+        roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/Role'
+        orgID:
+          type: string
+          description: organization Id of the user
+    Role:
+      type: object
+      properties:
+        roleCode:
+          type: string
+          description: Unique code per role.
+        roleDesc:
+          type: string
+          description: Description of the role.
+    AuthData:
+      type: object
+      properties:
+        userName:
+          type: string
+          description: username of the logged in user
+        token:
+          type: string
+          description: auth token for the logged in user
+    Status:
+      type: object
+      properties:
+        ok:
+          type: string
+          description: true or false
+        http:
+          type: object
+          properties:
+            status:
+              type: string
+              description: status code of the request
+        why:
+          type: string
+          description: response message
+        data:
+          type: object
+          properties: {}
+          description: data returned by the request
+        count:
+          type: integer
+          description: count of data items
+    CreateUserRequest:
+      type: object
+      properties:
+        users:
+          type: array
+          description: Details of the users to be registered.
+          items:
+            $ref: '#/components/schemas/User'
+    
+    SearchUserResponse:
+      type: object
+      properties:
+        ok:
+          type: string
+          description: true or false
+        http:
+          type: object
+          properties:
+            status:
+              type: string
+              description: status code of the request
+        why:
+          type: string
+          description: response message
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+        count:
+          type: integer
+          description: count of data items
+    UserLoginRequest:
+      type: object
+      properties:
+        userName:
+          type: string
+          description: Unique username of the user.
+        password:
+          type: string
+          description: Password of the user
+      description: Details of the user to be logged in.
+    UserLoginResponse:
+      type: object
+      properties:
+        ok:
+          type: string
+          description: true or false
+        http:
+          type: object
+          properties:
+            status:
+              type: string
+              description: status code of the request
+        why:
+          type: string
+          description: response message
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuthData'
+        count:
+          type: integer
+          description: count of data items
+    
+    AuthTokenSearchRequest:
+      type: object
+      properties:
+        token:
+          type: string
+          description: Unique auth token of verified user
+      description: Request for user records.
+    ForgotPasswordRequest:
+      type: object
+      properties:
+        userName:
+          type: string
+          description: Unique username of the user.
+      description: Request for user records.
+    ResetPasswordRequest:
+      type: object
+      properties:
+        userName:
+          type: string
+          description: Unique username of the user.
+        password:
+          type: string
+          description: password to be updated
+      description: Request for user records.
+  
+    Error_user:
+      type: object
+      properties:
+        errorID:
+          type: string
+          description: Unique UUID for the error.
+        cause:
+          type: string
+          description: System generated cause of the error
+        code:
+          type: string
+          description: Unique code signifying the category for the error.
+        message:
+          type: string
+          description: User readable message pertaining to the error
+        timeStamp:
+          type: number
+          description: 13 digit epoch timestamp
+          
+    HttpOutput:
+      type: object
+      properties:
+        status:
+          type: number
+          description: Status code.
+          
+    FileUploaderResponse:
+      type: object
+      properties:
+        data:
+          type: string
+          description: Output file id generated.
+        ok:
+          type: boolean
+          description: request successful indicator.
+        why:
+          type: string
+          description: Response message.
+        http:
+          $ref: '#/components/schemas/HttpOutput'
+    Error_file_uploader:
+      type: object
+      properties:
+        ok:
+          type: boolean
+          description: request successful indicator.
+        why:
+          type: string
+          description: Response message.
+        http:
+          $ref: '#/components/schemas/HttpOutput'
+    WFInitiateRequest:
+      type: object
+      properties:
+        input:
+          type: array
+          description: Details of the files that are to be passed to the wf.
+          items:
+            $ref: '#/components/schemas/File'
+        workflowCode:
+          type: string
+          description: Code of the workflow that has to be picked to process this
+            input. These workflows are configured at the application level.
+    WFInitiateResponse:
+      type: object
+      properties:
+        input:
+          type: object
+          properties: {}
+          description: Details of the request sent.
+        jobID:
+          type: string
+          description: A unique job ID generated for this workflow.
+        status:
+          type: string
+          description: Current status of the workflow
+          enum:
+          - START
+          - INPROGRESS
+          - FAILED
+          - INTERRUPTED
+          - COMPLETED
+        state:
+          type: string
+          description: Current state of the workflow
+          enum:
+          - FILE-CONVERTED
+          - BLOCKS-MERGED
+          - SENTENCE-TOKENISED
+          - SENTENCES-ALIGNED
+          - TRANSLATED
+        output:
+          type: object
+          properties: {}
+          description: Intermediate or final output of the process. If the status
+            = COMPLETE and the state = PROCESSED, this output is considered to be
+            the final output, intermediate otherwise. It is a JSON.
+        taskDetails:
+          type: array
+          description: List of JSONs that explains output of each task involved in
+            the workflow
+          items:
+            $ref: '#/components/schemas/TaskOutput'
+        error:
+          type: object
+          properties: {}
+          description: Incase the job fails due to an error in of the child tasks,
+            that error will be capture here for the benefit of the user.
+        startTime:
+          type: number
+          description: 13 digit epoch of the start time.
+        endTime:
+          type: number
+          description: 13 digit epoch of the end time.
+    WFJobSearchRequest:
+      type: object
+      properties:
+        jobIDs:
+          type: array
+          description: Unique IDs of the etl-wf jobs
+          items:
+            type: string
+        userIDs:
+          type: array
+          description: Unique IDs of the users who have initiated the etl-wf jobs.
+          items:
+            type: string
+        statuses:
+          type: array
+          description: Statuses of the etl-wf jobs.
+          items:
+            type: string
+            enum:
+            - START
+            - INPROGRESS
+            - FAILED
+            - INTERRUPTED
+            - COMPLETED
+        taskDetails:
+          type: boolean
+          description: The response will have taskDetails array if this value is set
+            to 'True', otherwise the list will be empty.
+        error:
+          type: boolean
+          description: The response will have error details by default but can be
+            excluded by setting this key to 'False'.
+        workflowCodes:
+          type: array
+          description: Workflow Codes of the etl-wf jobs.
+          items:
+            type: string
+        offset:
+          type: number
+          description: Starting index of the paginated result
+        limit:
+          type: number
+          description: Count of records to be returned starting from the offset
+    WFJobSearchResponse:
+      type: object
+      properties:
+        response:
+          type: array
+          description: List of jobs returned for the criteria.
+          items:
+            $ref: '#/components/schemas/WFInitiateResponse'
+    Error_2:
+      type: object
+      properties:
+        errorID:
+          type: string
+          description: Unique ID generated for this error.
+        jobID:
+          type: string
+          description: ID of the job within which the error occured.
+        taskID:
+          type: string
+          description: ID of the task within which the error occured.
+        state:
+          type: string
+          description: Processing state of the job just before the error.
+        httpCode:
+          type: string
+          description: Http Code of the error
+        errorMsg:
+          type: string
+          description: This is the machine generated error message like TypeError,
+            ValueError etc with line number.
+        cause:
+          type: string
+          description: This is the cause of the error in a user understandable format
+            that is defined by the developer.
+        timeStamp:
+          type: number
+          description: epoch time at the instant of error.
+    File:
+      type: object
+      properties:
+        path:
+          type: string
+          description: Name of the file. This will be obtained in the output of the
+            file upload API exposed by the anuvaad system.
+        type:
+          type: string
+          description: type of the file.
+          enum:
+          - PDF
+          - IMAGE
+          - TEXT
+          - CSV
+        locale:
+          type: string
+          description: The locale of the file. Meaning, in which language is the uploaded
+            file. For instance, 'en' for English, 'hi' for Hindi etc.
+          format: varchar
+        model:
+          type: object
+          properties: {}
+          description: Model object as returned from fetch-model API, defined by NMT.
+        config:
+          type: object
+          properties: {}
+          description: config object as defined by OCR.
+        context:
+          type: string
+          description: Context to which this file belongs.
+    TaskOutput:
+      type: object
+      properties:
+        taskID:
+          type: string
+          description: Alpha Numeric TASK ID that is generated by the tool
+        jobID:
+          type: string
+          description: Alpha Numeric JOB ID that is generated by wf manager.
+        workflowCode:
+          type: string
+          description: Alpha Numeric string that identifies a configured workflow.
+            This is mentioned in the config file and attached by the user.
+        tool:
+          type: string
+          description: Name of the current tool. Attached by WF Manager.
+          enum:
+          - PDFTOHTML
+          - HTMLTOJSON
+          - OCR
+          - EXTRACTOR
+          - TOKENISER
+          - ALIGNER
+          - NER
+        stepOrder:
+          type: integer
+          description: Order of the current step in order execution of the workflow.
+            Attached by WFM.
+        input:
+          type: object
+          properties: {}
+          description: JSON of the input as expected by the tool.
+        output:
+          type: object
+          properties: {}
+          description: JSON of the output as generated by the tool.
+        status:
+          type: string
+          description: Status of execution of the current tool.
+          enum:
+          - SUCCESS
+          - FAILED
+        state:
+          type: string
+          description: State to which workflow reaches after execution of the current
+            tool.
+          enum:
+          - INGESTED
+          - PDF-TO-HTML-PROCESSED
+          - HTML-TO-JSON-PROCESSED
+          - OCR-PROCESSED
+          - PARAGRAPH-EXTRACTED
+          - SENTENCES-TOKENISED
+          - SENTENCES-ALIGNED
+          - NER-PROCESSED
+        taskStartTime:
+          type: integer
+          description: 13 digit Epoch value of the timestamp at instance of start
+            of the task.
+        taskEndTime:
+          type: integer
+          description: 13 digit Epoch value of the timestamp at instance of end of
+            the task.
+        error:
+          $ref: '#/components/schemas/Error_2'
+          
+    HttpOutput_fdocument_converter:
+      type: object
+      properties:
+        status:
+          type: number
+          description: Status code.
+    Request_document_converter:
+      type: object
+      properties:
+        record_id:
+          type: string
+          description: Record id for the file to be converted.
+        user_id:
+          type: string
+          description: user id to access the data from content-handler db.
+    Response_document_converter:
+      type: object
+      properties:
+        ok:
+          type: boolean
+          description: request successful indicator.
+        why:
+          type: string
+          description: Response message.
+        translated_document:
+          type: string
+          description: translated document name.
+        http:
+          type: object
+          properties: {}
+          description: Final output of this process.
+          example:
+            $ref: '#/components/schemas/HttpOutput_fdocument_converter'
+    Error_document_converter:
+      type: object
+      properties:
+        ok:
+          type: boolean
+          description: request successful indicator.
+        why:
+          type: string
+          description: Response message.
+        http:
+          type: object
+          properties: {}
+          description: Final output of this process.
+          example:
+            $ref: '#/components/schemas/HttpOutput_fdocument_converter'
+
+
+
+
+  securitySchemes:
+      apiKey:
+        type: apiKey
+        in: header
+        name: key
+      apiSig:
+        type: apiKey
+        in: header
+        name: sig
+        description: signed request url or body   
+        
+security:
+  - apiKey: []
+    apiSig: []
