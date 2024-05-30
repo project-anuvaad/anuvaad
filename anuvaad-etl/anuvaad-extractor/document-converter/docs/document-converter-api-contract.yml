@@ -1,103 +1,188 @@
-swagger: "2.0"
+openapi: 3.0.3
+
 info:
-  version: 1.0.0
-  title: Anuvaad Document Converter - API Contract
-  description: A python based microservice to trigger and orchestrate the document converter part of anuvaad-extractor.
+  title: Anuvaad File TRANSLATOR
+
+  description: |-
+    A python based microservice to trigger and orchestrate the file translator part of anuvaad-extractor.
+
   contact:
-    name: Kumar Deepak
-    email: kumar.deepak@tarento.com
+    email: nlp-nmt@tarento.com
+  
+  license:
+    name: MIT License
+    url: https://opensource.org/license/mit/
+  
+  version: XX.XX.XX
 
-schemes:
-  - https
-basePath: '/api'
+externalDocs:
+  url: http://anuvaad.org
+  description: Find out more of Anuvaad
 
+servers:
+  - url: https://users-auth.anuvaad.org/anuvaad-etl/document-converter/
+    description: Anuvaad Document Converter
 
+tags:
+  - name: Document Converter
+    description: (Apis related to convert the json to  docx file)
 
+paths:
 
-paths: 
   /v0/document-converter:
+
     post:
+      tags:
+        - Document Converter
       summary: REST API to convert json into docx file.
       description: This api takes file data as json and convert it into docx file and then save it in upload folder in server, it's an sync api.
-      parameters:
-        - name: request
-          in: body
-          required: true
-          description: Request format accepted by this API.
-          schema:
-            $ref: '#/definitions/Request'
-            
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Document'
+            examples:
+              example1:
+                $ref: '#/components/examples/DocumentConverterBody'
+      responses:
+        '200':  
+          description: on successful coversion
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidResponse'
+              examples:
+                example2:
+                  $ref: '#/components/examples/ConverterSuccessResponse'
+        '400':
+          description: on unsuccessful conversion
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidResponse'
+
+              examples:
+                example3:
+                  $ref: '#/components/examples/ErrorResponse'
+      security:
+        - auth-token: []  
+
+  /v0/document-exporter:
+
+    post:
       tags:
-      - Document Converter
+        - Document Converter
+      summary: Rest API to convert json into pdf and txt files
+      description: This api takes file data as json and convert it into docx file and then save it in upload folder in server, it's an sync api.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Document'
+            examples:
+              example1:
+                $ref: '#/components/examples/DocumentConverterBody'
 
       responses:
-        200:
-          description: On successful completion of the job.
-          schema:
-            $ref: '#/definitions/Response'
-        400:
-          description: On input errors causing a failure in the job.
-          schema:
-            $ref: '#/definitions/Error'
+        '200':  
+          description: on successful coversion
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidResponse'
+              examples:
+                example2:
+                  $ref: '#/components/examples/ExporterSuccessResponse'
+        '400':
+          description: on unsuccessful conversion
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidResponse'
+
+              examples:
+                example3:
+                  $ref: '#/components/examples/ErrorResponse'
+      security:
+        - auth-token: []  
+
+
+components:
+  
+  schemas:
+
+    Document:
+      type: object
+      description: object cotnaining file information
+      properties:
+        record_id:
+          type: string
+          description: the json to be converted.
+        user_id:
+          type: string
+          description: unique identifier of the user
+        file_type:
+          type: string
+          description: format of the file
     
+    ValidResponse: 
+      type: object
+      properties:
+        http: 
+          type: object
+          properties:
+            status:
+              type: string
+              description: status code of the request
+        ok:
+          type: boolean
+        translated_document:
+          type: string
+          nullable: true
+          description: gets the translated file
+        why:
+          type: string
+          description: file format 
 
+  examples:
+    DocumentConverterBody:
+      description: object containing file information
+      summary: eg1
+      value:
+        record_id: A_FTFTR-vXPVW-1685470952868|DOCX1-1723204b-a0f3-4fe7-c439-4db4acae4bd6.json
+        user_id: 1fd9911b7a4949419950b5eab3b163cf1615886263
+        file_type: xlsx
+      
+    ConverterSuccessResponse:
+      summary: success eg
+      value:
+        ok: true
+        http:
+          status: 200
+        why: request successful
+        translated_document: A_FTFTR-vXPVW-1685470952868c6bc72c0-462e-4a13-a383-69d136b_src_tgt_xlsx.xlsx
 
-definitions:
-        
-  HttpOutput:
-    type: object
-    properties:
-      status:
-        type: number
-        description: Status code. 
+    ExporterSuccessResponse:
+      summary: exporter success 
+      value:
+        ok: true
+        http:
+          status: 200
+        why: request successful
+        translated_document: A_FTFTR-vXPVW-1685470952868c6bc72c0-462e-4a13-a383-69d136b_src_tgt_xlsx.txt
 
+    
+    ErrorResponse:
+      summary: error eg
+      value:
+        ok: false
+        http:
+          status: 400
+        why: operation not permitted.
+        translated_document: null
 
-
-  Request:
-    type: object
-    properties:
-      record_id:
-        type: string
-        description: Record id for the file to be converted.
-      user_id:
-        type: string
-        description: user id to access the data from content-handler db.
-          
-
-
-        
-  Response:
-    type: object
-    properties: 
-      ok:
-        type: boolean
-        description: request successful indicator.
-      why:
-        type: string
-        description: Response message.
-      translated_document:
-        type: string
-        description: translated document name.
-      http:
-        type: object
-        description: Final output of this process.
-        example:
-          $ref: '#/definitions/HttpOutput'
-        
-
-        
-        
-  Error:
-    type: object
-    properties:        
-      ok:
-        type: boolean
-        description: request successful indicator.
-      why:
-        type: string
-        description: Response message.
-      http:
-        type: object
-        description: Final output of this process.
-        example: 
-          $ref: '#/definitions/HttpOutput'
+  securitySchemes:
+    auth-token:
+      type: apiKey
+      name: auth-token
+      in: header 

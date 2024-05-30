@@ -1,96 +1,126 @@
-swagger: "2.0"
+openapi: 3.0.3
+
 info:
-  version: 1.0.0
-  title: Anuvaad File Converter - API Contract
-  description: A python based microservice to trigger and orchestrate the file converter part of anuvaad-extractor.
+  title: Anuvaad File Converter 
+  description: |-
+    A python based microservice to trigger and orchestrate the file handler part of anuvaad-extractor.
   contact:
-    name: Kumar Deepak
-    email: kumar.deepak@tarento.com
+    email: nlp-nmt@tarento.com
+  license:
+    name: MIT License
+    url: https://opensource.org/license/mit/
+  version: XX.XX.XX
 
-schemes:
-  - https
-basePath: '/api'
+externalDocs:
+  description: Find out more of Anuvaad
+  url: http://anuvaad.org
 
+servers:
+  - url: https://users-auth.anuvaad.org/anuvaad-etl/file-converter/
+    description: Anuvaad File Uploader
 
-
+tags:
+  - name: File Converter
+    description: (APIs related to converting the file format)
 
 paths: 
+
   /v0/convert-pdf:
     post:
+      tags:
+        - File Converter
       summary: REST API to convert files to pdf.
       description: This api takes file name and convert it to pdf, it's an sync api.
-      parameters:
-        - name: request
-          in: body
-          required: true
-          description: Request format accepted by this API.
-          schema:
-            $ref: '#/definitions/FileConverterRequest'
-            
-      tags:
-      - File Converter
-
+      requestBody:
+        $ref: '#/components/requestBodies/FileConverterRequest'
+        
       responses:
-        200:
-          description: On successful completion of the job.
+        '200':  
+          description: on successful conversion of the file.
+
+          $ref: '#/components/responses/SuccessResponse'
+        '400':
+          description: on error
+          $ref: '#/components/responses/Error'
+      security:
+        - auth-token: [] 
+
+
+
+components:
+  
+  requestBodies:
+
+    FileConverterRequest:
+      description: File id for the file to be converted.
+      required: true
+      content:
+        application/json:
           schema:
-            $ref: '#/definitions/FileConverterResponse'
-        400:
-          description: On input errors causing a failure in the job.
+            type: object
+            properties:
+              filename:
+                type: string
+                description: file to be converted.
+                example: filename.pdf
+
+  responses:
+
+    SuccessResponse:
+      description: on successful conversion
+      content:
+        application/json:
           schema:
-            $ref: '#/definitions/Error'
+            type: object
+            properties:
+              count:
+                type: integer
+                description: count of the file
+                example: 0
+              data:
+                type: string
+                description: converted file name
+                example: cd95c0c8-aba9-4660-a9c7-9b041b1c937e.pdf
+              http:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    description: current status of the file
+                    example: 200
+              ok:
+                type: boolean
+                example: true
+              why:
+                type: string
+                description: updation of the request
+                example: request successful
 
+    Error:
+      description: error on conversion of the file.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              ok:
+                type: boolean
+                example: false
+              why:
+                type: string
+                description: updation of the request
+                example: not permitted
+              http:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    description: current status of the file
+                    example: 400
+              
+  securitySchemes:
+    auth-token:
+      type: apiKey
+      name: auth-token
+      in: header  
 
-
-
-definitions:
-        
-  HttpOutput:
-    type: object
-    properties:
-      status:
-        type: number
-        description: Status code.       
-        
-      
-  FileConverterRequest:
-    type: object
-    properties:
-      filename:
-        type: string
-        description: File id for the file to be converted.
-
-        
-  FileConverterResponse:
-    type: object
-    properties:        
-      data:
-        type: string
-        description: Output file id generated.
-      ok:
-        type: boolean
-        description: request successful indicator.
-      why:
-        type: string
-        description: Response message.
-      http:
-        type: object
-        description: Final output of this process.
-        $ref: '#/definitions/HttpOutput'
-      
-
-        
-        
-  Error:
-    type: object
-    properties:        
-      ok:
-        type: boolean
-        description: request successful indicator.
-      why:
-        type: string
-        description: Response message.
-      http:
-        type: object
-        description: Final output of this process.
-        $ref: '#/definitions/HttpOutput'
