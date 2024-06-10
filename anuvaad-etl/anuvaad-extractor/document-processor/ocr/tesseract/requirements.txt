@@ -1,4 +1,4 @@
-numpy==1.19.2
+numpy==1.22.0
 pytesseract==0.3.4
 Flask==1.1.2
 anuvaad_auditor==0.1.6
