@@ -8,5 +8,5 @@ dateutils==0.6.12
 google-cloud-translate==3.0.2
 google-cloud==0.34.0
 google-cloud-core==1.6.0
-protobuf==3.15.6
+protobuf==3.18.3
 uuid==1.30
