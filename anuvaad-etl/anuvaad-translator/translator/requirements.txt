@@ -39,6 +39,6 @@ WTForms==2.2.1
 anuvaad-auditor==1.0.0
 xlrd==1.2.0
 itsdangerous==2.0.1
-Jinja2==3.0.3
+Jinja2==3.1.4
 MarkupSafe==2.1.1
 Werkzeug==1.0.0
