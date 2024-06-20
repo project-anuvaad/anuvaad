@@ -12,7 +12,7 @@
 
 # Anuvaad
 
-Anuvaad is an AI based open source Document Translation Platform to translate documents in Indic languages at scale. Anuvaad provides easy-to-edit capabilities on top the plug & play NMT models. Separate instances of Anuvaad are deployed to Diksha (NCERT), Supreme Court of India (SUVAS) and Supreme Court of Bangladesh (Amar Vasha).
+Anuvaad is an AI based open source Document Translation Platform to translate documents in Indic languages at scale. Anuvaad provides easy-to-edit capabilities on top the plug & play NMT models. Separate instances of Anuvaad are deployed to Diksha (NCERT), Supreme Court of India (SUVAS) and Supreme Court of Bangladesh (Amar Vasha). Read indepth about the architecture and codebase of Anuvaad here : https://anuvaad.sunbird.org
 
 <img width="1135" alt="image" src="https://github.com/project-anuvaad/anuvaad/assets/1707796/84426483-e948-470f-b525-819fb374e77e">
 
