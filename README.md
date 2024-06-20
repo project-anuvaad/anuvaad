@@ -1,4 +1,25 @@
 
+<img width="1175" alt="image" src="https://github.com/project-anuvaad/anuvaad/assets/1707796/9dd91b6f-1aa3-4072-9f14-9fc3472641b7">
+
+<p align="center">
+    <em>Bridging India's language barrier by AI-driven multilingual NMT models</em>
+</p>
+
+<p align="center">
+    <a href="https://opensource.org/licenses/MIT" target="_blank">
+        <img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License: MIT">
+    </a>
+</p>
+
+***
+
+
+Anuvaad is an AI based open source Document Translation Platform to translate documents in Indic languages at scale. Anuvaad provides easy-to-edit capabilities on top the plug & play NMT models. 
+
+<br>
+
+Separate instances of Anuvaad are deployed to the Supreme Court of India (SUVAS) and Supreme Court of Bangladesh (Amar Vasha) and Diksha (NCERT). 
+
 | Service | Build Status |
 |---------| ----------- |
 |  Zuul  |  [![Build Status](http://jenkins.idc.tarento.com/buildStatus/icon?job=anuvaad%2Fanuvaad-zuul-api-gw)](http://jenkins.idc.tarento.com/job/anuvaad/job/anuvaad-zuul-api-gw/) |
@@ -9,15 +30,14 @@
 | Tokeniser | [![Build Status](http://jenkins.idc.tarento.com/buildStatus/icon?job=anuvaad%2Fanuvaad-etl-tokeniser)](http://jenkins.idc.tarento.com/job/anuvaad/job/anuvaad-etl-tokeniser/) |
 | Translator | [![Build Status](http://jenkins.idc.tarento.com/buildStatus/icon?job=anuvaad%2Fanuvaad-etl-translator)](http://jenkins.idc.tarento.com/job/anuvaad/job/anuvaad-etl-translator/) |
 
+## Documentation
+Read indepth about the architecture and codebase of Anuvaad here : https://anuvaad.sunbird.org
 
-# Anuvaad
-
-Anuvaad is an AI based open source Document Translation Platform to translate documents in Indic languages at scale. Anuvaad provides easy-to-edit capabilities on top the plug & play NMT models. Separate instances of Anuvaad are deployed to Diksha (NCERT), Supreme Court of India (SUVAS) and Supreme Court of Bangladesh (Amar Vasha). Read indepth about the architecture and codebase of Anuvaad here : https://anuvaad.sunbird.org
-
+## High Level Architeture
 <img width="1135" alt="image" src="https://github.com/project-anuvaad/anuvaad/assets/1707796/84426483-e948-470f-b525-819fb374e77e">
 
 
-### Components  ###
+## Components  
 
 Component     | Details
 --------------| -------------
@@ -37,7 +57,8 @@ Translation Memory X(TMX)  | System translation memory to facilitate overriding 
 User Translation Memory(UTM)  | System tracks and remembers individual user translations or corrected translations and applies automatically when same sentences are encountered again.
 
 
-### AI/ML Assets  ###
+## AI/ML Assets 
+
 Component  | Details
 ------------- | -------------
 [PRIMA](https://github.com/Layout-Parser/layout-model-training)  | Layout detection model.
@@ -45,7 +66,7 @@ Component  | Details
 [Tesseract](https://github.com/tesseract-ocr)  | Custom trained Tesseract used for OCR.
 [IndicTrans](https://github.com/AI4Bharat/indicTrans)  | Custom trained Indic NMT model used for translation.
 
-### Technology Stack  ###
+## Technology Stack
 
 Component  | Details
 ------------- | -------------
