@@ -44,3 +44,12 @@ or<br>
 `npm test`<br>
 or<br>
 `yarn test`
+
+## Common Issues
+### 1. Version related issues in setup
+
+If there is any error message which indicates a dependency conflict between different versions of React, (Specifically, the react-transliterate package requires React version 16, but this project is using React version 17), resolve by running the following command instead of npm install:
+
+`npm install --legacy-peer-deps`
+
+This should bypass the peer dependency conflict and allow the installation to proceed.
