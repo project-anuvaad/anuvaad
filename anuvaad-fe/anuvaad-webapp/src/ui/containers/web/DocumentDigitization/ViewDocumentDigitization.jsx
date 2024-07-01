@@ -726,7 +726,7 @@ class ViewDocumentDigitization extends React.Component {
                     {!this.state.showLoader && (
                         <MuiThemeProvider theme={this.getMuiTheme()}>
                             <DataTable
-                                title={"Digitize " + translate("common.page.title.document")}
+                                title={"Digitized " + translate("common.page.title.document")}
                                 data={this.getJobsSortedByTimestamp()}
                                 columns={columns}
                                 options={options}

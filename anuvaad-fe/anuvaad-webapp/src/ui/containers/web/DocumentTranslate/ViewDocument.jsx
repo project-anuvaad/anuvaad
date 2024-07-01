@@ -894,7 +894,7 @@ class ViewDocument extends React.Component {
                         </FormControl>
                     </div>
               <DataTable
-                title={"Translate " + translate("common.page.title.document")}
+                title={"Translated " + translate("common.page.title.document")}
                 data={this.getJobsSortedByTimestamp()}
                 columns={columns}
                 options={options}
