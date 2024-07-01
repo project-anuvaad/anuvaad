@@ -47,7 +47,7 @@ const headerMenuConfig = [
     },
     {
         id : "document-digitization",
-        title: "Digitization",
+        title: "Digitizations",
         followOrg : false,
         onclick : (assignedOrgId)=>history.push(`${process.env.PUBLIC_URL}/document-digitization`),
         rolesAllowed : [userRoles[0], userRoles[1]],
