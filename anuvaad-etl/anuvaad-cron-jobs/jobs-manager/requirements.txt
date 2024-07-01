@@ -26,7 +26,7 @@ pymongo==4.6.3
 python-dateutil==2.8.1
 PyYAML==5.3
 requests==2.23.0
-scikit-learn==0.22.2.post1
+scikit-learn==1.5.0
 scipy==1.4.1
 sentencepiece==0.1.85
 six==1.14.0
