@@ -109,7 +109,7 @@
 		<dependency>
 			<groupId>org.elasticsearch</groupId>
 			<artifactId>elasticsearch</artifactId>
-			<version>6.2.4</version>
+			<version>7.17.19</version>
 		</dependency>
 		<dependency>
 			<groupId>com.github.fge</groupId>
