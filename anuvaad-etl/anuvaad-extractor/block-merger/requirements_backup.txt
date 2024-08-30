@@ -23,5 +23,5 @@ anuvaad-auditor==0.1.4
 #scipy==1.5.3
 torch==1.4.0
 torchvision==0.5.0  
-opencv-python==4.4.0.40
+opencv-python==4.8.1.78
 
