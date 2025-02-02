@@ -22,7 +22,7 @@ sacrebleu==1.5.0
 six==1.15.0
 urllib3==1.26.15
 uuid==1.30
-Werkzeug==1.0.1
+Werkzeug==2.2.3
 zope.interface==5.1.2
 bravado-core==5.17.0
 google-cloud-translate==2.0.1
