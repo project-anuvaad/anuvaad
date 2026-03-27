@@ -4,7 +4,15 @@ FROM anuvaadio/anuvaad-block-merger:278-650172916
 COPY / /app
 WORKDIR /app
 
-# RUN apt-get update \ 
+  RUN mkdir -p "/root/.torch/iopath_cache/s/yc92x97k50abynt" && \                                                                                                                                            
+      curl -L "https://huggingface.co/Eterna2/LayoutParser/resolve/main/models/PrimaLayout/PrimaLayout-mask_rcnn_R_50_FPN_3x-config.yml" \                                                                 
+      -o "/root/.torch/iopath_cache/s/yc92x97k50abynt/config.yaml?dl=1"                                                                                                                                      
+                                                                                                                                                                                                             
+  RUN mkdir -p "/root/.torch/iopath_cache/s/h7th27jfv19rxiy" && \                                                                                                                                            
+      curl -L "https://huggingface.co/Eterna2/LayoutParser/resolve/main/models/PrimaLayout/PrimaLayout-mask_rcnn_R_50_FPN_3x-model.pth" \                                                                    
+      -o "/root/.torch/iopath_cache/s/h7th27jfv19rxiy/model_final.pth?dl=1"     
+
+      # RUN apt-get update \ 
 #     && apt-get install -y libssl-dev libffi-dev libxml2-dev libxslt1-dev zlib1g-dev \
 #     && pip install --upgrade pip setuptools wheel \
 #     && pip install scikit-build \
